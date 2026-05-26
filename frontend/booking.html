@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - Kabura Ventures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                <span class="logo-mark">
+                    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#2E7D32" />
+                                <stop offset="100%" stop-color="#C9A227" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="24" cy="24" r="22" fill="url(#logoGradient)" />
+                        <path d="M14 30L22 18L28 24L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 34C18 24 30 16 38 22" stroke="white" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                </span>
+                <span class="logo-text"><span class="logo-highlight">Kabura</span> Adventures</span>
+            </a>
+            <button class="hamburger"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tours.html">Tours</a></li>
+                <li><a href="/hotels.html">Hotels</a></li>
+                <li><a href="/flights.html">Flights</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/booking.html">My Bookings</a></li>
+                <li class="nav-search">
+                    <form class="search-form" id="navbar-search" onsubmit="event.preventDefault(); window.location.href='/tours.html?search=' + encodeURIComponent(this.q.value)">
+                        <input type="text" name="q" placeholder="Search..." class="search-input" aria-label="Search">
+                    </form>
+                </li>
+                <li class="auth-buttons" id="auth-buttons"></li>
+                <li class="currency-selector">
+                    <select id="currency-switcher" aria-label="Select currency">
+                        <option value="KES">KSh</option>
+                        <option value="USD">$</option>
+                        <option value="EUR">&euro;</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header" data-aos="fade-up">
+        <h1>My Bookings</h1>
+        <p>Manage your tour bookings, hotel inquiries, and view booking status.</p>
+    </div>
+
+    <section class="section">
+        <div class="container">
+            <!-- New Booking Form -->
+            <div class="card" style="padding:2rem;margin-bottom:2rem;" id="new-booking-section" data-aos="fade-up">
+                <h2 style="margin-bottom:1.5rem;">New Booking</h2>
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label class="form-label">Booking Type</label>
+                        <select class="form-select" id="booking-type" required>
+                            <option value="">Select type...</option>
+                            <option value="tour">Tour Booking</option>
+                            <option value="hotel">Hotel Inquiry</option>
+                            <option value="package">Package</option>
+                        </select>
+                    </div>
+                    <div id="booking-tour-field" class="form-group" style="display:none;">
+                        <label class="form-label">Select Tour</label>
+                        <select class="form-select" id="booking-tour"></select>
+                    </div>
+                    <div id="booking-hotel-field" class="form-group" style="display:none;">
+                        <label class="form-label">Select Hotel</label>
+                        <select class="form-select" id="booking-hotel"></select>
+                    </div>
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Travel Date</label>
+                            <input type="date" class="form-input" id="booking-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Return Date (Optional)</label>
+                            <input type="date" class="form-input" id="booking-return">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of People</label>
+                        <input type="number" class="form-input" id="booking-people" min="1" max="50" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Special Requests</label>
+                        <textarea class="form-textarea" id="booking-requests" placeholder="Any special requirements?"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Submit Booking</button>
+                </form>
+            </div>
+
+            <!-- Bookings List -->
+            <h2 style="margin-bottom:1.5rem;" data-aos="fade-up">My Booking History</h2>
+            <div id="bookings-list"></div>
+        </div>
+    </section>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Make a Payment</h2>
+                <button class="modal-close" onclick="closeModal('payment-modal')">&times;</button>
+            </div>
+            <form id="payment-form">
+                <input type="hidden" id="pay-booking-id">
+                <div class="form-group">
+                    <label class="form-label">Amount (KSh)</label>
+                    <input type="number" class="form-input" id="pay-amount" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-select" id="pay-method" required>
+                        <option value="mpesa">M-Pesa</option>
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Payment Type</label>
+                    <select class="form-select" id="pay-type" required>
+                        <option value="deposit">Deposit</option>
+                        <option value="full">Full Payment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Transaction Reference (Optional)</label>
+                    <input type="text" class="form-input" id="pay-ref">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Submit Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="footer-newsletter">
+        <div style="max-width:1200px;margin:0 auto;">
+            <h3>Stay Inspired</h3>
+            <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
+            <form class="footer-newsletter-form" onsubmit="event.preventDefault();showToast('Subscribed!','success');this.reset();">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="footer-col">
+                <div class="footer-brand"><span class="highlight">Kabura</span> Adventures</div>
+                <p>Your trusted partner for unforgettable Kenyan travel experiences. From the savannahs of Maasai Mara to the pristine beaches of Mombasa, we craft journeys that celebrate Kenya's breathtaking beauty and rich culture.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
+                </div>
+                <div class="footer-payment-icons">
+                    <span>Visa</span>
+                    <span>MC</span>
+                    <span>M-Pesa</span>
+                    <span>AMEX</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Popular Destinations</h4>
+                <a href="/tours.html?search=Maasai+Mara">Maasai Mara</a>
+                <a href="/tours.html?search=Amboseli">Amboseli</a>
+                <a href="/tours.html?search=Mombasa">Mombasa</a>
+                <a href="/tours.html?search=Mount+Kenya">Mount Kenya</a>
+                <a href="/tours.html?search=Lake+Nakuru">Lake Nakuru</a>
+                <a href="/tours.html?search=Tsavo">Tsavo</a>
+                <a href="/tours.html?search=Diani">Diani Beach</a>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="/tours.html">All Tours</a>
+                <a href="/hotels.html">Hotels &amp; Lodges</a>
+                <a href="/flights.html">Flight Requests</a>
+                <a href="/booking.html">My Bookings</a>
+                <a href="/blog.html">Travel Blog</a>
+                <a href="/">Home</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact &amp; Support</h4>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> Nairobi, Kenya</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 700 000 000</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> info@kaburaadventures.com</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-clock"></i></span> Mon-Sat: 8AM-6PM EAT</div>
+                <h4 style="margin-top:1.5rem;font-size:0.8rem;">24/7 Support</h4>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 711 000 000</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-copy">&copy; 2026 Kabura Ventures. All rights reserved.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        let toursCache = [];
+        let hotelsCache = [];
+
+        // Check for tour/hotel in URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const preselectedTour = urlParams.get('tour');
+        const preselectedHotel = urlParams.get('hotel');
+
+        // Load tours and hotels for dropdowns
+        async function loadSelectOptions() {
+            try {
+                const toursRes = await api.getTours({ per_page: 50 });
+                toursCache = toursRes.tours;
+                const tourSelect = document.getElementById('booking-tour');
+                tourSelect.innerHTML = toursCache.map(t =>
+                    `<option value="${t.id}" ${t.id === preselectedTour ? 'selected' : ''}>${t.title} - KSh ${Number(t.price).toLocaleString()}</option>`
+                ).join('') || '<option value="">No tours available</option>';
+
+                const hotelsRes = await api.getHotels({ per_page: 50 });
+                hotelsCache = hotelsRes.hotels;
+                const hotelSelect = document.getElementById('booking-hotel');
+                hotelSelect.innerHTML = hotelsCache.map(h =>
+                    `<option value="${h.id}" ${h.id === preselectedHotel ? 'selected' : ''}>${h.name} - KSh ${Number(h.price_per_night).toLocaleString()}/night</option>`
+                ).join('') || '<option value="">No hotels available</option>';
+
+                // Auto-select type if tour or hotel is preselected
+                if (preselectedTour) {
+                    document.getElementById('booking-type').value = 'tour';
+                    toggleBookingFields('tour');
+                } else if (preselectedHotel) {
+                    document.getElementById('booking-type').value = 'hotel';
+                    toggleBookingFields('hotel');
+                }
+            } catch (err) {
+                console.error('Failed to load options:', err);
+            }
+        }
+
+        function toggleBookingFields(type) {
+            document.getElementById('booking-tour-field').style.display = type === 'tour' || type === 'package' ? 'block' : 'none';
+            document.getElementById('booking-hotel-field').style.display = type === 'hotel' || type === 'package' ? 'block' : 'none';
+        }
+
+        document.getElementById('booking-type')?.addEventListener('change', (e) => {
+            toggleBookingFields(e.target.value);
+        });
+
+        // Submit booking
+        document.getElementById('booking-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showToast('Please login to make a booking', 'warning');
+                openModal('login-modal');
+                return;
+            }
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            const type = document.getElementById('booking-type').value;
+
+            try {
+                await api.createBooking({
+                    booking_type: type,
+                    tour_id: type === 'tour' || type === 'package' ? document.getElementById('booking-tour').value : null,
+                    hotel_id: type === 'hotel' || type === 'package' ? document.getElementById('booking-hotel').value : null,
+                    travel_date: document.getElementById('booking-date').value,
+                    return_date: document.getElementById('booking-return').value || null,
+                    people_count: parseInt(document.getElementById('booking-people').value),
+                    special_requests: document.getElementById('booking-requests').value
+                });
+                showToast('Booking submitted! Awaiting admin confirmation.', 'success');
+                e.target.reset();
+                loadMyBookings();
+                document.getElementById('booking-tour-field').style.display = 'none';
+                document.getElementById('booking-hotel-field').style.display = 'none';
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Booking';
+            }
+        });
+
+        // Load bookings
+        async function loadMyBookings() {
+            const container = document.getElementById('bookings-list');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                container.innerHTML = '<div class="empty-state"><h3>Login to view your bookings</h3></div>';
+                return;
+            }
+
+            try {
+                const result = await api.getUserBookings();
+                const bookings = result.bookings;
+
+                if (bookings.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><h3>No bookings yet</h3><p>Create your first booking above.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Details</th>
+                                    <th>Date</th>
+                                    <th>People</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${bookings.map(b => {
+                                    let details = b.booking_type;
+                                    if (b.tour) details = b.tour.title;
+                                    else if (b.hotel) details = b.hotel.name;
+
+                                    const statusBadge = {
+                                        'pending': 'badge-warning',
+                                        'confirmed': 'badge-success',
+                                        'cancelled': 'badge-danger',
+                                        'completed': 'badge-info',
+                                        'no_show': 'badge-secondary'
+                                    }[b.status] || 'badge-secondary';
+
+                                    const paymentBadge = {
+                                        'unpaid': 'badge-danger',
+                                        'deposit_paid': 'badge-warning',
+                                        'fully_paid': 'badge-success',
+                                        'refunded': 'badge-info'
+                                    }[b.payment_status] || 'badge-secondary';
+
+                                    return `
+                                        <tr>
+                                            <td><span class="badge badge-info">${b.booking_type}</span></td>
+                                            <td>${details}</td>
+                                            <td>${b.travel_date}${b.return_date ? ' &rarr; ' + b.return_date : ''}</td>
+                                            <td>${b.people_count}</td>
+                                            <td><span class="badge ${statusBadge}">${b.status}</span></td>
+                                            <td><span class="badge ${paymentBadge}">${b.payment_status}</span></td>
+                                            <td>
+                                                ${(b.status === 'confirmed' || b.status === 'pending') && b.payment_status !== 'fully_paid' && b.payment_status !== 'deposit_paid' ?
+                                                    `<button class="btn btn-sm btn-gold" onclick="openPayment('${b.id}')">Pay</button>` :
+                                                    b.payment_status === 'deposit_paid' ?
+                                                    `<button class="btn btn-sm btn-gold" onclick="openPayment('${b.id}')">Pay Balance</button>` : '-'}
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><h3>Could not load bookings</h3></div>';
+            }
+        }
+
+        function openPayment(bookingId) {
+            document.getElementById('pay-booking-id').value = bookingId;
+            openModal('payment-modal');
+        }
+
+        // Payment form
+        document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            try {
+                await api.createPayment({
+                    booking_id: document.getElementById('pay-booking-id').value,
+                    amount: parseFloat(document.getElementById('pay-amount').value),
+                    payment_method: document.getElementById('pay-method').value,
+                    payment_type: document.getElementById('pay-type').value,
+                    transaction_ref: document.getElementById('pay-ref').value
+                });
+                showToast('Payment recorded successfully!', 'success');
+                closeModal('payment-modal');
+                e.target.reset();
+                loadMyBookings();
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Payment';
+            }
+        });
+
+        loadSelectOptions();
+        loadMyBookings();
+    </script>
+</body>
+</html>

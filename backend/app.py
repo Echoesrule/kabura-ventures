@@ -1,0 +1,80 @@
+import os
+from flask import Flask, send_from_directory, jsonify
+from flask_cors import CORS
+from config import Config
+from models import db, bcrypt
+from routes.auth import auth_bp
+from routes.tours import tours_bp
+from routes.bookings import bookings_bp
+from routes.flights import flights_bp
+from routes.hotels import hotels_bp
+from routes.payments import payments_bp
+from routes.messages import messages_bp
+from routes.media import media_bp
+from routes.reviews import reviews_bp
+from routes.wishlist import wishlist_bp
+from routes.availability import availability_bp
+from routes.currencies import currencies_bp
+from routes.blogs import blogs_bp
+from routes.search import search_bp
+from routes.memories import memories_bp
+from services.seed import seed_database
+
+def create_app():
+    app = Flask(__name__, static_folder='../frontend', static_url_path='')
+    app.config.from_object(Config)
+
+    CORS(app)
+    db.init_app(app)
+    bcrypt.init_app(app)
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(tours_bp)
+    app.register_blueprint(bookings_bp)
+    app.register_blueprint(flights_bp)
+    app.register_blueprint(hotels_bp)
+    app.register_blueprint(payments_bp)
+    app.register_blueprint(messages_bp)
+    app.register_blueprint(media_bp)
+    app.register_blueprint(reviews_bp)
+    app.register_blueprint(wishlist_bp)
+    app.register_blueprint(availability_bp)
+    app.register_blueprint(currencies_bp)
+    app.register_blueprint(blogs_bp)
+    app.register_blueprint(search_bp)
+    app.register_blueprint(memories_bp)
+
+    @app.route('/')
+    def index():
+        return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/<path:path>')
+    def serve_static(path):
+        if path.startswith('assets/'):
+            return send_from_directory(app.static_folder, path)
+        try:
+            return send_from_directory(app.static_folder, path)
+        except:
+            return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/api/health')
+    def health():
+        return jsonify({'status': 'healthy', 'message': 'Kabura Adventures API is running'})
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return jsonify({'error': 'Resource not found'}), 404
+
+    @app.errorhandler(500)
+    def server_error(e):
+        return jsonify({'error': 'Internal server error'}), 500
+
+    with app.app_context():
+        db.create_all()
+        seed_database()
+
+    return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True, host='0.0.0.0', port=5000)

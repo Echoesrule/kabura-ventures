@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Kabura Ventures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .blog-article {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .blog-article img.featured {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+        .blog-article h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+        }
+        .blog-article .meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .blog-article .meta .tag {
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            background: #E8F5E9;
+            color: var(--primary-green-dark);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .blog-article .content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--dark-text);
+        }
+        .blog-article .content p {
+            margin-bottom: 1.25rem;
+        }
+        .blog-article .content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+        }
+        .blog-article .content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+        .blog-article .content ul, .blog-article .content ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+        .blog-article .content li {
+            margin-bottom: 0.5rem;
+        }
+        .blog-article .content blockquote {
+            border-left: 4px solid var(--primary-green);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            background: #F5F5F5;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-style: italic;
+        }
+        .blog-article .content img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            margin: 1.5rem 0;
+        }
+        .blog-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        @media (max-width: 768px) {
+            .blog-article h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                <span class="logo-mark">
+                    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#2E7D32" />
+                                <stop offset="100%" stop-color="#C9A227" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="24" cy="24" r="22" fill="url(#logoGradient)" />
+                        <path d="M14 30L22 18L28 24L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 34C18 24 30 16 38 22" stroke="white" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                </span>
+                <span class="logo-text"><span class="logo-highlight">Kabura</span> Adventures</span>
+            </a>
+            <button class="hamburger"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tours.html">Tours</a></li>
+                <li><a href="/hotels.html">Hotels</a></li>
+                <li><a href="/flights.html">Flights</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/booking.html">My Bookings</a></li>
+                <li class="nav-search">
+                    <form class="search-form" id="navbar-search" onsubmit="event.preventDefault(); window.location.href='/tours.html?search=' + encodeURIComponent(this.q.value)">
+                        <input type="text" name="q" placeholder="Search..." class="search-input" aria-label="Search">
+                    </form>
+                </li>
+                <li class="auth-buttons" id="auth-buttons"></li>
+                <li class="currency-selector">
+                    <select id="currency-switcher" aria-label="Select currency">
+                        <option value="KES">KSh</option>
+                        <option value="USD">$</option>
+                        <option value="EUR">&euro;</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            <div class="blog-article" id="blog-article" data-aos="fade-up">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <div class="footer-newsletter">
+        <div style="max-width:1200px;margin:0 auto;">
+            <h3>Stay Inspired</h3>
+            <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
+            <form class="footer-newsletter-form" onsubmit="event.preventDefault();showToast('Subscribed!','success');this.reset();">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="footer-col">
+                <div class="footer-brand"><span class="highlight">Kabura</span> Adventures</div>
+                <p>Your trusted partner for unforgettable Kenyan travel experiences. From the savannahs of Maasai Mara to the pristine beaches of Mombasa, we craft journeys that celebrate Kenya's breathtaking beauty and rich culture.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
+                </div>
+                <div class="footer-payment-icons">
+                    <span>Visa</span>
+                    <span>MC</span>
+                    <span>M-Pesa</span>
+                    <span>AMEX</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Popular Destinations</h4>
+                <a href="/tours.html?search=Maasai+Mara">Maasai Mara</a>
+                <a href="/tours.html?search=Amboseli">Amboseli</a>
+                <a href="/tours.html?search=Mombasa">Mombasa</a>
+                <a href="/tours.html?search=Mount+Kenya">Mount Kenya</a>
+                <a href="/tours.html?search=Lake+Nakuru">Lake Nakuru</a>
+                <a href="/tours.html?search=Tsavo">Tsavo</a>
+                <a href="/tours.html?search=Diani">Diani Beach</a>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="/tours.html">All Tours</a>
+                <a href="/hotels.html">Hotels &amp; Lodges</a>
+                <a href="/flights.html">Flight Requests</a>
+                <a href="/booking.html">My Bookings</a>
+                <a href="/blog.html">Travel Blog</a>
+                <a href="/">Home</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact &amp; Support</h4>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> Nairobi, Kenya</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 700 000 000</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> info@kaburaadventures.com</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-clock"></i></span> Mon-Sat: 8AM-6PM EAT</div>
+                <h4 style="margin-top:1.5rem;font-size:0.8rem;">24/7 Support</h4>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 711 000 000</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-copy">&copy; 2026 Kabura Ventures. All rights reserved.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        (async function() {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+            const container = document.getElementById('blog-article');
+
+            if (!slug) {
+                container.innerHTML = '<div class="empty-state"><h3>No blog post specified</h3></div>';
+                return;
+            }
+
+            try {
+                const result = await api.getBlog(slug);
+                const blog = result.blog;
+                const tags = Array.isArray(blog.tags) ? blog.tags : [];
+
+                container.innerHTML = `
+                    ${blog.image_url ? `<img src="${blog.image_url}" alt="${blog.title}" class="featured" onerror="this.style.display='none'">` : ''}
+                    <h1>${blog.title}</h1>
+                    <div class="meta">
+                        <span>By ${blog.author || 'Kabura Ventures'}</span>
+                        <span>${blog.published_at ? new Date(blog.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}</span>
+                        <span class="tag">${blog.category || 'Guide'}</span>
+                        ${tags.map(t => `<span class="tag">${t.trim()}</span>`).join('')}
+                    </div>
+                    <div class="content">${blog.content}</div>
+                    <div class="blog-nav">
+                        <a href="/blog.html" class="btn btn-secondary">&larr; Back to Blog</a>
+                    </div>
+                `;
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><h3>Blog post not found</h3></div>';
+            }
+        })();
+    </script>
+</body>
+</html>

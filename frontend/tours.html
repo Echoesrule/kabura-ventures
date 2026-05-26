@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours - Kabura Ventures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                <span class="logo-mark">
+                    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#2E7D32" />
+                                <stop offset="100%" stop-color="#C9A227" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="24" cy="24" r="22" fill="url(#logoGradient)" />
+                        <path d="M14 30L22 18L28 24L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M14 34C18 24 30 16 38 22" stroke="white" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                </span>
+                <span class="logo-text"><span class="logo-highlight">Kabura</span> Adventures</span>
+            </a>
+            <button class="hamburger"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tours.html">Tours</a></li>
+                <li><a href="/hotels.html">Hotels</a></li>
+                <li><a href="/flights.html">Flights</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/booking.html">My Bookings</a></li>
+                <li class="nav-search">
+                    <form class="search-form" id="navbar-search" onsubmit="event.preventDefault(); window.location.href='/tours.html?search=' + encodeURIComponent(this.q.value)">
+                        <input type="text" name="q" placeholder="Search..." class="search-input" aria-label="Search">
+                    </form>
+                </li>
+                <li class="auth-buttons" id="auth-buttons"></li>
+                <li class="currency-selector">
+                    <select id="currency-switcher" aria-label="Select currency">
+                        <option value="KES">KSh</option>
+                        <option value="USD">$</option>
+                        <option value="EUR">&euro;</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header" data-aos="fade-up-right">
+        <h1>Our Tours</h1>
+        <p>Discover Kenya's most incredible destinations with our carefully curated tours.</p>
+    </div>
+
+    <section class="section">
+            <div class="container" id="tours-container">
+                <div class="filter-bar" data-aos="fade-up-right">
+                <input type="text" class="form-input" id="filter-search" placeholder="Search tours..." style="max-width:200px;">
+                <select class="form-select" id="filter-activity" style="max-width:180px;">
+                    <option value="">All Activities</option>
+                </select>
+                <input type="text" class="form-input" id="filter-location" placeholder="Location..." style="max-width:160px;">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <label style="font-weight:600;font-size:0.85rem;color:var(--text-secondary);white-space:nowrap;">KSh</label>
+                    <input type="number" class="form-input" id="filter-min-price" placeholder="Min" style="max-width:90px;" min="0">
+                    <span style="color:var(--text-secondary);">&mdash;</span>
+                    <input type="number" class="form-input" id="filter-max-price" placeholder="Max" style="max-width:90px;" min="0">
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <input type="number" class="form-input" id="filter-min-duration" placeholder="Min days" style="max-width:100px;" min="1">
+                    <span style="color:var(--text-secondary);">&mdash;</span>
+                    <input type="number" class="form-input" id="filter-max-duration" placeholder="Max days" style="max-width:100px;" min="1">
+                </div>
+                <button class="btn btn-secondary btn-sm" id="clear-filters">Clear</button>
+            </div>
+
+            <div id="filter-badges" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;"></div>
+
+            <div id="results-count" style="margin-bottom:1rem;color:var(--text-secondary);font-size:0.9rem;"></div>
+
+            <div class="grid grid-3" id="tours-list"></div>
+
+            <div id="pagination" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:2rem;flex-wrap:wrap;"></div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="tour-modal">
+        <div class="modal" style="max-width:700px;">
+            <div class="modal-header">
+                <h2 id="tour-modal-title">Tour Details</h2>
+                <button class="modal-close" onclick="closeModal('tour-modal')">&times;</button>
+            </div>
+            <div id="tour-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="footer-newsletter">
+        <div style="max-width:1200px;margin:0 auto;">
+            <h3>Stay Inspired</h3>
+            <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
+            <form class="footer-newsletter-form" onsubmit="event.preventDefault();showToast('Subscribed!','success');this.reset();">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="footer-col">
+                <div class="footer-brand"><span class="highlight">Kabura</span> Adventures</div>
+                <p>Your trusted partner for unforgettable Kenyan travel experiences. From the savannahs of Maasai Mara to the pristine beaches of Mombasa, we craft journeys that celebrate Kenya's breathtaking beauty and rich culture.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
+                </div>
+                <div class="footer-payment-icons">
+                    <span>Visa</span>
+                    <span>MC</span>
+                    <span>M-Pesa</span>
+                    <span>AMEX</span>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Popular Destinations</h4>
+                <a href="/tours.html?search=Maasai+Mara">Maasai Mara</a>
+                <a href="/tours.html?search=Amboseli">Amboseli</a>
+                <a href="/tours.html?search=Mombasa">Mombasa</a>
+                <a href="/tours.html?search=Mount+Kenya">Mount Kenya</a>
+                <a href="/tours.html?search=Lake+Nakuru">Lake Nakuru</a>
+                <a href="/tours.html?search=Tsavo">Tsavo</a>
+                <a href="/tours.html?search=Diani">Diani Beach</a>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="/tours.html">All Tours</a>
+                <a href="/hotels.html">Hotels &amp; Lodges</a>
+                <a href="/flights.html">Flight Requests</a>
+                <a href="/booking.html">My Bookings</a>
+                <a href="/blog.html">Travel Blog</a>
+                <a href="/">Home</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact &amp; Support</h4>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> Nairobi, Kenya</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 700 000 000</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> info@kaburaadventures.com</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-clock"></i></span> Mon-Sat: 8AM-6PM EAT</div>
+                <h4 style="margin-top:1.5rem;font-size:0.8rem;">24/7 Support</h4>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 711 000 000</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-copy">&copy; 2026 Kabura Ventures. All rights reserved.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        let currentPage = 1;
+        let totalTours = 0;
+        let currentTours = [];
+        let wishlistMap = {};
+
+        const filterSearch = document.getElementById('filter-search');
+        const filterActivity = document.getElementById('filter-activity');
+        const filterLocation = document.getElementById('filter-location');
+        const filterMinPrice = document.getElementById('filter-min-price');
+        const filterMaxPrice = document.getElementById('filter-max-price');
+        const filterMinDuration = document.getElementById('filter-min-duration');
+        const filterMaxDuration = document.getElementById('filter-max-duration');
+        const urlParams = new URLSearchParams(window.location.search);
+
+        function getFilters() {
+            return {
+                search: filterSearch.value.trim(),
+                activity_type: filterActivity.value,
+                location: filterLocation.value.trim(),
+                min_price: filterMinPrice.value,
+                max_price: filterMaxPrice.value,
+                min_duration: filterMinDuration.value,
+                max_duration: filterMaxDuration.value
+            };
+        }
+
+        function setFiltersFromParams() {
+            if (urlParams.has('search')) filterSearch.value = urlParams.get('search');
+            if (urlParams.has('activity_type')) filterActivity.value = urlParams.get('activity_type');
+            if (urlParams.has('location')) filterLocation.value = urlParams.get('location');
+            if (urlParams.has('min_price')) filterMinPrice.value = urlParams.get('min_price');
+            if (urlParams.has('max_price')) filterMaxPrice.value = urlParams.get('max_price');
+            if (urlParams.has('min_duration')) filterMinDuration.value = urlParams.get('min_duration');
+            if (urlParams.has('max_duration')) filterMaxDuration.value = urlParams.get('max_duration');
+            if (urlParams.has('page')) currentPage = parseInt(urlParams.get('page')) || 1;
+        }
+
+        function buildQueryParams() {
+            const filters = getFilters();
+            const params = new URLSearchParams();
+            Object.entries(filters).forEach(([k, v]) => { if (v) params.set(k, v); });
+            params.set('page', currentPage);
+            params.set('per_page', 12);
+            return params;
+        }
+
+        function updateURL() {
+            const params = buildQueryParams();
+            const qs = params.toString();
+            const newUrl = window.location.pathname + (qs ? '?' + qs : '');
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        async function loadActivityTypes() {
+            try {
+                const result = await api.get('/tours/activity-types');
+                const types = Array.isArray(result) ? result : (result.types || []);
+                types.forEach(type => {
+                    const opt = document.createElement('option');
+                    opt.value = type;
+                    opt.textContent = type;
+                    filterActivity.appendChild(opt);
+                });
+            } catch (err) {
+                console.error('Failed to load activity types:', err);
+            }
+        }
+
+        async function loadWishlist() {
+            if (!api.token) return;
+            try {
+                const result = await api.get('/wishlist');
+                const items = Array.isArray(result) ? result : (result.wishlist || []);
+                wishlistMap = {};
+                items.forEach(item => {
+                    if (item.tour_id) wishlistMap[item.tour_id] = item.id;
+                });
+                renderTours(currentTours);
+            } catch (err) {
+                console.error('Failed to load wishlist:', err);
+            }
+        }
+
+        async function toggleWishlist(tourId) {
+            if (!api.token) {
+                showToast('Please login to save tours', 'warning');
+                openModal('login-modal');
+                return;
+            }
+            try {
+                if (wishlistMap[tourId]) {
+                    await api.delete('/wishlist/' + wishlistMap[tourId]);
+                    delete wishlistMap[tourId];
+                } else {
+                    const res = await api.post('/wishlist', { tour_id: tourId });
+                    if (res.wishlist) wishlistMap[tourId] = res.wishlist.id;
+                }
+                renderTours(currentTours);
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function loadTours() {
+            const container = document.getElementById('tours-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            document.getElementById('filter-badges').innerHTML = '';
+            document.getElementById('results-count').textContent = '';
+
+            const params = buildQueryParams();
+            updateURL();
+
+            try {
+                const result = await api.getTours(Object.fromEntries(params));
+                currentTours = result.tours || [];
+                totalTours = result.total || currentTours.length;
+                const totalPages = result.pages || Math.ceil(totalTours / 12);
+                renderFilterBadges();
+                renderResultsCount(currentTours.length, totalTours);
+                renderTours(currentTours);
+                renderPagination(currentPage, totalPages);
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><h3>Could not load tours</h3><p>Please try again later.</p></div>';
+            }
+        }
+
+        function renderStars(rating, count) {
+            const r = Math.round(rating || 0);
+            const stars = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(r) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - r);
+            return count !== undefined ? stars + ' (' + count + ')' : stars;
+        }
+
+        function renderTours(tours) {
+            const container = document.getElementById('tours-list');
+
+            if (tours.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><h3>No tours match your filters</h3><p>Try adjusting your search criteria.</p><button class="btn btn-primary" onclick="resetFilters()" style="margin-top:1rem;">Reset Filters</button></div>';
+                return;
+            }
+
+            const tourEffects = ['fade-up', 'fade-up-right', 'zoom-in', 'fade-up-left', 'zoom-in-up'];
+            container.innerHTML = tours.map((tour, index) => {
+                const img = tour.images && tour.images.length > 0
+                    ? tour.images.find(i => i.is_primary) || tour.images[0]
+                    : null;
+                const imgUrl = img ? img.image_url : '/assets/images/placeholder.svg';
+                const isSaved = !!wishlistMap[tour.id];
+                const rating = tour.avg_rating || 0;
+                const reviewCount = tour.reviews_count || 0;
+                const effect = tourEffects[index % tourEffects.length];
+                const delay = (index % 3) * 80;
+
+                return '<div class="card" data-aos="' + effect + '" data-aos-delay="' + delay + '" style="position:relative;">'
+                    + (api.token
+                        ? '<button onclick="event.stopPropagation();toggleWishlist(\'' + tour.id + '\')" style="position:absolute;top:0.75rem;right:0.75rem;z-index:2;background:white;border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:1.3rem;transition:transform 0.2s;" title="' + (isSaved ? 'Remove from wishlist' : 'Add to wishlist') + '">'
+                            + (isSaved ? '<span style="color:#E53935;"><i class="fas fa-heart"></i></span>' : '<span style="color:#999;"><i class="far fa-heart"></i></span>')
+                        + '</button>'
+                        : '')
+                    + '<a href="/tour-detail.html?id=' + tour.id + '" style="text-decoration:none;color:inherit;display:block;">'
+                        + '<img src="' + imgUrl + '" alt="' + tour.title.replace(/"/g, '&quot;') + '" class="card-image" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
+                        + '<div class="card-body">'
+                            + '<h3 class="card-title">' + tour.title + '</h3>'
+                            + '<p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.25rem;"><i class="fas fa-map-marker-alt"></i> ' + (tour.location || 'Kenya') + '</p>'
+                            + (rating > 0 ? '<p class="stars" style="margin-bottom:0.5rem;font-size:0.9rem;">' + renderStars(rating, reviewCount) + '</p>' : '')
+                            + '<p class="card-text">' + (tour.description ? tour.description.substring(0, 100) + '...' : '') + '</p>'
+                            + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+                                + '<span class="card-price"><span class="price-amount" data-kes="' + tour.price + '">' + window.formatPrice(tour.price) + '</span></span>'
+                                + '<span style="color:var(--text-secondary);font-size:0.85rem;">' + tour.duration_days + ' days</span>'
+                            + '</div>'
+                            + '<button class="btn btn-primary btn-sm" style="width:100%;margin-top:1rem;" onclick="event.stopPropagation();window.location=\'/tour-detail.html?id=' + tour.id + '\'">View Details</button>'
+                        + '</div>'
+                    + '</a>'
+                + '</div>';
+            }).join('');
+
+            if (window.AOS) {
+                AOS.refresh();
+            } else {
+                setupScrollReveal();
+            }
+        }
+
+        function renderFilterBadges() {
+            const container = document.getElementById('filter-badges');
+            const filters = getFilters();
+            const badges = [];
+
+            if (filters.search) badges.push({ key: 'search', label: '"' + filters.search + '"' });
+            if (filters.activity_type) badges.push({ key: 'activity', label: filters.activity_type });
+            if (filters.location) badges.push({ key: 'location', label: filters.location });
+            if (filters.min_price) badges.push({ key: 'min-price', label: 'Min KSh ' + Number(filters.min_price).toLocaleString() });
+            if (filters.max_price) badges.push({ key: 'max-price', label: 'Max KSh ' + Number(filters.max_price).toLocaleString() });
+            if (filters.min_duration) badges.push({ key: 'min-duration', label: 'Min ' + filters.min_duration + ' days' });
+            if (filters.max_duration) badges.push({ key: 'max-duration', label: 'Max ' + filters.max_duration + ' days' });
+
+            if (badges.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = badges.map(b =>
+                '<span class="badge badge-secondary" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;" onclick="removeFilter(\'' + b.key + '\')">'
+                + b.label + ' <span style="font-size:1.1rem;line-height:1;">&times;</span>'
+                + '</span>'
+            ).join('')
+            + '<button class="btn btn-sm" style="background:none;border:none;color:var(--primary-green);font-weight:600;cursor:pointer;padding:0.25rem 0.5rem;font-size:0.8rem;" onclick="resetFilters()">Clear all</button>';
+        }
+
+        function removeFilter(key) {
+            const map = {
+                'search': filterSearch,
+                'activity': filterActivity,
+                'location': filterLocation,
+                'min-price': filterMinPrice,
+                'max-price': filterMaxPrice,
+                'min-duration': filterMinDuration,
+                'max-duration': filterMaxDuration
+            };
+            const el = map[key];
+            if (el) el.value = '';
+            currentPage = 1;
+            loadTours();
+        }
+
+        function resetFilters() {
+            filterSearch.value = '';
+            filterActivity.value = '';
+            filterLocation.value = '';
+            filterMinPrice.value = '';
+            filterMaxPrice.value = '';
+            filterMinDuration.value = '';
+            filterMaxDuration.value = '';
+            currentPage = 1;
+            loadTours();
+        }
+
+        function renderResultsCount(showing, total) {
+            document.getElementById('results-count').textContent = 'Showing ' + showing + ' of ' + total + ' tours';
+        }
+
+        function renderPagination(page, totalPages) {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            html += '<button class="btn btn-sm btn-secondary" onclick="goToPage(' + (page - 1) + ')"' + (page <= 1 ? ' disabled' : '') + '>Prev</button>';
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === page) {
+                    html += '<span class="btn btn-sm btn-primary" style="cursor:default;">' + i + '</span>';
+                } else {
+                    html += '<button class="btn btn-sm btn-secondary" onclick="goToPage(' + i + ')">' + i + '</button>';
+                }
+            }
+
+            html += '<button class="btn btn-sm btn-secondary" onclick="goToPage(' + (page + 1) + ')"' + (page >= totalPages ? ' disabled' : '') + '>Next</button>';
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadTours();
+        }
+
+        function onFilterChange() {
+            currentPage = 1;
+            loadTours();
+        }
+
+        function debounce(fn, ms) {
+            let timer;
+            return function () {
+                clearTimeout(timer);
+                timer = setTimeout(fn, ms);
+            };
+        }
+
+        const debouncedFilter = debounce(onFilterChange, 400);
+
+        filterSearch.addEventListener('input', debouncedFilter);
+        filterActivity.addEventListener('change', onFilterChange);
+        filterLocation.addEventListener('input', debouncedFilter);
+        filterMinPrice.addEventListener('input', debouncedFilter);
+        filterMaxPrice.addEventListener('input', debouncedFilter);
+        filterMinDuration.addEventListener('input', debouncedFilter);
+        filterMaxDuration.addEventListener('input', debouncedFilter);
+        document.getElementById('clear-filters').addEventListener('click', resetFilters);
+
+        function showTourDetails(tourId) {
+            window.location.href = '/tour-detail.html?id=' + tourId;
+        }
+
+        function bookTour(tourId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showToast('Please login to book a tour', 'warning');
+                openModal('login-modal');
+                return;
+            }
+            window.location.href = '/booking.html?tour=' + tourId;
+        }
+
+        setFiltersFromParams();
+        loadActivityTypes().then(function () {
+            setFiltersFromParams();
+            return loadTours();
+        }).then(function () {
+            var idParam = urlParams.get('id');
+            if (idParam) {
+                var check = setInterval(function () {
+                    if (currentTours.find(function (t) { return t.id === idParam; })) {
+                        clearInterval(check);
+                        setTimeout(function () { showTourDetails(idParam); }, 300);
+                    }
+                }, 200);
+                setTimeout(function () { clearInterval(check); }, 10000);
+            }
+        });
+        if (api.token) loadWishlist();
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Secrets and credentials
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+*.jks
+credentials.json
+*.cred
+secrets.yml
+secrets.yaml
+
+# Config files with potential secrets
+*.config.js
+*.config.ts
+*.config.json
+config.local.*
+application-local.yml
+application-local.yaml
+application-secret.yml
+application-secret.yaml
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+vendor/
+.bundle/
+
+# Build outputs
+dist/
+build/
+out/
+target/
+*.pyc
+__pycache__/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Docker
+docker-compose.override.yml
+
+# NuGet
+*.nupkg
+packages/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+.terraform/
+
+# SSH
+.ssh/
+known_hosts
+
+# Token files
+*.token
+*.refresh_token
+service-account.json
+service-account-key.json
+
+# Flask instance folder
+instance/
+backend/instance/
+
+# Windows reserved names / artifacts
+nul

@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Kabura Ventures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .admin-page .navbar { display: none; }
+        .admin-page .footer { display: none; }
+        .admin-layout { min-height: 100vh; }
+        .admin-sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
+        .admin-content { margin-left: 260px; }
+        @media (max-width: 768px) {
+            .admin-sidebar { width: 200px; transform: translateX(-100%); transition: transform 0.3s; }
+            .admin-sidebar.open { transform: translateX(0); }
+            .admin-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="admin-sidebar">
+            <div style="padding:1.5rem;border-bottom:1px solid #333;margin-bottom:1rem;">
+                <h3 style="color:var(--accent-gold);">Kabura Admin</h3>
+                <p style="color:#757575;font-size:0.8rem;">Management Dashboard</p>
+            </div>
+            <div class="nav-item active" data-section="dashboard"><i class="fas fa-chart-bar" style="width:1.5rem;"></i> Dashboard</div>
+            <div class="nav-item" data-section="tours"><i class="fas fa-mountain" style="width:1.5rem;"></i> Tours</div>
+            <div class="nav-item" data-section="hotels"><i class="fas fa-hotel" style="width:1.5rem;"></i> Hotels</div>
+            <div class="nav-item" data-section="bookings"><i class="fas fa-clipboard-list" style="width:1.5rem;"></i> Bookings</div>
+            <div class="nav-item" data-section="flights"><i class="fas fa-plane" style="width:1.5rem;"></i> Flight Requests</div>
+            <div class="nav-item" data-section="messages"><i class="fas fa-envelope" style="width:1.5rem;"></i> Messages</div>
+            <div class="nav-item" data-section="blogs"><i class="fas fa-edit" style="width:1.5rem;"></i> Blog</div>
+            <div class="nav-item" data-section="memories"><i class="fas fa-camera" style="width:1.5rem;"></i> Memories</div>
+            <div class="nav-item" data-section="payments"><i class="fas fa-money-bill-wave" style="width:1.5rem;"></i> Payments</div>
+            <div class="nav-item" data-section="media"><i class="fas fa-video" style="width:1.5rem;"></i> Media</div>
+            <div style="border-top:1px solid #333;margin-top:1rem;padding-top:1rem;">
+                <div class="nav-item" onclick="window.location.href='/'" style="color:#757575;"><i class="fas fa-arrow-left" style="width:1.5rem;"></i> Back to Site</div>
+                <div class="nav-item" onclick="api.logout()" style="color:#ef5350;"><i class="fas fa-sign-out-alt" style="width:1.5rem;"></i> Logout</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content" id="admin-content">
+
+            <!-- Dashboard -->
+            <div class="admin-section" id="section-dashboard">
+                <h2 style="margin-bottom:2rem;">Dashboard Overview</h2>
+                <div class="stats-grid" id="dashboard-stats"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Recent Bookings</h3>
+                        <div id="recent-bookings"></div>
+                    </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Recent Messages</h3>
+                        <div id="recent-messages"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tours Management -->
+            <div class="admin-section" id="section-tours" style="display:none;">
+                <div class="action-bar">
+                    <h2>Tours Management</h2>
+                    <button class="btn btn-primary" onclick="openTourForm()">+ Add Tour</button>
+                </div>
+                <div id="admin-tours-list"></div>
+
+                <!-- Tour Form Modal -->
+                <div class="modal-overlay" id="tour-form-modal">
+                    <div class="modal" style="max-width:600px;">
+                        <div class="modal-header">
+                            <h2 id="tour-form-title">Add Tour</h2>
+                            <button class="modal-close" onclick="closeModal('tour-form-modal')">&times;</button>
+                        </div>
+                        <form id="tour-form" enctype="multipart/form-data">
+                            <input type="hidden" id="tour-form-id">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-input" id="tf-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="tf-description" rows="4"></textarea>
+                            </div>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Price (KSh)</label>
+                                    <input type="number" class="form-input" id="tf-price" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Duration (Days)</label>
+                                    <input type="number" class="form-input" id="tf-duration" required>
+                                </div>
+                            </div>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-input" id="tf-location">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Max People</label>
+                                    <input type="number" class="form-input" id="tf-max-people" value="20">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="tf-featured"> Featured Tour
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tour Images</label>
+                                <input type="file" class="form-input" id="tf-images" accept="image/*" multiple>
+                                <div class="image-gallery" id="tf-image-gallery" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Save Tour</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotels Management -->
+            <div class="admin-section" id="section-hotels" style="display:none;">
+                <div class="action-bar">
+                    <h2>Hotels Management</h2>
+                    <button class="btn btn-primary" onclick="openHotelForm()">+ Add Hotel</button>
+                </div>
+                <div id="admin-hotels-list"></div>
+
+                <div class="modal-overlay" id="hotel-form-modal">
+                    <div class="modal" style="max-width:600px;">
+                        <div class="modal-header">
+                            <h2 id="hotel-form-title">Add Hotel</h2>
+                            <button class="modal-close" onclick="closeModal('hotel-form-modal')">&times;</button>
+                        </div>
+                        <form id="hotel-form" enctype="multipart/form-data">
+                            <input type="hidden" id="hf-id">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-input" id="hf-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="hf-description" rows="4"></textarea>
+                            </div>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Price per Night (KSh)</label>
+                                    <input type="number" class="form-input" id="hf-price" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Rating (0-5)</label>
+                                    <input type="number" class="form-input" id="hf-rating" min="0" max="5" step="0.1" value="4">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-input" id="hf-location">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Amenities (comma separated)</label>
+                                <input type="text" class="form-input" id="hf-amenities" placeholder="Pool,Restaurant,Free WiFi">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Images</label>
+                                <input type="file" class="form-input" id="hf-images" accept="image/*" multiple>
+                                <div class="image-gallery" id="hf-image-gallery" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Save Hotel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Management -->
+            <div class="admin-section" id="section-bookings" style="display:none;">
+                <div class="action-bar">
+                    <h2>All Bookings</h2>
+                    <div>
+                        <select class="form-select" id="bookings-filter" style="width:auto;">
+                            <option value="">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                            <option value="no_show">No Show</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="admin-bookings-list"></div>
+            </div>
+
+            <!-- Flight Requests -->
+            <div class="admin-section" id="section-flights" style="display:none;">
+                <div class="action-bar">
+                    <h2>Flight Requests</h2>
+                    <select class="form-select" id="flights-filter" style="width:auto;">
+                        <option value="">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="quoted">Quoted</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="booked">Booked</option>
+                    </select>
+                </div>
+                <div id="admin-flights-list"></div>
+
+                <div class="modal-overlay" id="flight-response-modal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h2>Respond to Flight Request</h2>
+                            <button class="modal-close" onclick="closeModal('flight-response-modal')">&times;</button>
+                        </div>
+                        <form id="flight-response-form">
+                            <input type="hidden" id="fr-id">
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="fr-status">
+                                    <option value="quoted">Provide Quote</option>
+                                    <option value="approved">Approve</option>
+                                    <option value="rejected">Reject</option>
+                                    <option value="booked">Mark Booked</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Price Quote (KSh)</label>
+                                <input type="number" class="form-input" id="fr-price">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Admin Notes</label>
+                                <textarea class="form-textarea" id="fr-notes" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Update Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="admin-section" id="section-messages" style="display:none;">
+                <div class="action-bar">
+                    <h2>Contact Messages</h2>
+                    <select class="form-select" id="messages-filter" style="width:auto;">
+                        <option value="">All</option>
+                        <option value="false">Unread</option>
+                        <option value="true">Read</option>
+                    </select>
+                </div>
+                <div id="admin-messages-list"></div>
+
+                <div class="modal-overlay" id="message-reply-modal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h2>Reply to Message</h2>
+                            <button class="modal-close" onclick="closeModal('message-reply-modal')">&times;</button>
+                        </div>
+                        <div id="message-detail" style="margin-bottom:1rem;padding:1rem;background:#F5F5F5;border-radius:8px;"></div>
+                        <form id="message-reply-form">
+                            <input type="hidden" id="reply-message-id">
+                            <div class="form-group">
+                                <label class="form-label">Your Reply</label>
+                                <textarea class="form-textarea" id="reply-text" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Send Reply</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Management -->
+            <div class="admin-section" id="section-blogs" style="display:none;">
+                <div class="action-bar">
+                    <h2>Blog Posts</h2>
+                    <button class="btn btn-primary btn-sm" onclick="showBlogForm()">+ New Post</button>
+                </div>
+                <div id="admin-blogs-list"></div>
+
+                <!-- Blog Form Modal -->
+                <div class="modal-overlay" id="blog-modal">
+                    <div class="modal" style="max-width:700px;">
+                        <div class="modal-header">
+                            <h2 id="blog-modal-title">New Blog Post</h2>
+                            <button class="modal-close" onclick="closeModal('blog-modal')">&times;</button>
+                        </div>
+                        <form id="blog-form">
+                            <input type="hidden" id="blog-id">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-input" id="blog-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <input type="text" class="form-input" id="blog-category" placeholder="e.g. safari-guides, destinations, trekking">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Excerpt</label>
+                                <textarea class="form-textarea" id="blog-excerpt" rows="2" maxlength="500"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Content (HTML)</label>
+                                <textarea class="form-textarea" id="blog-content" rows="10" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Image URL</label>
+                                <input type="url" class="form-input" id="blog-image" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tags (comma-separated)</label>
+                                <input type="text" class="form-input" id="blog-tags" placeholder="safari, wildlife, kenya">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Author</label>
+                                <input type="text" class="form-input" id="blog-author" placeholder="Kabura Ventures">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="blog-published" checked>
+                                    Published
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Save Post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memories Moderation -->
+            <div class="admin-section" id="section-memories" style="display:none;">
+                <div class="action-bar">
+                    <h2>User Memories</h2>
+                    <select class="form-select" id="memories-filter" style="width:auto;">
+                        <option value="all">All</option>
+                        <option value="pending">Pending Review</option>
+                        <option value="approved">Approved</option>
+                    </select>
+                </div>
+                <div id="admin-memories-list"></div>
+            </div>
+
+            <!-- Payments -->
+            <div class="admin-section" id="section-payments" style="display:none;">
+                <h2>Payment Records</h2>
+                <div id="admin-payments-list"></div>
+            </div>
+
+            <!-- Media Management -->
+            <div class="admin-section" id="section-media" style="display:none;">
+                <div class="action-bar">
+                    <h2>Hero Videos</h2>
+                    <form id="video-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
+                        <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg" style="max-width:250px;" required>
+                        <button type="submit" class="btn btn-primary btn-sm">Upload Video</button>
+                    </form>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Uploaded videos appear on the homepage hero. Max 3 recommended. Supported: mp4, webm, ogg.</p>
+                <div id="admin-media-list"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        // Admin check on load
+        async function checkAdmin() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = '/'; return; }
+            try {
+                const profile = await api.getProfile();
+                if (profile.user.role !== 'admin') { window.location.href = '/'; return; }
+            } catch { window.location.href = '/'; }
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.admin-sidebar .nav-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.admin-sidebar .nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+                document.getElementById(`section-${item.dataset.section}`).style.display = 'block';
+                loadSection(item.dataset.section);
+
+                // Close sidebar on mobile
+                document.getElementById('admin-sidebar').classList.remove('open');
+            });
+        });
+
+        function loadSection(section) {
+            switch(section) {
+                case 'dashboard': loadDashboard(); break;
+                case 'tours': loadAdminTours(); break;
+                case 'hotels': loadAdminHotels(); break;
+                case 'bookings': loadAdminBookings(); break;
+                case 'flights': loadAdminFlights(); break;
+                case 'messages': loadAdminMessages(); break;
+                case 'blogs': loadAdminBlogs(); break;
+                case 'memories': loadAdminMemories(); break;
+                case 'payments': loadAdminPayments(); break;
+                case 'media': loadAdminMedia(); break;
+            }
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            try {
+                const [bookingsRes, flightsRes, messagesRes, toursRes] = await Promise.all([
+                    api.getAllBookings({ per_page: 5 }),
+                    api.getAllFlightRequests({ per_page: 5 }),
+                    api.getMessages({ is_read: 'false' }),
+                    api.getTours({ per_page: 1 })
+                ]);
+
+                document.getElementById('dashboard-stats').innerHTML = `
+                    <div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${bookingsRes.total}</div></div>
+                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent-gold);">${bookingsRes.bookings.filter(b => b.status === 'pending').length}</div></div>
+                    <div class="stat-card"><h3>Flight Requests</h3><div class="stat-value">${flightsRes.total}</div></div>
+                    <div class="stat-card"><h3>Unread Messages</h3><div class="stat-value" style="color:#D32F2F;">${messagesRes.total}</div></div>
+                `;
+
+                document.getElementById('recent-bookings').innerHTML = bookingsRes.bookings.length === 0
+                    ? '<p style="color:var(--text-secondary);">No bookings yet</p>'
+                    : '<div class="table-container">' + bookingsRes.bookings.map(b => `
+                        <div style="padding:0.75rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                            <div><strong>${b.booking_type}</strong><br><small style="color:var(--text-secondary);">${b.travel_date}</small></div>
+                            <span class="badge ${b.status === 'pending' ? 'badge-warning' : b.status === 'confirmed' ? 'badge-success' : 'badge-secondary'}">${b.status}</span>
+                        </div>
+                    `).join('') + '</div>';
+
+                document.getElementById('recent-messages').innerHTML = messagesRes.messages.length === 0
+                    ? '<p style="color:var(--text-secondary);">No unread messages</p>'
+                    : messagesRes.messages.slice(0, 5).map(m => `
+                        <div style="padding:0.75rem;border-bottom:1px solid var(--border-color);">
+                            <strong>${m.name}</strong><br>
+                            <small style="color:var(--text-secondary);">${m.subject || 'No subject'}</small>
+                        </div>
+                    `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        // Tours
+        async function loadAdminTours() {
+            const container = document.getElementById('admin-tours-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const result = await api.getTours({ per_page: 100 });
+                const tours = result.tours;
+                container.innerHTML = tours.length === 0
+                    ? '<div class="empty-state"><h3>No tours created yet</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Title</th><th>Price</th><th>Duration</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
+                    tours.map(t => `
+                        <tr>
+                            <td><strong>${t.title}</strong></td>
+                            <td>KSh ${Number(t.price).toLocaleString()}</td>
+                            <td>${t.duration_days} days</td>
+                            <td>${t.location || '-'}</td>
+                            <td><span class="badge ${t.available ? 'badge-success' : 'badge-danger'}">${t.available ? 'Active' : 'Inactive'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')">Edit</button>
+                                <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')" style="background:var(--accent-gold);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTour('${t.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load tours</h3></div>'; }
+        }
+
+        function openTourForm(data = null) {
+            document.getElementById('tour-form-id').value = data ? data.id : '';
+            document.getElementById('tf-title').value = data ? data.title : '';
+            document.getElementById('tf-description').value = data ? data.description : '';
+            document.getElementById('tf-price').value = data ? data.price : '';
+            document.getElementById('tf-duration').value = data ? data.duration_days : '';
+            document.getElementById('tf-location').value = data ? data.location : '';
+            document.getElementById('tf-max-people').value = data ? data.max_people : 20;
+            document.getElementById('tf-featured').checked = data ? data.featured : false;
+            document.getElementById('tour-form-title').textContent = data ? 'Edit Tour' : 'Add Tour';
+            renderImageGallery('tf-image-gallery', data ? data.images || [] : [], 'tour');
+            openModal('tour-form-modal');
+        }
+
+        function editTour(id) {
+            api.getTour(id).then(r => openTourForm(r.tour)).catch(e => showToast(e.message, 'error'));
+        }
+
+        async function deleteTour(id) {
+            if (!confirm('Are you sure you want to delete this tour?')) return;
+            try { await api.deleteTour(id); showToast('Tour deleted', 'success'); loadAdminTours(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('tour-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Saving...';
+
+            const id = document.getElementById('tour-form-id').value;
+            const data = new FormData();
+            data.append('title', document.getElementById('tf-title').value);
+            data.append('description', document.getElementById('tf-description').value);
+            data.append('price', document.getElementById('tf-price').value);
+            data.append('duration_days', document.getElementById('tf-duration').value);
+            data.append('location', document.getElementById('tf-location').value);
+            data.append('max_people', document.getElementById('tf-max-people').value);
+            data.append('featured', document.getElementById('tf-featured').checked ? 'true' : 'false');
+
+            const files = document.getElementById('tf-images').files;
+            for (let i = 0; i < files.length; i++) data.append('images', files[i]);
+
+            try {
+                if (id) { await api.updateTour(id, data); showToast('Tour updated!', 'success'); }
+                else { await api.createTour(data); showToast('Tour created!', 'success'); }
+                closeModal('tour-form-modal');
+                e.target.reset();
+                loadAdminTours();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = 'Save Tour'; }
+        });
+
+        // Hotels
+        async function loadAdminHotels() {
+            const container = document.getElementById('admin-hotels-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const result = await api.getHotels({ per_page: 100 });
+                const hotels = result.hotels;
+                container.innerHTML = hotels.length === 0
+                    ? '<div class="empty-state"><h3>No hotels added yet</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Name</th><th>Location</th><th>Price/Night</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
+                    hotels.map(h => `
+                        <tr>
+                            <td><strong>${h.name}</strong></td>
+                            <td>${h.location || '-'}</td>
+                            <td>KSh ${Number(h.price_per_night).toLocaleString()}</td>
+                            <td>${'<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(Math.round(h.rating))}</td>
+                            <td><span class="badge ${h.available ? 'badge-success' : 'badge-danger'}">${h.available ? 'Active' : 'Inactive'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')">Edit</button>
+                                <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')" style="background:var(--accent-gold);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load hotels</h3></div>'; }
+        }
+
+        function openHotelForm(data = null) {
+            document.getElementById('hf-id').value = data ? data.id : '';
+            document.getElementById('hf-name').value = data ? data.name : '';
+            document.getElementById('hf-description').value = data ? data.description : '';
+            document.getElementById('hf-price').value = data ? data.price_per_night : '';
+            document.getElementById('hf-rating').value = data ? data.rating : 4;
+            document.getElementById('hf-location').value = data ? data.location : '';
+            document.getElementById('hf-amenities').value = data ? (Array.isArray(data.amenities) ? data.amenities.join(', ') : data.amenities) : '';
+            document.getElementById('hotel-form-title').textContent = data ? 'Edit Hotel' : 'Add Hotel';
+            renderImageGallery('hf-image-gallery', data ? data.images || [] : [], 'hotel');
+            openModal('hotel-form-modal');
+        }
+
+        function editHotel(id) {
+            api.getHotel(id).then(r => openHotelForm(r.hotel)).catch(e => showToast(e.message, 'error'));
+        }
+
+        async function deleteHotel(id) {
+            if (!confirm('Delete this hotel?')) return;
+            try { await api.deleteHotel(id); showToast('Hotel deleted', 'success'); loadAdminHotels(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('hotel-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Saving...';
+
+            const id = document.getElementById('hf-id').value;
+            const data = new FormData();
+            data.append('name', document.getElementById('hf-name').value);
+            data.append('description', document.getElementById('hf-description').value);
+            data.append('price_per_night', document.getElementById('hf-price').value);
+            data.append('rating', document.getElementById('hf-rating').value);
+            data.append('location', document.getElementById('hf-location').value);
+            data.append('amenities', document.getElementById('hf-amenities').value);
+
+            const files = document.getElementById('hf-images').files;
+            for (let i = 0; i < files.length; i++) data.append('images', files[i]);
+
+            try {
+                if (id) { await api.updateHotel(id, data); showToast('Hotel updated!', 'success'); }
+                else { await api.createHotel(data); showToast('Hotel created!', 'success'); }
+                closeModal('hotel-form-modal');
+                e.target.reset();
+                loadAdminHotels();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = 'Save Hotel'; }
+        });
+
+        // Bookings
+        async function loadAdminBookings() {
+            const container = document.getElementById('admin-bookings-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            const filter = document.getElementById('bookings-filter').value;
+            try {
+                const params = { per_page: 100 };
+                if (filter) params.status = filter;
+                const result = await api.getAllBookings(params);
+                const bookings = result.bookings;
+                container.innerHTML = bookings.length === 0
+                    ? '<div class="empty-state"><h3>No bookings found</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Customer</th><th>Type</th><th>Details</th><th>Date</th><th>Status</th><th>Payment</th><th>Actions</th></tr></thead><tbody>' +
+                    bookings.map(b => `
+                        <tr>
+                            <td>${b.user ? b.user.name : 'Unknown'}</td>
+                            <td><span class="badge badge-info">${b.booking_type}</span></td>
+                            <td>${b.tour ? b.tour.title : b.hotel ? b.hotel.name : '-'}</td>
+                            <td>${b.travel_date}</td>
+                            <td>
+                                <select class="form-select" style="width:auto;padding:0.3rem 0.5rem;font-size:0.85rem;" onchange="updateBookingStatus('${b.id}', this.value)">
+                                    <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirm</option>
+                                    <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
+                                    <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Complete</option>
+                                    <option value="no_show" ${b.status === 'no_show' ? 'selected' : ''}>No Show</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-select" style="width:auto;padding:0.3rem 0.5rem;font-size:0.85rem;" onchange="updatePaymentStatus('${b.id}', this.value)">
+                                    <option value="unpaid" ${b.payment_status === 'unpaid' ? 'selected' : ''}>Unpaid</option>
+                                    <option value="deposit_paid" ${b.payment_status === 'deposit_paid' ? 'selected' : ''}>Deposit</option>
+                                    <option value="fully_paid" ${b.payment_status === 'fully_paid' ? 'selected' : ''}>Full</option>
+                                    <option value="refunded" ${b.payment_status === 'refunded' ? 'selected' : ''}>Refunded</option>
+                                </select>
+                            </td>
+                            <td><button class="btn btn-sm btn-danger" onclick="deleteBooking('${b.id}')">Delete</button></td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load bookings</h3></div>'; }
+        }
+
+        async function updateBookingStatus(id, status) {
+            try { await api.updateBookingStatus(id, { status }); showToast('Booking status updated', 'success'); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function updatePaymentStatus(id, payment_status) {
+            try { await api.updateBookingStatus(id, { payment_status }); showToast('Payment status updated', 'success'); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function deleteBooking(id) {
+            if (!confirm('Delete this booking?')) return;
+            try { await api.updateBookingStatus(id, { status: 'cancelled' }); showToast('Booking cancelled', 'success'); loadAdminBookings(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('bookings-filter')?.addEventListener('change', loadAdminBookings);
+
+        // Flights
+        async function loadAdminFlights() {
+            const container = document.getElementById('admin-flights-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            const filter = document.getElementById('flights-filter').value;
+            try {
+                const params = { per_page: 100 };
+                if (filter) params.status = filter;
+                const result = await api.getAllFlightRequests(params);
+                const requests = result.flight_requests;
+                container.innerHTML = requests.length === 0
+                    ? '<div class="empty-state"><h3>No flight requests</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Customer</th><th>Route</th><th>Date</th><th>Passengers</th><th>Status</th><th>Quote</th><th>Actions</th></tr></thead><tbody>' +
+                    requests.map(r => `
+                        <tr>
+                            <td>${r.user ? r.user.name : 'Unknown'}</td>
+                            <td>${r.from_location} &rarr; ${r.to_location}</td>
+                            <td>${r.departure_date}</td>
+                            <td>${r.passengers}</td>
+                            <td><span class="badge ${r.status === 'pending' ? 'badge-warning' : r.status === 'quoted' ? 'badge-info' : r.status === 'approved' ? 'badge-success' : r.status === 'rejected' ? 'badge-danger' : 'badge-secondary'}">${r.status}</span></td>
+                            <td>${r.price_quote ? 'KSh ' + Number(r.price_quote).toLocaleString() : '-'}</td>
+                            <td><button class="btn btn-sm btn-primary" onclick="openFlightResponse('${r.id}')">Respond</button></td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load flights</h3></div>'; }
+        }
+
+        function openFlightResponse(id) {
+            document.getElementById('fr-id').value = id;
+            document.getElementById('fr-status').value = 'quoted';
+            document.getElementById('fr-price').value = '';
+            document.getElementById('fr-notes').value = '';
+            openModal('flight-response-modal');
+        }
+
+        document.getElementById('flight-response-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Updating...';
+            try {
+                await api.updateFlightRequest(document.getElementById('fr-id').value, {
+                    status: document.getElementById('fr-status').value,
+                    price_quote: document.getElementById('fr-price').value || null,
+                    admin_notes: document.getElementById('fr-notes').value
+                });
+                showToast('Flight request updated!', 'success');
+                closeModal('flight-response-modal');
+                loadAdminFlights();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = 'Update Request'; }
+        });
+
+        document.getElementById('flights-filter')?.addEventListener('change', loadAdminFlights);
+
+        // Messages
+        async function loadAdminMessages() {
+            const container = document.getElementById('admin-messages-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            const filter = document.getElementById('messages-filter').value;
+            try {
+                const params = { per_page: 100 };
+                if (filter !== '') params.is_read = filter;
+                const result = await api.getMessages(params);
+                const messages = result.messages;
+                container.innerHTML = messages.length === 0
+                    ? '<div class="empty-state"><h3>No messages</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
+                    messages.map(m => `
+                        <tr style="${!m.is_read ? 'font-weight:600;' : ''}">
+                            <td>${m.name}</td>
+                            <td>${m.email}</td>
+                            <td>${m.subject || '-'}</td>
+                            <td>${new Date(m.created_at).toLocaleDateString()}</td>
+                            <td><span class="badge ${m.is_read ? 'badge-secondary' : 'badge-warning'}">${m.is_read ? 'Read' : 'New'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary" onclick="openMessageReply('${m.id}')">View/Reply</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteAdminMessage('${m.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load messages</h3></div>'; }
+        }
+
+        async function openMessageReply(id) {
+            try {
+                const result = await api.getMessages({ per_page: 1 });
+                const allResult = await api.getMessages({ per_page: 100 });
+                const msg = allResult.messages.find(m => m.id === id);
+                if (!msg) return;
+
+                document.getElementById('reply-message-id').value = id;
+                document.getElementById('message-detail').innerHTML = `
+                    <p><strong>From:</strong> ${msg.name} (${msg.email})</p>
+                    <p><strong>Subject:</strong> ${msg.subject || 'No subject'}</p>
+                    <p><strong>Message:</strong></p>
+                    <p style="background:white;padding:1rem;border-radius:8px;margin-top:0.5rem;">${msg.message}</p>
+                    ${msg.admin_reply ? `<p style="margin-top:1rem;"><strong>Your Reply:</strong></p><p style="background:#E8F5E9;padding:1rem;border-radius:8px;margin-top:0.5rem;">${msg.admin_reply}</p>` : ''}
+                `;
+                document.getElementById('reply-text').value = '';
+                openModal('message-reply-modal');
+
+                // Mark as read
+                await api.markMessageRead(id);
+            } catch (err) { showToast(err.message, 'error'); }
+        }
+
+        document.getElementById('message-reply-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Sending...';
+            try {
+                await api.replyToMessage(document.getElementById('reply-message-id').value, {
+                    admin_reply: document.getElementById('reply-text').value
+                });
+                showToast('Reply sent!', 'success');
+                closeModal('message-reply-modal');
+                loadAdminMessages();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = 'Send Reply'; }
+        });
+
+        async function deleteAdminMessage(id) {
+            if (!confirm('Delete this message?')) return;
+            try { await api.deleteMessage(id); showToast('Message deleted', 'success'); loadAdminMessages(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('messages-filter')?.addEventListener('change', loadAdminMessages);
+
+        // Payments
+        async function loadAdminPayments() {
+            const container = document.getElementById('admin-payments-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const result = await api.getPayments();
+                const payments = result.payments;
+                container.innerHTML = payments.length === 0
+                    ? '<div class="empty-state"><h3>No payments recorded</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Type</th><th>Status</th><th>Ref</th><th>Date</th></tr></thead><tbody>' +
+                    payments.map(p => `
+                        <tr>
+                            <td>${p.user ? p.user.name : 'Unknown'}</td>
+                            <td><strong>KSh ${Number(p.amount).toLocaleString()}</strong></td>
+                            <td><span class="badge badge-info">${p.payment_method}</span></td>
+                            <td>${p.payment_type}</td>
+                            <td><span class="badge ${p.status === 'completed' ? 'badge-success' : p.status === 'pending' ? 'badge-warning' : 'badge-danger'}">${p.status}</span></td>
+                            <td>${p.transaction_ref || '-'}</td>
+                            <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load payments</h3></div>'; }
+        }
+
+        // === Media Management ===
+        async function loadAdminMedia() {
+            const container = document.getElementById('admin-media-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const result = await api.getHeroMedia();
+                const media = result.media;
+                container.innerHTML = media.length === 0
+                    ? '<div class="empty-state"><h3>No videos uploaded</h3><p style="color:var(--text-secondary);">Upload MP4 videos above. Name them hero-1.mp4, hero-2.mp4, hero-3.mp4 to match the homepage references.</p></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Preview</th><th>Filename</th><th>Order</th><th>Active</th><th>Actions</th></tr></thead><tbody>' +
+                    media.map((m, i) => `
+                        <tr>
+                            <td><video src="${m.file_url}" style="width:100px;height:60px;object-fit:cover;border-radius:4px;" muted></video></td>
+                            <td><strong>${m.filename}</strong></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary" onclick="moveMedia('${m.id}', ${i - 1})" ${i === 0 ? 'disabled' : ''}>&uarr;</button>
+                                ${i + 1}
+                                <button class="btn btn-sm btn-secondary" onclick="moveMedia('${m.id}', ${i + 1})" ${i === media.length - 1 ? 'disabled' : ''}>&darr;</button>
+                            </td>
+                            <td><span class="badge ${m.is_active ? 'badge-success' : 'badge-danger'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteMedia('${m.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><h3>Failed to load media</h3></div>';
+            }
+        }
+
+        async function moveMedia(id, newOrder) {
+            try {
+                const result = await api.getHeroMedia();
+                const order = result.media.map(m => m.id);
+                const idx = order.indexOf(id);
+                if (idx < 0) return;
+                order.splice(idx, 1);
+                order.splice(Math.max(0, Math.min(newOrder, order.length)), 0, id);
+                await api.reorderHeroMedia({ order });
+                loadAdminMedia();
+            } catch (err) { showToast(err.message, 'error'); }
+        }
+
+        async function deleteMedia(id) {
+            if (!confirm('Delete this video?')) return;
+            try { await api.deleteHeroMedia(id); showToast('Video deleted', 'success'); loadAdminMedia(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('video-upload-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Uploading...';
+            const formData = new FormData();
+            formData.append('file', document.getElementById('video-file').files[0]);
+            try {
+                await api.uploadHeroMedia(formData);
+                showToast('Video uploaded!', 'success');
+                e.target.reset();
+                loadAdminMedia();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = 'Upload Video'; }
+        });
+
+        // === Blog Management ===
+        async function loadAdminBlogs() {
+            const container = document.getElementById('admin-blogs-list');
+            try {
+                const result = await api.getAllBlogsAdmin({ per_page: 50 });
+                const blogs = result.blogs;
+                container.innerHTML = blogs.length === 0
+                    ? '<div class="empty-state"><h3>No blog posts yet</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>' +
+                      blogs.map(b => `
+                        <tr>
+                            <td><strong>${b.title}</strong></td>
+                            <td><span class="badge badge-info">${b.category || 'general'}</span></td>
+                            <td><span class="badge ${b.published ? 'badge-success' : 'badge-secondary'}">${b.published ? 'Published' : 'Draft'}</span></td>
+                            <td>${b.published_at ? new Date(b.published_at).toLocaleDateString() : '-'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="editBlog('${b.id}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteBlog('${b.id}')">Delete</button>
+                                <a href="/blog-detail.html?slug=${b.slug}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                            </td>
+                        </tr>
+                      `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load blogs</h3></div>'; }
+        }
+
+        function showBlogForm() {
+            document.getElementById('blog-modal-title').textContent = 'New Blog Post';
+            document.getElementById('blog-form').reset();
+            document.getElementById('blog-id').value = '';
+            document.getElementById('blog-published').checked = true;
+            openModal('blog-modal');
+        }
+
+        async function editBlog(id) {
+            try {
+                const result = await api.getAllBlogsAdmin({ per_page: 1 });
+                const blogs = result.blogs;
+                const blog = blogs.find(b => b.id === id);
+                if (!blog) { showToast('Blog not found', 'error'); return; }
+                document.getElementById('blog-modal-title').textContent = 'Edit Blog Post';
+                document.getElementById('blog-id').value = blog.id;
+                document.getElementById('blog-title').value = blog.title;
+                document.getElementById('blog-category').value = blog.category || '';
+                document.getElementById('blog-excerpt').value = blog.excerpt || '';
+                document.getElementById('blog-content').value = blog.content || '';
+                document.getElementById('blog-image').value = blog.image_url || '';
+                document.getElementById('blog-tags').value = (blog.tags || []).join(', ');
+                document.getElementById('blog-author').value = blog.author || '';
+                document.getElementById('blog-published').checked = blog.published;
+                openModal('blog-modal');
+            } catch (err) { showToast(err.message, 'error'); }
+        }
+
+        async function deleteBlog(id) {
+            if (!confirm('Delete this blog post?')) return;
+            try { await api.deleteBlog(id); showToast('Blog deleted', 'success'); loadAdminBlogs(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('blog-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Saving...';
+            const id = document.getElementById('blog-id').value;
+            const data = {
+                title: document.getElementById('blog-title').value,
+                category: document.getElementById('blog-category').value,
+                excerpt: document.getElementById('blog-excerpt').value,
+                content: document.getElementById('blog-content').value,
+                image_url: document.getElementById('blog-image').value,
+                tags: document.getElementById('blog-tags').value,
+                author: document.getElementById('blog-author').value,
+                published: document.getElementById('blog-published').checked
+            };
+            try {
+                if (id) { await api.updateBlog(id, data); showToast('Blog updated!', 'success'); }
+                else { await api.createBlog(data); showToast('Blog created!', 'success'); }
+                closeModal('blog-modal');
+                loadAdminBlogs();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; btn.textContent = 'Save Post'; }
+        });
+
+        // === Memories Moderation ===
+        async function loadAdminMemories() {
+            const container = document.getElementById('admin-memories-list');
+            const filter = document.getElementById('memories-filter').value;
+            try {
+                const params = { per_page: 50 };
+                if (filter === 'pending') params.approved = 'false';
+                else if (filter === 'approved') params.approved = 'true';
+                const result = await api.getAllMemoriesAdmin(params);
+                container.innerHTML = result.memories.length === 0
+                    ? '<div class="empty-state"><h3>No memories found</h3><p style="color:var(--text-secondary);font-size:0.9rem;">User-submitted memories will appear here for moderation.</p></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Title</th><th>Location</th><th>Images</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
+                      result.memories.map(m => {
+                        const imgs = m.images && m.images.length > 0 ? m.images : [{ image_url: m.image_url }];
+                        const thumbs = imgs.slice(0, 3).map(img =>
+                          `<img src="${img.image_url}" style="width:40px;height:30px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">`
+                        ).join('');
+                        const more = imgs.length > 3 ? `<span style="font-size:0.75rem;color:var(--text-secondary);">+${imgs.length - 3}</span>` : '';
+                        return `<tr>
+                            <td><strong>${m.title}</strong></td>
+                            <td>${m.location || '-'}</td>
+                            <td><div style="display:flex;gap:3px;align-items:center;">${thumbs}${more}</div></td>
+                            <td style="font-size:0.85rem;color:var(--text-secondary);">${m.created_at ? new Date(m.created_at).toLocaleDateString() : '-'}</td>
+                            <td><span class="badge ${m.approved ? 'badge-success' : 'badge-warning'}">${m.approved ? 'Approved' : 'Pending'}</span></td>
+                            <td>
+                                ${!m.approved ? `<button class="btn btn-sm btn-success" onclick="approveMemory('${m.id}')">Approve</button>` : ''}
+                                <button class="btn btn-sm btn-danger" onclick="deleteMemory('${m.id}')">Delete</button>
+                            </td>
+                        </tr>`;
+                      }).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load memories</h3><p style="color:var(--text-secondary);font-size:0.9rem;">' + err.message + '</p></div>'; }
+        }
+
+        async function approveMemory(id) {
+            try { await api.approveMemory(id); showToast('Memory approved', 'success'); loadAdminMemories(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function deleteMemory(id) {
+            if (!confirm('Delete this memory?')) return;
+            try { await api.deleteMemory(id); showToast('Memory deleted', 'success'); loadAdminMemories(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('memories-filter')?.addEventListener('change', loadAdminMemories);
+
+        // === Image Gallery Helpers ===
+        function renderImageGallery(containerId, images, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!images || images.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = images.map(img => {
+                const imageId = img.id;
+                const isPrimary = img.is_primary;
+                const deleteFn = type === 'tour' ? 'deleteTourImage' : 'deleteHotelImage';
+                const primaryFn = type === 'tour' ? 'setTourPrimaryImage' : 'setHotelPrimaryImage';
+                return `
+                    <div style="position:relative;width:100px;height:80px;border-radius:6px;overflow:hidden;border:2px solid ${isPrimary ? 'var(--primary-green)' : 'var(--border-color)'};flex-shrink:0;">
+                        <img src="${img.image_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
+                        ${isPrimary ? '<span style="position:absolute;top:2px;left:2px;background:var(--primary-green);color:white;font-size:0.6rem;padding:1px 5px;border-radius:3px;">PRIMARY</span>' : ''}
+                        <div style="position:absolute;bottom:0;left:0;right:0;display:flex;">
+                            ${!isPrimary ? `<button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:var(--primary-green);color:white;border:none;cursor:pointer;border-radius:0;" onclick="${primaryFn}('${imageId}')" title="Set as primary"><i class="fas fa-star"></i></button>` : ''}
+                            <button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:#D32F2F;color:white;border:none;cursor:pointer;border-radius:0;" onclick="${deleteFn}('${imageId}', this)" title="Delete image"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function deleteTourImage(id, btn) {
+            if (!confirm('Delete this image?')) return;
+            try { await api.deleteTourImage(id); showToast('Image deleted', 'success'); btn.closest('div').remove(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function deleteHotelImage(id, btn) {
+            if (!confirm('Delete this image?')) return;
+            try { await api.deleteHotelImage(id); showToast('Image deleted', 'success'); btn.closest('div').remove(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function setTourPrimaryImage(id) {
+            try { await api.setTourPrimaryImage(id); showToast('Primary image updated', 'success'); loadAdminTours(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function setHotelPrimaryImage(id) {
+            try { await api.setHotelPrimaryImage(id); showToast('Primary image updated', 'success'); loadAdminHotels(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // Hamburger for mobile admin
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar');
+            const hamburger = document.createElement('button');
+            hamburger.className = 'hamburger';
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            hamburger.style.cssText = 'position:fixed;top:1rem;left:1rem;z-index:200;background:var(--dark-text);color:white;padding:0.5rem 0.75rem;border-radius:8px;border:none;font-size:1.3rem;cursor:pointer;display:none;';
+            document.body.appendChild(hamburger);
+            hamburger.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+            if (window.innerWidth <= 768) hamburger.style.display = 'block';
+            window.addEventListener('resize', () => {
+                hamburger.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+                if (window.innerWidth > 768) sidebar.classList.remove('open');
+            });
+        });
+
+        // Initialize
+        checkAdmin().then(() => loadDashboard());
+    </script>
+</body>
+</html>

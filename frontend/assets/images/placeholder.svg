@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#E0E0E0"/>
+  <circle cx="400" cy="250" r="80" fill="#BDBDBD"/>
+  <path d="M400 330 Q320 420 200 480 L600 480 Q480 420 400 330Z" fill="#BDBDBD"/>
+  <path d="M250 420 Q400 350 550 420" stroke="#9E9E9E" stroke-width="3" fill="none"/>
+  <text x="400" y="530" text-anchor="middle" font-family="Poppins, sans-serif" font-size="24" fill="#757575">Kabura Ventures</text>
+  <text x="400" y="560" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" fill="#9E9E9E">Image Coming Soon</text>
+</svg>
