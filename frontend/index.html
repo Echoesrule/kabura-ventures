@@ -441,6 +441,7 @@
         // === Hero Video Carousel ===
         (function() {
             const VIDEO_INTERVAL = 7000;
+            const API_BASE = 'https://kabura-adventures-api.onrender.com';
             const videoEls = [
                 document.getElementById('hero-video-0'),
                 document.getElementById('hero-video-1'),
@@ -448,7 +449,7 @@
             ];
             let currentVideo = 0;
             let videoTimer = null;
-            let readyCount = 0;
+            let started = false;
 
             function setVideoSource(el, url) {
                 el.querySelector('source').src = url;
@@ -456,47 +457,67 @@
             }
 
             function showVideo(index) {
+                if (!videoEls[index]) return;
                 videoEls.forEach((v, i) => {
                     v.classList.toggle('active-video', i === index);
                     if (i !== index) { v.pause(); v.currentTime = 0; }
                 });
                 videoEls[index].currentTime = 0;
-                videoEls[index].play();
+                videoEls[index].play().catch(() => {});
                 currentVideo = index;
+            }
+
+            function tryNextVideo() {
+                for (let i = 0; i < videoEls.length; i++) {
+                    const idx = (currentVideo + 1 + i) % videoEls.length;
+                    if (videoEls[idx].readyState >= 2) {
+                        showVideo(idx);
+                        return;
+                    }
+                }
             }
 
             function startVideoLoop() {
                 clearInterval(videoTimer);
-                videoTimer = setInterval(() => {
-                    const next = (currentVideo + 1) % videoEls.length;
-                    showVideo(next);
-                }, VIDEO_INTERVAL);
+                videoTimer = setInterval(tryNextVideo, VIDEO_INTERVAL);
                 videoEls.forEach(v => {
                     v.addEventListener('ended', () => {
                         const i = videoEls.indexOf(v);
                         const next = (i + 1) % videoEls.length;
                         showVideo(next);
                     });
+                    v.addEventListener('error', () => {
+                        const i = videoEls.indexOf(v);
+                        const next = (i + 1) % videoEls.length;
+                        if (i === currentVideo) showVideo(next);
+                    });
                 });
             }
 
             function startPlayer() {
+                if (started) return;
+                started = true;
                 const loader = document.getElementById('hero-loader');
                 loader.classList.add('hidden');
                 document.getElementById('hero-video-container').classList.add('visible');
-                showVideo(0);
+                // Show first ready video
+                for (let i = 0; i < videoEls.length; i++) {
+                    if (videoEls[i].readyState >= 2) {
+                        showVideo(i);
+                        break;
+                    }
+                }
+                // Fallback: force first video after 1s
+                setTimeout(() => {
+                    if (!document.querySelector('.hero-video.active-video')) showVideo(0);
+                }, 1000);
                 startVideoLoop();
-            }
-
-            function onVideoReady() {
-                readyCount++;
-                if (readyCount >= videoEls.length) startPlayer();
             }
 
             // Fetch videos from API, fall back to hardcoded src
             (async function loadVideos() {
                 try {
-                    const result = await fetch('/api/media/hero').then(r => r.json());
+                    const result = await fetch(API_BASE + '/api/media/hero').then(r => r.json());
                     const media = result.media || [];
                     media.slice(0, videoEls.length).forEach((m, i) => {
                         setVideoSource(videoEls[i], m.file_url);
@@ -504,13 +525,14 @@
                 } catch (e) {
                     // Fallback: keep hardcoded src in HTML
                 }
-                // Wait for videos to be ready
+                // Start when first video is ready, with 5s timeout
+                let oneReady = false;
                 videoEls.forEach(v => {
-                    if (v.readyState >= 3) onVideoReady();
-                    else v.addEventListener('canplaythrough', onVideoReady, { once: true });
+                    if (v.readyState >= 2) oneReady = true;
+                    else v.addEventListener('canplaythrough', startPlayer, { once: true });
                 });
-                // Timeout: start after 5s even if not all videos ready
-                setTimeout(() => { if (readyCount < videoEls.length) startPlayer(); }, 5000);
+                if (oneReady) startPlayer();
+                setTimeout(startPlayer, 5000);
             })();
         })();
 
