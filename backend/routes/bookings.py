@@ -103,7 +103,7 @@ def update_booking_status(current_user, booking_id):
         return jsonify({'error': 'No data provided'}), 400
 
     valid_statuses = ['pending', 'confirmed', 'cancelled', 'completed', 'no_show']
-    valid_payment = ['unpaid', 'deposit_paid', 'fully_paid', 'refunded']
+    valid_payment = ['unpaid', 'partially_paid', 'fully_paid', 'refunded']
 
     if 'status' in data:
         if data['status'] not in valid_statuses:

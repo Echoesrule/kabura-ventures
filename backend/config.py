@@ -9,6 +9,12 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'kabura-jwt-secret-change-in-production')
     JWT_ACCESS_TOKEN_EXPIRES = 86400  # 24 hours
+    RATE_LIMITING_ENABLED = True
+    RATE_LIMITS = {
+        'register': (5, 900),
+        'login': (10, 300),
+        'messages': (10, 60),
+    }
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'assets', 'images')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}

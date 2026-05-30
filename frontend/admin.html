@@ -37,10 +37,11 @@
             <div class="nav-item" data-section="bookings"><i class="fas fa-clipboard-list" style="width:1.5rem;"></i> Bookings</div>
             <div class="nav-item" data-section="flights"><i class="fas fa-plane" style="width:1.5rem;"></i> Flight Requests</div>
             <div class="nav-item" data-section="messages"><i class="fas fa-envelope" style="width:1.5rem;"></i> Messages</div>
+            <div class="nav-item" data-section="subscribers"><i class="fas fa-users" style="width:1.5rem;"></i> Subscribers</div>
             <div class="nav-item" data-section="blogs"><i class="fas fa-edit" style="width:1.5rem;"></i> Blog</div>
-            <div class="nav-item" data-section="memories"><i class="fas fa-camera" style="width:1.5rem;"></i> Memories</div>
             <div class="nav-item" data-section="payments"><i class="fas fa-money-bill-wave" style="width:1.5rem;"></i> Payments</div>
             <div class="nav-item" data-section="media"><i class="fas fa-video" style="width:1.5rem;"></i> Media</div>
+            <div class="nav-item" data-section="analytics"><i class="fas fa-chart-line" style="width:1.5rem;"></i> Analytics & Revenue</div>
             <div style="border-top:1px solid #333;margin-top:1rem;padding-top:1rem;">
                 <div class="nav-item" onclick="window.location.href='/'" style="color:#757575;"><i class="fas fa-arrow-left" style="width:1.5rem;"></i> Back to Site</div>
                 <div class="nav-item" onclick="api.logout()" style="color:#ef5350;"><i class="fas fa-sign-out-alt" style="width:1.5rem;"></i> Logout</div>
@@ -275,6 +276,15 @@
                 </div>
             </div>
 
+            <!-- Subscribers -->
+            <div class="admin-section" id="section-subscribers" style="display:none;">
+                <div class="action-bar">
+                    <h2>Newsletter Subscribers</h2>
+                    <button class="btn btn-primary btn-sm" onclick="loadSubscribers()">Refresh</button>
+                </div>
+                <div id="admin-subscribers-list"></div>
+            </div>
+
             <!-- Blog Management -->
             <div class="admin-section" id="section-blogs" style="display:none;">
                 <div class="action-bar">
@@ -332,23 +342,55 @@
                 </div>
             </div>
 
-            <!-- Memories Moderation -->
-            <div class="admin-section" id="section-memories" style="display:none;">
-                <div class="action-bar">
-                    <h2>User Memories</h2>
-                    <select class="form-select" id="memories-filter" style="width:auto;">
-                        <option value="all">All</option>
-                        <option value="pending">Pending Review</option>
-                        <option value="approved">Approved</option>
-                    </select>
-                </div>
-                <div id="admin-memories-list"></div>
-            </div>
-
             <!-- Payments -->
             <div class="admin-section" id="section-payments" style="display:none;">
                 <h2>Payment Records</h2>
                 <div id="admin-payments-list"></div>
+            </div>
+
+            <!-- Analytics & Revenue -->
+            <div class="admin-section" id="section-analytics" style="display:none;">
+                <h2 style="margin-bottom:2rem;">Analytics & Revenue</h2>
+
+                <div class="stats-grid" id="analytics-summary"></div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Revenue by Method</h3>
+                        <div id="revenue-by-method-chart"></div>
+                    </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Revenue by Type</h3>
+                        <div id="revenue-by-type-chart"></div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Monthly Revenue Trend</h3>
+                        <div id="monthly-revenue-chart"></div>
+                    </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Monthly Bookings</h3>
+                        <div id="monthly-bookings-chart"></div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Bookings by Status</h3>
+                        <div id="bookings-status-chart"></div>
+                    </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Bookings by Type</h3>
+                        <div id="bookings-type-chart"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:1.5rem;">
+                    <h3 style="margin-bottom:1rem;">Popular Tours</h3>
+                    <div id="popular-tours-table"></div>
+                </div>
             </div>
 
             <!-- Media Management -->
@@ -402,9 +444,10 @@
                 case 'bookings': loadAdminBookings(); break;
                 case 'flights': loadAdminFlights(); break;
                 case 'messages': loadAdminMessages(); break;
+                case 'subscribers': loadSubscribers(); break;
                 case 'blogs': loadAdminBlogs(); break;
-                case 'memories': loadAdminMemories(); break;
                 case 'payments': loadAdminPayments(); break;
+                case 'analytics': loadAnalytics(); break;
                 case 'media': loadAdminMedia(); break;
             }
         }
@@ -444,6 +487,100 @@
                         </div>
                     `).join('');
             } catch (err) { console.error(err); }
+        }
+
+        // Analytics & Revenue
+        async function loadAnalytics() {
+            try {
+                const result = await api.getAnalytics();
+                const { revenue, bookings, platform, popular_tours } = result;
+
+                document.getElementById('analytics-summary').innerHTML = `
+                    <div class="stat-card"><h3>Total Revenue</h3><div class="stat-value" style="color:var(--primary-green);">KSh ${Number(revenue.total).toLocaleString()}</div></div>
+                    <div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${bookings.total}</div></div>
+                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent-gold);">${bookings.pending}</div></div>
+                    <div class="stat-card"><h3>Total Users</h3><div class="stat-value">${platform.total_users}</div></div>
+                    <div class="stat-card"><h3>Tours</h3><div class="stat-value">${platform.total_tours}</div></div>
+                    <div class="stat-card"><h3>Hotels</h3><div class="stat-value">${platform.total_hotels}</div></div>
+                `;
+
+                function renderBarChart(containerId, items, labelKey, valueKey, colorFn) {
+                    const container = document.getElementById(containerId);
+                    if (!items.length) { container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
+                    const max = Math.max(...items.map(i => i[valueKey]));
+                    container.innerHTML = items.map(i => {
+                        const pct = max > 0 ? (i[valueKey] / max * 100) : 0;
+                        const color = colorFn ? colorFn(i) : 'var(--primary-green)';
+                        return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
+                            <span style="min-width:80px;font-size:0.85rem;text-transform:capitalize;">${i[labelKey]}</span>
+                            <div style="flex:1;height:28px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:${color};border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;min-width:${pct > 15 ? 'auto' : '0'};">
+                                    ${pct > 15 ? (i[labelKey] === 'total' || i[labelKey] === 'amount' ? 'KSh ' + Number(i[valueKey]).toLocaleString() : i[valueKey]) : ''}
+                                </div>
+                            </div>
+                            <span style="min-width:60px;text-align:right;font-size:0.85rem;font-weight:600;">${i[labelKey] === 'total' || i[labelKey] === 'amount' ? 'KSh ' + Number(i[valueKey]).toLocaleString() : i[valueKey]}</span>
+                        </div>`;
+                    }).join('');
+                }
+
+                function renderSimpleBar(containerId, items, labelKey, valueKey, labelPrefix, valueSuffix) {
+                    const container = document.getElementById(containerId);
+                    if (!items.length) { container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
+                    const max = Math.max(...items.map(i => i[valueKey]));
+                    container.innerHTML = items.map(i => {
+                        const pct = max > 0 ? (i[valueKey] / max * 100) : 0;
+                        return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
+                            <span style="min-width:90px;font-size:0.85rem;">${labelPrefix || ''}${i[labelKey]}</span>
+                            <div style="flex:1;height:28px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:var(--primary-green);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
+                                    ${pct > 12 ? i[valueKey] : ''}
+                                </div>
+                            </div>
+                            <span style="min-width:40px;text-align:right;font-size:0.85rem;font-weight:600;">${i[valueKey]}${valueSuffix || ''}</span>
+                        </div>`;
+                    }).join('');
+                }
+
+                renderBarChart('revenue-by-method-chart', revenue.by_method, 'method', 'total', (i) =>
+                    i.method === 'mpesa' ? '#2E7D32' : i.method === 'card' ? '#1565C0' : i.method === 'cash' ? '#C9A227' : '#757575');
+                renderBarChart('revenue-by-type-chart', revenue.by_type, 'type', 'total', (i) =>
+                    i.type === 'partial' ? '#C9A227' : i.type === 'full' ? '#2E7D32' : i.type === 'refund' ? '#D32F2F' : '#757575');
+                (function() {
+                    const c = document.getElementById('monthly-revenue-chart');
+                    const items = revenue.monthly;
+                    if (!items.length) { c.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
+                    const max = Math.max(...items.map(i => i.total));
+                    c.innerHTML = items.map(i => {
+                        const pct = max > 0 ? (i.total / max * 100) : 0;
+                        return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
+                            <span style="min-width:80px;font-size:0.85rem;">${i.month}</span>
+                            <div style="flex:1;height:28px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:var(--primary-green);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
+                                    ${pct > 12 ? 'KSh ' + Number(i.total).toLocaleString() : ''}
+                                </div>
+                            </div>
+                            <span style="min-width:110px;text-align:right;font-size:0.85rem;font-weight:600;">KSh ${Number(i.total).toLocaleString()}</span>
+                        </div>`;
+                    }).join('');
+                })();
+                renderSimpleBar('monthly-bookings-chart', bookings.monthly, 'month', 'count', '', '');
+                renderSimpleBar('bookings-status-chart', bookings.by_status, 'status', 'count', '', '');
+                renderSimpleBar('bookings-type-chart', bookings.by_type, 'type', 'count', '', '');
+
+                document.getElementById('popular-tours-table').innerHTML = popular_tours.length === 0
+                    ? '<p style="color:var(--text-secondary);">No tour booking data yet</p>'
+                    : '<div class="table-container"><table><thead><tr><th>Tour</th><th>Bookings</th><th>Total People</th><th>Est. Revenue</th></tr></thead><tbody>' +
+                    popular_tours.map(t => `
+                        <tr>
+                            <td><strong>${t.title}</strong></td>
+                            <td>${t.bookings_count}</td>
+                            <td>${t.total_people}</td>
+                            <td><strong>KSh ${Number(t.estimated_revenue).toLocaleString()}</strong></td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) {
+                document.querySelector('#section-analytics .stats-grid').innerHTML = '<div class="empty-state"><h3>Failed to load analytics</h3></div>';
+            }
         }
 
         // Tours
@@ -633,7 +770,7 @@
                             <td>
                                 <select class="form-select" style="width:auto;padding:0.3rem 0.5rem;font-size:0.85rem;" onchange="updatePaymentStatus('${b.id}', this.value)">
                                     <option value="unpaid" ${b.payment_status === 'unpaid' ? 'selected' : ''}>Unpaid</option>
-                                    <option value="deposit_paid" ${b.payment_status === 'deposit_paid' ? 'selected' : ''}>Deposit</option>
+                                    <option value="partially_paid" ${b.payment_status === 'partially_paid' ? 'selected' : ''}>Partial</option>
                                     <option value="fully_paid" ${b.payment_status === 'fully_paid' ? 'selected' : ''}>Full</option>
                                     <option value="refunded" ${b.payment_status === 'refunded' ? 'selected' : ''}>Refunded</option>
                                 </select>
@@ -790,6 +927,27 @@
         }
 
         document.getElementById('messages-filter')?.addEventListener('change', loadAdminMessages);
+
+        async function loadSubscribers() {
+            const container = document.getElementById('admin-subscribers-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const result = await api.getSubscribers({ per_page: 100 });
+                const subscribers = result.subscribers || [];
+                container.innerHTML = subscribers.length === 0
+                    ? '<div class="empty-state"><h3>No subscribers yet</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Email</th><th>Subscribed On</th></tr></thead><tbody>' +
+                        subscribers.map(s => `
+                        <tr>
+                            <td>${s.email}</td>
+                            <td>${new Date(s.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><h3>Failed to load subscribers</h3></div>';
+                showToast(err.message || 'Unable to load subscribers', 'error');
+            }
+        }
 
         // Payments
         async function loadAdminPayments() {
@@ -961,52 +1119,6 @@
             } catch (err) { showToast(err.message, 'error'); }
             finally { btn.disabled = false; btn.textContent = 'Save Post'; }
         });
-
-        // === Memories Moderation ===
-        async function loadAdminMemories() {
-            const container = document.getElementById('admin-memories-list');
-            const filter = document.getElementById('memories-filter').value;
-            try {
-                const params = { per_page: 50 };
-                if (filter === 'pending') params.approved = 'false';
-                else if (filter === 'approved') params.approved = 'true';
-                const result = await api.getAllMemoriesAdmin(params);
-                container.innerHTML = result.memories.length === 0
-                    ? '<div class="empty-state"><h3>No memories found</h3><p style="color:var(--text-secondary);font-size:0.9rem;">User-submitted memories will appear here for moderation.</p></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Title</th><th>Location</th><th>Images</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
-                      result.memories.map(m => {
-                        const imgs = m.images && m.images.length > 0 ? m.images : [{ image_url: m.image_url }];
-                        const thumbs = imgs.slice(0, 3).map(img =>
-                          `<img src="${img.image_url}" style="width:40px;height:30px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">`
-                        ).join('');
-                        const more = imgs.length > 3 ? `<span style="font-size:0.75rem;color:var(--text-secondary);">+${imgs.length - 3}</span>` : '';
-                        return `<tr>
-                            <td><strong>${m.title}</strong></td>
-                            <td>${m.location || '-'}</td>
-                            <td><div style="display:flex;gap:3px;align-items:center;">${thumbs}${more}</div></td>
-                            <td style="font-size:0.85rem;color:var(--text-secondary);">${m.created_at ? new Date(m.created_at).toLocaleDateString() : '-'}</td>
-                            <td><span class="badge ${m.approved ? 'badge-success' : 'badge-warning'}">${m.approved ? 'Approved' : 'Pending'}</span></td>
-                            <td>
-                                ${!m.approved ? `<button class="btn btn-sm btn-success" onclick="approveMemory('${m.id}')">Approve</button>` : ''}
-                                <button class="btn btn-sm btn-danger" onclick="deleteMemory('${m.id}')">Delete</button>
-                            </td>
-                        </tr>`;
-                      }).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load memories</h3><p style="color:var(--text-secondary);font-size:0.9rem;">' + err.message + '</p></div>'; }
-        }
-
-        async function approveMemory(id) {
-            try { await api.approveMemory(id); showToast('Memory approved', 'success'); loadAdminMemories(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        async function deleteMemory(id) {
-            if (!confirm('Delete this memory?')) return;
-            try { await api.deleteMemory(id); showToast('Memory deleted', 'success'); loadAdminMemories(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('memories-filter')?.addEventListener('change', loadAdminMemories);
 
         // === Image Gallery Helpers ===
         function renderImageGallery(containerId, images, type) {

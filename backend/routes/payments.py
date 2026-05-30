@@ -18,8 +18,8 @@ def create_payment(current_user):
     if missing:
         return jsonify({'error': f'Missing fields: {", ".join(missing)}'}), 400
 
-    valid_methods = ['mpesa', 'cash', 'card']
-    valid_types = ['deposit', 'full', 'refund']
+    valid_methods = ['mpesa', 'cash', 'card', 'paypal', 'bank_transfer']
+    valid_types = ['full', 'refund', 'partial']
 
     if data['payment_method'] not in valid_methods:
         return jsonify({'error': f'Invalid payment method. Must be one of: {", ".join(valid_methods)}'}), 400
@@ -52,10 +52,10 @@ def create_payment(current_user):
     if data.get('booking_id'):
         booking = Booking.query.get(data['booking_id'])
         if booking:
-            if data['payment_type'] == 'deposit':
-                booking.payment_status = 'deposit_paid'
-            elif data['payment_type'] == 'full':
+            if data['payment_type'] == 'full':
                 booking.payment_status = 'fully_paid'
+            elif data['payment_type'] == 'partial':
+                booking.payment_status = 'partially_paid'
 
     db.session.commit()
     return jsonify({'message': 'Payment recorded', 'payment': payment.to_dict()}), 201

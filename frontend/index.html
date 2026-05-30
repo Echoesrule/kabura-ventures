@@ -16,20 +16,7 @@
     <nav class="navbar">
         <div class="navbar-inner">
             <a href="/" class="navbar-brand">
-                <span class="logo-mark">
-                    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#2E7D32" />
-                                <stop offset="100%" stop-color="#C9A227" />
-                            </linearGradient>
-                        </defs>
-                        <circle cx="24" cy="24" r="22" fill="url(#logoGradient)" />
-                        <path d="M14 30L22 18L28 24L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M14 34C18 24 30 16 38 22" stroke="white" stroke-width="3" stroke-linecap="round" />
-                    </svg>
-                </span>
-                <span class="logo-text"><span class="logo-highlight">Kabura</span> Adventures</span>
+                <img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="navbar-logo">
             </a>
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
@@ -136,7 +123,7 @@
             <div class="about-intro-grid">
                 <div class="about-intro-content" data-aos="fade-right">
                     <h2>Why Kabura Ventures?</h2>
-                    <p>We're not just a tour company — we're Kenyans who live and breathe this land. Every safari we craft tells the story of our heritage, from the red earth of Tsavo to the snow-capped peak of Mount Kenya. Travel with us and experience the real Kenya through the eyes of those who call it home.</p>
+                    <p>Your journey, our passion. Kabura Ventures delivers personalized travel experiences with authenticity, professionalism and genuine hospitality, connecting people to unforgettable adventures in Kenya and beyond.</p>
                     <div class="about-stats">
                         <div class="about-stat">
                             <span class="about-stat-value"><i class="fas fa-users"></i> 5,000+</span>
@@ -151,14 +138,29 @@
                             <span class="about-stat-label">Average Rating</span>
                         </div>
                     </div>
+                    <div class="about-services" style="margin-top:1.5rem;">
+                        <h4 style="color:var(--primary-green);margin-bottom:0.5rem;">Our Services</h4>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Tours & Safari packages</span>
+                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Local & International travel planning</span>
+                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Hotel & Accommodation booking</span>
+                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Airport transfers & Transport services</span>
+                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Honeymoon & Couples getaways</span>
+                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Group and Corporate travel arrangements</span>
+                        </div>
+                    </div>
+                    <div class="about-countries" style="margin-top:1rem;">
+                        <h4 style="color:var(--primary-green);margin-bottom:0.25rem;">Areas Served</h4>
+                        <p style="font-size:0.9rem;">East Africa & International &mdash; Kenya, Uganda, Ethiopia, Tanzania, South Africa</p>
+                    </div>
                     <div class="about-social">
                         <span class="about-social-label">Join our community</span>
                         <div class="about-social-icons">
                             <a href="https://facebook.com/kaburaadventures" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                             <a href="https://instagram.com/kaburaadventures" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                             <a href="https://twitter.com/kaburaadventures" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                            <a href="https://youtube.com/@kaburaadventures" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                            <a href="https://tiktok.com/@kaburaadventures" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                            <a href="https://youtube.com/@KaburaVentures" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="https://tiktok.com/@kabura.adventures" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                         </div>
                     </div>
                 </div>
@@ -218,75 +220,6 @@
         </div>
     </section>
 
-    <!-- Traveler Moments -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Travel Memories</h2>
-                <p>Real moments captured by our travelers across Kenya's most beautiful destinations.</p>
-            </div>
-            <div class="moments-grid" id="moments-gallery"></div>
-            <div class="lightbox-overlay" id="gallery-lightbox">
-                <button class="lightbox-close" onclick="document.getElementById('gallery-lightbox').classList.remove('active')">&times;</button>
-                <button class="lightbox-prev" id="gallery-prev"><i class="fas fa-chevron-left"></i></button>
-                <img id="gallery-lightbox-img" src="" alt="">
-                <button class="lightbox-next" id="gallery-next"><i class="fas fa-chevron-right"></i></button>
-                <div class="lightbox-counter" id="gallery-counter"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Share Your Memory -->
-    <section class="section" style="background:#f7faf6;">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Share Your Memory</h2>
-                <p>Been on an adventure with us? Share your photo and inspire other travelers.</p>
-            </div>
-            <div class="share-memory-form" data-aos="fade-up">
-                <form id="share-memory-form">
-                    <div class="grid grid-2">
-                        <div class="form-group">
-                            <label class="form-label">Title *</label>
-                            <input type="text" class="form-input" id="mem-title" placeholder="e.g. Sunset at Amboseli" required maxlength="255">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Location</label>
-                            <input type="text" class="form-input" id="mem-location" placeholder="e.g. Amboseli National Park" maxlength="255">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Photos * <small style="font-weight:400;color:var(--text-secondary);">(you can select multiple)</small></label>
-                        <div class="drop-zone" id="mem-drop-zone">
-                            <div class="drop-zone-content" id="mem-drop-content">
-                                <span class="drop-zone-icon"><i class="fas fa-camera" style="font-size:2rem;"></i></span>
-                                <p>Drag &amp; drop images here, or <strong>click to browse</strong></p>
-                                <small>Supports: JPG, PNG, GIF, WebP (multiple allowed)</small>
-                            </div>
-                            <div class="drop-zone-preview" id="mem-drop-preview" style="display:none;">
-                                <div class="mem-preview-grid" id="mem-preview-grid"></div>
-                                <button type="button" class="drop-zone-remove" id="mem-remove-image" title="Remove all images">&times;</button>
-                            </div>
-                            <input type="file" id="mem-file-input" accept="image/*" multiple style="display:none;">
-                            <input type="hidden" id="mem-image" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Caption</label>
-                        <textarea class="form-textarea" id="mem-caption" rows="3" placeholder="Tell us about your moment..." maxlength="2000"></textarea>
-                    </div>
-                    <div class="grid grid-2">
-                        <div class="form-group">
-                            <label class="form-label">Email (for updates)</label>
-                            <input type="email" class="form-input" id="mem-email" placeholder="your@email.com">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Submit Memory</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
     <!-- Features -->
     <section class="section" style="background:white;">
         <div class="container">
@@ -294,26 +227,42 @@
                 <h2>Why Travel With Us</h2>
                 <p>We're not a faceless booking platform. We're Kenyans who live and breathe this land.</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-compass" style="font-size:1.4rem;"></i></div>
-                    <h3>Expert Guides</h3>
-                    <p>Our Maasai and Kikuyu guides grew up in these plains. They know where the lions hunt at dawn and which fig tree the leopards favour. This isn't a job — it's their heritage.</p>
+            <div class="features-grid choose-us-grid">
+                <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <img src="https://media.istockphoto.com/id/2172042824/nl/foto/safari-guide-observing.jpg?s=1024x1024&w=is&k=20&c=LgZiYNIl7dJ7bf6txGloEhb82ie0HuDvABAh1LnUVEs=" alt="Maasai guide with binoculars">
+                    </div>
+                    <div>
+                        <h3>Expert Guides</h3>
+                        <p>Our Maasai and Kikuyu guides grew up in these plains. They know where the lions hunt at dawn and which fig tree the leopards favour.</p>
+                    </div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-map-marked-alt" style="font-size:1.4rem;"></i></div>
-                    <h3>Curated Safaris</h3>
-                    <p>No cookie-cutter itineraries. We hand-build each trip around how <em>you</em> want to experience Kenya — whether that's tracking rhinos on foot or sundowners by a crater lake.</p>
+                <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <img src="https://plus.unsplash.com/premium_photo-1664302700221-bd1549347986?q=80&w=1479&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Hot air balloon over zebras">
+                    </div>
+                    <div>
+                        <h3>Curated Safaris</h3>
+                        <p>No cookie-cutter itineraries. We hand-build each trip around how <em>you</em> want to experience Kenya — from rhino tracking to crater lake sundowners.</p>
+                    </div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-headset" style="font-size:1.4rem;"></i></div>
-                    <h3>Always There</h3>
-                    <p>Elephants never forget, and neither do we. Our Nairobi team is on call 24/7. Lost luggage, flight delay, medical concern — one call and a real person picks up.</p>
+                <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <img src="https://media.istockphoto.com/id/1964108921/nl/foto/on-a-safari-tour-break.jpg?s=1024x1024&w=is&k=20&c=u0SCbLfiHRJlmaw82AVOJAHaOHIxjfOGU8mNJbVcD8I=" alt="Sunset dhow sail on the water">
+                    </div>
+                    <div>
+                        <h3>Always There</h3>
+                        <p>Elephants never forget, and neither do we. Our Nairobi team is on call 24/7 for flight changes, luggage support, or any travel concern.</p>
+                    </div>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-tags" style="font-size:1.4rem;"></i></div>
-                    <h3>No Middlemen</h3>
-                    <p>We work directly with lodges, park services, and local operators. No third-party markups, no hidden booking fees. What you see is what you pay — straight up.</p>
+                <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <img src="/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg" alt="Safari landscape with clouds">
+                    </div>
+                    <div>
+                        <h3>No Middlemen</h3>
+                        <p>We work directly with lodges, park services, and local operators so there are no hidden markups or surprise booking fees.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -340,7 +289,7 @@
                 <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-icon"><i class="fas fa-check-circle" style="font-size:1.4rem;"></i></div>
                     <h3>3. Lock It In</h3>
-                    <p>Once you're happy, we send a detailed confirmation, handle the deposit, take care of park fees, transfers, and permits. You just pack.</p>
+                    <p>Once you're happy, we send a detailed confirmation, take care of park fees, transfers, and permits. You just pack.</p>
                 </div>
                 <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-icon"><i class="fas fa-mountain" style="font-size:1.4rem;"></i></div>
@@ -424,7 +373,7 @@
         <div style="max-width:1200px;margin:0 auto;">
             <h3>Stay Inspired</h3>
             <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
-            <form class="footer-newsletter-form" onsubmit="event.preventDefault();showToast('Subscribed!','success');this.reset();">
+            <form class="footer-newsletter-form">
                 <input type="email" placeholder="Enter your email" required>
                 <button type="submit">Subscribe</button>
             </form>
@@ -433,19 +382,19 @@
     <footer class="footer">
         <div class="footer-main">
             <div class="footer-col">
-                <div class="footer-brand"><span class="highlight">Kabura</span> Adventures</div>
+                <div class="footer-brand"><span class="highlight">Kabura</span> Ventures</div>
                 <p>Your trusted partner for unforgettable Kenyan travel experiences. From the savannahs of Maasai Mara to the pristine beaches of Mombasa, we craft journeys that celebrate Kenya's breathtaking beauty and rich culture.</p>
                 <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
+                    <a href="https://facebook.com/kaburaadventures" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com/kaburaadventures" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://tiktok.com/@kabura.adventures" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://youtube.com/@KaburaVentures" target="_blank" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
                 </div>
                 <div class="footer-payment-icons">
-                    <span>Visa</span>
-                    <span>MC</span>
-                    <span>M-Pesa</span>
-                    <span>AMEX</span>
+                    <span title="Visa"><i class="fab fa-cc-visa"></i></span>
+                    <span title="Mastercard"><i class="fab fa-cc-mastercard"></i></span>
+                    <span title="PayPal"><i class="fab fa-cc-paypal"></i></span>
+                    <span title="M-Pesa"><i class="fas fa-mobile-screen-button"></i></span>
                 </div>
             </div>
             <div class="footer-col">
@@ -470,11 +419,9 @@
             <div class="footer-col">
                 <h4>Contact &amp; Support</h4>
                 <div class="footer-contact-item"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> Nairobi, Kenya</div>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 700 000 000</div>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> info@kaburaadventures.com</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> 0716036542</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> Kaburaadventures@gmail.com</div>
                 <div class="footer-contact-item"><span class="icon"><i class="fas fa-clock"></i></span> Mon-Sat: 8AM-6PM EAT</div>
-                <h4 style="margin-top:1.5rem;font-size:0.8rem;">24/7 Support</h4>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 711 000 000</div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -607,127 +554,6 @@
                 showReview(next);
             }, 5000);
         })();
-
-        // === Traveler Moments - Gallery (fetches from API, falls back to hardcoded) ===
-        const PENDING_MEMORIES_KEY = 'pending_user_memories';
-
-        function getPendingMemories() {
-            try {
-                const saved = JSON.parse(localStorage.getItem(PENDING_MEMORIES_KEY) || '[]');
-                if (!Array.isArray(saved)) return [];
-                return saved.filter(m => m && (m.image_url || (Array.isArray(m.images) && m.images.length)));
-            } catch {
-                return [];
-            }
-        }
-
-        function savePendingMemory(memory) {
-            const existing = getPendingMemories().filter(m => m.id !== memory.id);
-            existing.unshift(memory);
-            localStorage.setItem(PENDING_MEMORIES_KEY, JSON.stringify(existing.slice(0, 20)));
-        }
-
-        function buildMomentsHTML(moments) {
-            const liked = (() => {
-                try { return JSON.parse(localStorage.getItem('moments_likes') || '{}'); } catch { return {}; }
-            })();
-            const momentEffects = ['zoom-in', 'fade-up', 'fade-up-right', 'fade-left', 'zoom-in-up'];
-            let html = '';
-            for (let i = 0; i < moments.length; i += 6) {
-                const group = moments.slice(i, i + 6);
-                html += '<div class="moments-group">';
-                group.forEach((m, j) => {
-                    const idx = i + j;
-                    const key = m.id || idx;
-                    const isLiked = liked[key] ? 'liked' : '';
-                    const effect = momentEffects[idx % momentEffects.length];
-                    const delay = (idx % 4) * 70;
-                    const link = `/tours.html?search=${encodeURIComponent(m.location || 'Kenya')}`;
-                    const badge = m.pending ? '<span class="moments-badge">Pending approval</span>' : '';
-                    const imgUrl = m.img || m.image_url;
-                    html += `
-                        <div class="moments-item" data-aos="${effect}" data-aos-delay="${delay}">
-                            <a href="${link}">
-                                <img src="${imgUrl}" alt="${m.title}" loading="lazy">
-                                <div class="moments-overlay">
-                                    ${badge}
-                                    <span class="moments-location">${m.location || 'Kenya'}</span>
-                                    <span class="moments-title">${m.title}</span>
-                                </div>
-                            </a>
-                            <button class="moments-like ${isLiked}" data-key="${key}" aria-label="Like">${isLiked ? '<i class="fas fa-heart" style="color:#E53935;"></i>' : '<i class="far fa-heart" style="color:#999;"></i>'}</button>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-            }
-            return html;
-        }
-
-        async function renderMomentsGallery() {
-            const gallery = document.getElementById('moments-gallery');
-            if (!gallery) return;
-
-            const pendingMemories = getPendingMemories();
-            const pendingIds = new Set(pendingMemories.map(m => m.id));
-            let moments = [];
-
-            try {
-                const result = await api.getMemories({ per_page: 20 });
-                const apiMoments = [];
-                (result.memories || []).forEach(m => {
-                    if (pendingIds.has(m.id)) return;
-                    const images = m.images && m.images.length > 0 ? m.images : [{ image_url: m.image_url }];
-                    images.forEach(img => {
-                        apiMoments.push({
-                            id: m.id,
-                            img: img.image_url,
-                            location: m.location || 'Kenya',
-                            title: m.title,
-                        });
-                    });
-                });
-                moments = pendingMemories.concat(apiMoments);
-            } catch (e) {
-                moments = pendingMemories;
-            }
-
-            if (!moments.length) {
-                moments = FALLBACK_MOMENTS;
-            }
-
-            gallery.innerHTML = buildMomentsHTML(moments);
-
-            gallery.querySelectorAll('.moments-like').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const key = this.dataset.key;
-                    const likedState = (() => {
-                        try { return JSON.parse(localStorage.getItem('moments_likes') || '{}'); } catch { return {}; }
-                    })();
-                    likedState[key] = !likedState[key];
-                    localStorage.setItem('moments_likes', JSON.stringify(likedState));
-                    this.classList.toggle('liked', likedState[key]);
-                    this.innerHTML = likedState[key] ? '<i class="fas fa-heart" style="color:#E53935;"></i>' : '<i class="far fa-heart" style="color:#999;"></i>';
-                });
-            });
-        }
-
-        const FALLBACK_MOMENTS = [
-            { img: 'https://images.pexels.com/photos/259771/pexels-photo-259771.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Maasai Mara', title: 'Golden Sunset Over the Mara' },
-            { img: 'https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Diani Beach', title: 'Paradise Found' },
-            { img: 'https://images.pexels.com/photos/750540/pexels-photo-750540.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Mount Kenya', title: 'Summit at Dawn' },
-            { img: 'https://images.pexels.com/photos/158255/pexels-photo-158255.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Amboseli', title: 'Giants of Amboseli' },
-            { img: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Lake Nakuru', title: 'Flamingo Haven' },
-            { img: 'https://images.pexels.com/photos/753626/pexels-photo-753626.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Mombasa Coast', title: 'Coastal Bliss' },
-            { img: 'https://images.pexels.com/photos/34098/safari-elephant-africa-wildlife.jpg?auto=compress&cs=tinysrgb&w=400', location: 'Tsavo', title: 'Red Elephants' },
-            { img: 'https://images.pexels.com/photos/475027/pexels-photo-475027.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Nairobi', title: 'City in the Wild' },
-            { img: 'https://images.pexels.com/photos/259771/pexels-photo-259771.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Maasai Mara', title: 'Big Five Spotting' },
-            { img: 'https://images.pexels.com/photos/750540/pexels-photo-750540.jpeg?auto=compress&cs=tinysrgb&w=400', location: 'Amboseli', title: 'Elephant Herd' },
-        ];
-
-        renderMomentsGallery();
 
         // Load featured tours with a horizontal carousel
         var ftTours = []; var ftPage = 0;
@@ -883,118 +709,6 @@
         }
 
 
-
-        // Drag & Drop for Share Memory (multiple files)
-        (function() {
-            const zone = document.getElementById('mem-drop-zone');
-            const input = document.getElementById('mem-file-input');
-            const content = document.getElementById('mem-drop-content');
-            const preview = document.getElementById('mem-drop-preview');
-            const grid = document.getElementById('mem-preview-grid');
-            const hidden = document.getElementById('mem-image');
-            const removeBtn = document.getElementById('mem-remove-image');
-            let uploadedUrls = [];
-
-            function showPreviews(urls) {
-                grid.innerHTML = urls.map(u => `<img src="${u}" alt="">`).join('');
-                content.style.display = 'none';
-                preview.style.display = 'inline-block';
-                hidden.value = urls[0] || '';
-            }
-
-            function resetDropZone() {
-                content.style.display = '';
-                preview.style.display = 'none';
-                grid.innerHTML = '';
-                hidden.value = '';
-                input.value = '';
-                uploadedUrls = [];
-            }
-
-            async function handleFiles(files) {
-                const validFiles = [];
-                for (const f of files) {
-                    if (f.type.startsWith('image/')) validFiles.push(f);
-                }
-                if (validFiles.length === 0) {
-                    showToast('Please select image files', 'error');
-                    return;
-                }
-                try {
-                    const result = await api.uploadImages(validFiles);
-                    const urls = result.urls || [result.url].filter(Boolean);
-                    uploadedUrls = urls;
-                    showPreviews(urls);
-                } catch (err) {
-                    showToast(err.message, 'error');
-                }
-            }
-
-            zone.addEventListener('click', () => input.click());
-            input.addEventListener('change', () => {
-                if (input.files.length) handleFiles(input.files);
-            });
-
-            zone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                zone.classList.add('drag-over');
-            });
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('drag-over');
-            });
-            zone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                zone.classList.remove('drag-over');
-                if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
-            });
-
-            removeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                resetDropZone();
-            });
-
-            window.resetMemoryDropZone = resetDropZone;
-            window.getMemoryImageUrls = () => uploadedUrls;
-        })();
-
-        document.getElementById('share-memory-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.textContent = 'Submitting...';
-            try {
-                const urls = window.getMemoryImageUrls ? window.getMemoryImageUrls() : [];
-                const payload = {
-                    title: document.getElementById('mem-title').value,
-                    location: document.getElementById('mem-location').value,
-                    image_url: urls[0] || document.getElementById('mem-image').value,
-                    images: urls,
-                    caption: document.getElementById('mem-caption').value,
-                    email: document.getElementById('mem-email').value
-                };
-                const result = await api.submitMemory(payload);
-                const memory = result.memory || {};
-                savePendingMemory({
-                    id: memory.id,
-                    title: memory.title,
-                    location: memory.location || 'Kenya',
-                    image_url: memory.image_url,
-                    images: memory.images || [{ image_url: memory.image_url }],
-                    pending: true
-                });
-                showToast('Memory submitted for review!', 'success');
-                e.target.reset();
-                window.resetMemoryDropZone();
-                if (typeof renderMomentsGallery === 'function') {
-                    renderMomentsGallery();
-                }
-            } catch (err) {
-                showToast(err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Submit Memory';
-            }
-        });
 
         // Contact form
         document.getElementById('contact-form')?.addEventListener('submit', async (e) => {

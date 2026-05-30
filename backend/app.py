@@ -12,12 +12,14 @@ from routes.payments import payments_bp
 from routes.messages import messages_bp
 from routes.media import media_bp
 from routes.reviews import reviews_bp
+from routes.subscribers import subscribers_bp
 from routes.wishlist import wishlist_bp
 from routes.availability import availability_bp
 from routes.currencies import currencies_bp
 from routes.blogs import blogs_bp
 from routes.search import search_bp
-from routes.memories import memories_bp
+from routes.company import company_bp
+from routes.analytics import analytics_bp
 from services.seed import seed_database
 
 def create_app():
@@ -37,12 +39,14 @@ def create_app():
     app.register_blueprint(messages_bp)
     app.register_blueprint(media_bp)
     app.register_blueprint(reviews_bp)
+    app.register_blueprint(subscribers_bp)
     app.register_blueprint(wishlist_bp)
     app.register_blueprint(availability_bp)
     app.register_blueprint(currencies_bp)
     app.register_blueprint(blogs_bp)
     app.register_blueprint(search_bp)
-    app.register_blueprint(memories_bp)
+    app.register_blueprint(company_bp)
+    app.register_blueprint(analytics_bp)
 
     @app.route('/')
     def index():

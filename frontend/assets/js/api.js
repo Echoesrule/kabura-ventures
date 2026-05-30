@@ -135,6 +135,13 @@ class ApiClient {
     async getRelatedTours(id) { return this.get(`/tours/${id}/related`); }
     async getActivityTypes() { return this.get('/tours/activity-types'); }
 
+    async getSubscribers(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/subscribers${query ? '?' + query : ''}`);
+    }
+
+    async subscribeNewsletter(data) { return this.post('/subscribers', data); }
+
     // Reviews
     async createReview(data) { return this.post('/reviews', data); }
     async deleteReview(id) { return this.delete(`/reviews/${id}`); }
@@ -175,56 +182,24 @@ class ApiClient {
     // Search
     async searchAll(q) { return this.get(`/search?q=${encodeURIComponent(q)}`); }
 
-    // Memories
-    async uploadImage(file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        const token = this.token;
-        const response = await fetch(`${API_BASE}/memories/upload`, {
-            method: 'POST',
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-            body: formData
-        });
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error || 'Upload failed');
-        return result;
-    }
-    async uploadImages(files) {
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            formData.append('images', files[i]);
-        }
-        const token = this.token;
-        const response = await fetch(`${API_BASE}/memories/upload`, {
-            method: 'POST',
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-            body: formData
-        });
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error || 'Upload failed');
-        return result;
-    }
-    async getMemories(params = {}) {
-        const query = new URLSearchParams(params).toString();
-        return this.get(`/memories${query ? '?' + query : ''}`);
-    }
-    async submitMemory(data) { return this.post('/memories', data); }
-    async getAllMemoriesAdmin(params = {}) {
-        const query = new URLSearchParams(params).toString();
-        return this.get(`/memories/admin/all${query ? '?' + query : ''}`);
-    }
-    async approveMemory(id) { return this.put(`/memories/${id}/approve`); }
-    async deleteMemory(id) { return this.delete(`/memories/${id}`); }
-
     // Messages
     async sendMessage(data) { return this.post('/messages', data); }
     async getMessages(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/messages${query ? '?' + query : ''}`);
     }
+    async getMyMessages(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/messages/me${query ? '?' + query : ''}`);
+    }
+    async clearMyMessages() { return this.delete('/messages/me'); }
+    async sendAdminMessage(data) { return this.post('/messages/send', data); }
     async markMessageRead(id) { return this.put(`/messages/${id}/read`); }
     async replyToMessage(id, data) { return this.put(`/messages/${id}/reply`, data); }
     async deleteMessage(id) { return this.delete(`/messages/${id}`); }
+
+    // Analytics
+    async getAnalytics() { return this.get('/analytics'); }
 }
 
 const api = new ApiClient();

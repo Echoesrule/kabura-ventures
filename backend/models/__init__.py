@@ -14,7 +14,7 @@ from .payment import Payment
 from .media import HeroMedia
 from .review import Review
 from .wishlist import Wishlist
+from .subscriber import Subscriber
 from .availability import TourAvailability
 from .currency import ExchangeRate
 from .blog import Blog
-from .memory import UserMemory, MemoryImage

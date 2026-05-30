@@ -37,6 +37,8 @@ function closeAllModals() {
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 }
 
+let currentUser = null;
+
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) {
         e.target.classList.remove('active');
@@ -55,10 +57,12 @@ async function updateAuthUI() {
         try {
             const result = await api.getProfile();
             const user = result.user;
+            currentUser = user;
 
             if (authButtons) {
                 authButtons.innerHTML = `
                     <span style="font-weight:500;">Hi, ${user.name.split(' ')[0]}</span>
+                    <button class="btn btn-sm btn-secondary" onclick="openUserInbox()">Inbox</button>
                     ${user.role === 'admin' ? '<a href="/admin.html" class="btn btn-sm btn-gold">Dashboard</a>' : ''}
                     <button class="btn btn-sm btn-secondary" onclick="api.logout()">Logout</button>
                 `;
@@ -126,6 +130,37 @@ document.addEventListener('submit', async (e) => {
         } finally {
             btn.disabled = false;
             btn.textContent = 'Sign Up';
+        }
+    }
+
+    if (e.target.classList.contains('footer-newsletter-form')) {
+        e.preventDefault();
+        const emailInput = e.target.querySelector('input[type="email"]');
+        const email = emailInput?.value.trim();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn ? btn.textContent : 'Subscribe';
+
+        if (!email) {
+            showToast('Please enter a valid email address.', 'error');
+            return;
+        }
+
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Subscribing...';
+        }
+
+        try {
+            await api.subscribeNewsletter({ email });
+            showToast('Subscribed successfully!', 'success');
+            e.target.reset();
+        } catch (err) {
+            showToast(err.message || 'Subscription failed.', 'error');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
     }
 });
@@ -206,8 +241,198 @@ function initAuthModals() {
                 </form>
             </div>
         </div>
+
+        <!-- User Inbox Modal -->
+        <div class="modal-overlay" id="user-inbox-modal">
+            <div class="modal modal-large">
+                <div class="modal-header">
+                    <h2>My Inbox</h2>
+                    <button class="modal-close" onclick="closeModal('user-inbox-modal')">&times;</button>
+                </div>
+                <div class="modal-body" style="gap:1rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:0.5rem;flex-wrap:wrap;">
+                        <span style="font-size:0.95rem;color:var(--text-secondary);">Messages from admin and support</span>
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-secondary" onclick="loadUserMessages()">Refresh</button>
+                            <button class="btn btn-sm btn-danger" onclick="clearUserMessages()">Clear Inbox</button>
+                        </div>
+                    </div>
+                    <div id="user-inbox-list" style="display:grid;gap:1rem;"></div>
+                </div>
+            </div>
+        </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function toggleReplyPanel(messageId) {
+    const panel = document.getElementById(`reply-panel-${messageId}`);
+    if (!panel) return;
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+async function openUserInbox() {
+    if (!currentUser) {
+        try {
+            const profile = await api.getProfile();
+            currentUser = profile.user;
+        } catch (err) {
+            showToast(err.message || 'Unable to load profile', 'error');
+            return;
+        }
+    }
+    openModal('user-inbox-modal');
+    await loadUserMessages();
+}
+
+async function clearUserMessages() {
+    if (!confirm('Clear all inbox messages? This cannot be undone.')) return;
+    try {
+        await api.clearMyMessages();
+        showToast('Inbox cleared', 'success');
+        await loadUserMessages();
+    } catch (err) {
+        showToast(err.message || 'Failed to clear inbox', 'error');
+    }
+}
+
+async function sendInboxMessage() {
+    const subjectInput = document.getElementById('inbox-subject');
+    const messageInput = document.getElementById('inbox-message');
+    if (!subjectInput || !messageInput) return;
+
+    const subject = subjectInput.value.trim() || 'Support message';
+    const message = messageInput.value.trim();
+    if (!message) {
+        showToast('Please enter a message before sending.', 'error');
+        return;
+    }
+
+    if (!currentUser) {
+        try {
+            const profile = await api.getProfile();
+            currentUser = profile.user;
+        } catch (err) {
+            showToast(err.message || 'Unable to identify current user', 'error');
+            return;
+        }
+    }
+
+    try {
+        await api.sendMessage({
+            user_id: currentUser.id,
+            name: currentUser.name,
+            email: currentUser.email,
+            subject,
+            message
+        });
+        showToast('Message sent to support.', 'success');
+        subjectInput.value = '';
+        messageInput.value = '';
+        await loadUserMessages();
+    } catch (err) {
+        showToast(err.message || 'Failed to send message', 'error');
+    }
+}
+
+async function sendReplyFromInbox(messageId) {
+    const textarea = document.getElementById(`reply-text-${messageId}`);
+    const panel = document.getElementById(`reply-panel-${messageId}`);
+    if (!textarea || !panel) return;
+
+    const replyText = textarea.value.trim();
+    if (!replyText) {
+        showToast('Please enter a reply before sending.', 'error');
+        return;
+    }
+
+    const subject = panel.dataset.subject || 'Admin Reply';
+    const userId = currentUser?.id;
+    const userEmail = currentUser?.email;
+    const userName = currentUser?.name;
+
+    if (!userId || !userEmail || !userName) {
+        showToast('Unable to identify current user.', 'error');
+        return;
+    }
+
+    try {
+        await api.sendMessage({
+            user_id: userId,
+            name: userName,
+            email: userEmail,
+            subject,
+            message: replyText
+        });
+        textarea.value = '';
+        panel.style.display = 'none';
+        showToast('Reply sent to admin.', 'success');
+        await loadUserMessages();
+    } catch (err) {
+        showToast(err.message || 'Failed to send reply.', 'error');
+    }
+}
+
+async function loadUserMessages() {
+    const list = document.getElementById('user-inbox-list');
+    if (!list) return;
+    list.innerHTML = '<div class="empty-state"><h3>Loading messages...</h3></div>';
+
+    try {
+        const result = await api.getMyMessages({ per_page: 50 });
+        const messages = result.messages || [];
+
+        if (!messages.length) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <h3>No inbox messages yet</h3>
+                    <p>Admin replies will appear here.</p>
+                </div>
+                <div class="card" style="padding:1rem;">
+                    <h3 style="margin:0 0 0.75rem;">Send a message to support</h3>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" id="inbox-subject" class="form-input" placeholder="Message subject" maxlength="255">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="inbox-message" class="form-input" style="min-height:120px;" placeholder="Write your message to support..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="sendInboxMessage()">Send Message</button>
+                </div>
+            `;
+            return;
+        }
+
+        list.innerHTML = messages.map(msg => `
+            <div class="card" style="padding:1rem;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">
+                    <div>
+                        <h3 style="margin:0 0 0.5rem;">${escapeHTML(msg.subject || 'Message from admin')}</h3>
+                        <div style="font-size:0.85rem;color:var(--text-secondary);">${escapeHTML(new Date(msg.created_at).toLocaleString())}</div>
+                    </div>
+                    <span style="font-size:0.85rem;color:${msg.is_read ? 'var(--text-secondary)' : 'var(--primary-green)'};font-weight:600;">${msg.is_read ? 'Read' : 'Unread'}</span>
+                </div>
+                <p style="margin:0.75rem 0 0.75rem;line-height:1.6;white-space:pre-wrap;">${escapeHTML(msg.message)}</p>
+                ${msg.admin_reply ? `<div style="margin-top:0.75rem;padding:0.85rem;border-left:4px solid var(--accent-gold);background:rgba(255,243,224,0.65);">
+                    <strong>Admin Reply</strong>
+                    <p style="margin:0.5rem 0 0;line-height:1.6;white-space:pre-wrap;">${escapeHTML(msg.admin_reply)}</p>
+                </div>` : ''}
+                <div style="margin-top:1rem;display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;">
+                    <button class="btn btn-sm btn-primary" onclick="toggleReplyPanel('${msg.id}')">Reply</button>
+                </div>
+                <div id="reply-panel-${msg.id}" class="reply-panel" data-subject="${escapeHTML('Re: ' + (msg.subject || 'Message from admin'))}" style="display:none;margin-top:1rem;">
+                    <textarea id="reply-text-${msg.id}" class="form-input" placeholder="Write your reply to the admin..." style="min-height:100px;width:100%;"></textarea>
+                    <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:0.75rem;">
+                        <button class="btn btn-sm btn-secondary" onclick="toggleReplyPanel('${msg.id}')">Cancel</button>
+                        <button class="btn btn-sm btn-gold" onclick="sendReplyFromInbox('${msg.id}')">Send Reply</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        list.innerHTML = `<div class="empty-state"><h3>Could not load messages</h3><p>${err.message || 'Please try again later.'}</p></div>`;
+    }
 }
 
 // Currency state
@@ -222,6 +447,17 @@ function formatPrice(amountKES) {
         return `KSh ${Math.round(converted).toLocaleString()}`;
     }
     return `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function escapeHTML(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
 }
 
 async function initCurrencySwitcher() {
