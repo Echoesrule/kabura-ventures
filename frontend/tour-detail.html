@@ -709,20 +709,7 @@
     <nav class="navbar">
         <div class="navbar-inner">
             <a href="/" class="navbar-brand">
-                <span class="logo-mark">
-                    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#2E7D32" />
-                                <stop offset="100%" stop-color="#C9A227" />
-                            </linearGradient>
-                        </defs>
-                        <circle cx="24" cy="24" r="22" fill="url(#logoGradient)" />
-                        <path d="M14 30L22 18L28 24L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M14 34C18 24 30 16 38 22" stroke="white" stroke-width="3" stroke-linecap="round" />
-                    </svg>
-                </span>
-                <span class="logo-text"><span class="logo-highlight">Kabura</span> Adventures</span>
+                <img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="navbar-logo">
             </a>
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
@@ -836,7 +823,7 @@
         <div style="max-width:1200px;margin:0 auto;">
             <h3>Stay Inspired</h3>
             <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
-            <form class="footer-newsletter-form" onsubmit="event.preventDefault();showToast('Subscribed!','success');this.reset();">
+            <form class="footer-newsletter-form">
                 <input type="email" placeholder="Enter your email" required>
                 <button type="submit">Subscribe</button>
             </form>
@@ -845,19 +832,19 @@
     <footer class="footer">
         <div class="footer-main">
             <div class="footer-col">
-                <div class="footer-brand"><span class="highlight">Kabura</span> Adventures</div>
+                <div class="footer-brand"><span class="highlight">Kabura</span> Ventures</div>
                 <p>Your trusted partner for unforgettable Kenyan travel experiences. From the savannahs of Maasai Mara to the pristine beaches of Mombasa, we craft journeys that celebrate Kenya's breathtaking beauty and rich culture.</p>
                 <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
+                    <a href="https://facebook.com/kaburaadventures" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com/kaburaadventures" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://tiktok.com/@kabura.adventures" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://youtube.com/@KaburaVentures" target="_blank" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
                 </div>
                 <div class="footer-payment-icons">
-                    <span>Visa</span>
-                    <span>MC</span>
-                    <span>M-Pesa</span>
-                    <span>AMEX</span>
+                    <span title="Visa"><i class="fab fa-cc-visa"></i></span>
+                    <span title="Mastercard"><i class="fab fa-cc-mastercard"></i></span>
+                    <span title="PayPal"><i class="fab fa-cc-paypal"></i></span>
+                    <span title="M-Pesa"><i class="fas fa-mobile-screen-button"></i></span>
                 </div>
             </div>
             <div class="footer-col">
@@ -882,11 +869,9 @@
             <div class="footer-col">
                 <h4>Contact &amp; Support</h4>
                 <div class="footer-contact-item"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> Nairobi, Kenya</div>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 700 000 000</div>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> info@kaburaadventures.com</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> 0716036542</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> Kaburaadventures@gmail.com</div>
                 <div class="footer-contact-item"><span class="icon"><i class="fas fa-clock"></i></span> Mon-Sat: 8AM-6PM EAT</div>
-                <h4 style="margin-top:1.5rem;font-size:0.8rem;">24/7 Support</h4>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 711 000 000</div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -922,7 +907,6 @@
     <script>
         const tourId = new URLSearchParams(window.location.search).get('id');
         let currentTour = null;
-        let currentUser = null;
         let lightboxImages = [];
         let lightboxIndex = 0;
         let mapInstance = null;
@@ -988,9 +972,9 @@
             const reviewCount = tour.reviews ? tour.reviews.length : 0;
 
             document.getElementById('tour-hero-meta').innerHTML = `
-                <span><i class="fas fa-map-marker-alt"></i> ${tour.location || 'Kenya'}</span>
-                <span><i class="far fa-clock"></i> ${tour.duration_days || 0} days</span>
-                ${rating ? `<span>${starsHtml} ${rating.toFixed(1)} (${reviewCount} reviews)</span>` : ''}
+                <span><i class="fas fa-map-marker-alt"></i> ${escapeHTML(tour.location || 'Kenya')}</span>
+                <span><i class="far fa-clock"></i> ${escapeHTML(tour.duration_days || 0)} days</span>
+                ${rating ? `<span>${starsHtml} ${escapeHTML(rating.toFixed(1))} (${escapeHTML(reviewCount)} reviews)</span>` : ''}
             `;
 
             document.getElementById('tour-hero-price').innerHTML = `KSh ${Number(tour.price).toLocaleString()} <small>per person</small>`;
@@ -1050,22 +1034,22 @@
                 <div class="tour-info-card">
                     <div class="tour-info-icon"><i class="far fa-clock"></i></div>
                     <h4>Duration</h4>
-                    <p>${tour.duration_days || 0} days</p>
+                    <p>${escapeHTML(tour.duration_days || 0)} days</p>
                 </div>
                 <div class="tour-info-card">
                     <div class="tour-info-icon"><i class="fas fa-users"></i></div>
                     <h4>Max People</h4>
-                    <p>${tour.max_people || 'N/A'}</p>
+                    <p>${escapeHTML(tour.max_people || 'N/A')}</p>
                 </div>
                 <div class="tour-info-card">
                     <div class="tour-info-icon"><i class="fas fa-map-marker-alt"></i></div>
                     <h4>Location</h4>
-                    <p>${tour.location || 'Kenya'}</p>
+                    <p>${escapeHTML(tour.location || 'Kenya')}</p>
                 </div>
                 <div class="tour-info-card">
                     <div class="tour-info-icon"><i class="fas fa-tag"></i></div>
                     <h4>Activity Type</h4>
-                    <p>${tour.activity_type || tour.category || 'Safari'}</p>
+                    <p>${escapeHTML(tour.activity_type || tour.category || 'Safari')}</p>
                 </div>
             `;
         }
@@ -1083,7 +1067,7 @@
             const parts = tour.itinerary.split(dayRegex);
 
             if (parts.length < 3) {
-                container.innerHTML = `<p style="color:var(--text-secondary);">${tour.itinerary}</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary);">${escapeHTML(tour.itinerary)}</p>`;
                 return;
             }
 
@@ -1096,11 +1080,11 @@
                 html += `
                     <div class="itinerary-day">
                         <div class="itinerary-day-header" onclick="toggleItinerary(this)">
-                            <span class="day-label">Day ${dayNum}</span>
+                            <span class="day-label">Day ${escapeHTML(dayNum)}</span>
                             <span class="day-arrow"><i class="fas fa-chevron-down"></i></span>
                         </div>
                         <div class="itinerary-day-content">
-                            <p>${dayContent}</p>
+                            <p>${escapeHTML(dayContent)}</p>
                         </div>
                     </div>
                 `;
@@ -1137,7 +1121,7 @@
                     <div class="inclusions-col">
                         <h3 class="included-title"><i class="fas fa-check" style="color:var(--primary-green);"></i> Included</h3>
                         <ul>
-                            ${included.map(item => `<li><span class="icon-check"><i class="fas fa-check" style="color:var(--primary-green);"></i></span> ${item}</li>`).join('')}
+                            ${included.map(item => `<li><span class="icon-check"><i class="fas fa-check" style="color:var(--primary-green);"></i></span> ${escapeHTML(item)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -1147,7 +1131,7 @@
                     <div class="inclusions-col">
                         <h3 class="excluded-title"><i class="fas fa-times" style="color:#D32F2F;"></i> Excluded</h3>
                         <ul>
-                            ${excluded.map(item => `<li><span class="icon-cross"><i class="fas fa-times" style="color:#D32F2F;"></i></span> ${item}</li>`).join('')}
+                            ${excluded.map(item => `<li><span class="icon-cross"><i class="fas fa-times" style="color:#D32F2F;"></i></span> ${escapeHTML(item)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -1191,15 +1175,15 @@
                         <div class="review-card">
                             <div class="review-card-header">
                                 <div class="review-card-user">
-                                    <div class="review-card-avatar" style="background:${avatarColor};color:var(--primary-green-dark);">${initials}</div>
+                                    <div class="review-card-avatar" style="background:${avatarColor};color:var(--primary-green-dark);">${escapeHTML(initials)}</div>
                                     <div>
-                                        <div class="review-card-name">${name}</div>
-                                        <div class="review-card-date">${date}</div>
+                                        <div class="review-card-name">${escapeHTML(name)}</div>
+                                        <div class="review-card-date">${escapeHTML(date)}</div>
                                     </div>
                                 </div>
                                 <div class="review-card-stars">${rStars}</div>
                             </div>
-                            <div class="review-card-comment">${review.comment || review.review || ''}</div>
+                            <div class="review-card-comment">${escapeHTML(review.comment || review.review || '')}</div>
                         </div>
                     `;
                 }).join('');

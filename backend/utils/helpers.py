@@ -4,9 +4,14 @@ from functools import wraps
 from datetime import datetime, timedelta
 import jwt
 from flask import request, jsonify, current_app
+from werkzeug.utils import secure_filename
+from PIL import Image
+
 
 def validate_email(email):
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if len(email) > 255:
+        return False
+    pattern = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
     return re.match(pattern, email) is not None
 
 def validate_required_fields(data, fields):
@@ -49,18 +54,24 @@ def sanitize_filename(filename):
     return filename
 
 def validate_date_format(date_str):
-    if not isinstance(date_str, str):
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+        return True
+    except (ValueError, TypeError):
         return False
-    patterns = [
-        r'^\d{4}-\d{2}-\d{2}$',
-        r'^\d{4}/\d{2}/\d{2}$',
-    ]
-    return any(re.match(p, date_str.strip()) for p in patterns)
 
-def allowed_file(filename):
+def allowed_file(file_or_name):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    ALLOWED_MIME_TYPES = {'image/png', 'image/jpeg', 'image/gif', 'image/webp'}
+
+    if hasattr(file_or_name, 'content_type'):
+        return file_or_name.content_type in ALLOWED_MIME_TYPES
+
+    if isinstance(file_or_name, str):
+        ext = file_or_name.rsplit('.', 1)[1].lower() if '.' in file_or_name else ''
+        return ext in ALLOWED_EXTENSIONS
+
+    return False
 
 def paginate(query, page, per_page):
     page = max(1, page)
@@ -74,3 +85,6 @@ def paginate(query, page, per_page):
         'per_page': per_page,
         'pages': (total + per_page - 1) // per_page
     }
+def validate_phone_number(phone):
+    pattern = r'^\+?[1-9]\d{1,14}$'
+    return re.match(pattern, phone) is not None

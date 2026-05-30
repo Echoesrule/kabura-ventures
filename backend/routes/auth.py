@@ -3,11 +3,13 @@ from models.user import User
 from models.message import Notification
 from models import db
 from middleware.auth import generate_token, token_required
+from middleware.rate_limit import rate_limit
 from utils.helpers import validate_email, validate_required_fields, sanitize_input, validate_length
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @auth_bp.route('/register', methods=['POST'])
+@rate_limit(config_key='register', key_prefix='register')
 def register():
     data = request.get_json()
     if not data:
@@ -54,6 +56,7 @@ def register():
     }), 201
 
 @auth_bp.route('/login', methods=['POST'])
+@rate_limit(config_key='login', key_prefix='login')
 def login():
     data = request.get_json()
     if not data:

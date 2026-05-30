@@ -15,20 +15,7 @@
     <nav class="navbar">
         <div class="navbar-inner">
             <a href="/" class="navbar-brand">
-                <span class="logo-mark">
-                    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#2E7D32" />
-                                <stop offset="100%" stop-color="#C9A227" />
-                            </linearGradient>
-                        </defs>
-                        <circle cx="24" cy="24" r="22" fill="url(#logoGradient)" />
-                        <path d="M14 30L22 18L28 24L34 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M14 34C18 24 30 16 38 22" stroke="white" stroke-width="3" stroke-linecap="round" />
-                    </svg>
-                </span>
-                <span class="logo-text"><span class="logo-highlight">Kabura</span> Adventures</span>
+                <img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="navbar-logo">
             </a>
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
@@ -126,24 +113,33 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Payment Method</label>
-                    <select class="form-select" id="pay-method" required>
-                        <option value="mpesa">M-Pesa</option>
-                        <option value="cash">Cash</option>
-                        <option value="card">Card</option>
-                    </select>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;" id="pay-method-options">
+                        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem;border:2px solid var(--border-color);border-radius:8px;cursor:pointer;transition:var(--transition);" class="payment-option" data-value="mpesa">
+                            <input type="radio" name="pay-method" value="mpesa" checked style="accent-color:var(--primary-green);">
+                            <span><strong>M-Pesa</strong></span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem;border:2px solid var(--border-color);border-radius:8px;cursor:pointer;transition:var(--transition);" class="payment-option" data-value="paypal">
+                            <input type="radio" name="pay-method" value="paypal" style="accent-color:var(--primary-green);">
+                            <span><strong>PayPal</strong></span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem;border:2px solid var(--border-color);border-radius:8px;cursor:pointer;transition:var(--transition);" class="payment-option" data-value="cash_on_arrival">
+                            <input type="radio" name="pay-method" value="cash_on_arrival" style="accent-color:var(--primary-green);">
+                            <span><strong>Cash on Arrival</strong></span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem;border:2px solid var(--border-color);border-radius:8px;cursor:pointer;transition:var(--transition);" class="payment-option" data-value="bank_transfer">
+                            <input type="radio" name="pay-method" value="bank_transfer" style="accent-color:var(--primary-green);">
+                            <span><strong>Bank Transfer</strong></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Payment Type</label>
-                    <select class="form-select" id="pay-type" required>
-                        <option value="deposit">Deposit</option>
-                        <option value="full">Full Payment</option>
-                    </select>
+                <div style="background:#FFF8E1;padding:0.75rem 1rem;border-radius:8px;margin-bottom:1rem;font-size:0.85rem;color:#795548;text-align:center;">
+                    <i class="fas fa-info-circle"></i> Online payment integration coming soon. You will be contacted with payment instructions.
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Transaction Reference (Optional)</label>
+                <div class="form-group" style="display:none;">
+                    <label class="form-label">Transaction Reference</label>
                     <input type="text" class="form-input" id="pay-ref">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%;">Submit Payment</button>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Submit Payment Request</button>
             </form>
         </div>
     </div>
@@ -153,7 +149,7 @@
         <div style="max-width:1200px;margin:0 auto;">
             <h3>Stay Inspired</h3>
             <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
-            <form class="footer-newsletter-form" onsubmit="event.preventDefault();showToast('Subscribed!','success');this.reset();">
+            <form class="footer-newsletter-form">
                 <input type="email" placeholder="Enter your email" required>
                 <button type="submit">Subscribe</button>
             </form>
@@ -162,19 +158,19 @@
     <footer class="footer">
         <div class="footer-main">
             <div class="footer-col">
-                <div class="footer-brand"><span class="highlight">Kabura</span> Adventures</div>
+                <div class="footer-brand"><span class="highlight">Kabura</span> Ventures</div>
                 <p>Your trusted partner for unforgettable Kenyan travel experiences. From the savannahs of Maasai Mara to the pristine beaches of Mombasa, we craft journeys that celebrate Kenya's breathtaking beauty and rich culture.</p>
                 <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
+                    <a href="https://facebook.com/kaburaadventures" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com/kaburaadventures" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://tiktok.com/@kabura.adventures" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://youtube.com/@KaburaVentures" target="_blank" aria-label="YouTube"><i class="fab fa-youtube" style="font-size:1.2rem;"></i></a>
                 </div>
                 <div class="footer-payment-icons">
-                    <span>Visa</span>
-                    <span>MC</span>
-                    <span>M-Pesa</span>
-                    <span>AMEX</span>
+                    <span title="Visa"><i class="fab fa-cc-visa"></i></span>
+                    <span title="Mastercard"><i class="fab fa-cc-mastercard"></i></span>
+                    <span title="PayPal"><i class="fab fa-cc-paypal"></i></span>
+                    <span title="M-Pesa"><i class="fas fa-mobile-screen-button"></i></span>
                 </div>
             </div>
             <div class="footer-col">
@@ -199,11 +195,9 @@
             <div class="footer-col">
                 <h4>Contact &amp; Support</h4>
                 <div class="footer-contact-item"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> Nairobi, Kenya</div>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 700 000 000</div>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> info@kaburaadventures.com</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> 0716036542</div>
+                <div class="footer-contact-item"><span class="icon"><i class="fas fa-envelope"></i></span> Kaburaadventures@gmail.com</div>
                 <div class="footer-contact-item"><span class="icon"><i class="fas fa-clock"></i></span> Mon-Sat: 8AM-6PM EAT</div>
-                <h4 style="margin-top:1.5rem;font-size:0.8rem;">24/7 Support</h4>
-                <div class="footer-contact-item"><span class="icon"><i class="fas fa-phone-alt"></i></span> +254 711 000 000</div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -352,9 +346,16 @@
                                         'no_show': 'badge-secondary'
                                     }[b.status] || 'badge-secondary';
 
+                                    const displayPayment = {
+                                        'unpaid': 'Unpaid',
+                                        'partially_paid': 'Partial',
+                                        'fully_paid': 'Paid',
+                                        'refunded': 'Refunded'
+                                    }[b.payment_status] || b.payment_status;
+
                                     const paymentBadge = {
                                         'unpaid': 'badge-danger',
-                                        'deposit_paid': 'badge-warning',
+                                        'partially_paid': 'badge-warning',
                                         'fully_paid': 'badge-success',
                                         'refunded': 'badge-info'
                                     }[b.payment_status] || 'badge-secondary';
@@ -366,12 +367,10 @@
                                             <td>${b.travel_date}${b.return_date ? ' &rarr; ' + b.return_date : ''}</td>
                                             <td>${b.people_count}</td>
                                             <td><span class="badge ${statusBadge}">${b.status}</span></td>
-                                            <td><span class="badge ${paymentBadge}">${b.payment_status}</span></td>
+                                            <td><span class="badge ${paymentBadge}">${displayPayment}</span></td>
                                             <td>
-                                                ${(b.status === 'confirmed' || b.status === 'pending') && b.payment_status !== 'fully_paid' && b.payment_status !== 'deposit_paid' ?
-                                                    `<button class="btn btn-sm btn-gold" onclick="openPayment('${b.id}')">Pay</button>` :
-                                                    b.payment_status === 'deposit_paid' ?
-                                                    `<button class="btn btn-sm btn-gold" onclick="openPayment('${b.id}')">Pay Balance</button>` : '-'}
+                                                ${(b.status === 'confirmed' || b.status === 'pending') && b.payment_status !== 'fully_paid' ?
+                                                    `<button class="btn btn-sm btn-gold" onclick="openPayment('${b.id}')">Pay</button>` : '-'}
                                             </td>
                                         </tr>
                                     `;
@@ -398,14 +397,15 @@
             btn.textContent = 'Processing...';
 
             try {
+                const selectedMethod = document.querySelector('input[name="pay-method"]:checked');
                 await api.createPayment({
                     booking_id: document.getElementById('pay-booking-id').value,
                     amount: parseFloat(document.getElementById('pay-amount').value),
-                    payment_method: document.getElementById('pay-method').value,
-                    payment_type: document.getElementById('pay-type').value,
+                    payment_method: selectedMethod ? selectedMethod.value : 'mpesa',
+                    payment_type: 'full',
                     transaction_ref: document.getElementById('pay-ref').value
                 });
-                showToast('Payment recorded successfully!', 'success');
+                showToast('Payment request submitted! You will be contacted with payment instructions.', 'success');
                 closeModal('payment-modal');
                 e.target.reset();
                 loadMyBookings();
