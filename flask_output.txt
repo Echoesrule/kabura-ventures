@@ -1,0 +1,72 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.8:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 526-733-935
+127.0.0.1 - - [30/May/2026 10:04:14] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:04:23] "GET /api/tours HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:04:33] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:04:41] "GET /api/tours HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:04:51] "GET /api/tours HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:09] "GET /api/tours HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:13] "GET /api/hotels HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:15] "POST /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:16] "GET /api/blogs HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/images/kabura-logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/js/api.js HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/js/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/images/placeholder.svg HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/videos/hero-1.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/videos/hero-2.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/videos/hero-3.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:05:53] "GET /assets/videos/hero-2.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:05:54] "GET /assets/videos/hero-2.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:05:54] "GET /assets/videos/hero-2.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:05:57] "GET /assets/images/hero-bg.jpg HTTP/1.1" 404 -
+127.0.0.1 - - [30/May/2026 10:05:58] "GET /api/media/hero HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:05:59] "GET /api/currencies HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:00] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [30/May/2026 10:06:02] "GET /api/hotels?per_page=8 HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:03] "GET /api/tours?featured=true&per_page=8 HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:15] "GET /tours.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:15] "GET /assets/css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:15] "GET /assets/js/api.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:16] "GET /assets/images/kabura-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:16] "GET /assets/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:16] "GET /api/tours/activity-types HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:17] "GET /api/currencies HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:17] "GET /assets/videos/hero-1.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:06:17] "GET /assets/videos/hero-1.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [30/May/2026 10:06:23] "GET /api/tours?page=1&per_page=12 HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:27] "GET /assets/images/placeholder.svg HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:32] "GET /hotels.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:32] "GET /assets/css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:33] "GET /assets/js/api.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:33] "GET /assets/images/kabura-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:33] "GET /assets/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:34] "GET /api/currencies HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:37] "GET /api/hotels?per_page=50 HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:42] "GET /blog.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:43] "GET /assets/css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:43] "GET /assets/js/api.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:43] "GET /assets/images/kabura-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:43] "GET /assets/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:06:44] "GET /api/currencies HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:44] "GET /api/blogs?page=1&per_page=12 HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:06:44] "GET /api/blogs/categories HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:07:14] "GET /tours.html HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:07:15] "GET /assets/css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:07:15] "GET /assets/js/api.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:07:15] "GET /assets/images/kabura-logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:07:15] "GET /assets/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [30/May/2026 10:07:16] "GET /api/tours/activity-types HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:07:16] "GET /api/currencies HTTP/1.1" 200 -
+127.0.0.1 - - [30/May/2026 10:07:25] "GET /api/tours?page=1&per_page=12 HTTP/1.1" 200 -

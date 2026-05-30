@@ -1,5 +1,7 @@
 import os
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory, jsonify,request
+import psycopg2
+from dotenv import load_dotenv
 from flask_cors import CORS
 from config import Config
 from models import db, bcrypt
@@ -21,6 +23,9 @@ from routes.search import search_bp
 from routes.company import company_bp
 from routes.analytics import analytics_bp
 from services.seed import seed_database
+
+load_dotenv()
+
 
 def create_app():
     app = Flask(__name__, static_folder='../frontend', static_url_path='')
@@ -74,8 +79,12 @@ def create_app():
         return jsonify({'error': 'Internal server error'}), 500
 
     with app.app_context():
-        db.create_all()
-        seed_database()
+        try:
+            db.create_all()
+            seed_database()
+        except Exception as e:
+            print(f"Warning: Could not initialize database: {e}")
+            print("App will run without database tables. Ensure Supabase connection works before use.")
 
     return app
 
