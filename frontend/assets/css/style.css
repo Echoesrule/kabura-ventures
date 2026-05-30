@@ -2218,7 +2218,11 @@ tr:hover {
 
 @media (max-width: 480px) {
     .about-intro {
-        padding: 2rem 0;
+        padding: 2rem 1rem;
+    }
+
+    .about-intro-content {
+        text-align: center;
     }
 
     .about-intro-content h2 {
@@ -2231,11 +2235,16 @@ tr:hover {
 
     .about-stats {
         gap: 0.5rem;
+        justify-content: center;
     }
 
     .about-stat {
         min-width: 70px;
         padding: 0.5rem;
+    }
+
+    .about-intro-reasons {
+        text-align: left;
     }
 
     .about-stat-value {
