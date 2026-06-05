@@ -91,7 +91,7 @@ class ApiClient {
 
     async getTour(id) { return this.get(`/tours/${id}`); }
     async createTour(data) { return this.post('/tours', data); }
-    async updateTour(id, data) { return data instanceof FormData ? this.post(`/tours/${id}`, data) : this.put(`/tours/${id}`, data); }
+    async updateTour(id, data) { return this.put(`/tours/${id}`, data); }
     async deleteTour(id) { return this.delete(`/tours/${id}`); }
     async deleteTourImage(id) { return this.delete(`/tours/images/${id}`); }
 
@@ -121,7 +121,7 @@ class ApiClient {
     }
     async getHotel(id) { return this.get(`/hotels/${id}`); }
     async createHotel(data) { return this.post('/hotels', data); }
-    async updateHotel(id, data) { return data instanceof FormData ? this.post(`/hotels/${id}`, data) : this.put(`/hotels/${id}`, data); }
+    async updateHotel(id, data) { return this.put(`/hotels/${id}`, data); }
     async deleteHotel(id) { return this.delete(`/hotels/${id}`); }
 
     // Payments
