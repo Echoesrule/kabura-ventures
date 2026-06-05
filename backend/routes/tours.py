@@ -139,7 +139,7 @@ def create_tour(current_user):
     db.session.commit()
     return jsonify({'message': 'Tour created', 'tour': tour.to_dict()}), 201
 
-@tours_bp.route('/<tour_id>', methods=['PUT'])
+@tours_bp.route('/<tour_id>', methods=['PUT', 'POST'])
 @admin_required
 def update_tour(current_user, tour_id):
     tour = Tour.query.get(tour_id)

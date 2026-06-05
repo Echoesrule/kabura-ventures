@@ -97,7 +97,7 @@ def create_hotel(current_user):
     db.session.commit()
     return jsonify({'message': 'Hotel created', 'hotel': hotel.to_dict()}), 201
 
-@hotels_bp.route('/<hotel_id>', methods=['PUT'])
+@hotels_bp.route('/<hotel_id>', methods=['PUT', 'POST'])
 @admin_required
 def update_hotel(current_user, hotel_id):
     hotel = Hotel.query.get(hotel_id)
