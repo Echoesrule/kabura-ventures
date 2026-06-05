@@ -46,7 +46,7 @@ def save_image(file, folder: str = 'images') -> str | None:
     if _use_supabase_storage():
         client = _get_supabase_client()
         if client is None:
-            return None
+            raise RuntimeError('Supabase storage is enabled but SUPABASE_URL or SUPABASE_SERVICE_KEY is missing')
 
         bucket_name = _get_bucket_name()
         path = f"{folder}/{filename}"
@@ -55,13 +55,39 @@ def save_image(file, folder: str = 'images') -> str | None:
         if isinstance(content, str):
             content = content.encode('utf-8')
 
-        client.storage.from_(bucket_name).upload(
-            path,
-            content,
-            file_options={
-                'content-type': file.mimetype or 'application/octet-stream'
-            },
-        )
+        try:
+            client.storage.from_(bucket_name).upload(
+                path,
+                content,
+                file_options={
+                    'content-type': file.mimetype or 'application/octet-stream'
+                },
+            )
+        except Exception as exc:
+            print('Supabase upload failed:')
+            print('  bucket=', bucket_name)
+            print('  path=', path)
+            print('  mimetype=', file.mimetype)
+            try:
+                response = exc.response
+            except Exception:
+                response = None
+            if response is not None:
+                try:
+                    print('  status_code=', response.status_code)
+                except Exception:
+                    pass
+                try:
+                    print('  response_text=', response.text)
+                except Exception:
+                    pass
+                try:
+                    print('  response_headers=', response.headers)
+                except Exception:
+                    pass
+            print('  exception=', repr(exc))
+            raise
+
         return client.storage.from_(bucket_name).get_public_url(path)
 
     upload_folder = current_app.config['UPLOAD_FOLDER']
@@ -83,6 +109,20 @@ def _extract_storage_path(image_url: str, bucket: str) -> str | None:
     if len(parts) >= 3 and parts[0] == bucket:
         return '/'.join(parts[1:])
     return None
+
+
+def test_supabase_bucket() -> dict:
+    client = _get_supabase_client()
+    if client is None:
+        raise RuntimeError('Supabase storage is enabled but SUPABASE_URL or SUPABASE_SERVICE_KEY is missing')
+
+    bucket_name = _get_bucket_name()
+    files = client.storage.from_(bucket_name).list('')
+    return {
+        'bucket': bucket_name,
+        'file_count': len(files),
+        'files': files[:10]
+    }
 
 
 def delete_image(image_url: str) -> None:

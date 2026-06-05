@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from models.media import HeroMedia
 from models import db
 from middleware.auth import admin_required
+from services.storage import test_supabase_bucket
 from utils.helpers import allowed_file, sanitize_input
 
 media_bp = Blueprint('media', __name__, url_prefix='/api/media')
@@ -78,3 +79,14 @@ def reorder_hero_media(current_user):
             media.sort_order = i
     db.session.commit()
     return jsonify({'message': 'Order updated'}), 200
+
+
+@media_bp.route('/supabase-check', methods=['GET'])
+@admin_required
+def supabase_check(current_user):
+    try:
+        result = test_supabase_bucket()
+        return jsonify({'status': 'ok', 'details': result}), 200
+    except Exception as exc:
+        print('Supabase health check failed:', repr(exc))
+        return jsonify({'error': 'Supabase storage check failed', 'details': str(exc)}), 500
