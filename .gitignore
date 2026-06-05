@@ -93,3 +93,4 @@ backend/instance/
 nul
 
 requirements.md
+SUPABASE_STORAGE_SETUP.md
