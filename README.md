@@ -56,6 +56,11 @@ python run.py
 | `JWT_SECRET_KEY` | JWT signing key |
 | `DATABASE_URL` | PostgreSQL connection string |
 | `FLASK_DEBUG` | Set to `0` in production |
+| `STORAGE_PROVIDER` | `local` or `supabase` |
+| `BACKEND_URL` | Backend public URL for uploaded local images |
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | Supabase service role key for storage uploads |
+| `SUPABASE_STORAGE_BUCKET` | Supabase storage bucket name (default: `public`) |
 
 ## Deployment
 

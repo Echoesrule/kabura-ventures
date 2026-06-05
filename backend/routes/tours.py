@@ -6,6 +6,7 @@ from models.tour import Tour, TourImage
 from models.review import Review
 from models import db
 from middleware.auth import admin_required, token_required
+from services.storage import save_image, delete_image
 from utils.helpers import validate_required_fields, sanitize_input, allowed_file, validate_length, validate_number
 
 tours_bp = Blueprint('tours', __name__, url_prefix='/api/tours')
@@ -122,15 +123,11 @@ def create_tour(current_user):
         files = request.files.getlist('images')
         is_first = True
         for file in files:
-            if file and allowed_file(file.filename):
-                ext = file.filename.rsplit('.', 1)[1].lower()
-                filename = f"{uuid.uuid4()}.{ext}"
-                upload_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                file.save(upload_path)
-
+            image_url = save_image(file, 'tours')
+            if image_url:
                 tour_image = TourImage(
                     tour_id=tour.id,
-                    image_url=f'/assets/images/{filename}',
+                    image_url=image_url,
                     is_primary=is_first
                 )
                 db.session.add(tour_image)
@@ -182,15 +179,11 @@ def update_tour(current_user, tour_id):
     if request.files:
         files = request.files.getlist('images')
         for i, file in enumerate(files):
-            if file and allowed_file(file.filename):
-                ext = file.filename.rsplit('.', 1)[1].lower()
-                filename = f"{uuid.uuid4()}.{ext}"
-                upload_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                file.save(upload_path)
-
+            image_url = save_image(file, 'tours')
+            if image_url:
                 tour_image = TourImage(
                     tour_id=tour.id,
-                    image_url=f'/assets/images/{filename}',
+                    image_url=image_url,
                     is_primary=i == 0
                 )
                 if i == 0:
@@ -217,6 +210,7 @@ def delete_tour_image(current_user, image_id):
     image = TourImage.query.get(image_id)
     if not image:
         return jsonify({'error': 'Image not found'}), 404
+    delete_image(image.image_url)
     db.session.delete(image)
     db.session.commit()
     return jsonify({'message': 'Image deleted'}), 200

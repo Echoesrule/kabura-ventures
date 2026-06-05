@@ -1,0 +1,119 @@
+import os
+import uuid
+from urllib.parse import urlparse
+from flask import current_app, request
+from supabase import create_client
+from werkzeug.utils import secure_filename
+from utils.helpers import allowed_file
+
+
+def _use_supabase_storage() -> bool:
+    return current_app.config.get('STORAGE_PROVIDER', 'local').lower() == 'supabase'
+
+
+def _get_supabase_client():
+    url = current_app.config.get('SUPABASE_URL')
+    key = current_app.config.get('SUPABASE_SERVICE_KEY')
+    if not url or not key:
+        return None
+    return create_client(url, key)
+
+
+def _get_bucket_name() -> str:
+    return current_app.config.get('SUPABASE_STORAGE_BUCKET', 'public')
+
+
+def _normalize_filename(file):
+    original = secure_filename(getattr(file, 'filename', '') or '')
+    name, ext = os.path.splitext(original)
+    if not name:
+        name = str(uuid.uuid4())
+    if not ext:
+        ext = '.jpg'
+    return f"{uuid.uuid4()}{ext}"
+
+
+def _local_url(filename: str) -> str:
+    host_url = current_app.config.get('BACKEND_URL') or request.url_root
+    return f"{host_url.rstrip('/')}/assets/images/{filename}"
+
+
+def save_image(file, folder: str = 'images') -> str | None:
+    if not file or not hasattr(file, 'filename') or not allowed_file(file.filename):
+        return None
+
+    filename = _normalize_filename(file)
+    if _use_supabase_storage():
+        client = _get_supabase_client()
+        if client is None:
+            return None
+
+        bucket_name = _get_bucket_name()
+        path = f"{folder}/{filename}"
+        file.stream.seek(0)
+        content = file.read()
+        if isinstance(content, str):
+            content = content.encode('utf-8')
+
+        client.storage.from_(bucket_name).upload(
+            path,
+            content,
+            file_options={
+                'content-type': file.mimetype or 'application/octet-stream'
+            },
+        )
+        return client.storage.from_(bucket_name).get_public_url(path)
+
+    upload_folder = current_app.config['UPLOAD_FOLDER']
+    os.makedirs(upload_folder, exist_ok=True)
+    upload_path = os.path.join(upload_folder, filename)
+    file.stream.seek(0)
+    file.save(upload_path)
+    return _local_url(filename)
+
+
+def _extract_storage_path(image_url: str, bucket: str) -> str | None:
+    if not image_url:
+        return None
+    parsed = urlparse(image_url)
+    path = parsed.path.lstrip('/')
+    parts = path.split('/')
+    if len(parts) >= 4 and parts[0] == 'object' and parts[1] == 'public' and parts[2] == bucket:
+        return '/'.join(parts[3:])
+    if len(parts) >= 3 and parts[0] == bucket:
+        return '/'.join(parts[1:])
+    return None
+
+
+def delete_image(image_url: str) -> None:
+    if not image_url:
+        return
+
+    if _use_supabase_storage():
+        client = _get_supabase_client()
+        if client is None:
+            return
+        bucket_name = _get_bucket_name()
+        key = _extract_storage_path(image_url, bucket_name)
+        if key:
+            try:
+                client.storage.from_(bucket_name).remove(key)
+            except Exception:
+                pass
+            return
+
+    if image_url.startswith('/assets/images/'):
+        filename = image_url.split('/assets/images/', 1)[1]
+    else:
+        parsed = urlparse(image_url)
+        if parsed.path.startswith('/assets/images/'):
+            filename = parsed.path.split('/assets/images/', 1)[1]
+        else:
+            return
+
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except OSError:
+            pass

@@ -21,7 +21,11 @@ class Config:
 
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'assets', 'images')
+    STORAGE_PROVIDER = os.environ.get('STORAGE_PROVIDER', 'local')
+    BACKEND_URL = os.environ.get('BACKEND_URL')
+    SUPABASE_URL = os.environ.get('SUPABASE_URL')
+    SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY')
+    SUPABASE_STORAGE_BUCKET = os.environ.get('SUPABASE_STORAGE_BUCKET', 'public')
 
-    
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
