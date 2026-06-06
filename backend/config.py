@@ -5,7 +5,8 @@ from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 load_dotenv()
 
 
-def _build_database_uri(uri: str | None) -> str | None:
+def _build_database_uri(uri: str | None) -> str | None: 
+    
     if not uri:
         return uri
     lowered = uri.lower()
@@ -42,7 +43,7 @@ class Config:
     BACKEND_URL = os.environ.get('BACKEND_URL')
     SUPABASE_URL = os.environ.get('SUPABASE_URL')
     SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY')
-    SUPABASE_STORAGE_BUCKET = os.environ.get('SUPABASE_STORAGE_BUCKET', 'public')
+    SUPABASE_STORAGE_BUCKET = os.environ.get('SUPABASE_STORAGE_BUCKET', 'kabura')
 
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}

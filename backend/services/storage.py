@@ -64,10 +64,13 @@ def save_image(file, folder: str = 'images') -> str | None:
                 },
             )
         except Exception as exc:
+            print('=' * 60)
             print('Supabase upload failed:')
+            print('  STORAGE_PROVIDER:', current_app.config.get('STORAGE_PROVIDER'))
             print('  bucket=', bucket_name)
             print('  path=', path)
             print('  mimetype=', file.mimetype)
+            print('  file size=', len(content), 'bytes')
             try:
                 response = exc.response
             except Exception:
@@ -78,14 +81,16 @@ def save_image(file, folder: str = 'images') -> str | None:
                 except Exception:
                     pass
                 try:
-                    print('  response_text=', response.text)
+                    print('  response_text=', response.text[:500])
                 except Exception:
                     pass
                 try:
-                    print('  response_headers=', response.headers)
+                    print('  response_headers=', dict(response.headers))
                 except Exception:
                     pass
+            print('  exception type=', type(exc).__name__)
             print('  exception=', repr(exc))
+            print('=' * 60)
             raise
 
         return client.storage.from_(bucket_name).get_public_url(path)

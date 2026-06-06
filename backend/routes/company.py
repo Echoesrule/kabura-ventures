@@ -34,3 +34,4 @@ COMPANY_INFO = {
 @company_bp.route('/api/company', methods=['GET'])
 def get_company_info():
     return jsonify(COMPANY_INFO)
+
