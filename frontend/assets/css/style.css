@@ -1404,6 +1404,123 @@ img {
     font-size: 1.1rem;
 }
 
+/* Auth split layout (login/register page) */
+.auth-page {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(180deg, rgba(46,125,50,0.03), rgba(46,125,50,0.02));
+}
+
+/* Full-screen blurred homepage preview behind auth pages */
+.auth-bg-iframe {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.auth-bg-iframe iframe {
+    width: 100vw;
+    height: 100vh;
+    border: 0;
+    transform: scale(1.03);
+    filter: blur(4px) saturate(0.98) brightness(0.95);
+    -webkit-filter: blur(4px) saturate(0.98) brightness(0.95);
+    transform-origin: center center;
+}
+
+/* Ensure auth card sits above the blurred background */
+.auth-card { position: relative; z-index: 2; }
+
+/* On small screens use static image rather than iframe for performance */
+@media (max-width: 880px) {
+    .auth-bg-iframe { display: none; }
+    .auth-right { background-image: url('/assets/images/hero-bg.jpg'); }
+}
+
+.auth-split-wrapper {
+    width: 100%;
+    max-width: 1100px;
+}
+
+.auth-card {
+    display: flex;
+    border-radius: 28px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 24px 60px rgba(16,24,40,0.12);
+}
+
+.auth-left {
+    flex: 1 1 480px;
+    padding: 3.2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-logo { height: 64px; width: auto; margin-bottom: 0.6rem; }
+.auth-brand h1 { font-size: 1.6rem; margin-bottom: 0.25rem; color: var(--dark-text); }
+.auth-sub { color: var(--text-secondary); margin-bottom: 1rem; }
+
+/* Auth toggle (login/register slider) */
+.auth-toggle { display:flex; gap:0.5rem; position:relative; width:100%; max-width:420px; margin-bottom:0.6rem; }
+.auth-tab { flex:1; padding:0.6rem 0.8rem; border-radius:999px; background:transparent; border:2px solid transparent; cursor:pointer; font-weight:600; text-align:center; }
+.auth-tab.active { background:var(--primary-green); color:white; }
+.auth-slider { position:absolute; left:0; bottom:-6px; height:4px; width:50%; background:var(--primary-green); border-radius:999px; transition: left 0.28s ease; }
+.auth-panels { position:relative; }
+.auth-panel { transition: opacity 0.36s cubic-bezier(.2,.8,.2,1), transform 0.36s cubic-bezier(.2,.8,.2,1); opacity:0; transform: translateY(8px); }
+.auth-panel.reveal-visible { opacity:1; transform: none; }
+.switch-to { color: var(--primary-green); font-weight:600; }
+
+.socials { display:flex; gap:0.6rem; margin: 0.6rem 0; }
+.soc-btn { background:#F5F5F5; border:none; width:48px; height:48px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:1.1rem; }
+
+.or-sep { text-align:center; color:var(--text-secondary); margin: 0.5rem 0; }
+
+.auth-form { margin-top: 0.6rem; }
+.auth-cta { border-radius: 999px; padding: 0.9rem 2rem; font-size:1rem; }
+.auth-note { color: var(--text-secondary); margin-top: 0.9rem; text-align:center; }
+
+.auth-right {
+    width: 520px;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    filter: blur(2px) saturate(0.98) brightness(0.96);
+}
+
+.auth-overlay { position: relative; z-index:2; }
+
+.auth-right::after {
+    content: '';
+    position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.08));
+}
+
+.auth-overlay { position: relative; z-index:2; }
+.overlay-bubble { background: rgba(255,255,255,0.9); color: var(--dark-text); padding: 0.5rem 0.9rem; border-radius: 999px; font-weight:700; box-shadow: var(--shadow-sm); }
+
+@media (max-width: 880px) {
+    .auth-card { flex-direction: column; }
+    .auth-right { width: 100%; height: 260px; }
+    .auth-left { padding: 1.5rem; }
+}
+
 /* Admin Sidebar */
 .admin-layout {
     display: flex;

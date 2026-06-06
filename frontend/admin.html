@@ -395,15 +395,39 @@
 
             <!-- Media Management -->
             <div class="admin-section" id="section-media" style="display:none;">
-                <div class="action-bar">
-                    <h2>Hero Videos</h2>
-                    <form id="video-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
-                        <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg" style="max-width:250px;" required>
-                        <button type="submit" class="btn btn-primary btn-sm">Upload Video</button>
-                    </form>
+                <h2 style="margin-bottom:1.5rem;">Media Manager</h2>
+                
+                <!-- Media Tabs -->
+                <div class="tabs" style="margin-bottom:2rem;">
+                    <button class="tab active" data-tab="hero-videos">Hero Videos</button>
+                    <button class="tab" data-tab="login-photo">Login Photo</button>
                 </div>
-                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Uploaded videos appear on the homepage hero. Max 3 recommended. Supported: mp4, webm, ogg.</p>
-                <div id="admin-media-list"></div>
+
+                <!-- Hero Videos Tab -->
+                <div id="tab-hero-videos" class="media-tab" style="display:block;">
+                    <div class="action-bar">
+                        <h3>Homepage Hero Videos</h3>
+                        <form id="video-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
+                            <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg" style="max-width:250px;" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Upload Video</button>
+                        </form>
+                    </div>
+                    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Videos appear on homepage hero. Max 3 recommended. Supported: mp4, webm, ogg.</p>
+                    <div id="admin-media-list"></div>
+                </div>
+
+                <!-- Login Photo Tab -->
+                <div id="tab-login-photo" class="media-tab" style="display:none;">
+                    <div class="action-bar">
+                        <h3>Login & Register Page Photo</h3>
+                        <form id="login-photo-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
+                            <input type="file" class="form-input" id="login-photo-file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" style="max-width:250px;" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Upload Photo</button>
+                        </form>
+                    </div>
+                    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">This image appears on the login and signup pages. Supported: PNG, JPG, GIF, WebP. Recommended size: 520x600px or larger.</p>
+                    <div id="admin-login-photo-list"></div>
+                </div>
             </div>
 
         </div>
@@ -973,6 +997,21 @@
             } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load payments</h3></div>'; }
         }
 
+        // === Media Tab Switching ===
+        (function() {
+            document.querySelectorAll('#section-media .tab[data-tab]').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.dataset.tab;
+                    document.querySelectorAll('#section-media .tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.media-tab').forEach(t => t.style.display = 'none');
+                    this.classList.add('active');
+                    document.getElementById(`tab-${tabName}`).style.display = 'block';
+                    if (tabName === 'hero-videos') loadAdminMedia();
+                    else if (tabName === 'login-photo') loadAdminLoginPhoto();
+                });
+            });
+        })();
+
         // === Media Management ===
         async function loadAdminMedia() {
             const container = document.getElementById('admin-media-list');
@@ -1035,6 +1074,111 @@
                 loadAdminMedia();
             } catch (err) { showToast(err.message, 'error'); }
             finally { btn.disabled = false; btn.textContent = 'Upload Video'; }
+        });
+
+        // === Login Photo Management ===
+        async function loadAdminLoginPhoto() {
+            const container = document.getElementById('admin-login-photo-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const url = `${API_BASE}/media/hero-image`;
+                const result = await fetch(url, { 
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                }).then(r => r.json());
+                const img = result.image;
+                container.innerHTML = img
+                    ? `<div style="display:flex;gap:2rem;align-items:flex-start;">
+                        <div style="flex-shrink:0;">
+                            <img src="${img.file_url}" style="width:280px;height:350px;object-fit:cover;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+                            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.5rem;text-align:center;">${img.filename}</p>
+                        </div>
+                        <div style="flex:1;">
+                            <h4 style="margin-bottom:0.5rem;">Current Login Photo</h4>
+                            <p style="color:var(--text-secondary);margin-bottom:1rem;">Appears on the login and signup pages.</p>
+                            <div style="display:flex;gap:0.5rem;">
+                                <button class="btn btn-danger btn-sm" onclick="deleteLoginPhoto('${img.id}')">Delete & Replace</button>
+                            </div>
+                            <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border-color);">
+                            <p style="color:var(--text-secondary);font-size:0.9rem;"><strong>Upload Time:</strong> ${new Date(img.created_at).toLocaleString()}</p>
+                        </div>
+                    </div>`
+                    : '<div class="empty-state"><h3>No login photo yet</h3><p style="color:var(--text-secondary);">Upload an image above to use it on the login and signup pages.</p></div>';
+            } catch (err) { 
+                container.innerHTML = '<div class="empty-state"><h3>Failed to load photo</h3></div>';
+                console.error(err);
+            }
+        }
+
+        async function deleteLoginPhoto(id) {
+            if (!confirm('Delete this photo? The login pages will revert to the default image.')) return;
+            try {
+                const url = `${API_BASE}/media/hero-image/${id}`;
+                const res = await fetch(url, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                
+                if (!res.ok) {
+                    showToast('Failed to delete photo', 'error');
+                    return;
+                }
+                
+                showToast('Photo deleted', 'success');
+                loadAdminLoginPhoto();
+            } catch (err) { showToast('Failed to delete photo', 'error'); }
+        }
+
+        document.getElementById('login-photo-upload-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Uploading...';
+
+            const fd = new FormData();
+            const fileInput = document.getElementById('login-photo-file');
+            if (!fileInput.files[0]) {
+                showToast('Please select a file', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Upload Photo';
+                return;
+            }
+            fd.append('file', fileInput.files[0]);
+
+            try {
+                const url = `${API_BASE}/media/hero-image`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                    body: fd
+                });
+                
+                console.log('Upload response status:', res.status);
+                
+                if (!res.ok) {
+                    console.error('Upload failed with status:', res.status);
+                    try {
+                        const errorData = await res.json();
+                        console.error('Error details:', errorData);
+                    } catch (e) {
+                        const text = await res.text();
+                        console.error('Response body:', text.substring(0, 200));
+                    }
+                    showToast('Upload failed', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Upload Photo';
+                    return;
+                }
+
+                const data = await res.json();
+                showToast('Photo uploaded successfully!', 'success');
+                e.target.reset();
+                loadAdminLoginPhoto();
+            } catch (err) { 
+                console.error('Upload error:', err);
+                showToast('Upload failed', 'error');
+            }
+            finally { btn.disabled = false; btn.textContent = 'Upload Photo'; }
         });
 
         // === Blog Management ===

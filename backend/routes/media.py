@@ -8,6 +8,9 @@ from models import db
 from middleware.auth import admin_required
 from services.storage import test_supabase_bucket
 from utils.helpers import allowed_file, sanitize_input
+from services.storage import save_image, delete_image
+from models.media import HeroImage
+from flask import current_app
 
 media_bp = Blueprint('media', __name__, url_prefix='/api/media')
 
@@ -90,3 +93,51 @@ def supabase_check(current_user):
     except Exception as exc:
         print('Supabase health check failed:', repr(exc))
         return jsonify({'error': 'Supabase storage check failed', 'details': str(exc)}), 500
+
+
+@media_bp.route('/hero-image', methods=['GET'])
+def get_hero_image():
+    img = HeroImage.query.filter_by(is_active=True).order_by(HeroImage.created_at.desc()).first()
+    if not img:
+        return jsonify({'image': None}), 200
+    return jsonify({'image': img.to_dict()}), 200
+
+
+@media_bp.route('/hero-image', methods=['POST'])
+@admin_required
+def upload_hero_image(current_user):
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+    file = request.files['file']
+    if not file.filename:
+        return jsonify({'error': 'No file selected'}), 400
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+
+    # save image via storage service (supports supabase or local)
+    try:
+        file_url = save_image(file, 'hero')
+    except Exception as exc:
+        return jsonify({'error': 'Upload failed', 'details': str(exc)}), 500
+
+    # mark existing images inactive
+    HeroImage.query.update({'is_active': False})
+    img = HeroImage(filename=file.filename, file_url=file_url, is_active=True)
+    db.session.add(img)
+    db.session.commit()
+    return jsonify({'message': 'Hero image uploaded', 'image': img.to_dict()}), 201
+
+
+@media_bp.route('/hero-image/<image_id>', methods=['DELETE'])
+@admin_required
+def delete_hero_image(current_user, image_id):
+    img = HeroImage.query.get(image_id)
+    if not img:
+        return jsonify({'error': 'Image not found'}), 404
+    try:
+        delete_image(img.file_url)
+    except Exception:
+        pass
+    db.session.delete(img)
+    db.session.commit()
+    return jsonify({'message': 'Hero image deleted'}), 200

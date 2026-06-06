@@ -80,8 +80,8 @@ function renderGuestAuth() {
     const authButtons = document.getElementById('auth-buttons');
     if (!authButtons) return;
     authButtons.innerHTML = `
-        <button class="btn btn-sm btn-secondary" onclick="openModal('login-modal')">Login</button>
-        <button class="btn btn-sm btn-primary" onclick="openModal('register-modal')">Sign Up</button>
+        <button class="btn btn-sm btn-secondary" onclick="window.location.href='/login.html'">Login</button>
+        <button class="btn btn-sm btn-primary" onclick="window.location.href='/signup.html'">Sign Up</button>
     `;
 }
 
@@ -89,18 +89,27 @@ function renderGuestAuth() {
 document.addEventListener('submit', async (e) => {
     if (e.target.id === 'login-form') {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
+        const identifier = document.getElementById('login-identifier').value;
         const password = document.getElementById('login-password').value;
         const btn = e.target.querySelector('button[type="submit"]');
         btn.disabled = true;
         btn.textContent = 'Loading...';
 
         try {
-            await api.login({ email, password });
+            const payload = { identifier, password };
+            // also include email field when identifier looks like an email to satisfy servers expecting 'email'
+            if (identifier && identifier.indexOf('@') !== -1) payload.email = identifier;
+            const result = await api.login(payload);
             showToast('Login successful!', 'success');
-            closeAllModals();
-            updateAuthUI();
-            e.target.reset();
+            // If this is the standalone auth page, redirect to homepage
+            const path = window.location.pathname || '';
+            if (path.endsWith('login.html') || path.endsWith('signup.html') || path.endsWith('/login') || path.endsWith('/signup')) {
+                setTimeout(() => { window.location.href = '/'; }, 300);
+            } else {
+                closeAllModals();
+                updateAuthUI();
+                e.target.reset();
+            }
         } catch (err) {
             showToast(err.message, 'error');
         } finally {
@@ -165,6 +174,57 @@ document.addEventListener('submit', async (e) => {
     }
 });
 
+// Auth page slider initialization (login/signup panels)
+function initAuthPage() {
+    const tabs = document.querySelectorAll('.auth-tab');
+    const slider = document.querySelector('.auth-slider');
+    const panels = document.querySelectorAll('.auth-panel');
+
+    if (!tabs || tabs.length === 0) return;
+
+    function showPanel(target) {
+        panels.forEach(p => {
+            if (p.dataset.panel === target) {
+                p.style.display = '';
+                p.style.opacity = '1';
+                p.style.transform = 'none';
+                p.classList.add('reveal-visible');
+            } else {
+                p.style.display = 'none';
+                p.style.opacity = '0';
+                p.style.transform = 'translateY(8px)';
+                p.classList.remove('reveal-visible');
+            }
+        });
+    }
+
+    tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            if (slider) slider.style.left = (i === 0 ? '0%' : '50%');
+            const target = tab.dataset.target;
+            showPanel(target);
+        });
+    });
+
+    // initialize position based on active tab
+    const activeIndex = Array.from(tabs).findIndex(t => t.classList.contains('active'));
+    const initIndex = activeIndex >= 0 ? activeIndex : 0;
+    if (slider) slider.style.left = (initIndex === 0 ? '0%' : '50%');
+    const initialTarget = tabs[initIndex] ? tabs[initIndex].dataset.target : (panels[0] && panels[0].dataset.panel);
+    if (initialTarget) showPanel(initialTarget);
+
+    document.querySelectorAll('.switch-to').forEach(a => {
+        a.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            const target = a.dataset.target;
+            const tab = Array.from(tabs).find(t => t.dataset.target === target);
+            if (tab) tab.click();
+        });
+    });
+}
+
 // Hamburger menu
 document.addEventListener('click', (e) => {
     if (e.target.closest('.hamburger')) {
@@ -195,8 +255,8 @@ function initAuthModals() {
                 </div>
                 <form id="login-form">
                     <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="login-email" required>
+                        <label class="form-label">Username or Email</label>
+                        <input type="text" class="form-input" id="login-identifier" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Password</label>
@@ -549,5 +609,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuthModals();
     updateAuthUI();
     initCurrencySwitcher();
+    initAuthPage();
     setupScrollReveal();
+    // load hero image for auth pages
+    (async function loadAuthHero() {
+        try {
+            const url = `${API_BASE.replace('/api','')}/api/media/hero-image`;
+            const r = await fetch(url, { method: 'GET' });
+            if (!r.ok) return;
+            const data = await r.json();
+            if (data && data.image && data.image.file_url) {
+                const el = document.getElementById('auth-hero-image');
+                if (el) el.src = data.image.file_url;
+            }
+        } catch (err) {
+            // ignore
+        }
+    })();
 });

@@ -58,20 +58,48 @@ def register():
 @auth_bp.route('/login', methods=['POST'])
 @rate_limit(config_key='login', key_prefix='login')
 def login():
-    data = request.get_json()
+    # debug: log incoming payload for troubleshooting client mismatch
+    try:
+        raw = request.get_data(as_text=True)
+    except Exception:
+        raw = '<unreadable>'
+    request_app = request
+    try:
+        from flask import current_app
+        current_app.logger.debug(f"[/api/auth/login] raw_request_data: {raw}")
+        current_app.logger.debug(f"[/api/auth/login] content_type: {request.content_type}")
+        current_app.logger.debug(f"[/api/auth/login] headers: {dict(request.headers)}")
+    except Exception:
+        pass
+
+    data = request.get_json(silent=True)
     if not data:
-        return jsonify({'error': 'No data provided'}), 400
+        # try form-encoded fallback (e.g., browser form submit)
+        form_data = request.form.to_dict() if request.form else None
+        if form_data:
+            try:
+                from flask import current_app
+                current_app.logger.debug(f"[/api/auth/login] parsed form_data: {form_data}")
+            except Exception:
+                pass
+            data = form_data
+        else:
+            return jsonify({'error': 'No data provided', 'raw': raw}), 400
 
-    missing = validate_required_fields(data, ['email', 'password'])
-    if missing:
-        return jsonify({'error': f'Missing fields: {", ".join(missing)}'}), 400
+    # accept either 'email' or 'identifier' (username/name) for login
+    if not data.get('password') or not (data.get('email') or data.get('identifier')):
+        return jsonify({'error': 'Missing fields: email/identifier, password'}), 400
 
-    email = sanitize_input(data['email']).lower()
+    identifier = sanitize_input(data.get('identifier') or data.get('email') or '').lower()
     password = data['password']
 
-    user = User.query.filter_by(email=email).first()
+    # try to find by email first, then by name
+    user = User.query.filter_by(email=identifier).first()
+    if not user:
+        user = User.query.filter_by(name=identifier).first()
+
     if not user or not user.check_password(password):
-        return jsonify({'error': 'Invalid email or password'}), 401
+        return jsonify({'error': 'Invalid credentials'}), 401
 
     token = generate_token(user.id, user.role)
 

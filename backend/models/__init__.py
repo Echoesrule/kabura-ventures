@@ -11,7 +11,7 @@ from .booking import Booking
 from .flight import FlightRequest
 from .message import Message, Notification
 from .payment import Payment
-from .media import HeroMedia
+from .media import HeroMedia, HeroImage
 from .review import Review
 from .wishlist import Wishlist
 from .subscriber import Subscriber

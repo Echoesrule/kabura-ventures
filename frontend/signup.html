@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Kabura Ventures</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="auth-bg-iframe" aria-hidden="true">
+        <iframe src="/" tabindex="-1"></iframe>
+    </div>
+    <main class="auth-page">
+        <div class="auth-split-wrapper">
+            <div class="auth-card">
+                <div class="auth-left">
+                    <div class="auth-brand">
+                        <img src="/assets/images/kabura-logo.png" alt="Kabura" class="auth-logo">
+                        <h1>Create Account</h1>
+                        <p class="auth-sub">Join Kabura to manage bookings and discover exclusive tours.</p>
+                    </div>
+
+                    <div class="auth-toggle" role="tablist" aria-label="Auth switch">
+                        <button class="auth-tab" data-target="login-panel">Login</button>
+                        <button class="auth-tab active" data-target="register-panel">Sign Up</button>
+                        <div class="auth-slider"></div>
+                    </div>
+
+                    <div class="socials">
+                        <button class="soc-btn"><i class="fa-brands fa-apple"></i></button>
+                        <button class="soc-btn"><i class="fa-brands fa-google"></i></button>
+                        <button class="soc-btn"><i class="fa-brands fa-facebook-f"></i></button>
+                    </div>
+
+                    <div class="or-sep">or</div>
+
+                    <div class="auth-panels">
+                        <form id="login-form" class="auth-form auth-panel" data-panel="login-panel" style="display:none;">
+                            <div class="form-group">
+                                <label class="form-label">Username or Email</label>
+                                <input type="text" class="form-input" id="login-identifier" required placeholder="Username or email">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-input" id="login-password" required placeholder="Your password">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg auth-cta">Login</button>
+                            <p class="auth-note">Don't have an account? <a href="#" class="switch-to" data-target="register-panel">Sign Up</a></p>
+                        </form>
+
+                        <form id="register-form" class="auth-form auth-panel" data-panel="register-panel">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" id="reg-name" required placeholder="Your full name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" id="reg-email" required placeholder="you@domain.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-input" id="reg-phone" placeholder="Optional phone">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-input" id="reg-password" minlength="6" required placeholder="Create a password">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg auth-cta">Sign Up</button>
+                            <p class="auth-note">Already have an account? <a href="#" class="switch-to" data-target="login-panel">Log in</a></p>
+                        </form>
+                    </div>
+                </div>
+                <div class="auth-right" role="img" aria-label="Scenic view">
+                    <img id="auth-hero-image" src="/assets/images/hero-bg.jpg" alt="Hero" class="auth-hero-img">
+                    <div class="auth-overlay">
+                        <div class="overlay-bubble">Gringo Trail</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+</body>
+</html>
