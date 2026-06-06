@@ -43,6 +43,7 @@ class Config:
     BACKEND_URL = os.environ.get('BACKEND_URL')
     SUPABASE_URL = os.environ.get('SUPABASE_URL')
     SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY')
+    SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY')
     SUPABASE_STORAGE_BUCKET = os.environ.get('SUPABASE_STORAGE_BUCKET', 'kabura')
 
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB

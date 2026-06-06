@@ -12,7 +12,6 @@ Q = '?auto=compress&cs=tinysrgb&w=800'
 
 TOUR_IMAGES = {
     'Maasai Mara Safari': [
-        'https://images.pexels.com/photos/259771/pexels-photo-259771.jpeg' + Q,
         'https://images.pexels.com/photos/750540/pexels-photo-750540.jpeg' + Q,
     ],
     'Mombasa Beach Getaway': [

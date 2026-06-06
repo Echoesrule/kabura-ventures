@@ -28,9 +28,10 @@
                     </div>
 
                     <div class="socials">
-                        <button class="soc-btn"><i class="fa-brands fa-apple"></i></button>
-                        <button class="soc-btn"><i class="fa-brands fa-google"></i></button>
-                        <button class="soc-btn"><i class="fa-brands fa-facebook-f"></i></button>
+                        <button class="soc-btn soc-btn-text" onclick="signInWithGoogle()" title="Continue with Google" aria-label="Continue with Google">
+                            <i class="fa-brands fa-google"></i>
+                            <span>Continue with Google</span>
+                        </button>
                     </div>
 
                     <div class="or-sep">or</div>
@@ -46,6 +47,9 @@
                                 <input type="password" class="form-input" id="login-password" required placeholder="Your password">
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg auth-cta">Login</button>
+                            <p class="auth-note" style="text-align:center;margin-top:0.5rem;">
+                                <a href="#" onclick="event.preventDefault();showForgotPasswordForm();" style="color:var(--text-secondary);font-size:0.85rem;">Forgot Password?</a>
+                            </p>
                             <p class="auth-note">Don't have an account? <a href="#" class="switch-to" data-target="register-panel">Sign Up</a></p>
                         </form>
 
@@ -81,7 +85,15 @@
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/app.js"></script>
+    <script>
+        // Initialize Supabase auth on auth pages
+        document.addEventListener('DOMContentLoaded', () => {
+            initSupabaseAuthPage();
+        });
+    </script>
 </body>
 </html>
