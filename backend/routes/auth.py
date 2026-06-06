@@ -48,10 +48,10 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    otp_sent = send_otp_email(email)
+    otp_sent, otp_error = send_otp_email(email)
 
     if not otp_sent:
-        return jsonify({'error': 'Failed to send verification email. Please try again.'}), 500
+        return jsonify({'error': f'Failed to send verification email: {otp_error}'}), 500
 
     return jsonify({
         'message': 'Registration successful. Please check your email for the verification code.',
@@ -73,9 +73,9 @@ def send_otp():
     if user.is_verified:
         return jsonify({'error': 'Email already verified'}), 400
 
-    otp_sent = send_otp_email(email)
+    otp_sent, otp_error = send_otp_email(email)
     if not otp_sent:
-        return jsonify({'error': 'Failed to send verification email. Please try again.'}), 500
+        return jsonify({'error': f'Failed to send verification email: {otp_error}'}), 500
 
     return jsonify({'message': 'Verification code sent to your email.'}), 200
 
@@ -96,9 +96,9 @@ def verify_email():
         token = generate_token(user.id, user.role)
         return jsonify({'message': 'Email already verified', 'token': token, 'user': user.to_dict()}), 200
 
-    valid = verify_otp_code(email, token)
+    valid, verify_error = verify_otp_code(email, token)
     if not valid:
-        return jsonify({'error': 'Invalid or expired verification code'}), 400
+        return jsonify({'error': verify_error or 'Invalid or expired verification code'}), 400
 
     user.is_verified = True
     db.session.commit()

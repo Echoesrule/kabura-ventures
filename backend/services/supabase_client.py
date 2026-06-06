@@ -109,37 +109,41 @@ def get_anon_client():
         return None
 
 
-def send_otp_email(email: str) -> bool:
-    """Send a 6-digit OTP verification code to the given email via Supabase."""
+def send_otp_email(email: str) -> tuple:
+    """Send a 6-digit OTP verification code to the given email via Supabase.
+    Returns (success: bool, error_msg: str | None)."""
     client = get_anon_client()
     if not client:
-        return False
+        return False, "Supabase client not available (check env vars)"
     try:
         client.auth.sign_in_with_otp({
             'email': email,
             'options': {'should_create_user': True},
         })
-        return True
+        return True, None
     except Exception as e:
-        print(f"[supabase_client] Failed to send OTP email: {e}")
-        return False
+        err_msg = str(e)
+        print(f"[supabase_client] Failed to send OTP email: {err_msg}")
+        return False, err_msg
 
 
-def verify_otp_code(email: str, token: str) -> bool:
-    """Verify a 6-digit OTP code for the given email via Supabase."""
+def verify_otp_code(email: str, token: str) -> tuple:
+    """Verify a 6-digit OTP code for the given email via Supabase.
+    Returns (success: bool, error_msg: str | None)."""
     client = get_anon_client()
     if not client:
-        return False
+        return False, "Supabase client not available (check env vars)"
     try:
         client.auth.verify_otp({
             'email': email,
             'token': token,
             'type': 'email',
         })
-        return True
+        return True, None
     except Exception as e:
-        print(f"[supabase_client] OTP verification failed: {e}")
-        return False
+        err_msg = str(e)
+        print(f"[supabase_client] OTP verification failed: {err_msg}")
+        return False, err_msg
 
 
 def update_supabase_password(access_token: str, new_password: str) -> bool:
