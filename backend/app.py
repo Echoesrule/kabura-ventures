@@ -81,6 +81,12 @@ def create_app():
     with app.app_context():
         try:
             db.create_all()
+            # migrate: add caption column to hero_images if missing
+            try:
+                db.session.execute(db.text('ALTER TABLE hero_images ADD COLUMN IF NOT EXISTS caption VARCHAR(255)'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
             seed_database()
         except Exception as e:
             print(f"Warning: Could not initialize database: {e}")
