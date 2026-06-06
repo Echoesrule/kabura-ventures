@@ -420,8 +420,9 @@
                 <div id="tab-login-photo" class="media-tab" style="display:none;">
                     <div class="action-bar">
                         <h3>Login & Register Page Photo</h3>
-                        <form id="login-photo-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
+                        <form id="login-photo-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
                             <input type="file" class="form-input" id="login-photo-file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" style="max-width:250px;" required>
+                            <input type="text" class="form-input" id="login-photo-caption" placeholder="Caption (e.g. River Yala)" style="max-width:200px;">
                             <button type="submit" class="btn btn-primary btn-sm">Upload Photo</button>
                         </form>
                     </div>
@@ -1096,6 +1097,7 @@
                         <div style="flex:1;">
                             <h4 style="margin-bottom:0.5rem;">Current Login Photo</h4>
                             <p style="color:var(--text-secondary);margin-bottom:1rem;">Appears on the login and signup pages.</p>
+                            ${img.caption ? `<p style="margin-bottom:1rem;"><strong>Caption:</strong> ${img.caption}</p>` : ''}
                             <div style="display:flex;gap:0.5rem;">
                                 <button class="btn btn-danger btn-sm" onclick="deleteLoginPhoto('${img.id}')">Delete & Replace</button>
                             </div>
@@ -1144,6 +1146,10 @@
                 return;
             }
             fd.append('file', fileInput.files[0]);
+            const captionInput = document.getElementById('login-photo-caption');
+            if (captionInput && captionInput.value.trim()) {
+                fd.append('caption', captionInput.value.trim());
+            }
 
             try {
                 const url = `${API_BASE}/media/hero-image`;

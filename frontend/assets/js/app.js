@@ -618,9 +618,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const r = await fetch(url, { method: 'GET' });
             if (!r.ok) return;
             const data = await r.json();
-            if (data && data.image && data.image.file_url) {
-                const el = document.getElementById('auth-hero-image');
-                if (el) el.src = data.image.file_url;
+            if (data && data.image) {
+                const imgEl = document.getElementById('auth-hero-image');
+                if (imgEl && data.image.file_url) imgEl.src = data.image.file_url;
+                const capEl = document.getElementById('auth-hero-caption');
+                if (capEl && data.image.caption) capEl.textContent = data.image.caption;
             }
         } catch (err) {
             // ignore

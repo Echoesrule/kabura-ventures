@@ -120,9 +120,12 @@ def upload_hero_image(current_user):
     except Exception as exc:
         return jsonify({'error': 'Upload failed', 'details': str(exc)}), 500
 
+    # get optional caption from form data
+    caption = request.form.get('caption', '').strip() or None
+
     # mark existing images inactive
     HeroImage.query.update({'is_active': False})
-    img = HeroImage(filename=file.filename, file_url=file_url, is_active=True)
+    img = HeroImage(filename=file.filename, file_url=file_url, caption=caption, is_active=True)
     db.session.add(img)
     db.session.commit()
     return jsonify({'message': 'Hero image uploaded', 'image': img.to_dict()}), 201

@@ -29,6 +29,7 @@ class HeroImage(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     filename = db.Column(db.String(255), nullable=False)
     file_url = db.Column(db.String(500), nullable=False)
+    caption = db.Column(db.String(255), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -37,6 +38,7 @@ class HeroImage(db.Model):
             'id': self.id,
             'filename': self.filename,
             'file_url': self.file_url,
+            'caption': self.caption,
             'is_active': self.is_active,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
