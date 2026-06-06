@@ -91,7 +91,9 @@ def create_app():
                 db.session.rollback()
             # migrate: add is_verified column to users if missing
             try:
-                db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE'))
+                db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN'))
+                db.session.execute(db.text('UPDATE users SET is_verified = TRUE WHERE is_verified IS NULL'))
+                db.session.execute(db.text('ALTER TABLE users ALTER COLUMN is_verified SET DEFAULT FALSE'))
                 db.session.commit()
             except Exception:
                 db.session.rollback()
