@@ -66,12 +66,21 @@ class ApiClient {
     // Auth
     async register(data) {
         const result = await this.post('/auth/register', data);
-        if (result.token) this.setToken(result.token);
         return result;
     }
 
     async login(data) {
         const result = await this.post('/auth/login', data);
+        if (result.token) this.setToken(result.token);
+        return result;
+    }
+
+    async sendOtp(email) {
+        return this.post('/auth/send-otp', { email });
+    }
+
+    async verifyEmail(email, token) {
+        const result = await this.post('/auth/verify-email', { email, token });
         if (result.token) this.setToken(result.token);
         return result;
     }

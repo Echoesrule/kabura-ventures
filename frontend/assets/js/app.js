@@ -97,11 +97,9 @@ document.addEventListener('submit', async (e) => {
 
         try {
             const payload = { identifier, password };
-            // also include email field when identifier looks like an email to satisfy servers expecting 'email'
             if (identifier && identifier.indexOf('@') !== -1) payload.email = identifier;
             const result = await api.login(payload);
             showToast('Login successful!', 'success');
-            // If this is the standalone auth page, redirect to homepage
             const path = window.location.pathname || '';
             if (path.endsWith('login.html') || path.endsWith('signup.html') || path.endsWith('/login') || path.endsWith('/signup')) {
                 setTimeout(() => { window.location.href = '/'; }, 300);
@@ -111,7 +109,11 @@ document.addEventListener('submit', async (e) => {
                 e.target.reset();
             }
         } catch (err) {
-            showToast(err.message, 'error');
+            if (err.message && err.message.includes('verify your email')) {
+                showEmailVerification(identifier.indexOf('@') !== -1 ? identifier : '');
+            } else {
+                showToast(err.message, 'error');
+            }
         } finally {
             btn.disabled = false;
             btn.textContent = 'Login';
@@ -129,11 +131,27 @@ document.addEventListener('submit', async (e) => {
         btn.textContent = 'Loading...';
 
         try {
-            await api.register({ name, email, password, phone });
-            showToast('Registration successful!', 'success');
-            closeAllModals();
-            updateAuthUI();
-            e.target.reset();
+            const result = await api.register({ name, email, password, phone });
+            if (result.requires_verification) {
+                const path = window.location.pathname || '';
+                if (path.endsWith('login.html') || path.endsWith('signup.html')) {
+                    showEmailVerification(result.email);
+                } else {
+                    showToast('Verification code sent! Check your email.', 'success');
+                    setTimeout(() => { window.location.href = '/signup.html'; }, 500);
+                }
+            } else {
+                if (result.token) api.setToken(result.token);
+                showToast('Registration successful!', 'success');
+                const path = window.location.pathname || '';
+                if (path.endsWith('login.html') || path.endsWith('signup.html')) {
+                    setTimeout(() => { window.location.href = '/'; }, 300);
+                } else {
+                    closeAllModals();
+                    updateAuthUI();
+                    e.target.reset();
+                }
+            }
         } catch (err) {
             showToast(err.message, 'error');
         } finally {
@@ -173,6 +191,119 @@ document.addEventListener('submit', async (e) => {
         }
     }
 });
+
+// Email verification UI
+function showEmailVerification(email) {
+    const existing = document.getElementById('verify-email-panel');
+    if (existing) existing.remove();
+
+    const panels = document.querySelector('.auth-panels');
+    const socials = document.querySelector('.socials');
+    const orSep = document.querySelector('.or-sep');
+    const toggle = document.querySelector('.auth-toggle');
+
+    if (panels) panels.style.display = 'none';
+    if (socials) socials.style.display = 'none';
+    if (orSep) orSep.style.display = 'none';
+    if (toggle) toggle.style.display = 'none';
+
+    const container = document.querySelector('.auth-left');
+    if (!container) return;
+
+    const div = document.createElement('div');
+    div.id = 'verify-email-panel';
+    div.innerHTML = `
+        <div style="text-align:center;padding:1rem 0;">
+            <div style="font-size:3rem;margin-bottom:1rem;">&#9993;</div>
+            <h3 style="margin-bottom:0.5rem;">Verify Your Email</h3>
+            <p style="color:var(--text-secondary);margin-bottom:1.5rem;">
+                We sent a 6-digit code to<br><strong>${escapeHTML(email)}</strong>
+            </p>
+            <div class="form-group" style="max-width:280px;margin:0 auto;">
+                <input type="text" id="otp-input" class="form-input"
+                    placeholder="Enter 6-digit code" maxlength="6"
+                    style="text-align:center;font-size:1.5rem;letter-spacing:8px;font-weight:600;">
+            </div>
+            <button class="btn btn-primary btn-lg auth-cta" id="verify-email-btn" onclick="handleVerifyEmail('${escapeHTML(email)}')">
+                Verify Email
+            </button>
+            <p class="auth-note" style="margin-top:1rem;">
+                Didn't get the code?
+                <a href="#" onclick="event.preventDefault();resendOtp('${escapeHTML(email)}')" style="color:var(--primary-green);font-weight:600;">
+                    Resend Code
+                </a>
+            </p>
+            <p class="auth-note">
+                <a href="#" onclick="event.preventDefault();cancelVerification()" style="color:var(--text-secondary);font-size:0.85rem;">
+                    Back to Sign Up
+                </a>
+            </p>
+        </div>
+    `;
+    container.appendChild(div);
+
+    const otpInput = document.getElementById('otp-input');
+    if (otpInput) {
+        otpInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        });
+        otpInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleVerifyEmail(email);
+        });
+        otpInput.focus();
+    }
+
+    resendOtp(email);
+}
+
+async function handleVerifyEmail(email) {
+    const token = document.getElementById('otp-input').value.trim();
+    if (token.length < 6) {
+        showToast('Please enter the full 6-digit code', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('verify-email-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Verifying...'; }
+
+    try {
+        const result = await api.verifyEmail(email, token);
+        showToast('Email verified! Welcome!', 'success');
+        setTimeout(() => { window.location.href = '/'; }, 300);
+    } catch (err) {
+        showToast(err.message || 'Invalid code. Please try again.', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = 'Verify Email'; }
+    }
+}
+
+async function resendOtp(email) {
+    if (!email) return;
+    const link = document.querySelector('a[onclick*="resendOtp"]');
+    if (link) link.style.opacity = '0.5';
+    try {
+        await api.sendOtp(email);
+        showToast('Code resent! Check your email.', 'success');
+    } catch (err) {
+        showToast(err.message || 'Failed to resend code', 'error');
+    } finally {
+        if (link) link.style.opacity = '1';
+    }
+}
+
+function cancelVerification() {
+    const panel = document.getElementById('verify-email-panel');
+    if (panel) panel.remove();
+
+    const panels = document.querySelector('.auth-panels');
+    const socials = document.querySelector('.socials');
+    const orSep = document.querySelector('.or-sep');
+    const toggle = document.querySelector('.auth-toggle');
+
+    if (panels) panels.style.display = '';
+    if (socials) socials.style.display = '';
+    if (orSep) orSep.style.display = '';
+    if (toggle) toggle.style.display = '';
+}
 
 // Auth page slider initialization (login/signup panels)
 function initAuthPage() {

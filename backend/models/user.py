@@ -11,6 +11,7 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default='customer')
     phone = db.Column(db.String(50))
+    is_verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -27,5 +28,6 @@ class User(db.Model):
             'email': self.email,
             'role': self.role,
             'phone': self.phone,
+            'is_verified': self.is_verified,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }

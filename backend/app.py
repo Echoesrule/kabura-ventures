@@ -89,6 +89,12 @@ def create_app():
                 db.session.commit()
             except Exception:
                 db.session.rollback()
+            # migrate: add is_verified column to users if missing
+            try:
+                db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
             seed_database()
         except Exception as e:
             print(f"Warning: Could not initialize database: {e}")

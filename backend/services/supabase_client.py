@@ -93,6 +93,55 @@ def create_supabase_user(email: str, password: str, name: str = '') -> Optional[
     return None
 
 
+def get_anon_client():
+    """Create and return a regular (non-admin) Supabase client using the anon key."""
+    if not _supabase_available:
+        return None
+    url = os.environ.get('SUPABASE_URL')
+    anon_key = os.environ.get('SUPABASE_ANON_KEY')
+    if not url or not anon_key:
+        print("[supabase_client] SUPABASE_URL or SUPABASE_ANON_KEY not set")
+        return None
+    try:
+        return create_client(url, anon_key)
+    except Exception as e:
+        print(f"[supabase_client] Failed to create anon client: {e}")
+        return None
+
+
+def send_otp_email(email: str) -> bool:
+    """Send a 6-digit OTP verification code to the given email via Supabase."""
+    client = get_anon_client()
+    if not client:
+        return False
+    try:
+        client.auth.sign_in_with_otp({
+            'email': email,
+            'options': {'should_create_user': True},
+        })
+        return True
+    except Exception as e:
+        print(f"[supabase_client] Failed to send OTP email: {e}")
+        return False
+
+
+def verify_otp_code(email: str, token: str) -> bool:
+    """Verify a 6-digit OTP code for the given email via Supabase."""
+    client = get_anon_client()
+    if not client:
+        return False
+    try:
+        client.auth.verify_otp({
+            'email': email,
+            'token': token,
+            'type': 'email',
+        })
+        return True
+    except Exception as e:
+        print(f"[supabase_client] OTP verification failed: {e}")
+        return False
+
+
 def update_supabase_password(access_token: str, new_password: str) -> bool:
     """Update password for a Supabase user using their access token."""
     client = get_admin_client()

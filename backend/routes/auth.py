@@ -5,6 +5,7 @@ from models import db
 from middleware.auth import generate_token, token_required
 from middleware.rate_limit import rate_limit
 from utils.helpers import validate_email, validate_required_fields, sanitize_input, validate_length
+from services.supabase_client import send_otp_email, verify_otp_code
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -41,19 +42,74 @@ def register():
         return jsonify({'error': 'Email already registered'}), 409
 
     phone = sanitize_input(data.get('phone', ''), max_length=50)
-    user = User(name=name, email=email, phone=phone)
+    user = User(name=name, email=email, phone=phone, is_verified=False)
     user.set_password(password)
 
     db.session.add(user)
     db.session.commit()
 
+    otp_sent = send_otp_email(email)
+
+    if not otp_sent:
+        return jsonify({'error': 'Failed to send verification email. Please try again.'}), 500
+
+    return jsonify({
+        'message': 'Registration successful. Please check your email for the verification code.',
+        'email': email,
+        'requires_verification': True
+    }), 201
+
+@auth_bp.route('/send-otp', methods=['POST'])
+@rate_limit(config_key='register', key_prefix='send_otp')
+def send_otp():
+    data = request.get_json()
+    if not data or not data.get('email'):
+        return jsonify({'error': 'Email is required'}), 400
+
+    email = sanitize_input(data['email'], max_length=255).lower()
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    if user.is_verified:
+        return jsonify({'error': 'Email already verified'}), 400
+
+    otp_sent = send_otp_email(email)
+    if not otp_sent:
+        return jsonify({'error': 'Failed to send verification email. Please try again.'}), 500
+
+    return jsonify({'message': 'Verification code sent to your email.'}), 200
+
+@auth_bp.route('/verify-email', methods=['POST'])
+@rate_limit(config_key='register', key_prefix='verify_email')
+def verify_email():
+    data = request.get_json()
+    if not data or not data.get('email') or not data.get('token'):
+        return jsonify({'error': 'Email and verification code are required'}), 400
+
+    email = sanitize_input(data['email'], max_length=255).lower()
+    token = data['token'].strip()
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    if user.is_verified:
+        token = generate_token(user.id, user.role)
+        return jsonify({'message': 'Email already verified', 'token': token, 'user': user.to_dict()}), 200
+
+    valid = verify_otp_code(email, token)
+    if not valid:
+        return jsonify({'error': 'Invalid or expired verification code'}), 400
+
+    user.is_verified = True
+    db.session.commit()
+
     token = generate_token(user.id, user.role)
 
     return jsonify({
-        'message': 'Registration successful',
+        'message': 'Email verified successfully',
         'token': token,
         'user': user.to_dict()
-    }), 201
+    }), 200
 
 @auth_bp.route('/login', methods=['POST'])
 @rate_limit(config_key='login', key_prefix='login')
@@ -100,6 +156,13 @@ def login():
 
     if not user or not user.check_password(password):
         return jsonify({'error': 'Invalid credentials'}), 401
+
+    if not user.is_verified:
+        return jsonify({
+            'error': 'Please verify your email before logging in',
+            'email': user.email,
+            'requires_verification': True
+        }), 403
 
     token = generate_token(user.id, user.role)
 
