@@ -107,12 +107,25 @@ def _extract_storage_path(image_url: str, bucket: str) -> str | None:
     if not image_url:
         return None
     parsed = urlparse(image_url)
+    # Examples of Supabase public URLs:
+    # - /storage/v1/object/public/<bucket>/path/to/file.jpg
+    # - /object/public/<bucket>/path/to/file.jpg
+    # - /<bucket>/path/to/file.jpg (older or custom formats)
     path = parsed.path.lstrip('/')
+    # Look for the public bucket segment anywhere in the path
+    marker = f"/public/{bucket}/"
+    if marker in parsed.path:
+        return parsed.path.split(marker, 1)[1].lstrip('/')
+
+    # handle '/object/public/<bucket>/...'
     parts = path.split('/')
-    if len(parts) >= 4 and parts[0] == 'object' and parts[1] == 'public' and parts[2] == bucket:
+    if len(parts) >= 4 and parts[0] in ('object', 'storage', 'storage/v1') and parts[1] == 'public' and parts[2] == bucket:
         return '/'.join(parts[3:])
-    if len(parts) >= 3 and parts[0] == bucket:
+
+    # handle '/<bucket>/path'
+    if len(parts) >= 2 and parts[0] == bucket:
         return '/'.join(parts[1:])
+
     return None
 
 
