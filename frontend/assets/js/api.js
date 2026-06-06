@@ -1,5 +1,5 @@
 // Kabura Ventures - API Client
-const API_BASE = 'https://kabura-ventures.onrender.com/api';
+const API_BASE = 'https://kabura-adventures-api.onrender.com/api';
 window.API_BASE = API_BASE;
 
 class ApiClient {
