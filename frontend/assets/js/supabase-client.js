@@ -19,12 +19,21 @@ async function initSupabaseClient() {
     try {
         const baseUrl = window.API_BASE || 'https://kabura-adventures-api.onrender.com/api';
         const res = await fetch(`${baseUrl}/auth/supabase/config`);
-        if (!res.ok) throw new Error('Failed to fetch Supabase config');
+        if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error(errBody.error || `Config fetch failed (${res.status})`);
+        }
+        if (!window.supabase) {
+            throw new Error('Supabase JS SDK not loaded (CDN may be blocked)');
+        }
         const config = await res.json();
+        if (!config.url || !config.anonKey) {
+            throw new Error('Invalid Supabase config from server');
+        }
         supabaseClient = window.supabase.createClient(config.url, config.anonKey);
         return supabaseClient;
     } catch (err) {
-        console.warn('[supabase-client] Init failed:', err);
+        console.error('[supabase-client] Init failed:', err.message);
         return null;
     }
 }
@@ -45,7 +54,8 @@ function getSupabaseClient() {
 async function signInWithGoogle() {
     const client = getSupabaseClient();
     if (!client) {
-        showToast('Authentication service unavailable', 'error');
+        console.warn('[supabase-client] Not initialized, redirecting to login page');
+        window.location.href = '/login.html';
         return;
     }
 
@@ -59,7 +69,7 @@ async function signInWithGoogle() {
         if (error) throw error;
     } catch (err) {
         console.error('[supabase-client] Google OAuth error:', err);
-        showToast('Failed to sign in with Google', 'error');
+        showToast('Failed to sign in with Google. Check console for details.', 'error');
     }
 }
 

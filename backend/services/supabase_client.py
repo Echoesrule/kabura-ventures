@@ -6,20 +6,33 @@ using the Supabase admin (service_role) client.
 
 import os
 from typing import Optional
-from supabase import create_client, Client
 
-_supabase_admin: Optional[Client] = None
+try:
+    from supabase import create_client, Client
+    _supabase_available = True
+except ImportError:
+    _supabase_available = False
+    Client = None
+    def create_client(*a, **kw):
+        raise ImportError("supabase package not installed")
+
+_supabase_admin = None
 
 
-def get_admin_client() -> Optional[Client]:
+def get_admin_client():
     """Lazy-init and return the Supabase admin client using the service_role key."""
     global _supabase_admin
     if _supabase_admin is not None:
         return _supabase_admin
 
+    if not _supabase_available:
+        print("[supabase_client] supabase package not available")
+        return None
+
     url = os.environ.get('SUPABASE_URL')
     service_key = os.environ.get('SUPABASE_SERVICE_KEY')
     if not url or not service_key:
+        print("[supabase_client] SUPABASE_URL or SUPABASE_SERVICE_KEY not set")
         return None
 
     try:
