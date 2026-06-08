@@ -1244,6 +1244,35 @@ img {
     to { transform: rotate(360deg); }
 }
 
+/* Verification loading overlay */
+.verification-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+.verification-loading-overlay .spinner {
+    width: 48px;
+    height: 48px;
+    border-width: 5px;
+}
+.verification-loading-overlay p {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* Toast notifications */
 .toast-container {
     position: fixed;

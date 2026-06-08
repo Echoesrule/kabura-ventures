@@ -295,8 +295,11 @@ function showEmailVerification(email) {
             if (res.verified && res.token) {
                 api.setToken(res.token);
                 clearInterval(pollInterval);
-                showToast('Email verified! Logging in...', 'success');
-                setTimeout(() => { window.location.href = '/'; }, 800);
+                const overlay = document.createElement('div');
+                overlay.className = 'verification-loading-overlay';
+                overlay.innerHTML = '<div class="spinner"></div><p>Verification successful! Logging in...</p>';
+                document.body.appendChild(overlay);
+                setTimeout(() => { window.location.href = '/'; }, 1200);
             }
         } catch (e) {
             if (pollCount > 120) clearInterval(pollInterval);
