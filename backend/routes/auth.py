@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, request, jsonify
 from models.user import User
 from models.message import Notification
@@ -5,7 +6,13 @@ from models import db
 from middleware.auth import generate_token, token_required
 from middleware.rate_limit import rate_limit
 from utils.helpers import validate_email, validate_required_fields, sanitize_input, validate_length
-from services.supabase_client import send_otp_email, verify_otp_code, create_supabase_user
+from services.supabase_client import (
+    send_otp_email, verify_otp_code, create_supabase_user,
+    store_otp_for_user, verify_stored_otp, confirm_supabase_email,
+)
+from services.email_service import send_otp_email_smtp, is_smtp_configured
+
+logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -51,21 +58,37 @@ def register():
     supabase_user, supabase_error = create_supabase_user(email, password, name=name, email_confirm=False)
     if not supabase_user:
         if supabase_error and 'already been registered' in supabase_error.lower():
-            # User exists in Supabase Auth but not in local DB
-            # (e.g. previous registration created Supabase user but DB commit failed)
-            # Proceed with OTP to verify email and commit the local user
             pass
         else:
             db.session.rollback()
             return jsonify({'error': f'Failed to create authentication account: {supabase_error or "Please try again."}'}), 500
 
-    otp_sent, otp_error = send_otp_email(email)
+    otp_code = store_otp_for_user(user)
+    logger.info(f"OTP for {email}: {otp_code}")
 
-    if not otp_sent:
-        db.session.rollback()
-        return jsonify({'error': f'Failed to send verification email: {otp_error}'}), 500
+    email_sent = False
+    last_error = None
+
+    if is_smtp_configured():
+        email_sent, last_error = send_otp_email_smtp(email, otp_code)
+
+    if not email_sent:
+        supabase_sent, supabase_err = send_otp_email(email)
+        if supabase_sent:
+            email_sent = True
+        else:
+            last_error = supabase_err
 
     db.session.commit()
+
+    if not email_sent:
+        logger.error(f"Failed to send OTP email to {email}: {last_error}")
+        return jsonify({
+            'error': 'Account created but verification email could not be sent. Use "Resend Code" to try again.',
+            'email': email,
+            'requires_verification': True,
+            'otp_retry': True
+        }), 201
 
     return jsonify({
         'message': 'Registration successful. Please check your email for the verification code.',
@@ -87,9 +110,27 @@ def send_otp():
     if user.is_verified:
         return jsonify({'error': 'Email already verified'}), 400
 
-    otp_sent, otp_error = send_otp_email(email)
-    if not otp_sent:
-        return jsonify({'error': f'Failed to send verification email: {otp_error}'}), 500
+    otp_code = store_otp_for_user(user)
+    logger.info(f"Resent OTP for {email}: {otp_code}")
+
+    email_sent = False
+    last_error = None
+
+    if is_smtp_configured():
+        email_sent, last_error = send_otp_email_smtp(email, otp_code)
+
+    if not email_sent:
+        supabase_sent, supabase_err = send_otp_email(email)
+        if supabase_sent:
+            email_sent = True
+        else:
+            last_error = supabase_err
+
+    if not email_sent:
+        logger.error(f"Failed to resend OTP to {email}: {last_error}")
+        return jsonify({'error': f'Failed to send verification email. Please try again later.'}), 500
+
+    db.session.commit()
 
     return jsonify({'message': 'Verification code sent to your email.'}), 200
 
@@ -110,12 +151,15 @@ def verify_email():
         token = generate_token(user.id, user.role)
         return jsonify({'message': 'Email already verified', 'token': token, 'user': user.to_dict()}), 200
 
-    valid, verify_error = verify_otp_code(email, token)
-    if not valid:
-        return jsonify({'error': verify_error or 'Invalid or expired verification code'}), 400
+    if not verify_stored_otp(user, token):
+        valid, verify_error = verify_otp_code(email, token)
+        if not valid:
+            return jsonify({'error': verify_error or 'Invalid or expired verification code'}), 400
 
     user.is_verified = True
     db.session.commit()
+
+    confirm_supabase_email(email)
 
     token = generate_token(user.id, user.role)
 
