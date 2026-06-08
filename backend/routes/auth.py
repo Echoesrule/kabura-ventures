@@ -48,10 +48,16 @@ def register():
     db.session.add(user)
     db.session.flush()
 
-    supabase_user = create_supabase_user(email, password, name=name, email_confirm=False)
+    supabase_user, supabase_error = create_supabase_user(email, password, name=name, email_confirm=False)
     if not supabase_user:
-        db.session.rollback()
-        return jsonify({'error': 'Failed to create authentication account. Please try again.'}), 500
+        if supabase_error and 'already been registered' in supabase_error.lower():
+            # User exists in Supabase Auth but not in local DB
+            # (e.g. previous registration created Supabase user but DB commit failed)
+            # Proceed with OTP to verify email and commit the local user
+            pass
+        else:
+            db.session.rollback()
+            return jsonify({'error': f'Failed to create authentication account: {supabase_error or "Please try again."}'}), 500
 
     otp_sent, otp_error = send_otp_email(email)
 

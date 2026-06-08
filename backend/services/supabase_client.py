@@ -70,11 +70,13 @@ def verify_supabase_token(access_token: str) -> Optional[dict]:
     return None
 
 
-def create_supabase_user(email: str, password: str, name: str = '', email_confirm: bool = True) -> Optional[dict]:
-    """Create a user in Supabase Auth (admin API). Returns user dict or None."""
+def create_supabase_user(email: str, password: str, name: str = '', email_confirm: bool = True) -> tuple:
+    """Create a user in Supabase Auth (admin API). Returns (user_dict, error_message).
+    On success, error_message is None. On failure, user_dict is None and error_message contains the error.
+    """
     client = get_admin_client()
     if not client:
-        return None
+        return (None, "Supabase client not available")
 
     try:
         response = client.auth.admin.create_user({
@@ -84,14 +86,16 @@ def create_supabase_user(email: str, password: str, name: str = '', email_confir
             'user_metadata': {'name': name} if name else {},
         })
         if response and response.user:
-            return {
+            return ({
                 'id': response.user.id,
                 'email': getattr(response.user, 'email', ''),
-            }
+            }, None)
     except Exception as e:
-        print(f"[supabase_client] Failed to create Supabase user: {e}")
+        err_msg = str(e)
+        print(f"[supabase_client] Failed to create Supabase user: {err_msg}")
+        return (None, err_msg)
 
-    return None
+    return (None, "Unknown error creating Supabase user")
 
 
 def get_anon_client():
