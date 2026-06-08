@@ -2560,7 +2560,18 @@ tr:hover {
     }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 719px) {
+    .carousel-track {
+        flex-direction: column;
+        overflow-x: visible;
+        scroll-snap-type: none;
+    }
+
+    .carousel-slide {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
     .carousel-nav {
         display: none;
     }
