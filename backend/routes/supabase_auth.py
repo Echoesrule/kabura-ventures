@@ -55,23 +55,23 @@ def exchange_supabase_session():
     # Find or create local user
     user = User.query.filter_by(email=email).first()
     if not user:
-        # Create a local user account with a random password
-        # (OAuth users authenticate via Supabase, not local password)
         random_pw = secrets.token_urlsafe(32)
         user = User(
             name=name,
             email=email,
-            password='',  # placeholder, overwritten below
+            password='',
             role='customer',
         )
         user.set_password(random_pw)
         db.session.add(user)
         db.session.commit()
     else:
-        # Update name if the Supabase profile has a more complete name
         if supabase_user.get('name') and supabase_user['name'] != email.split('@')[0]:
             user.name = supabase_user['name']
-            db.session.commit()
+        # If Supabase user has confirmed email, mark local user as verified
+        if supabase_user.get('email_confirmed') and not user.is_verified:
+            user.is_verified = True
+        db.session.commit()
 
     # Generate Flask JWT (same format as existing auth)
     token = generate_token(user.id, user.role)
@@ -81,3 +81,38 @@ def exchange_supabase_session():
         'token': token,
         'user': user.to_dict(),
     }), 200
+
+
+@supabase_auth_bp.route('/sync-password', methods=['POST'])
+def sync_supabase_password():
+    """Sync a Supabase password reset to the local user's bcrypt hash.
+    Expects: { access_token: string, password: string }
+    Verifies the Supabase token and updates the local user's password.
+    """
+    data = request.get_json()
+    if not data or 'access_token' not in data or 'password' not in data:
+        return jsonify({'error': 'access_token and password are required'}), 400
+
+    access_token = data['access_token'].strip()
+    new_password = data['password']
+
+    if len(new_password) < 6:
+        return jsonify({'error': 'Password must be at least 6 characters'}), 400
+
+    supabase_user = verify_supabase_token(access_token)
+    if not supabase_user:
+        return jsonify({'error': 'Invalid or expired Supabase token'}), 401
+
+    email = supabase_user.get('email', '')
+    if not email:
+        return jsonify({'error': 'Supabase user has no email'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    user.set_password(new_password)
+    user.is_verified = True
+    db.session.commit()
+
+    return jsonify({'message': 'Password updated successfully'}), 200

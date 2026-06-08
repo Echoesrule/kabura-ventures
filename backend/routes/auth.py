@@ -5,7 +5,7 @@ from models import db
 from middleware.auth import generate_token, token_required
 from middleware.rate_limit import rate_limit
 from utils.helpers import validate_email, validate_required_fields, sanitize_input, validate_length
-from services.supabase_client import send_otp_email, verify_otp_code
+from services.supabase_client import send_otp_email, verify_otp_code, create_supabase_user
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -46,12 +46,20 @@ def register():
     user.set_password(password)
 
     db.session.add(user)
-    db.session.commit()
+    db.session.flush()
+
+    supabase_user = create_supabase_user(email, password, name=name, email_confirm=False)
+    if not supabase_user:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to create authentication account. Please try again.'}), 500
 
     otp_sent, otp_error = send_otp_email(email)
 
     if not otp_sent:
+        db.session.rollback()
         return jsonify({'error': f'Failed to send verification email: {otp_error}'}), 500
+
+    db.session.commit()
 
     return jsonify({
         'message': 'Registration successful. Please check your email for the verification code.',

@@ -289,17 +289,36 @@ async function handlePasswordResetSubmit() {
         return;
     }
 
-    const success = await updateSupabasePassword(newPw);
-    if (success) {
-        showToast('Password updated successfully! Please log in.', 'success');
-        // Re-hide reset form, show panels
-        const panels = document.querySelector('.auth-panels');
-        const resetDiv = document.getElementById('supabase-reset-password-form');
-        if (panels) panels.style.display = '';
-        if (resetDiv) resetDiv.style.display = 'none';
-        // Sign out from Supabase so the user can log in with new password
-        await signOutSupabase();
+    const supabaseSuccess = await updateSupabasePassword(newPw);
+    if (!supabaseSuccess) return;
+
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    const { data: { session } } = await client.auth.getSession();
+    if (session && session.access_token) {
+        const baseUrl = window.API_BASE || 'https://kabura-adventures-api.onrender.com/api';
+        try {
+            const res = await fetch(`${baseUrl}/auth/supabase/sync-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ access_token: session.access_token, password: newPw }),
+            });
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                console.error('[supabase-client] Password sync failed:', errData);
+            }
+        } catch (err) {
+            console.error('[supabase-client] Password sync error:', err);
+        }
     }
+
+    showToast('Password updated successfully! Please log in.', 'success');
+    const panels = document.querySelector('.auth-panels');
+    const resetDiv = document.getElementById('supabase-reset-password-form');
+    if (panels) panels.style.display = '';
+    if (resetDiv) resetDiv.style.display = 'none';
+    await signOutSupabase();
 }
 
 // ─── Forgot Password UI ───────────────────────────────────────────────────────

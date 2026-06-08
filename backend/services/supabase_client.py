@@ -69,7 +69,7 @@ def verify_supabase_token(access_token: str) -> Optional[dict]:
     return None
 
 
-def create_supabase_user(email: str, password: str, name: str = '') -> Optional[dict]:
+def create_supabase_user(email: str, password: str, name: str = '', email_confirm: bool = True) -> Optional[dict]:
     """Create a user in Supabase Auth (admin API). Returns user dict or None."""
     client = get_admin_client()
     if not client:
@@ -79,7 +79,7 @@ def create_supabase_user(email: str, password: str, name: str = '') -> Optional[
         response = client.auth.admin.create_user({
             'email': email,
             'password': password,
-            'email_confirm': True,
+            'email_confirm': email_confirm,
             'user_metadata': {'name': name} if name else {},
         })
         if response and response.user:
