@@ -45,6 +45,19 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// Cross-tab auth sync
+window.addEventListener('storage', (e) => {
+    if (e.key === 'token' && e.newValue) {
+        api.setToken(e.newValue);
+        if (window.location.pathname === '/' || window.location.pathname === '/login.html' || window.location.pathname === '/signup.html') {
+            window.location.href = '/';
+        }
+    }
+    if (e.key === 'token' && !e.newValue) {
+        api.setToken(null);
+    }
+});
+
 // Auth state management
 async function updateAuthUI() {
     const token = localStorage.getItem('token');
