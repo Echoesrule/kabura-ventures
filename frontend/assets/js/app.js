@@ -216,8 +216,8 @@ function showEmailVerification(email) {
         <div style="text-align:center;padding:1rem 0;">
             <div style="font-size:3rem;margin-bottom:1rem;">&#9993;</div>
             <h3 style="margin-bottom:0.5rem;">Verify Your Email</h3>
-            <p style="color:var(--text-secondary);margin-bottom:1.5rem;">
-                We sent a 6-digit code to<br><strong>${escapeHTML(email)}</strong>
+            <p style="color:var(--text-secondary);margin-bottom:1rem;">
+                We sent a verification code to<br><strong>${escapeHTML(email)}</strong>
             </p>
             <div class="form-group" style="max-width:280px;margin:0 auto;">
                 <input type="text" id="otp-input" class="form-input"
@@ -227,10 +227,13 @@ function showEmailVerification(email) {
             <button class="btn btn-primary btn-lg auth-cta" id="verify-email-btn" onclick="handleVerifyEmail('${escapeHTML(email)}')">
                 Verify Email
             </button>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.5rem;">
+                No code? Check your email for a <strong>verification link</strong> and click it.
+            </p>
             <p class="auth-note" style="margin-top:1rem;">
-                Didn't get the code?
+                Didn't get the email?
                 <a href="#" onclick="event.preventDefault();resendOtp('${escapeHTML(email)}')" style="color:var(--primary-green);font-weight:600;">
-                    Resend Code
+                    Resend
                 </a>
             </p>
             <p class="auth-note">
@@ -270,7 +273,14 @@ async function handleVerifyEmail(email) {
         showToast('Email verified! Welcome!', 'success');
         setTimeout(() => { window.location.href = '/'; }, 300);
     } catch (err) {
-        showToast(err.message || 'Invalid code. Please try again.', 'error');
+        const msg = err.message || '';
+        if (msg.includes('expired')) {
+            showToast('Code expired. Click "Resend" for a new one.', 'error');
+        } else if (msg.includes('Invalid')) {
+            showToast('Invalid code. Check your email and try again, or click the verification link in the email.', 'error');
+        } else {
+            showToast(msg || 'Verification failed. Please try again.', 'error');
+        }
         if (btn) { btn.disabled = false; btn.textContent = 'Verify Email'; }
     }
 }

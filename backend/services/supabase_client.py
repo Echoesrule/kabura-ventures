@@ -1,11 +1,16 @@
 """
 Supabase Auth client service.
-Handles token verification, user creation, and session management
-using the Supabase admin (service_role) client.
+Handles token verification, user creation, OTP generation and session management.
 """
 
 import os
+import hashlib
+import secrets
+import logging
+from datetime import datetime, timedelta
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 try:
     from supabase import create_client, Client
@@ -120,8 +125,64 @@ def get_anon_client():
         return None
 
 
+def _hash_otp(code: str) -> str:
+    return hashlib.sha256(code.encode()).hexdigest()
+
+
+def generate_otp(length: int = 6) -> str:
+    """Generate a cryptographically secure random numeric OTP."""
+    return str(secrets.randbelow(10 ** length)).zfill(length)
+
+
+def store_otp_for_user(user: 'User') -> str:
+    """Generate a 6-digit OTP, hash it, store on the user record, and return the raw code."""
+    code = generate_otp()
+    user.otp_code_hash = _hash_otp(code)
+    user.otp_expiry = datetime.utcnow() + timedelta(minutes=10)
+    user.otp_attempts = 0
+    return code
+
+
+def verify_stored_otp(user: 'User', code: str) -> bool:
+    """Verify a code against the user's stored (hashed) OTP. Checks expiry and increments attempts."""
+    if not user.otp_code_hash or not user.otp_expiry:
+        return False
+    if datetime.utcnow() > user.otp_expiry:
+        return False
+    if user.otp_attempts is not None and user.otp_attempts >= 5:
+        return False
+    user.otp_attempts = (user.otp_attempts or 0) + 1
+    if _hash_otp(code) == user.otp_code_hash:
+        user.otp_code_hash = None
+        user.otp_expiry = None
+        user.otp_attempts = 0
+        return True
+    return False
+
+
+def confirm_supabase_email(email: str) -> bool:
+    """Mark a user's email as confirmed in Supabase Auth via admin API."""
+    client = get_admin_client()
+    if not client:
+        return False
+    try:
+        response = client.auth.admin.list_users()
+        for u in (getattr(response, 'users', None) or []):
+            if getattr(u, 'email', '') == email:
+                client.auth.admin.update_user_by_id(u.id, {'email_confirm': True})
+                logger.info(f"Confirmed email in Supabase for {email}")
+                return True
+        logger.warning(f"User {email} not found in Supabase Auth for email confirmation")
+        return False
+    except Exception as e:
+        logger.error(f"Failed to confirm email in Supabase: {e}")
+        return False
+
+
 def send_otp_email(email: str) -> tuple:
-    """Send a 6-digit OTP verification code to the given email via Supabase.
+    """Send a magic-link email via Supabase Auth.
+    The email contains a magic link (clickable).
+    For the 6-digit OTP code, use generate_otp() + store_otp_for_user() instead.
     Returns (success: bool, error_msg: str | None)."""
     client = get_anon_client()
     if not client:
@@ -135,19 +196,20 @@ def send_otp_email(email: str) -> tuple:
                 'email_redirect_to': f'{site_url}/login.html',
             },
         })
+        logger.info(f"Supabase magic-link email sent to {email}")
         return True, None
     except Exception as e:
         err_msg = str(e)
-        print(f"[supabase_client] Failed to send OTP email: {err_msg}")
+        logger.error(f"Failed to send magic-link email via Supabase: {err_msg}")
         return False, err_msg
 
 
 def verify_otp_code(email: str, token: str) -> tuple:
-    """Verify a 6-digit OTP code for the given email via Supabase.
+    """Verify a 6-digit OTP code via Supabase.
     Returns (success: bool, error_msg: str | None)."""
     client = get_anon_client()
     if not client:
-        return False, "Supabase client not available (check env vars)"
+        return False, "Verification service not available"
     try:
         client.auth.verify_otp({
             'email': email,
@@ -157,8 +219,8 @@ def verify_otp_code(email: str, token: str) -> tuple:
         return True, None
     except Exception as e:
         err_msg = str(e)
-        print(f"[supabase_client] OTP verification failed: {err_msg}")
-        return False, err_msg
+        logger.warning(f"Supabase OTP verification failed for {email}: {err_msg}")
+        return False, "Invalid or expired verification code"
 
 
 def update_supabase_password(access_token: str, new_password: str) -> bool:

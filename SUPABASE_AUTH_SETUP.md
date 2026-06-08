@@ -75,22 +75,46 @@ Where to find them:
 
 ## 3. Email Verification & Password Reset
 
-### Email Templates
+### Email Templates & OTP Configuration
 
-Supabase provides default email templates. You can customize them:
+Supabase provides default email templates. To receive a **6-digit verification code** by email (instead of a magic link), you have **two options**:
 
-1. Go to **Authentication** → **Email Templates**
-2. You can customize:
-   - **Confirm signup** — sent when a user signs up
-   - **Reset password** — sent when a user requests a password reset
-   - **Magic Link** — for passwordless login
-3. In each template, the `{{ .ConfirmationURL }}` variable will be replaced with the actual link
-4. The confirmation URL will redirect to your **Site URL** (configured above)
+#### Option A: Enable Email OTP (Recommended)
 
-### Default Behavior
+1. Go to **Supabase Dashboard** → **Authentication** → **Settings**
+2. Scroll to **Email OTP**
+3. Toggle **Enable Email OTP** to ON
+4. Save changes
 
-- **Password Reset**: Users click "Forgot Password?" on the login page, enter their email, and receive a reset link. Clicking the link redirects to `login.html` where they can set a new password.
-- **Email Verification**: When a user signs up via Supabase, a confirmation email is sent. The user clicks the link to verify their email.
+This tells Supabase to send a 6-digit numeric code instead of a magic link in OTP emails.
+
+#### Option B: Customize Magic Link Template
+
+1. Go to **Authentication** → **Email Templates** → **Magic Link**
+2. Replace `{{ .ConfirmationURL }}` with `{{ .Token }}` in the template body
+3. Click **Save**
+
+The `{{ .Token }}` variable contains the 6-digit OTP code that the user can enter on the verification page.
+
+---
+
+### Optional: Custom SMTP for Reliable Email Delivery
+
+For production, configure a custom SMTP provider to ensure reliable email delivery:
+
+1. **In Supabase Dashboard**: Authentication → Settings → SMTP Settings
+2. OR configure the following environment variables for the backend to send emails directly:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `SMTP_SERVER` | SMTP server hostname | `smtp.sendgrid.net` |
+| `SMTP_PORT` | SMTP server port | `587` |
+| `SMTP_USERNAME` | SMTP username | `apikey` |
+| `SMTP_PASSWORD` | SMTP password or API key | `SG.xxxxx` |
+| `SMTP_FROM` | From email address | `noreply@kaburaadventures.com` |
+| `SMTP_USE_TLS` | Use TLS (default: true) | `true` |
+
+When SMTP is configured, the backend sends the 6-digit OTP directly. If SMTP is not configured, it falls back to Supabase's built-in email service (which must have Email OTP enabled for the 6-digit code to appear in the email).
 
 ---
 

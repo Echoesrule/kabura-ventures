@@ -97,6 +97,14 @@ def create_app():
                 db.session.commit()
             except Exception:
                 db.session.rollback()
+            # migrate: add OTP columns to users if missing
+            try:
+                db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_code_hash VARCHAR(128)'))
+                db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_expiry TIMESTAMP'))
+                db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_attempts INTEGER DEFAULT 0'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
             seed_database()
         except Exception as e:
             print(f"Warning: Could not initialize database: {e}")
