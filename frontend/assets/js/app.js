@@ -381,23 +381,18 @@ async function resendOtp(email) {
     }
 }
 
-// Password toggle visibility
-function setupPasswordToggles() {
-    document.querySelectorAll('.password-toggle').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const wrapper = btn.parentElement;
-            if (!wrapper || !wrapper.classList.contains('password-wrapper')) return;
-            const input = wrapper.querySelector('.form-input, input[type="password"], input[type="text"]');
-            const icon = btn.querySelector('i');
-            if (!input || !icon) return;
-            const isPassword = input.type === 'password';
-            input.type = isPassword ? 'text' : 'password';
-            icon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
-            btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
-        });
-    });
-}
+// Password toggle visibility (global function for inline onclick)
+window.togglePassword = function(btn) {
+    const wrapper = btn.closest('.password-wrapper');
+    if (!wrapper) return;
+    const input = wrapper.querySelector('.form-input, input[type="password"], input[type="text"]');
+    const icon = btn.querySelector('i');
+    if (!input || !icon) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+};
 
 // Password strength meter
 const strengthConfig = [
@@ -487,7 +482,6 @@ function initAuthPage() {
         });
     });
 
-    setupPasswordToggles();
     setupPasswordStrength();
 }
 
@@ -528,7 +522,7 @@ function initAuthModals() {
                         <label class="form-label">Password</label>
                         <div class="password-wrapper">
                             <input type="password" class="form-input" id="login-password" required>
-                            <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
+                            <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password" onclick="togglePassword(this)">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -565,7 +559,7 @@ function initAuthModals() {
                         <label class="form-label">Password</label>
                         <div class="password-wrapper">
                             <input type="password" class="form-input" id="reg-password" minlength="6" required>
-                            <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
+                            <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password" onclick="togglePassword(this)">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -605,7 +599,6 @@ function initAuthModals() {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    setupPasswordToggles();
     setupPasswordStrength();
 }
 
