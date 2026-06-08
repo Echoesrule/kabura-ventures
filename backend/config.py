@@ -31,6 +31,7 @@ class Config:
     } if os.environ.get('DATABASE_SSL_MODE') else {}
 
     RATE_LIMITING_ENABLED = True
+    
     RATE_LIMITS = {
         'register': (5, 900),
         'login': (10, 300),
