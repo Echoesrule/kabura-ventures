@@ -17,6 +17,7 @@ except ImportError:
         raise ImportError("supabase package not installed")
 
 _supabase_admin = None
+_supabase_anon = None
 
 
 def get_admin_client():
@@ -94,8 +95,13 @@ def create_supabase_user(email: str, password: str, name: str = '', email_confir
 
 
 def get_anon_client():
-    """Create and return a regular (non-admin) Supabase client using the anon key."""
+    """Lazy-init and return a regular (non-admin) Supabase client using the anon key."""
+    global _supabase_anon
+    if _supabase_anon is not None:
+        return _supabase_anon
+
     if not _supabase_available:
+        print("[supabase_client] supabase package not available")
         return None
     url = os.environ.get('SUPABASE_URL')
     anon_key = os.environ.get('SUPABASE_ANON_KEY')
@@ -103,7 +109,8 @@ def get_anon_client():
         print("[supabase_client] SUPABASE_URL or SUPABASE_ANON_KEY not set")
         return None
     try:
-        return create_client(url, anon_key)
+        _supabase_anon = create_client(url, anon_key)
+        return _supabase_anon
     except Exception as e:
         print(f"[supabase_client] Failed to create anon client: {e}")
         return None
@@ -116,9 +123,13 @@ def send_otp_email(email: str) -> tuple:
     if not client:
         return False, "Supabase client not available (check env vars)"
     try:
+        site_url = os.environ.get('SITE_URL', 'https://kabura-adventures.onrender.com')
         client.auth.sign_in_with_otp({
             'email': email,
-            'options': {'should_create_user': True},
+            'options': {
+                'should_create_user': True,
+                'email_redirect_to': f'{site_url}/login.html',
+            },
         })
         return True, None
     except Exception as e:

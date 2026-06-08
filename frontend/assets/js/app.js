@@ -253,7 +253,6 @@ function showEmailVerification(email) {
         otpInput.focus();
     }
 
-    resendOtp(email);
 }
 
 async function handleVerifyEmail(email) {
