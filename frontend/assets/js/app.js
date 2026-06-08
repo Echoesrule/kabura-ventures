@@ -384,13 +384,16 @@ async function resendOtp(email) {
 // Password toggle visibility
 function setupPasswordToggles() {
     document.querySelectorAll('.password-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const wrapper = btn.closest('.password-wrapper');
-            const input = wrapper.querySelector('.form-input');
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const wrapper = btn.parentElement;
+            if (!wrapper || !wrapper.classList.contains('password-wrapper')) return;
+            const input = wrapper.querySelector('.form-input, input[type="password"], input[type="text"]');
             const icon = btn.querySelector('i');
+            if (!input || !icon) return;
             const isPassword = input.type === 'password';
             input.type = isPassword ? 'text' : 'password';
-            icon.className = isPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+            icon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
             btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
         });
     });
@@ -526,7 +529,7 @@ function initAuthModals() {
                         <div class="password-wrapper">
                             <input type="password" class="form-input" id="login-password" required>
                             <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
-                                <i class="fa-regular fa-eye"></i>
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -563,7 +566,7 @@ function initAuthModals() {
                         <div class="password-wrapper">
                             <input type="password" class="form-input" id="reg-password" minlength="6" required>
                             <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
-                                <i class="fa-regular fa-eye"></i>
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                         <div class="password-strength" id="reg-password-strength-meter">
