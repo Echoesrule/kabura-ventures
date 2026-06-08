@@ -217,26 +217,33 @@ function showEmailVerification(email) {
             <div style="font-size:3rem;margin-bottom:1rem;">&#9993;</div>
             <h3 style="margin-bottom:0.5rem;">Verify Your Email</h3>
             <p style="color:var(--text-secondary);margin-bottom:1rem;">
-                We sent a verification code to<br><strong>${escapeHTML(email)}</strong>
+                We sent a sign-in link to<br><strong>${escapeHTML(email)}</strong>
             </p>
-            <div class="form-group" style="max-width:280px;margin:0 auto;">
-                <input type="text" id="otp-input" class="form-input"
-                    placeholder="Enter 6-digit code" maxlength="6"
-                    style="text-align:center;font-size:1.5rem;letter-spacing:8px;font-weight:600;">
-            </div>
-            <button class="btn btn-primary btn-lg auth-cta" id="verify-email-btn" onclick="handleVerifyEmail('${escapeHTML(email)}')">
-                Verify Email
-            </button>
-            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.5rem;">
-                No code? Check your email for a <strong>verification link</strong> and click it.
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">
+                Click the link in the email to verify your account and log in automatically.
             </p>
-            <p class="auth-note" style="margin-top:1rem;">
+            <p class="auth-note">
                 Didn't get the email?
                 <a href="#" onclick="event.preventDefault();resendOtp('${escapeHTML(email)}')" style="color:var(--primary-green);font-weight:600;">
                     Resend
                 </a>
             </p>
-            <p class="auth-note">
+            <p style="margin-top:1.5rem;">
+                <a href="#" onclick="event.preventDefault();toggleOtpInput()" style="color:var(--text-secondary);font-size:0.85rem;">
+                    Have a verification code? Enter it manually
+                </a>
+            </p>
+            <div id="otp-section" style="display:none;margin-top:1rem;">
+                <div class="form-group" style="max-width:280px;margin:0 auto;">
+                    <input type="text" id="otp-input" class="form-input"
+                        placeholder="Enter 6-digit code" maxlength="6"
+                        style="text-align:center;font-size:1.5rem;letter-spacing:8px;font-weight:600;">
+                </div>
+                <button class="btn btn-primary btn-lg auth-cta" id="verify-email-btn" onclick="handleVerifyEmail('${escapeHTML(email)}')">
+                    Verify Email
+                </button>
+            </div>
+            <p class="auth-note" style="margin-top:1rem;">
                 <a href="#" onclick="event.preventDefault();cancelVerification()" style="color:var(--text-secondary);font-size:0.85rem;">
                     Back to Sign Up
                 </a>
@@ -253,9 +260,20 @@ function showEmailVerification(email) {
         otpInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleVerifyEmail(email);
         });
-        otpInput.focus();
     }
 
+}
+
+function toggleOtpInput() {
+    const section = document.getElementById('otp-section');
+    if (section) {
+        const shown = section.style.display !== 'none';
+        section.style.display = shown ? 'none' : 'block';
+        if (!shown) {
+            const input = document.getElementById('otp-input');
+            if (input) input.focus();
+        }
+    }
 }
 
 async function handleVerifyEmail(email) {
