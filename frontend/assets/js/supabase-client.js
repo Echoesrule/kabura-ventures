@@ -249,17 +249,28 @@ function showPasswordResetForm() {
             </p>
             <div class="form-group">
                 <label class="form-label">New Password</label>
-                <input type="password" class="form-input" id="reset-new-password" minlength="6" required placeholder="At least 6 characters">
+                <div class="password-wrapper">
+                    <input type="password" class="form-input" id="reset-new-password" minlength="6" required placeholder="At least 6 characters">
+                    <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Confirm Password</label>
-                <input type="password" class="form-input" id="reset-confirm-password" minlength="6" required placeholder="Repeat your password">
+                <div class="password-wrapper">
+                    <input type="password" class="form-input" id="reset-confirm-password" minlength="6" required placeholder="Repeat your password">
+                    <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
             </div>
             <button class="btn btn-primary btn-lg auth-cta" onclick="handlePasswordResetSubmit()">
                 Update Password
             </button>
         `;
         container.appendChild(form);
+        if (typeof setupPasswordToggles === 'function') setupPasswordToggles();
     }
 }
 

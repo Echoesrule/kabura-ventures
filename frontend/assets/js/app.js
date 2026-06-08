@@ -381,6 +381,59 @@ async function resendOtp(email) {
     }
 }
 
+// Password toggle visibility
+function setupPasswordToggles() {
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const wrapper = btn.closest('.password-wrapper');
+            const input = wrapper.querySelector('.form-input');
+            const icon = btn.querySelector('i');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            icon.className = isPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+            btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+        });
+    });
+}
+
+// Password strength meter
+const strengthConfig = [
+    { label: 'Weak', color: '#D32F2F', min: 0 },
+    { label: 'Fair', color: '#FF8A65', min: 2 },
+    { label: 'Good', color: '#FFC107', min: 3 },
+    { label: 'Strong', color: '#4CAF50', min: 4 },
+];
+
+function getPasswordStrength(password) {
+    let score = 0;
+    if (password.length >= 6) score++;
+    if (password.length >= 10) score++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
+    return Math.min(score, strengthConfig.length - 1);
+}
+
+function setupPasswordStrength() {
+    const input = document.getElementById('reg-password');
+    const meter = document.getElementById('reg-password-strength-meter');
+    const fill = document.getElementById('reg-password-strength-fill');
+    const label = document.getElementById('reg-password-strength-label');
+    if (!input || !meter || !fill || !label) return;
+
+    input.addEventListener('input', () => {
+        const val = input.value;
+        if (!val) { meter.style.display = 'none'; return; }
+        meter.style.display = 'flex';
+        const idx = getPasswordStrength(val);
+        const cfg = strengthConfig[idx];
+        fill.style.width = ((idx + 1) / strengthConfig.length * 100) + '%';
+        fill.style.background = cfg.color;
+        label.textContent = cfg.label;
+        label.style.color = cfg.color;
+    });
+}
+
 // Auth page slider initialization (login/signup panels)
 function initAuthPage() {
     const tabs = document.querySelectorAll('.auth-tab');
@@ -430,6 +483,9 @@ function initAuthPage() {
             if (tab) tab.click();
         });
     });
+
+    setupPasswordToggles();
+    setupPasswordStrength();
 }
 
 // Hamburger menu
@@ -467,7 +523,12 @@ function initAuthModals() {
                     </div>
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="login-password" required>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-input" id="login-password" required>
+                            <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;">Login</button>
                     <p style="text-align:center;margin-top:1rem;color:var(--text-secondary);">
@@ -499,7 +560,18 @@ function initAuthModals() {
                     </div>
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="reg-password" minlength="6" required>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-input" id="reg-password" minlength="6" required>
+                            <button type="button" class="password-toggle" tabindex="-1" aria-label="Show password">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="reg-password-strength-meter">
+                            <div class="password-strength-bar">
+                                <div class="password-strength-fill" id="reg-password-strength-fill"></div>
+                            </div>
+                            <span class="password-strength-label" id="reg-password-strength-label"></span>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;">Sign Up</button>
                     <p style="text-align:center;margin-top:1rem;color:var(--text-secondary);">
@@ -530,6 +602,8 @@ function initAuthModals() {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    setupPasswordToggles();
+    setupPasswordStrength();
 }
 
 function toggleReplyPanel(messageId) {
