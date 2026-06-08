@@ -285,9 +285,28 @@ function showEmailVerification(email) {
     };
     document.addEventListener('visibilitychange', onVisible);
     window.addEventListener('focus', onVisible);
+
+    let pollCount = 0;
+    const pollInterval = setInterval(async () => {
+        if (document.getElementById('otp-section')?.style.display === '') return;
+        pollCount++;
+        try {
+            const res = await api.get(`/auth/verification-status?email=${encodeURIComponent(email)}`);
+            if (res.verified && res.token) {
+                api.setToken(res.token);
+                clearInterval(pollInterval);
+                showToast('Email verified! Logging in...', 'success');
+                setTimeout(() => { window.location.href = '/'; }, 800);
+            }
+        } catch (e) {
+            if (pollCount > 120) clearInterval(pollInterval);
+        }
+    }, 4000);
+
     div._cleanup = () => {
         document.removeEventListener('visibilitychange', onVisible);
         window.removeEventListener('focus', onVisible);
+        clearInterval(pollInterval);
     };
 
 }

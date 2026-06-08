@@ -230,6 +230,22 @@ def login():
         'user': user.to_dict()
     }), 200
 
+@auth_bp.route('/verification-status', methods=['GET'])
+def verification_status():
+    email = request.args.get('email', '').lower().strip()
+    if not email or not validate_email(email):
+        return jsonify({'error': 'Valid email is required'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if user.is_verified:
+        token = generate_token(user.id, user.role)
+        return jsonify({'verified': True, 'token': token, 'user': user.to_dict()}), 200
+
+    return jsonify({'verified': False}), 200
+
 @auth_bp.route('/profile', methods=['GET'])
 @token_required
 def profile(current_user):
