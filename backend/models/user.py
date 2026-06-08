@@ -12,6 +12,9 @@ class User(db.Model):
     role = db.Column(db.String(20), default='customer')
     phone = db.Column(db.String(50))
     is_verified = db.Column(db.Boolean, default=False)
+    otp_code_hash = db.Column(db.String(128))
+    otp_expiry = db.Column(db.DateTime)
+    otp_attempts = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
