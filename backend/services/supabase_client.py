@@ -179,21 +179,30 @@ def confirm_supabase_email(email: str) -> bool:
         return False
 
 
+def _get_frontend_url() -> str:
+    return (
+        os.environ.get('FRONTEND_URL')
+        or os.environ.get('VERCEL_APP_URL')
+        or os.environ.get('SITE_URL')
+        or 'https://kabura-ventures.vercel.app'
+    )
+
+
 def send_otp_email(email: str) -> tuple:
     """Send a magic-link email via Supabase Auth.
-    The email contains a magic link (clickable).
-    For the 6-digit OTP code, use generate_otp() + store_otp_for_user() instead.
+    Falls back to sending a magic link when SMTP is unavailable.
+    The user clicks the link to verify their email automatically.
     Returns (success: bool, error_msg: str | None)."""
     client = get_anon_client()
     if not client:
         return False, "Supabase client not available (check env vars)"
     try:
-        site_url = os.environ.get('SITE_URL', 'https://kabura-adventures.onrender.com')
+        frontend_url = _get_frontend_url()
         client.auth.sign_in_with_otp({
             'email': email,
             'options': {
                 'should_create_user': True,
-                'email_redirect_to': f'{site_url}/login.html',
+                'email_redirect_to': f'{frontend_url}/login.html',
             },
         })
         logger.info(f"Supabase magic-link email sent to {email}")
