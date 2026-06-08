@@ -193,8 +193,13 @@ function setupSupabaseAuthListener() {
 
         switch (event) {
             case 'SIGNED_IN':
-                // OAuth or email verification callback
                 if (session) {
+                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                    const type = hashParams.get('type');
+                    if (type === 'recovery') {
+                        showPasswordResetForm();
+                        return;
+                    }
                     const result = await exchangeSupabaseSession();
                     if (result) {
                         showToast('Login successful!', 'success');
@@ -206,28 +211,13 @@ function setupSupabaseAuthListener() {
                 break;
 
             case 'TOKEN_REFRESHED':
-                // Session was refreshed — no action needed
                 break;
 
             case 'USER_UPDATED':
-                // Password was updated after reset
                 break;
 
             default:
                 break;
-        }
-    });
-
-    // Check if we just returned from a password reset (type=recovery in URL hash)
-    // This must be done after setting up the listener so the events fire.
-    client.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-            const hashParams = new URLSearchParams(window.location.hash.substring(1));
-            const type = hashParams.get('type');
-            if (type === 'recovery') {
-                // Show the password reset form
-                showPasswordResetForm();
-            }
         }
     });
 }

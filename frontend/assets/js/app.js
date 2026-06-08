@@ -262,6 +262,35 @@ function showEmailVerification(email) {
         });
     }
 
+    const onVisible = () => {
+        if (!document.hidden) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/';
+            }
+        }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+    div._cleanup = () => {
+        document.removeEventListener('visibilitychange', onVisible);
+        window.removeEventListener('focus', onVisible);
+    };
+
+}
+
+function cancelVerification() {
+    const panel = document.getElementById('verify-email-panel');
+    if (panel && panel._cleanup) panel._cleanup();
+    const panels = document.querySelector('.auth-panels');
+    const socials = document.querySelector('.socials');
+    const orSep = document.querySelector('.or-sep');
+    const toggle = document.querySelector('.auth-toggle');
+    if (panels) panels.style.display = '';
+    if (socials) socials.style.display = '';
+    if (orSep) orSep.style.display = '';
+    if (toggle) toggle.style.display = '';
+    if (panel) panel.remove();
 }
 
 function toggleOtpInput() {
@@ -315,21 +344,6 @@ async function resendOtp(email) {
     } finally {
         if (link) link.style.opacity = '1';
     }
-}
-
-function cancelVerification() {
-    const panel = document.getElementById('verify-email-panel');
-    if (panel) panel.remove();
-
-    const panels = document.querySelector('.auth-panels');
-    const socials = document.querySelector('.socials');
-    const orSep = document.querySelector('.or-sep');
-    const toggle = document.querySelector('.auth-toggle');
-
-    if (panels) panels.style.display = '';
-    if (socials) socials.style.display = '';
-    if (orSep) orSep.style.display = '';
-    if (toggle) toggle.style.display = '';
 }
 
 // Auth page slider initialization (login/signup panels)
