@@ -703,27 +703,6 @@
                     <h3 style="margin-bottom:1rem;"><i class="fas fa-star"></i> Popular Tours</h3>
                     <div id="popular-tours"></div>
                 </div>
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Monthly Bookings</h3>
-                        <div id="monthly-bookings-chart"></div>
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Bookings by Status</h3>
-                        <div id="bookings-status-chart"></div>
-                    </div>
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Bookings by Type</h3>
-                        <div id="bookings-type-chart"></div>
-                    </div>
-                </div>
-
-                <div class="card" style="padding:1.5rem;">
-                    <h3 style="margin-bottom:1rem;">Popular Tours</h3>
-                    <div id="popular-tours-table"></div>
-                </div>
             </div>
 
             <!-- Media Management -->
@@ -921,7 +900,7 @@
                 renderBarChart('revenue-by-type-chart', revenue.by_type, 'type', 'total', (i) =>
                     i.type === 'partial' ? '#C9A227' : i.type === 'full' ? '#2E7D32' : i.type === 'refund' ? '#D32F2F' : '#757575');
                 (function() {
-                    const c = document.getElementById('monthly-revenue-chart');
+                    const c = document.getElementById('revenue-trend-chart');
                     const items = revenue.monthly;
                     if (!items.length) { c.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
                     const max = Math.max(...items.map(i => i.total));
@@ -938,11 +917,11 @@
                         </div>`;
                     }).join('');
                 })();
-                renderSimpleBar('monthly-bookings-chart', bookings.monthly, 'month', 'count', '', '');
+                renderSimpleBar('bookings-trend-chart', bookings.monthly, 'month', 'count', '', '');
                 renderSimpleBar('bookings-status-chart', bookings.by_status, 'status', 'count', '', '');
                 renderSimpleBar('bookings-type-chart', bookings.by_type, 'type', 'count', '', '');
 
-                document.getElementById('popular-tours-table').innerHTML = popular_tours.length === 0
+                document.getElementById('popular-tours').innerHTML = popular_tours.length === 0
                     ? '<p style="color:var(--text-secondary);">No tour booking data yet</p>'
                     : '<div class="table-container"><table><thead><tr><th>Tour</th><th>Bookings</th><th>Total People</th><th>Est. Revenue</th></tr></thead><tbody>' +
                     popular_tours.map(t => `
