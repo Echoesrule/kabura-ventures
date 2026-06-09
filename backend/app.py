@@ -63,7 +63,7 @@ def create_app():
     @app.route('/admin')
     @admin_required
     def admin_dashboard(current_user):
-        return send_from_directory(os.path.join(app.root_path, 'templates'), 'admin.html')
+        return send_from_directory(app.static_folder, 'admin.html')
 
     @app.route('/<path:path>')
     def serve_static(path):
