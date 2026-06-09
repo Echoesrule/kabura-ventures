@@ -212,72 +212,127 @@
             color: var(--primary-green-dark); margin-bottom: 0.35rem;
         }
 
-        .admin-page .blog-editor {
+        .admin-page .block-editor {
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-sm);
             background: #fff;
             overflow: hidden;
         }
-        .admin-page .blog-editor:focus-within {
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
-        }
-        .admin-page .blog-toolbar {
-            display: flex; flex-wrap: wrap; gap: 2px;
-            padding: 0.4rem 0.5rem;
+        .admin-page .block-editor:focus-within { border-color: var(--primary-green); }
+        .admin-page .be-toolbar {
+            display: flex; flex-wrap: wrap; gap: 4px;
+            padding: 0.6rem 0.75rem;
             background: #f5f7f0;
             border-bottom: 1px solid var(--border-color);
             align-items: center;
         }
-        .admin-page .btn-editor {
-            background: transparent; border: none;
-            padding: 0.3rem 0.55rem;
-            cursor: pointer; border-radius: 4px;
-            font-family: 'Roboto', sans-serif; font-size: 0.82rem;
-            color: var(--dark-text); transition: all 0.15s;
-            min-width: 30px; text-align: center;
+        .admin-page .be-toolbar .be-label {
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--text-secondary); margin-right: 0.25rem;
         }
-        .admin-page .btn-editor:hover { background: rgba(46,125,50,0.1); }
-        .admin-page .btn-editor:active { background: rgba(46,125,50,0.2); }
-        .admin-page .blog-toolbar .sep {
+        .admin-page .be-toolbar .sep {
             width: 1px; height: 22px;
-            background: var(--border-color);
-            margin: 0 4px;
+            background: var(--border-color); margin: 0 6px;
         }
-        .admin-page .blog-editable {
-            min-height: 280px; max-height: 500px;
-            overflow-y: auto;
-            padding: 1rem;
-            font-family: 'Roboto', sans-serif; font-size: 0.95rem;
-            line-height: 1.7; color: var(--dark-text);
-            outline: none;
+        .admin-page .be-toolbar .btn.btn-sm {
+            padding: 0.3rem 0.6rem; font-size: 0.75rem;
+            background: #fff; border: 1px solid var(--border-color);
+            color: var(--dark-text); border-radius: 6px;
         }
-        .admin-page .blog-editable:empty::before {
-            content: 'Write your blog content here...';
-            color: #aaa;
+        .admin-page .be-toolbar .btn.btn-sm:hover {
+            background: var(--primary-green);
+            color: #fff; border-color: var(--primary-green);
         }
-        .admin-page .blog-editable h1 { font-size: 2rem; margin: 1rem 0 0.5rem; color: var(--primary-green-dark); font-weight: 700; }
-        .admin-page .blog-editable h2 { font-size: 1.6rem; margin: 0.9rem 0 0.4rem; color: var(--primary-green-dark); font-weight: 700; }
-        .admin-page .blog-editable h3 { font-size: 1.35rem; margin: 0.8rem 0 0.35rem; color: var(--primary-green-dark); font-weight: 600; }
-        .admin-page .blog-editable h4 { font-size: 1.15rem; margin: 0.7rem 0 0.3rem; font-weight: 600; }
-        .admin-page .blog-editable h5 { font-size: 1rem; margin: 0.6rem 0 0.25rem; font-weight: 600; }
-        .admin-page .blog-editable h6 { font-size: 0.9rem; margin: 0.5rem 0 0.2rem; font-weight: 600; text-transform: uppercase; }
-        .admin-page .blog-editable p { margin: 0.5rem 0; }
-        .admin-page .blog-editable ul, .admin-page .blog-editable ol { margin: 0.5rem 0; padding-left: 1.5rem; }
-        .admin-page .blog-editable li { margin: 0.25rem 0; }
-        .admin-page .blog-editable a { color: var(--primary-green); }
-        .admin-page .blog-editable img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
-        .admin-page .blog-editable blockquote {
+        .admin-page .be-toolbar .btn.btn-sm i { margin-right: 2px; }
+
+        #be-blocks { padding: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+        .be-block {
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            border-left: 3px solid var(--primary-green);
+            position: relative;
+        }
+        .be-block:hover { border-color: #bbb; }
+        .be-block-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 0.5rem;
+        }
+        .be-block-type {
+            font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--primary-green);
+            display: flex; align-items: center; gap: 0.35rem;
+        }
+        .be-block-actions { display: flex; gap: 3px; }
+        .be-block-actions button {
+            background: none; border: none; cursor: pointer;
+            padding: 2px 6px; border-radius: 4px;
+            font-size: 0.85rem; color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+        .be-block-actions button:hover { background: #e8e8e8; color: var(--dark-text); }
+        .be-block-actions .be-del:hover { color: #D32F2F; background: #fde8e8; }
+        .be-block input, .be-block textarea, .be-block select {
+            width: 100%; padding: 0.5rem 0.7rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px; font-family: 'Roboto', sans-serif;
+            font-size: 0.88rem; transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .be-block input:focus, .be-block textarea:focus, .be-block select:focus {
+            outline: none; border-color: var(--primary-green);
+            box-shadow: 0 0 0 2px rgba(46,125,50,0.1);
+        }
+        .be-block textarea { min-height: 80px; resize: vertical; }
+        .be-block .be-row { display: flex; gap: 0.75rem; }
+        .be-block .be-row > * { flex: 1; }
+        .be-block .be-label-sm {
+            display: block; font-size: 0.78rem; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 0.25rem;
+        }
+        .be-block-list-items { display: flex; flex-direction: column; gap: 0.4rem; }
+        .be-list-item-row {
+            display: flex; gap: 0.4rem; align-items: center;
+        }
+        .be-list-item-row input { flex: 1; }
+        .be-list-item-row button {
+            background: none; border: none; cursor: pointer;
+            padding: 4px 8px; color: var(--text-secondary);
+            border-radius: 4px; font-size: 1rem;
+        }
+        .be-list-item-row button:hover { background: #f0f0f0; color: #D32F2F; }
+        .be-list-item-row .be-add-item { color: var(--primary-green); }
+        .be-list-item-row .be-add-item:hover { background: #e8f5e9; }
+
+        .be-empty {
+            text-align: center; padding: 2.5rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .be-empty i { font-size: 2rem; display: block; margin-bottom: 0.5rem; opacity: 0.3; }
+
+        .admin-page .blog-preview h1 { font-size: 2rem; margin: 1rem 0 0.5rem; color: var(--primary-green-dark); font-weight: 700; }
+        .admin-page .blog-preview h2 { font-size: 1.6rem; margin: 0.9rem 0 0.4rem; color: var(--primary-green-dark); font-weight: 700; }
+        .admin-page .blog-preview h3 { font-size: 1.35rem; margin: 0.8rem 0 0.35rem; color: var(--primary-green-dark); font-weight: 600; }
+        .admin-page .blog-preview h4 { font-size: 1.15rem; margin: 0.7rem 0 0.3rem; font-weight: 600; }
+        .admin-page .blog-preview h5 { font-size: 1rem; margin: 0.6rem 0 0.25rem; font-weight: 600; }
+        .admin-page .blog-preview h6 { font-size: 0.9rem; margin: 0.5rem 0 0.2rem; font-weight: 600; text-transform: uppercase; }
+        .admin-page .blog-preview p { margin: 0.5rem 0; }
+        .admin-page .blog-preview ul, .admin-page .blog-preview ol { margin: 0.5rem 0; padding-left: 1.5rem; }
+        .admin-page .blog-preview li { margin: 0.25rem 0; }
+        .admin-page .blog-preview img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
+        .admin-page .blog-preview blockquote {
             border-left: 4px solid var(--primary-green);
             padding: 0.5rem 1rem; margin: 1rem 0;
             background: #f5f8f2; border-radius: 0 8px 8px 0;
             color: var(--text-secondary);
         }
-        .admin-page .blog-editable pre {
+        .admin-page .blog-preview pre {
             background: #1a1a2e; color: #e4e4e4;
             padding: 1rem; border-radius: 8px;
-            overflow-x: auto; font-size: 0.85rem;
-            margin: 1rem 0;
+            overflow-x: auto; font-size: 0.85rem; margin: 1rem 0;
         }
         .admin-page .form-input,
         .admin-page .form-select,
@@ -675,7 +730,7 @@
 
                 <!-- Blog Form Modal -->
                 <div class="modal-overlay" id="blog-modal">
-                    <div class="modal" style="max-width:820px;">
+                    <div class="modal" style="max-width:860px;">
                         <div class="modal-header">
                             <h2 id="blog-modal-title">New Blog Post</h2>
                             <button class="modal-close" onclick="closeModal('blog-modal')">&times;</button>
@@ -695,34 +750,25 @@
                                 <textarea class="form-textarea" id="blog-excerpt" rows="2" maxlength="500"></textarea>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Content</label>
-                                <div class="blog-editor">
-                                    <div class="blog-toolbar">
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="h1" title="Heading 1"><b>H1</b></button>
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="h2" title="Heading 2"><b>H2</b></button>
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="h3" title="Heading 3"><b>H3</b></button>
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="h4" title="Heading 4">H4</button>
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="h5" title="Heading 5">H5</button>
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="h6" title="Heading 6">H6</button>
+                                <label class="form-label">Content Blocks</label>
+                                <div class="block-editor" id="block-editor">
+                                    <div class="be-toolbar">
+                                        <span class="be-label">Add Block:</span>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('heading')"><i class="fas fa-heading"></i> Heading</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('paragraph')"><i class="fas fa-paragraph"></i> Paragraph</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('image')"><i class="fas fa-image"></i> Image</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('quote')"><i class="fas fa-quote-right"></i> Quote</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('list')"><i class="fas fa-list"></i> List</button>
                                         <span class="sep"></span>
-                                        <button type="button" class="btn-editor" data-cmd="formatBlock" data-val="p" title="Paragraph">P</button>
-                                        <button type="button" class="btn-editor" data-cmd="bold" title="Bold"><b>B</b></button>
-                                        <button type="button" class="btn-editor" data-cmd="italic" title="Italic"><i>I</i></button>
-                                        <button type="button" class="btn-editor" data-cmd="underline" title="Underline"><u>U</u></button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('raw')"><i class="fas fa-code"></i> HTML</button>
                                         <span class="sep"></span>
-                                        <button type="button" class="btn-editor" data-cmd="insertUnorderedList" title="Bullet List">&#8226;</button>
-                                        <button type="button" class="btn-editor" data-cmd="insertOrderedList" title="Numbered List">1.</button>
-                                        <span class="sep"></span>
-                                        <button type="button" class="btn-editor" data-cmd="createLink" title="Insert Link">&#128279;</button>
-                                        <button type="button" class="btn-editor" data-cmd="insertImage" title="Insert Image">&#128247;</button>
-                                        <span class="sep"></span>
-                                        <button type="button" class="btn-editor" data-cmd="removeFormat" title="Clear Formatting">&#10005;</button>
-                                        <span class="sep"></span>
-                                        <button type="button" class="btn-editor" id="btn-source" title="Toggle HTML Source">&lt;/&gt;</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" id="be-toggle-source" onclick="toggleBlockSource()"><i class="fas fa-terminal"></i> Source</button>
                                     </div>
-                                    <div class="blog-editable" id="blog-content-editor" contenteditable="true"></div>
-                                    <textarea class="form-textarea" id="blog-source-editor" style="display:none;min-height:280px;font-family:monospace;font-size:0.85rem;border:none;border-radius:0;resize:vertical;"></textarea>
-                                    <textarea class="form-input" id="blog-content" style="display:none;" required></textarea>
+                                    <div id="be-blocks"></div>
+                                    <div id="be-source" style="display:none;">
+                                        <textarea class="form-textarea" id="be-source-textarea" style="min-height:300px;font-family:monospace;font-size:0.85rem;" placeholder="Raw HTML content..."></textarea>
+                                    </div>
+                                    <textarea class="form-input" id="blog-content" style="display:none;"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1636,79 +1682,228 @@
             } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load blogs</h3></div>'; }
         }
 
-        function syncBlogEditor() {
-            const editor = document.getElementById('blog-content-editor');
-            const sourceEditor = document.getElementById('blog-source-editor');
-            const textarea = document.getElementById('blog-content');
-            textarea.value = sourceEditor.style.display !== 'none' ? sourceEditor.value : editor.innerHTML;
+        // === Block Editor ===
+        let beBlocks = [];
+        let beIdCounter = 0;
+        let beSourceMode = false;
+
+        function beUid() { return 'blk_' + (++beIdCounter); }
+
+        function addBlock(type) {
+            beBlocks.push({ id: beUid(), type: type, data: getDefaultData(type) });
+            renderBlocks();
         }
 
-        function setupBlogEditor() {
-            const editor = document.getElementById('blog-content-editor');
-            const sourceEditor = document.getElementById('blog-source-editor');
-            if (!editor) return;
+        function getDefaultData(type) {
+            switch(type) {
+                case 'heading': return { level: 'h2', text: '' };
+                case 'paragraph': return { text: '' };
+                case 'image': return { url: '', caption: '' };
+                case 'quote': return { text: '', cite: '' };
+                case 'list': return { style: 'ul', items: [''] };
+                case 'raw': return { html: '' };
+                default: return {};
+            }
+        }
 
-            let isSourceMode = false;
+        function removeBlock(id) {
+            beBlocks = beBlocks.filter(b => b.id !== id);
+            renderBlocks();
+        }
 
-            document.querySelectorAll('.btn-editor').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const cmd = btn.dataset.cmd;
-                    const val = btn.dataset.val || null;
-                    if (cmd === 'createLink') {
-                        const url = prompt('Enter link URL:', 'https://');
-                        if (url) document.execCommand(cmd, false, url);
-                    } else if (cmd === 'insertImage') {
-                        const url = prompt('Enter image URL:', 'https://');
-                        if (url) document.execCommand(cmd, false, url);
-                    } else {
-                        document.execCommand(cmd, false, val);
+        function moveBlock(id, dir) {
+            const idx = beBlocks.findIndex(b => b.id === id);
+            if (idx < 0) return;
+            const swap = idx + dir;
+            if (swap < 0 || swap >= beBlocks.length) return;
+            [beBlocks[idx], beBlocks[swap]] = [beBlocks[swap], beBlocks[idx]];
+            renderBlocks();
+        }
+
+        function updateBlockData(id, key, value) {
+            const block = beBlocks.find(b => b.id === id);
+            if (block) block.data[key] = value;
+        }
+
+        function updateBlockListItems(id, items) {
+            const block = beBlocks.find(b => b.id === id);
+            if (block) block.data.items = items;
+        }
+
+        function addListItem(id) {
+            const block = beBlocks.find(b => b.id === id);
+            if (block) block.data.items.push('');
+            renderBlocks();
+        }
+
+        function removeListItem(id, idx) {
+            const block = beBlocks.find(b => b.id === id);
+            if (block && block.data.items.length > 1) {
+                block.data.items.splice(idx, 1);
+                renderBlocks();
+            }
+        }
+
+        function compileBlocks() {
+            return beBlocks.map(b => {
+                const d = b.data;
+                switch(b.type) {
+                    case 'heading': return `<${d.level}>${escapeHTML(d.text)}</${d.level}>`;
+                    case 'paragraph': return `<p>${escapeHTML(d.text)}</p>`;
+                    case 'image': return d.url ? `<figure><img src="${escapeAttr(d.url)}" alt="${escapeAttr(d.caption)}"><figcaption>${escapeHTML(d.caption)}</figcaption></figure>` : '';
+                    case 'quote': return `<blockquote><p>${escapeHTML(d.text)}</p>${d.cite ? `<cite>— ${escapeHTML(d.cite)}</cite>` : ''}</blockquote>`;
+                    case 'list': {
+                        const tag = d.style === 'ol' ? 'ol' : 'ul';
+                        return `<${tag}>${d.items.filter(i => i.trim()).map(i => `<li>${escapeHTML(i)}</li>`).join('')}</${tag}>`;
                     }
-                    editor.focus();
-                });
-            });
-
-            document.getElementById('btn-source')?.addEventListener('click', () => {
-                isSourceMode = !isSourceMode;
-                if (isSourceMode) {
-                    sourceEditor.value = editor.innerHTML;
-                    editor.style.display = 'none';
-                    sourceEditor.style.display = 'block';
-                    document.getElementById('btn-source').style.background = 'rgba(46,125,50,0.15)';
-                } else {
-                    editor.innerHTML = sourceEditor.value;
-                    sourceEditor.style.display = 'none';
-                    editor.style.display = 'block';
-                    document.getElementById('btn-source').style.background = '';
+                    case 'raw': return d.html;
+                    default: return '';
                 }
-            });
-
-            editor.addEventListener('paste', (e) => {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text/html') ||
-                             (e.clipboardData || window.clipboardData).getData('text/plain');
-                if (text) {
-                    document.execCommand('insertHTML', false, text);
-                }
-            });
-
-            sourceEditor.addEventListener('keydown', (e) => {
-                if (e.key === 'Tab') {
-                    e.preventDefault();
-                    const start = sourceEditor.selectionStart;
-                    const end = sourceEditor.selectionEnd;
-                    sourceEditor.value = sourceEditor.value.substring(0, start) + '    ' + sourceEditor.value.substring(end);
-                    sourceEditor.selectionStart = sourceEditor.selectionEnd = start + 4;
-                }
-            });
+            }).filter(h => h).join('\n\n');
         }
 
-        function resetBlogEditor() {
-            const editor = document.getElementById('blog-content-editor');
-            const sourceEditor = document.getElementById('blog-source-editor');
-            const btn = document.getElementById('btn-source');
-            editor.style.display = 'block';
-            sourceEditor.style.display = 'none';
-            if (btn) btn.style.background = '';
+        function escapeHTML(v) {
+            if (!v) return '';
+            return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function escapeAttr(v) {
+            if (!v) return '';
+            return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        function renderBlocks() {
+            const container = document.getElementById('be-blocks');
+            if (!container) return;
+            if (beBlocks.length === 0) {
+                container.innerHTML = '<div class="be-empty"><i class="fas fa-plus-circle"></i>Click "Add Block" above to start building your content</div>';
+                return;
+            }
+            container.innerHTML = beBlocks.map((b, i) => {
+                const d = b.data;
+                const typeIcon = { heading: 'fa-heading', paragraph: 'fa-paragraph', image: 'fa-image', quote: 'fa-quote-right', list: 'fa-list', raw: 'fa-code' };
+                const typeName = { heading: 'Heading', paragraph: 'Paragraph', image: 'Image', quote: 'Quote', list: 'List', raw: 'HTML' };
+                let body = '';
+                switch(b.type) {
+                    case 'heading':
+                        body = `<div class="be-row"><div><label class="be-label-sm">Level</label><select onchange="updateBlockData('${b.id}','level',this.value)">${['h1','h2','h3','h4','h5','h6'].map(l => `<option value="${l}"${l===d.level?' selected':''}>${l.toUpperCase()}</option>`).join('')}</select></div><div style="flex:3"><label class="be-label-sm">Text</label><input type="text" value="${escapeAttr(d.text)}" oninput="updateBlockData('${b.id}','text',this.value)" placeholder="Heading text..."></div></div>`;
+                        break;
+                    case 'paragraph':
+                        body = `<textarea oninput="updateBlockData('${b.id}','text',this.value)" placeholder="Write your paragraph...">${escapeHTML(d.text)}</textarea>`;
+                        break;
+                    case 'image':
+                        body = `<div class="be-row"><div><label class="be-label-sm">Image URL</label><input type="url" value="${escapeAttr(d.url)}" oninput="updateBlockData('${b.id}','url',this.value)" placeholder="https://..."></div><div><label class="be-label-sm">Caption</label><input type="text" value="${escapeAttr(d.caption)}" oninput="updateBlockData('${b.id}','caption',this.value)" placeholder="Photo caption..."></div></div>`;
+                        break;
+                    case 'quote':
+                        body = `<textarea oninput="updateBlockData('${b.id}','text',this.value)" placeholder="Quote text..." style="min-height:60px;">${escapeHTML(d.text)}</textarea><div style="margin-top:0.4rem;"><label class="be-label-sm">Citation (optional)</label><input type="text" value="${escapeAttr(d.cite)}" oninput="updateBlockData('${b.id}','cite',this.value)" placeholder="Who said it?"></div>`;
+                        break;
+                    case 'list':
+                        body = `<div style="margin-bottom:0.4rem;"><label class="be-label-sm">Style</label><select onchange="updateBlockData('${b.id}','style',this.value)" style="width:auto;">${[{v:'ul',l:'Bullet'},{v:'ol',l:'Numbered'}].map(o => `<option value="${o.v}"${o.v===d.style?' selected':''}>${o.l}</option>`).join('')}</select></div><div class="be-block-list-items">${(d.items||['']).map((item, ii) => `<div class="be-list-item-row"><input type="text" value="${escapeAttr(item)}" oninput="updateBlockData('${b.id}','items', (function(){var a=beBlocks.find(x=>x.id==='${b.id}').data.items;a[${ii}]=this.value;return a;})())" placeholder="List item..."><button type="button" class="be-add-item" onclick="addListItem('${b.id}')" title="Add item">+</button>${(d.items||[]).length > 1 ? `<button type="button" onclick="removeListItem('${b.id}',${ii})" title="Remove item">&times;</button>` : ''}</div>`).join('')}</div>`;
+                        break;
+                    case 'raw':
+                        body = `<textarea oninput="updateBlockData('${b.id}','html',this.value)" placeholder="Paste raw HTML here..." style="min-height:100px;font-family:monospace;font-size:0.85rem;">${escapeHTML(d.html)}</textarea>`;
+                        break;
+                }
+                return `<div class="be-block" data-id="${b.id}">
+                    <div class="be-block-header">
+                        <span class="be-block-type"><i class="fas ${typeIcon[b.type] || 'fa-file'}"></i> ${typeName[b.type] || b.type}</span>
+                        <div class="be-block-actions">
+                            <button type="button" onclick="moveBlock('${b.id}',-1)" title="Move up" ${i===0?'disabled style="opacity:0.3"':''}><i class="fas fa-chevron-up"></i></button>
+                            <button type="button" onclick="moveBlock('${b.id}',1)" title="Move down" ${i===beBlocks.length-1?'disabled style="opacity:0.3"':''}><i class="fas fa-chevron-down"></i></button>
+                            <button type="button" class="be-del" onclick="removeBlock('${b.id}')" title="Remove block"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    ${body}
+                </div>`;
+            }).join('');
+        }
+
+        function toggleBlockSource() {
+            const blocks = document.getElementById('be-blocks');
+            const source = document.getElementById('be-source');
+            const btn = document.getElementById('be-toggle-source');
+            beSourceMode = !beSourceMode;
+            if (beSourceMode) {
+                document.getElementById('be-source-textarea').value = compileBlocks();
+                blocks.style.display = 'none';
+                source.style.display = 'block';
+                btn.style.background = 'var(--primary-green)';
+                btn.style.color = '#fff';
+                btn.style.borderColor = 'var(--primary-green)';
+            } else {
+                blocks.style.display = 'flex';
+                source.style.display = 'none';
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }
+        }
+
+        function syncBlockContent() {
+            const sourceArea = document.getElementById('be-source-textarea');
+            const hiddenArea = document.getElementById('blog-content');
+            if (beSourceMode) {
+                hiddenArea.value = sourceArea.value;
+            } else {
+                hiddenArea.value = compileBlocks();
+            }
+        }
+
+        function loadBlocksFromHTML(html) {
+            beBlocks = [];
+            beIdCounter = 0;
+            if (!html || !html.trim()) {
+                renderBlocks();
+                return;
+            }
+            document.getElementById('be-source-textarea').value = html;
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            const children = Array.from(div.children);
+            for (const el of children) {
+                const tag = el.tagName.toLowerCase();
+                if (/^h[1-6]$/.test(tag)) {
+                    beBlocks.push({ id: beUid(), type: 'heading', data: { level: tag, text: el.innerHTML } });
+                } else if (tag === 'p') {
+                    beBlocks.push({ id: beUid(), type: 'paragraph', data: { text: el.innerHTML } });
+                } else if (tag === 'figure') {
+                    const img = el.querySelector('img');
+                    const figcap = el.querySelector('figcaption');
+                    beBlocks.push({ id: beUid(), type: 'image', data: { url: img?.src || '', caption: figcap?.innerHTML || '' } });
+                } else if (tag === 'blockquote') {
+                    const p = el.querySelector('p');
+                    const cite = el.querySelector('cite');
+                    beBlocks.push({ id: beUid(), type: 'quote', data: { text: p?.innerHTML || el.innerHTML, cite: cite?.innerHTML || '' } });
+                } else if (tag === 'ul' || tag === 'ol') {
+                    const items = Array.from(el.querySelectorAll('li')).map(li => li.innerHTML);
+                    beBlocks.push({ id: beUid(), type: 'list', data: { style: tag, items: items.length ? items : [''] } });
+                } else if (tag === 'pre') {
+                    beBlocks.push({ id: beUid(), type: 'raw', data: { html: el.innerHTML } });
+                } else if (tag === 'hr') {
+                    // skip
+                } else if (el.children.length === 0 && el.textContent.trim()) {
+                    beBlocks.push({ id: beUid(), type: 'paragraph', data: { text: el.innerHTML } });
+                } else if (tag === 'div' || tag === 'section') {
+                    // unwrap and recurse — just treat as paragraph
+                    beBlocks.push({ id: beUid(), type: 'raw', data: { html: el.outerHTML } });
+                } else {
+                    // unknown — store as raw
+                    beBlocks.push({ id: beUid(), type: 'raw', data: { html: el.outerHTML } });
+                }
+            }
+            if (!beBlocks.length && html.trim()) {
+                beBlocks.push({ id: beUid(), type: 'raw', data: { html: html } });
+            }
+            renderBlocks();
+        }
+
+        function resetBlockEditor() {
+            beSourceMode = false;
+            const blocks = document.getElementById('be-blocks');
+            const source = document.getElementById('be-source');
+            const btn = document.getElementById('be-toggle-source');
+            if (blocks) blocks.style.display = 'flex';
+            if (source) source.style.display = 'none';
+            if (btn) { btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
         }
 
         function showBlogForm() {
@@ -1716,10 +1911,9 @@
             document.getElementById('blog-form').reset();
             document.getElementById('blog-id').value = '';
             document.getElementById('blog-published').checked = true;
-            document.getElementById('blog-content-editor').innerHTML = '';
-            document.getElementById('blog-source-editor').value = '';
+            loadBlocksFromHTML('');
             document.getElementById('blog-content').value = '';
-            resetBlogEditor();
+            resetBlockEditor();
             openModal('blog-modal');
         }
 
@@ -1734,14 +1928,13 @@
                 document.getElementById('blog-title').value = blog.title;
                 document.getElementById('blog-category').value = blog.category || '';
                 document.getElementById('blog-excerpt').value = blog.excerpt || '';
-                document.getElementById('blog-content-editor').innerHTML = blog.content || '';
-                document.getElementById('blog-source-editor').value = blog.content || '';
+                loadBlocksFromHTML(blog.content || '');
                 document.getElementById('blog-content').value = blog.content || '';
                 document.getElementById('blog-image').value = blog.image_url || '';
                 document.getElementById('blog-tags').value = (blog.tags || []).join(', ');
                 document.getElementById('blog-author').value = blog.author || '';
                 document.getElementById('blog-published').checked = blog.published;
-                resetBlogEditor();
+                resetBlockEditor();
                 openModal('blog-modal');
             } catch (err) { showToast(err.message, 'error'); }
         }
@@ -1754,7 +1947,7 @@
 
         document.getElementById('blog-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            syncBlogEditor();
+            syncBlockContent();
             const btn = e.target.querySelector('button[type="submit"]');
             btn.disabled = true; btn.textContent = 'Saving...';
             const id = document.getElementById('blog-id').value;
@@ -1827,7 +2020,7 @@
 
         // Hamburger for mobile admin
         document.addEventListener('DOMContentLoaded', () => {
-            setupBlogEditor();
+            renderBlocks();
             const sidebar = document.getElementById('admin-sidebar');
             const hamburger = document.createElement('button');
             hamburger.className = 'hamburger';
