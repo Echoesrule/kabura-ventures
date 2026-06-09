@@ -5,5 +5,6 @@
       "destination": "https://kabura-adventures-api.onrender.com/admin"
     },
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "trailingSlash": false
 }
