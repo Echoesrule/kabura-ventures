@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        #admin-root { display: none; }
         .admin-page .navbar { display: none; }
         .admin-page .footer { display: none; }
         .admin-page .modal-overlay { display: none !important; }
@@ -35,7 +34,7 @@
     </style>
 </head>
 <body class="admin-page">
-    <div id="admin-root">
+    <div id="admin-root" style="display:none">
     <div class="admin-layout">
         <!-- Sidebar -->
         <div class="admin-sidebar" id="admin-sidebar">
@@ -456,7 +455,7 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>You must be logged in as admin.</p></div>';
-                root.style.display = ''; return;
+                root.style.display = 'block'; return;
             }
             let lastErr;
             for (let retry = 0; retry < 3; retry++) {
@@ -465,15 +464,15 @@
                     const profile = await api.getProfile();
                     if (profile.user.role !== 'admin') {
                         root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>Admin access required.</p></div>';
-                        root.style.display = ''; return;
+                        root.style.display = 'block'; return;
                     }
-                    root.style.display = '';
+                    root.style.display = 'block';
                     loadDashboard();
                     return;
                 } catch (e) { lastErr = e; }
             }
             root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#333;"><h2>Could not verify admin session</h2><p style="color:#666;">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:#2E7D32;color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
-            root.style.display = '';
+            root.style.display = 'block';
         })();
 
         // Sidebar navigation
