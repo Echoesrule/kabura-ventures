@@ -21,18 +21,316 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <style>
-        .admin-page .navbar { display: none; }
-        .admin-page .footer { display: none; }
+        .admin-page .navbar, .admin-page .footer { display: none !important; }
         .admin-page #login-modal,
-.admin-page #register-modal,
-.admin-page #user-inbox-modal { display: none !important; }
-        .admin-layout { min-height: 100vh; }
-        .admin-sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
-        .admin-content { margin-left: 260px; }
+        .admin-page #register-modal,
+        .admin-page #user-inbox-modal { display: none !important; }
+
+        .admin-layout { min-height: 100vh; display: flex; }
+
+        .admin-sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+            width: 260px;
+            background: linear-gradient(180deg, #1B5E20 0%, #2E7D32 40%, #388E3C 100%);
+            color: #fff;
+            display: flex; flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+        }
+        .admin-sidebar .brand {
+            padding: 1.75rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            margin-bottom: 0.75rem;
+        }
+        .admin-sidebar .brand h3 {
+            color: var(--accent-gold);
+            font-weight: 700; font-size: 1.25rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .admin-sidebar .brand h3 i { font-size: 1.1rem; }
+        .admin-sidebar .brand p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.75rem; margin-top: 2px; letter-spacing: 0.3px;
+        }
+        .admin-sidebar .nav-item {
+            padding: 0.7rem 1.5rem;
+            cursor: pointer; font-size: 0.88rem;
+            display: flex; align-items: center; gap: 0.75rem;
+            color: rgba(255,255,255,0.7);
+            transition: all 0.25s ease;
+            border-left: 3px solid transparent;
+            margin: 1px 0;
+        }
+        .admin-sidebar .nav-item:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+        .admin-sidebar .nav-item.active {
+            background: rgba(255,255,255,0.12);
+            color: var(--accent-gold-light);
+            border-left-color: var(--accent-gold);
+            font-weight: 600;
+        }
+        .admin-sidebar .nav-item i { width: 1.25rem; text-align: center; font-size: 1rem; }
+        .admin-sidebar .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            padding-top: 0.75rem;
+            padding-bottom: 1rem;
+        }
+        .admin-sidebar .sidebar-footer .nav-item { font-size: 0.83rem; }
+
+        .admin-content {
+            margin-left: 260px; flex: 1;
+            background: linear-gradient(135deg, #f5f7f0 0%, #f0f3ea 100%);
+            min-height: 100vh; padding: 2rem;
+        }
+        .admin-content h2 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary-green-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .admin-content h2 i { color: var(--primary-green); font-size: 1.3rem; }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem; margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #fff; border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-green);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .stat-card h3 {
+            font-size: 0.82rem; text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .stat-card .stat-value {
+            font-size: 1.75rem; font-weight: 700;
+            color: var(--primary-green-dark);
+            font-family: 'Poppins', sans-serif;
+        }
+        .stat-card .stat-icon {
+            float: right; font-size: 1.8rem;
+            color: var(--primary-green);
+            opacity: 0.2;
+        }
+
+        .card {
+            background: #fff; border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-top: 3px solid var(--primary-green);
+            transition: all 0.3s ease;
+        }
+        .card:hover { box-shadow: var(--shadow-md); }
+        .card h3 {
+            color: var(--primary-green-dark);
+            font-weight: 600; font-size: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .card h3 i { color: var(--primary-green); }
+
+        .action-bar {
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #e8f0e4, #dce8d6);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-green);
+        }
+        .action-bar h2 { margin-bottom: 0; font-size: 1.2rem; }
+
+        .empty-state {
+            text-align: center; padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+        .empty-state h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--earth-brown); }
+
+        .table-container { overflow-x: auto; }
+        .table-container > div {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .table-container > div:last-child { border-bottom: none; }
+        .table-container > div:nth-child(even) { background: rgba(46,125,50,0.03); }
+        .table-container > div:hover { background: rgba(46,125,50,0.06); }
+
+        .admin-page .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.55);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+        .admin-page .modal-overlay.active { display: flex; }
+        .admin-page .modal {
+            background: #fff; border-radius: var(--radius-lg);
+            width: 100%; max-width: 520px;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .admin-page .modal-header {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #f5f8f2, #edf3e8);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        .admin-page .modal-header h2 {
+            margin: 0; font-size: 1.1rem;
+            color: var(--primary-green-dark);
+        }
+        .admin-page .modal-close {
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: var(--text-secondary);
+            line-height: 1; padding: 0 0.25rem;
+            transition: color 0.2s;
+        }
+        .admin-page .modal-close:hover { color: #D32F2F; }
+        .admin-page .modal form { padding: 1.5rem; }
+
+        .admin-page .form-group { margin-bottom: 1rem; }
+        .admin-page .form-label {
+            display: block; font-size: 0.85rem; font-weight: 600;
+            color: var(--primary-green-dark); margin-bottom: 0.35rem;
+        }
+        .admin-page .form-input,
+        .admin-page .form-select,
+        .admin-page .form-textarea {
+            width: 100%; padding: 0.65rem 0.85rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: 'Roboto', sans-serif; font-size: 0.9rem;
+            transition: border-color 0.2s; background: #fff;
+        }
+        .admin-page .form-input:focus,
+        .admin-page .form-select:focus,
+        .admin-page .form-textarea:focus {
+            outline: none; border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
+        }
+        .admin-page .form-textarea { min-height: 100px; resize: vertical; }
+
+        .admin-page .btn {
+            padding: 0.6rem 1.25rem; border: none; border-radius: var(--radius-sm);
+            cursor: pointer; font-size: 0.88rem; font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.25s ease; display: inline-flex;
+            align-items: center; gap: 0.4rem;
+        }
+        .admin-page .btn-primary {
+            background: linear-gradient(135deg, #2E7D32, #388E3C);
+            color: #fff;
+        }
+        .admin-page .btn-primary:hover {
+            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            box-shadow: 0 4px 12px rgba(46,125,50,0.3);
+            transform: translateY(-1px);
+        }
+        .admin-page .btn-secondary {
+            background: #e8e8e8; color: var(--dark-text);
+        }
+        .admin-page .btn-secondary:hover { background: #d5d5d5; }
+        .admin-page .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+            color: #fff;
+        }
+        .admin-page .btn-gold:hover {
+            box-shadow: 0 4px 12px rgba(201,162,39,0.3);
+            transform: translateY(-1px);
+        }
+        .admin-page .btn-danger {
+            background: linear-gradient(135deg, #D32F2F, #E53935);
+            color: #fff;
+        }
+        .admin-page .btn-danger:hover {
+            box-shadow: 0 4px 12px rgba(211,47,47,0.3);
+            transform: translateY(-1px);
+        }
+        .admin-page .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
+
+        .admin-page .grid { display: grid; gap: 1rem; }
+        .admin-page .grid-2 { grid-template-columns: 1fr 1fr; }
+
+        .admin-page .spinner {
+            width: 40px; height: 40px; margin: 2rem auto;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-green);
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .admin-page .image-gallery {
+            display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;
+        }
+        .admin-page .image-gallery img {
+            width: 80px; height: 64px; object-fit: cover;
+            border-radius: 6px; border: 2px solid var(--border-color);
+            transition: border-color 0.2s;
+        }
+        .admin-page .image-gallery img:hover { border-color: var(--primary-green); }
+
+        .admin-page .verification-loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 2000;
+        }
+
+        .admin-page .toast-container {
+            position: fixed; top: 1rem; right: 1rem; z-index: 3000;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .admin-page .toast {
+            padding: 0.85rem 1.25rem; border-radius: var(--radius-sm);
+            font-family: 'Roboto', sans-serif; font-size: 0.88rem;
+            color: #fff; box-shadow: var(--shadow-md);
+            animation: slideIn 0.3s ease;
+            max-width: 360px;
+        }
+        .admin-page .toast-success { background: var(--primary-green); }
+        .admin-page .toast-error { background: #D32F2F; }
+        .admin-page .toast-info { background: #1976D2; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
         @media (max-width: 768px) {
-            .admin-sidebar { width: 200px; transform: translateX(-100%); transition: transform 0.3s; }
+            .admin-sidebar {
+                width: 240px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
             .admin-sidebar.open { transform: translateX(0); }
-            .admin-content { margin-left: 0; }
+            .admin-content {
+                margin-left: 0;
+                padding: 1.25rem;
+            }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .admin-page .grid-2 { grid-template-columns: 1fr; }
+            .admin-page .modal { max-width: 100%; margin: 0.5rem; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .admin-content { padding: 1rem; }
         }
     </style>
 </head>
@@ -41,24 +339,24 @@
     <div class="admin-layout">
         <!-- Sidebar -->
         <div class="admin-sidebar" id="admin-sidebar">
-            <div style="padding:1.5rem;border-bottom:1px solid #333;margin-bottom:1rem;">
-                <h3 style="color:var(--accent-gold);">Kabura Admin</h3>
-                <p style="color:#757575;font-size:0.8rem;">Management Dashboard</p>
+            <div class="brand">
+                <h3><i class="fas fa-leaf"></i> Kabura Admin</h3>
+                <p>Management Dashboard</p>
             </div>
-            <div class="nav-item active" data-section="dashboard"><i class="fas fa-chart-bar" style="width:1.5rem;"></i> Dashboard</div>
-            <div class="nav-item" data-section="tours"><i class="fas fa-mountain" style="width:1.5rem;"></i> Tours</div>
-            <div class="nav-item" data-section="hotels"><i class="fas fa-hotel" style="width:1.5rem;"></i> Hotels</div>
-            <div class="nav-item" data-section="bookings"><i class="fas fa-clipboard-list" style="width:1.5rem;"></i> Bookings</div>
-            <div class="nav-item" data-section="flights"><i class="fas fa-plane" style="width:1.5rem;"></i> Flight Requests</div>
-            <div class="nav-item" data-section="messages"><i class="fas fa-envelope" style="width:1.5rem;"></i> Messages</div>
-            <div class="nav-item" data-section="subscribers"><i class="fas fa-users" style="width:1.5rem;"></i> Subscribers</div>
-            <div class="nav-item" data-section="blogs"><i class="fas fa-edit" style="width:1.5rem;"></i> Blog</div>
-            <div class="nav-item" data-section="payments"><i class="fas fa-money-bill-wave" style="width:1.5rem;"></i> Payments</div>
-            <div class="nav-item" data-section="media"><i class="fas fa-video" style="width:1.5rem;"></i> Media</div>
-            <div class="nav-item" data-section="analytics"><i class="fas fa-chart-line" style="width:1.5rem;"></i> Analytics & Revenue</div>
-            <div style="border-top:1px solid #333;margin-top:1rem;padding-top:1rem;">
-                <div class="nav-item" onclick="window.location.href='/'" style="color:#757575;"><i class="fas fa-arrow-left" style="width:1.5rem;"></i> Back to Site</div>
-                <div class="nav-item" onclick="api.logout()" style="color:#ef5350;"><i class="fas fa-sign-out-alt" style="width:1.5rem;"></i> Logout</div>
+            <div class="nav-item active" data-section="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</div>
+            <div class="nav-item" data-section="tours"><i class="fas fa-mountain"></i> Tours</div>
+            <div class="nav-item" data-section="hotels"><i class="fas fa-hotel"></i> Hotels</div>
+            <div class="nav-item" data-section="bookings"><i class="fas fa-clipboard-list"></i> Bookings</div>
+            <div class="nav-item" data-section="flights"><i class="fas fa-plane"></i> Flight Requests</div>
+            <div class="nav-item" data-section="messages"><i class="fas fa-envelope"></i> Messages</div>
+            <div class="nav-item" data-section="subscribers"><i class="fas fa-users"></i> Subscribers</div>
+            <div class="nav-item" data-section="blogs"><i class="fas fa-edit"></i> Blog</div>
+            <div class="nav-item" data-section="payments"><i class="fas fa-money-bill-wave"></i> Payments</div>
+            <div class="nav-item" data-section="media"><i class="fas fa-video"></i> Media</div>
+            <div class="nav-item" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics & Revenue</div>
+            <div class="sidebar-footer">
+                <div class="nav-item" onclick="window.location.href='/'"><i class="fas fa-arrow-left"></i> Back to Site</div>
+                <div class="nav-item" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
             </div>
         </div>
 
@@ -67,15 +365,15 @@
 
             <!-- Dashboard -->
             <div class="admin-section" id="section-dashboard">
-                <h2 style="margin-bottom:2rem;">Dashboard Overview</h2>
+                <h2><i class="fas fa-chart-bar"></i> Dashboard Overview</h2>
                 <div class="stats-grid" id="dashboard-stats"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
                     <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Recent Bookings</h3>
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-calendar-check"></i> Recent Bookings</h3>
                         <div id="recent-bookings"></div>
                     </div>
                     <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Recent Messages</h3>
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-envelope"></i> Recent Messages</h3>
                         <div id="recent-messages"></div>
                     </div>
                 </div>
@@ -84,8 +382,8 @@
             <!-- Tours Management -->
             <div class="admin-section" id="section-tours" style="display:none;">
                 <div class="action-bar">
-                    <h2>Tours Management</h2>
-                    <button class="btn btn-primary" onclick="openTourForm()">+ Add Tour</button>
+                    <h2><i class="fas fa-mountain"></i> Tours Management</h2>
+                    <button class="btn btn-primary" onclick="openTourForm()"><i class="fas fa-plus"></i> Add Tour</button>
                 </div>
                 <div id="admin-tours-list"></div>
 
@@ -145,8 +443,8 @@
             <!-- Hotels Management -->
             <div class="admin-section" id="section-hotels" style="display:none;">
                 <div class="action-bar">
-                    <h2>Hotels Management</h2>
-                    <button class="btn btn-primary" onclick="openHotelForm()">+ Add Hotel</button>
+                    <h2><i class="fas fa-hotel"></i> Hotels Management</h2>
+                    <button class="btn btn-primary" onclick="openHotelForm()"><i class="fas fa-plus"></i> Add Hotel</button>
                 </div>
                 <div id="admin-hotels-list"></div>
 
@@ -198,7 +496,7 @@
             <!-- Bookings Management -->
             <div class="admin-section" id="section-bookings" style="display:none;">
                 <div class="action-bar">
-                    <h2>All Bookings</h2>
+                    <h2><i class="fas fa-clipboard-list"></i> All Bookings</h2>
                     <div>
                         <select class="form-select" id="bookings-filter" style="width:auto;">
                             <option value="">All Statuses</option>
@@ -216,7 +514,7 @@
             <!-- Flight Requests -->
             <div class="admin-section" id="section-flights" style="display:none;">
                 <div class="action-bar">
-                    <h2>Flight Requests</h2>
+                    <h2><i class="fas fa-plane"></i> Flight Requests</h2>
                     <select class="form-select" id="flights-filter" style="width:auto;">
                         <option value="">All</option>
                         <option value="pending">Pending</option>
@@ -262,7 +560,7 @@
             <!-- Messages -->
             <div class="admin-section" id="section-messages" style="display:none;">
                 <div class="action-bar">
-                    <h2>Contact Messages</h2>
+                    <h2><i class="fas fa-envelope"></i> Contact Messages</h2>
                     <select class="form-select" id="messages-filter" style="width:auto;">
                         <option value="">All</option>
                         <option value="false">Unread</option>
@@ -293,8 +591,8 @@
             <!-- Subscribers -->
             <div class="admin-section" id="section-subscribers" style="display:none;">
                 <div class="action-bar">
-                    <h2>Newsletter Subscribers</h2>
-                    <button class="btn btn-primary btn-sm" onclick="loadSubscribers()">Refresh</button>
+                    <h2><i class="fas fa-users"></i> Newsletter Subscribers</h2>
+                    <button class="btn btn-primary" onclick="loadSubscribers()"><i class="fas fa-sync-alt"></i> Refresh</button>
                 </div>
                 <div id="admin-subscribers-list"></div>
             </div>
@@ -302,8 +600,8 @@
             <!-- Blog Management -->
             <div class="admin-section" id="section-blogs" style="display:none;">
                 <div class="action-bar">
-                    <h2>Blog Posts</h2>
-                    <button class="btn btn-primary btn-sm" onclick="showBlogForm()">+ New Post</button>
+                    <h2><i class="fas fa-edit"></i> Blog Posts</h2>
+                    <button class="btn btn-primary" onclick="showBlogForm()"><i class="fas fa-plus"></i> New Post</button>
                 </div>
                 <div id="admin-blogs-list"></div>
 
@@ -358,32 +656,53 @@
 
             <!-- Payments -->
             <div class="admin-section" id="section-payments" style="display:none;">
-                <h2>Payment Records</h2>
+                <h2><i class="fas fa-money-bill-wave"></i> Payment Records</h2>
                 <div id="admin-payments-list"></div>
             </div>
 
             <!-- Analytics & Revenue -->
             <div class="admin-section" id="section-analytics" style="display:none;">
-                <h2 style="margin-bottom:2rem;">Analytics & Revenue</h2>
+                <h2><i class="fas fa-chart-line"></i> Analytics & Revenue</h2>
 
                 <div class="stats-grid" id="analytics-summary"></div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
                     <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Revenue by Method</h3>
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-coins"></i> Revenue by Method</h3>
                         <div id="revenue-by-method-chart"></div>
                     </div>
                     <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Revenue by Type</h3>
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-chart-pie"></i> Revenue by Type</h3>
                         <div id="revenue-by-type-chart"></div>
                     </div>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
                     <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;">Monthly Revenue Trend</h3>
-                        <div id="monthly-revenue-chart"></div>
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-chart-line"></i> Monthly Revenue Trend</h3>
+                        <div id="revenue-trend-chart"></div>
                     </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-calendar-alt"></i> Monthly Bookings</h3>
+                        <div id="bookings-trend-chart"></div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-chart-bar"></i> Bookings by Status</h3>
+                        <div id="bookings-status-chart"></div>
+                    </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;"><i class="fas fa-tags"></i> Bookings by Type</h3>
+                        <div id="bookings-type-chart"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:1.5rem;">
+                    <h3 style="margin-bottom:1rem;"><i class="fas fa-star"></i> Popular Tours</h3>
+                    <div id="popular-tours"></div>
+                </div>
                     <div class="card" style="padding:1.5rem;">
                         <h3 style="margin-bottom:1rem;">Monthly Bookings</h3>
                         <div id="monthly-bookings-chart"></div>
@@ -409,7 +728,7 @@
 
             <!-- Media Management -->
             <div class="admin-section" id="section-media" style="display:none;">
-                <h2 style="margin-bottom:1.5rem;">Media Manager</h2>
+                <h2 style="margin-bottom:1.5rem;"><i class="fas fa-video"></i> Media Manager</h2>
                 
                 <!-- Media Tabs -->
                 <div class="tabs" style="margin-bottom:2rem;">
@@ -420,7 +739,7 @@
                 <!-- Hero Videos Tab -->
                 <div id="tab-hero-videos" class="media-tab" style="display:block;">
                     <div class="action-bar">
-                        <h3>Homepage Hero Videos</h3>
+                        <h3><i class="fas fa-video"></i> Homepage Hero Videos</h3>
                         <form id="video-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
                             <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg" style="max-width:250px;" required>
                             <button type="submit" class="btn btn-primary btn-sm">Upload Video</button>
@@ -433,7 +752,7 @@
                 <!-- Login Photo Tab -->
                 <div id="tab-login-photo" class="media-tab" style="display:none;">
                     <div class="action-bar">
-                        <h3>Login & Register Page Photo</h3>
+                        <h3><i class="fas fa-image"></i> Login & Register Page Photo</h3>
                         <form id="login-photo-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
                             <input type="file" class="form-input" id="login-photo-file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" style="max-width:250px;" required>
                             <input type="text" class="form-input" id="login-photo-caption" placeholder="Caption (e.g. River Yala)" style="max-width:200px;">
