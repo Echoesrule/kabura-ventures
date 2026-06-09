@@ -451,16 +451,28 @@
     <script>
         // Admin check on load — no HTML is visible until this passes
         (async function init() {
+            const root = document.getElementById('admin-root');
             const token = localStorage.getItem('token');
-            if (!token) { window.location.href = '/'; return; }
-            try {
-                const profile = await api.getProfile();
-                if (profile.user.role !== 'admin') { window.location.href = '/'; return; }
-                document.getElementById('admin-root').style.display = '';
-                loadDashboard();
-            } catch {
-                window.location.href = '/';
+            if (!token) {
+                root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>You must be logged in as admin.</p></div>';
+                root.style.display = ''; return;
             }
+            let lastErr;
+            for (let retry = 0; retry < 3; retry++) {
+                try {
+                    if (retry) await new Promise(r => setTimeout(r, 2000 * retry));
+                    const profile = await api.getProfile();
+                    if (profile.user.role !== 'admin') {
+                        root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>Admin access required.</p></div>';
+                        root.style.display = ''; return;
+                    }
+                    root.style.display = '';
+                    loadDashboard();
+                    return;
+                } catch (e) { lastErr = e; }
+            }
+            root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#333;"><h2>Could not verify admin session</h2><p style="color:#666;">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:#2E7D32;color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
+            root.style.display = '';
         })();
 
         // Sidebar navigation
