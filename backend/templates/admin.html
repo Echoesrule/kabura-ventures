@@ -750,25 +750,26 @@
                                 <textarea class="form-textarea" id="blog-excerpt" rows="2" maxlength="500"></textarea>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Content Blocks</label>
-                                <div class="block-editor" id="block-editor">
-                                    <div class="be-toolbar">
-                                        <span class="be-label">Add Block:</span>
-                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('heading')"><i class="fas fa-heading"></i> Heading</button>
-                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('paragraph')"><i class="fas fa-paragraph"></i> Paragraph</button>
-                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('image')"><i class="fas fa-image"></i> Image</button>
-                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('quote')"><i class="fas fa-quote-right"></i> Quote</button>
-                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('list')"><i class="fas fa-list"></i> List</button>
+                                <label class="form-label">Content</label>
+                                <div class="be-simple">
+                                    <div class="be-simple-toolbar">
+                                        <button type="button" class="be-btn" onclick="insertTag('h1')" title="Heading 1"><b>H1</b></button>
+                                        <button type="button" class="be-btn" onclick="insertTag('h2')" title="Heading 2"><b>H2</b></button>
+                                        <button type="button" class="be-btn" onclick="insertTag('h3')" title="Heading 3"><b>H3</b></button>
+                                        <button type="button" class="be-btn" onclick="insertTag('h4')" title="Heading 4">H4</button>
+                                        <button type="button" class="be-btn" onclick="insertTag('h5')" title="Heading 5">H5</button>
+                                        <button type="button" class="be-btn" onclick="insertTag('h6')" title="Heading 6">H6</button>
                                         <span class="sep"></span>
-                                        <button type="button" class="btn btn-sm btn-secondary" onclick="addBlock('raw')"><i class="fas fa-code"></i> HTML</button>
+                                        <button type="button" class="be-btn" onclick="insertTag('p')" title="Paragraph">P</button>
+                                        <button type="button" class="be-btn" onclick="wrapSel('b','</b>')" title="Bold"><b>B</b></button>
+                                        <button type="button" class="be-btn" onclick="wrapSel('i','</i>')" title="Italic"><i>I</i></button>
                                         <span class="sep"></span>
-                                        <button type="button" class="btn btn-sm btn-secondary" id="be-toggle-source" onclick="toggleBlockSource()"><i class="fas fa-terminal"></i> Source</button>
+                                        <button type="button" class="be-btn" onclick="insertTag('ul')" title="Bullet List">&#8226; List</button>
+                                        <button type="button" class="be-btn" onclick="insertTag('ol')" title="Numbered List">1. List</button>
+                                        <span class="sep"></span>
+                                        <button type="button" class="be-btn" onclick="insertLink()" title="Insert Link">&#128279; Link</button>
                                     </div>
-                                    <div id="be-blocks"></div>
-                                    <div id="be-source" style="display:none;">
-                                        <textarea class="form-textarea" id="be-source-textarea" style="min-height:300px;font-family:monospace;font-size:0.85rem;" placeholder="Raw HTML content..."></textarea>
-                                    </div>
-                                    <textarea class="form-input" id="blog-content" style="display:none;"></textarea>
+                                    <textarea class="form-textarea" id="blog-content" rows="16" required placeholder="Write or paste your content here... You can use the buttons above to add headings, lists, and formatting." style="border:none;border-radius:0;min-height:320px;font-size:0.92rem;line-height:1.7;"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
