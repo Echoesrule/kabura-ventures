@@ -717,8 +717,11 @@
                                         <button type="button" class="btn-editor" data-cmd="insertImage" title="Insert Image">&#128247;</button>
                                         <span class="sep"></span>
                                         <button type="button" class="btn-editor" data-cmd="removeFormat" title="Clear Formatting">&#10005;</button>
+                                        <span class="sep"></span>
+                                        <button type="button" class="btn-editor" id="btn-source" title="Toggle HTML Source">&lt;/&gt;</button>
                                     </div>
                                     <div class="blog-editable" id="blog-content-editor" contenteditable="true"></div>
+                                    <textarea class="form-textarea" id="blog-source-editor" style="display:none;min-height:280px;font-family:monospace;font-size:0.85rem;border:none;border-radius:0;resize:vertical;"></textarea>
                                     <textarea class="form-input" id="blog-content" style="display:none;" required></textarea>
                                 </div>
                             </div>
@@ -1635,13 +1638,17 @@
 
         function syncBlogEditor() {
             const editor = document.getElementById('blog-content-editor');
+            const sourceEditor = document.getElementById('blog-source-editor');
             const textarea = document.getElementById('blog-content');
-            textarea.value = editor.innerHTML;
+            textarea.value = sourceEditor.style.display !== 'none' ? sourceEditor.value : editor.innerHTML;
         }
 
         function setupBlogEditor() {
             const editor = document.getElementById('blog-content-editor');
+            const sourceEditor = document.getElementById('blog-source-editor');
             if (!editor) return;
+
+            let isSourceMode = false;
 
             document.querySelectorAll('.btn-editor').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1659,6 +1666,49 @@
                     editor.focus();
                 });
             });
+
+            document.getElementById('btn-source')?.addEventListener('click', () => {
+                isSourceMode = !isSourceMode;
+                if (isSourceMode) {
+                    sourceEditor.value = editor.innerHTML;
+                    editor.style.display = 'none';
+                    sourceEditor.style.display = 'block';
+                    document.getElementById('btn-source').style.background = 'rgba(46,125,50,0.15)';
+                } else {
+                    editor.innerHTML = sourceEditor.value;
+                    sourceEditor.style.display = 'none';
+                    editor.style.display = 'block';
+                    document.getElementById('btn-source').style.background = '';
+                }
+            });
+
+            editor.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text/html') ||
+                             (e.clipboardData || window.clipboardData).getData('text/plain');
+                if (text) {
+                    document.execCommand('insertHTML', false, text);
+                }
+            });
+
+            sourceEditor.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = sourceEditor.selectionStart;
+                    const end = sourceEditor.selectionEnd;
+                    sourceEditor.value = sourceEditor.value.substring(0, start) + '    ' + sourceEditor.value.substring(end);
+                    sourceEditor.selectionStart = sourceEditor.selectionEnd = start + 4;
+                }
+            });
+        }
+
+        function resetBlogEditor() {
+            const editor = document.getElementById('blog-content-editor');
+            const sourceEditor = document.getElementById('blog-source-editor');
+            const btn = document.getElementById('btn-source');
+            editor.style.display = 'block';
+            sourceEditor.style.display = 'none';
+            if (btn) btn.style.background = '';
         }
 
         function showBlogForm() {
@@ -1667,6 +1717,9 @@
             document.getElementById('blog-id').value = '';
             document.getElementById('blog-published').checked = true;
             document.getElementById('blog-content-editor').innerHTML = '';
+            document.getElementById('blog-source-editor').value = '';
+            document.getElementById('blog-content').value = '';
+            resetBlogEditor();
             openModal('blog-modal');
         }
 
@@ -1682,11 +1735,13 @@
                 document.getElementById('blog-category').value = blog.category || '';
                 document.getElementById('blog-excerpt').value = blog.excerpt || '';
                 document.getElementById('blog-content-editor').innerHTML = blog.content || '';
+                document.getElementById('blog-source-editor').value = blog.content || '';
                 document.getElementById('blog-content').value = blog.content || '';
                 document.getElementById('blog-image').value = blog.image_url || '';
                 document.getElementById('blog-tags').value = (blog.tags || []).join(', ');
                 document.getElementById('blog-author').value = blog.author || '';
                 document.getElementById('blog-published').checked = blog.published;
+                resetBlogEditor();
                 openModal('blog-modal');
             } catch (err) { showToast(err.message, 'error'); }
         }
