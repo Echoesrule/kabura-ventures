@@ -17,10 +17,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        #admin-root { display: none; }
         .admin-page .navbar { display: none; }
         .admin-page .footer { display: none; }
         .admin-layout { min-height: 100vh; }
@@ -34,6 +34,7 @@
     </style>
 </head>
 <body class="admin-page">
+    <div id="admin-root">
     <div class="admin-layout">
         <!-- Sidebar -->
         <div class="admin-sidebar" id="admin-sidebar">
@@ -443,19 +444,24 @@
 
         </div>
     </div>
+    </div>
 
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/app.js"></script>
     <script>
-        // Admin check on load
-        async function checkAdmin() {
+        // Admin check on load — no HTML is visible until this passes
+        (async function init() {
             const token = localStorage.getItem('token');
             if (!token) { window.location.href = '/'; return; }
             try {
                 const profile = await api.getProfile();
                 if (profile.user.role !== 'admin') { window.location.href = '/'; return; }
-            } catch { window.location.href = '/'; }
-        }
+                document.getElementById('admin-root').style.display = '';
+                loadDashboard();
+            } catch {
+                window.location.href = '/';
+            }
+        })();
 
         // Sidebar navigation
         document.querySelectorAll('.admin-sidebar .nav-item[data-section]').forEach(item => {
@@ -1345,8 +1351,6 @@
             });
         });
 
-        // Initialize
-        checkAdmin().then(() => loadDashboard());
     </script>
 </body>
 </html>
