@@ -23,7 +23,6 @@ from routes.search import search_bp
 from routes.company import company_bp
 from routes.analytics import analytics_bp
 from routes.supabase_auth import supabase_auth_bp
-from middleware.auth import admin_required
 from services.seed import seed_database
 
 load_dotenv()
@@ -61,9 +60,8 @@ def create_app():
         return send_from_directory(app.static_folder, 'index.html')
 
     @app.route('/admin')
-    @admin_required
-    def admin_dashboard(current_user):
-        return send_from_directory(app.static_folder, 'admin.html')
+    def admin_dashboard():
+        return send_from_directory(os.path.join(app.root_path, 'templates'), 'admin.html')
 
     @app.route('/<path:path>')
     def serve_static(path):

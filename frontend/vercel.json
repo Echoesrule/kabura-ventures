@@ -1,6 +1,9 @@
 {
   "rewrites": [
-    { "source": "/admin", "destination": "/admin.html" },
+    {
+      "source": "/admin",
+      "destination": "https://kabura-adventures-api.onrender.com/admin"
+    },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
