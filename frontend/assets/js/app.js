@@ -76,7 +76,7 @@ async function updateAuthUI() {
                 authButtons.innerHTML = `
                     <span style="font-weight:500;">Hi, ${user.name.split(' ')[0]}</span>
                     <button class="btn btn-sm btn-secondary" onclick="openUserInbox()">Inbox</button>
-                    ${user.role === 'admin' ? '<a href="/admin.html" class="btn btn-sm btn-gold">Dashboard</a>' : ''}
+                    ${user.role === 'admin' ? '<a href="/admin" class="btn btn-sm btn-gold">Dashboard</a>' : ''}
                     <button class="btn btn-sm btn-secondary" onclick="api.logout()">Logout</button>
                 `;
             }
