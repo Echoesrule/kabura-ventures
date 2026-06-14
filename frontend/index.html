@@ -16,10 +16,11 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=4">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -31,9 +32,15 @@
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/tours.html">Tours</a></li>
-                <li><a href="/hotels.html">Hotels</a></li>
-                <li><a href="/flights.html">Flights</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/tours.html">Tours</a>
+                        <a href="/hotels.html">Hotels</a>
+                        <a href="/flights.html">Flights</a>
+                    </div>
+                </li>
+                <li><a href="/#our-service">Our Services</a></li>
                 <li><a href="/blog.html">Blog</a></li>
                 <li><a href="/booking.html">My Bookings</a></li>
                 <li class="nav-search">
@@ -55,11 +62,15 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-bg"></div>
         <div class="hero-loader" id="hero-loader">
-            <div class="loader-ring"></div>
-            <div class="loader-brand">Kabura Ventures</div>
-            <div class="loader-sub">Preparing your experience...</div>
+            <div class="hero-loader-lottie" id="loader-lottie"></div>
+            <div class="hero-skeleton">
+                <div class="skeleton-line w-80 h-lg"></div>
+                <div class="skeleton-line w-60 h-lg"></div>
+                <div class="skeleton-line w-90 h-md"></div>
+                <div class="skeleton-line w-70 h-md"></div>
+                <div class="skeleton-btn"></div>
+            </div>
         </div>
         <div class="hero-video-container" id="hero-video-container">
             <video class="hero-video" id="hero-video-0" muted playsinline poster="/assets/images/placeholder.svg" preload="auto">
@@ -82,52 +93,62 @@
             <p>From the savannahs of Maasai Mara to the pristine beaches of Mombasa, let us take you on an unforgettable journey through Kenya's most breathtaking destinations.</p>
             <a href="/tours.html" class="btn btn-gold btn-lg">Explore Tours</a>
         </div>
-        <div class="hero-reviews">
-            <div class="review-slide active-review" id="review-0">
-                <p class="review-text">"An absolutely breathtaking experience! The Maasai Mara safari exceeded all our expectations. Our guide was incredibly knowledgeable."</p>
-                <div class="review-author">
-                    <div class="review-avatar" style="background:#E8F5E9;color:#2E7D32;">SM</div>
-                    <div>
-                        <strong>Sarah M.</strong>
-                        <span>Nairobi, Kenya</span>
-                    </div>
-                </div>
+    </section>
+
+
+
+    <!-- Destinations Covered -->
+    <section class="section destinations-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Destinations Covered</h2>
+                <p>From iconic national parks to pristine beaches — explore the best of Kenya.</p>
             </div>
-            <div class="review-slide" id="review-1">
-                <p class="review-text">"The beach getaway in Mombasa was pure paradise. Crystal clear waters, fantastic snorkeling, and the resort was world-class."</p>
-                <div class="review-author">
-                    <div class="review-avatar" style="background:#FFF8E1;color:#C9A227;">JK</div>
-                    <div>
-                        <strong>James K.</strong>
-                        <span>London, UK</span>
-                    </div>
-                </div>
+            <div id="destinations-grid" class="grid grid-4">
+                <div class="skeleton-card"><div class="skeleton-img" style="height:120px;border-radius:12px 12px 0 0;"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div></div></div>
+                <div class="skeleton-card"><div class="skeleton-img" style="height:120px;border-radius:12px 12px 0 0;"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div></div></div>
+                <div class="skeleton-card"><div class="skeleton-img" style="height:120px;border-radius:12px 12px 0 0;"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div></div></div>
+                <div class="skeleton-card"><div class="skeleton-img" style="height:120px;border-radius:12px 12px 0 0;"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div></div></div>
             </div>
-            <div class="review-slide" id="review-2">
-                <p class="review-text">"Mount Kenya trek was challenging but rewarding. The team at Kabura made sure we were safe and comfortable throughout. Highly recommend!"</p>
-                <div class="review-author">
-                    <div class="review-avatar" style="background:#E3F2FD;color:#1565C0;">AP</div>
-                    <div>
-                        <strong>Amina P.</strong>
-                        <span>Dar es Salaam, TZ</span>
-                    </div>
-                </div>
-            </div>
-            <div class="review-slide" id="review-3">
-                <p class="review-text">"From booking to departure, everything was seamless. The Amboseli trip with views of Kilimanjaro was something I will never forget."</p>
-                <div class="review-author">
-                    <div class="review-avatar" style="background:#FCE4EC;color:#C62828;">DR</div>
-                    <div>
-                        <strong>David R.</strong>
-                        <span>Cape Town, SA</span>
-                    </div>
-                </div>
-            </div>
-            <div class="review-dots" id="review-dots"></div>
         </div>
     </section>
 
-    <!-- About / Stats Section -->
+    <!-- Featured Tours -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Our Guests Love These Kabura Tours</h2>
+                <p>Hand-picked experiences that showcase the best of Kenya's wildlife, culture, and natural beauty.</p>
+            </div>
+            <div id="featured-tours">
+                <div class="grid grid-4 skeleton-grid">
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Hotels -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Popular Hotels</h2>
+                <p>Stay in comfort at Kenya's finest lodges and resorts, hand-picked for our travelers.</p>
+            </div>
+            <div id="featured-hotels">
+                <div class="grid grid-4 skeleton-grid">
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-50"></div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+  <!-- About / Stats Section -->
     <section class="section about-intro">
         <div class="container">
             <div class="about-intro-grid">
@@ -148,19 +169,8 @@
                             <span class="about-stat-label">Average Rating</span>
                         </div>
                     </div>
-                    <div class="about-services" style="margin-top:1.5rem;">
-                        <h4 style="color:var(--primary-green);margin-bottom:0.5rem;">Our Services</h4>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
-                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Tours & Safari packages</span>
-                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Local & International travel planning</span>
-                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Hotel & Accommodation booking</span>
-                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Airport transfers & Transport services</span>
-                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Honeymoon & Couples getaways</span>
-                            <span><i class="fas fa-check-circle" style="color:var(--accent-gold);font-size:0.85rem;"></i> Group and Corporate travel arrangements</span>
-                        </div>
-                    </div>
                     <div class="about-countries" style="margin-top:1rem;">
-                        <h4 style="color:var(--primary-green);margin-bottom:0.25rem;">Areas Served</h4>
+                        <h4 style="color:var(--primary);margin-bottom:0.25rem;">Areas Served</h4>
                         <p style="font-size:0.9rem;">East Africa & International &mdash; Kenya, Uganda, Ethiopia, Tanzania, South Africa</p>
                     </div>
                     <div class="about-social">
@@ -174,62 +184,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="about-intro-reasons" data-aos="fade-left">
-                    <div class="reason-card">
-                        <div class="reason-icon"><i class="fas fa-map-pin"></i></div>
-                        <div>
-                            <h4>Local Expertise</h4>
-                            <p>Born & raised in Kenya — our guides know every hidden trail, every story behind the landmarks.</p>
-                        </div>
-                    </div>
-                    <div class="reason-card">
-                        <div class="reason-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                        <div>
-                            <h4>Personalized Service</h4>
-                            <p>No cookie-cutter tours. Every itinerary is built around how you want to experience Kenya.</p>
-                        </div>
-                    </div>
-                    <div class="reason-card">
-                        <div class="reason-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div>
-                            <h4>Safe & Reliable</h4>
-                            <p>24/7 support, vetted accommodations, and secure booking — your safety is our priority.</p>
-                        </div>
-                    </div>
-                    <div class="reason-card">
-                        <div class="reason-icon"><i class="fas fa-tag"></i></div>
-                        <div>
-                            <h4>Best Value</h4>
-                            <p>Direct partnerships with lodges and operators mean no middlemen — just the best price, straight up.</p>
-                        </div>
-                    </div>
+                <div class="about-intro-image" data-aos="fade-left">
+                    <img src="/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg" alt="Safari landscape" loading="lazy">
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Featured Tours -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Popular Tours</h2>
-                <p>Hand-picked experiences that showcase the best of Kenya's wildlife, culture, and natural beauty.</p>
-            </div>
-            <div id="featured-tours"></div>
-        </div>
-    </section>
-
-    <!-- Featured Hotels -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Popular Hotels</h2>
-                <p>Stay in comfort at Kenya's finest lodges and resorts, hand-picked for our travelers.</p>
-            </div>
-            <div id="featured-hotels"></div>
-        </div>
-    </section>
-
     <!-- Features -->
     <section class="section" style="background:white;">
         <div class="container">
@@ -243,8 +203,8 @@
                         <img src="https://media.istockphoto.com/id/2172042824/nl/foto/safari-guide-observing.jpg?s=1024x1024&w=is&k=20&c=LgZiYNIl7dJ7bf6txGloEhb82ie0HuDvABAh1LnUVEs=" alt="Maasai guide with binoculars">
                     </div>
                     <div>
-                        <h3>Expert Guides</h3>
-                        <p>Our Maasai and Kikuyu guides grew up in these plains. They know where the lions hunt at dawn and which fig tree the leopards favour.</p>
+                        <h3>Local Expertise</h3>
+                        <p>Born & raised in Kenya — our guides know every hidden trail, every story behind the landmarks.</p>
                     </div>
                 </div>
                 <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
@@ -252,8 +212,8 @@
                         <img src="https://plus.unsplash.com/premium_photo-1664302700221-bd1549347986?q=80&w=1479&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Hot air balloon over zebras">
                     </div>
                     <div>
-                        <h3>Curated Safaris</h3>
-                        <p>No cookie-cutter itineraries. We hand-build each trip around how <em>you</em> want to experience Kenya — from rhino tracking to crater lake sundowners.</p>
+                        <h3>Personalized Service</h3>
+                        <p>No cookie-cutter tours. Every itinerary is built around how you want to experience Kenya.</p>
                     </div>
                 </div>
                 <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
@@ -261,8 +221,8 @@
                         <img src="https://media.istockphoto.com/id/1964108921/nl/foto/on-a-safari-tour-break.jpg?s=1024x1024&w=is&k=20&c=u0SCbLfiHRJlmaw82AVOJAHaOHIxjfOGU8mNJbVcD8I=" alt="Sunset dhow sail on the water">
                     </div>
                     <div>
-                        <h3>Always There</h3>
-                        <p>Elephants never forget, and neither do we. Our Nairobi team is on call 24/7 for flight changes, luggage support, or any travel concern.</p>
+                        <h3>Safe & Reliable</h3>
+                        <p>24/7 support, vetted accommodations, and secure booking — your safety is our priority.</p>
                     </div>
                 </div>
                 <div class="feature-card choose-us" data-aos="fade-up" data-aos-delay="100">
@@ -270,13 +230,18 @@
                         <img src="/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg" alt="Safari landscape with clouds">
                     </div>
                     <div>
-                        <h3>No Middlemen</h3>
-                        <p>We work directly with lodges, park services, and local operators so there are no hidden markups or surprise booking fees.</p>
+                        <h3>Best Value</h3>
+                        <p>Direct partnerships with lodges and operators mean no middlemen — just the best price, straight up.</p>
                     </div>
                 </div>
             </div>
+           
         </div>
     </section>
+
+
+
+
 
     <!-- How It Works -->
     <section class="section">
@@ -285,26 +250,43 @@
                 <h2>How It Works</h2>
                 <p>Four steps, no fluff. Here's how to go from dreaming to driving through the savannah.</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-binoculars" style="font-size:1.4rem;"></i></div>
-                    <h3>1. Pick Your Safari</h3>
-                    <p>Browse real itineraries with live availability. Every tour shows what's included, where you'll sleep, and what wildlife you're likely to spot each day.</p>
+            <div class="how-it-works-grid">
+                <div class="how-it-works-image" data-aos="fade-right">
+                    <img src="/assets/images/dir.jpg" alt="Safari journey" loading="lazy">
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-paper-plane" style="font-size:1.4rem;"></i></div>
-                    <h3>2. Send an Inquiry</h3>
-                    <p>Tell us your dates, group size, and any quirks. A real human on our team reads every inquiry and gets back to you within 24 hours — no chatbots here.</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-check-circle" style="font-size:1.4rem;"></i></div>
-                    <h3>3. Lock It In</h3>
-                    <p>Once you're happy, we send a detailed confirmation, take care of park fees, transfers, and permits. You just pack.</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon"><i class="fas fa-mountain" style="font-size:1.4rem;"></i></div>
-                    <h3>4. Live the Adventure</h3>
-                    <p>Show up and soak it in. Wake to the sound of hyenas calling across the Mara, sip chai by the campfire, watch a million flamingos lift off Lake Nakuru at dusk.</p>
+                <div class="how-it-works-circle">
+                    <div class="circle-step step-1" data-aos="fade-down">
+                        <div class="step-number">01</div>
+                        <div class="step-icon"><i class="fas fa-binoculars"></i></div>
+                        <h3>Pick Safari</h3>
+                        <p>Browse real itineraries with live availability.</p>
+                    </div>
+                    <div class="circle-step step-2" data-aos="fade-left">
+                        <div class="step-number">02</div>
+                        <div class="step-icon"><i class="fas fa-paper-plane"></i></div>
+                        <h3>Send Inquiry</h3>
+                        <p>Tell us your dates, group size, and any quirks.</p>
+                    </div>
+                    <div class="circle-step step-3" data-aos="fade-up">
+                        <div class="step-number">03</div>
+                        <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                        <h3>Lock It In</h3>
+                        <p>We handle park fees, transfers, and permits.</p>
+                    </div>
+                    <div class="circle-step step-4" data-aos="fade-right">
+                        <div class="step-number">04</div>
+                        <div class="step-icon"><i class="fas fa-mountain"></i></div>
+                        <h3>Live Adventure</h3>
+                        <p>Show up and soak it in — the Mara, chai by the fire, flamingos at dawn.</p>
+                    </div>
+                    <div class="circle-arrow arrow-1"><i class="fas fa-chevron-right"></i></div>
+                    <div class="circle-arrow arrow-2"><i class="fas fa-chevron-down"></i></div>
+                    <div class="circle-arrow arrow-3"><i class="fas fa-chevron-left"></i></div>
+                    <div class="circle-arrow arrow-4"><i class="fas fa-chevron-up"></i></div>
+                    <div class="circle-center">
+                        <div class="center-icon"><i class="fas fa-route"></i></div>
+                        <span>Your Journey</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -347,6 +329,127 @@
         </div>
     </section>
 
+ 
+
+    <!-- Our Service -->
+    <section class="section our-service-section" id="our-service">
+        <div class="container">
+            <div class="our-service-grid">
+                <div class="our-service-image" data-aos="fade-right">
+                    <img src="/assets/images/giif.jpg" alt="Our Service" loading="lazy">
+                </div>
+                <div class="our-service-content" data-aos="fade-left">
+                    <div class="section-header">
+                        <h2>Our Service</h2>
+                        <p>We deliver exceptional travel experiences tailored just for you.</p>
+                    </div>
+                    <div class="our-service-list">
+                        <div class="our-service-item">
+                            <div class="service-item-icon"><i class="fa-solid fa-hippo"></i></div>
+                            <div>
+                                <h4>Tours & Safari Packages</h4>
+                                <p>Immersive wildlife safaris and guided tours across Kenya's most iconic national parks and reserves.</p>
+                            </div>
+                        </div>
+                        <div class="our-service-item">
+                            <div class="service-item-icon"><i class="fas fa-globe-americas"></i></div>
+                            <div>
+                                <h4>Local & International Travel Planning</h4>
+                                <p>Comprehensive travel planning for both local escapes and international adventures, tailored to you.</p>
+                            </div>
+                        </div>
+                        <div class="our-service-item">
+                            <div class="service-item-icon"><i class="fas fa-hotel"></i></div>
+                            <div>
+                                <h4>Hotel & Accommodation Booking</h4>
+                                <p>Curated stays at Kenya's finest lodges, resorts, and boutique hotels at the best available rates.</p>
+                            </div>
+                        </div>
+                        <div class="our-service-item">
+                            <div class="service-item-icon"><i class="fas fa-shuttle-van"></i></div>
+                            <div>
+                                <h4>Airport Transfers & Transport Services</h4>
+                                <p>Reliable and comfortable transportation from airport pickup to inter-city travel and safari transfers.</p>
+                            </div>
+                        </div>
+                        <div class="our-service-item">
+                            <div class="service-item-icon"><i class="fas fa-heart"></i></div>
+                            <div>
+                                <h4>Honeymoon & Couples Getaways</h4>
+                                <p>Romantic escapes designed for couples, from beachfront resorts to intimate safari hideaways.</p>
+                            </div>
+                        </div>
+                        <div class="our-service-item">
+                            <div class="service-item-icon"><i class="fas fa-briefcase"></i></div>
+                            <div>
+                                <h4>Group & Corporate Travel Arrangements</h4>
+                                <p>Seamlessly organized group travel and corporate retreats with dedicated coordination and support.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   <!-- What Users Say About Us -->
+    <section class="section testimonials-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>What Users Say About Us</h2>
+                <p>Real stories from real travelers who experienced Kenya with us.</p>
+            </div>
+            <div class="testimonials-grid" id="testimonials">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="testimonial-quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="testimonial-text">"An absolutely breathtaking experience! The Maasai Mara safari exceeded all our expectations. Our guide was incredibly knowledgeable."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background:#E8F5E9;color:#535A55;">SM</div>
+                        <div>
+                            <strong>Sarah M.</strong>
+                            <span>Nairobi, Kenya</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="testimonial-text">"The beach getaway in Mombasa was pure paradise. Crystal clear waters, fantastic snorkeling, and the resort was world-class."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background:#FFF8E1;color:#D75A2B;">JK</div>
+                        <div>
+                            <strong>James K.</strong>
+                            <span>London, UK</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="testimonial-text">"Mount Kenya trek was challenging but rewarding. The team at Kabura made sure we were safe and comfortable throughout. Highly recommend!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background:#E3F2FD;color:#1565C0;">AP</div>
+                        <div>
+                            <strong>Amina P.</strong>
+                            <span>Dar es Salaam, TZ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="testimonial-quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="testimonial-text">"From booking to departure, everything was seamless. The Amboseli trip with views of Kilimanjaro was something I will never forget."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background:rgba(242,211,73,0.08);color:#C62828;">DR</div>
+                        <div>
+                            <strong>David R.</strong>
+                            <span>Cape Town, SA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Contact Section -->
     <section class="section" style="background:var(--soft-white);">
         <div class="container">
@@ -379,16 +482,19 @@
     </section>
 
     <!-- Newsletter -->
-    <div class="footer-newsletter">
-        <div style="max-width:1200px;margin:0 auto;">
-            <h3>Stay Inspired</h3>
-            <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
-            <form class="footer-newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
+    <section class="section newsletter-section">
+        <div class="newsletter-overlay"></div>
+        <div class="container">
+            <div class="newsletter-content">
+                <h3>Stay Inspired</h3>
+                <p>Get exclusive travel tips, guides, and deals delivered to your inbox.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
         </div>
-    </div>
+    </section>
     <footer class="footer">
         <div class="footer-main">
             <div class="footer-col">
@@ -553,6 +659,20 @@
             })();
         })();
 
+        // === Lottie Loader ===
+        (function() {
+            var lottieContainer = document.getElementById('loader-lottie');
+            if (lottieContainer && typeof lottie !== 'undefined') {
+                lottie.loadAnimation({
+                    container: lottieContainer,
+                    path: '/assets/images/loader-animation.json',
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true
+                });
+            }
+        })();
+
         // === Text Carousel ===
         (function() {
             const slides = document.querySelectorAll('.hero-text-slide');
@@ -567,55 +687,42 @@
             setInterval(nextSlide, 4000);
         })();
 
-        // === Review Carousel ===
-        (function() {
-            const reviews = document.querySelectorAll('.review-slide');
-            const dotsContainer = document.getElementById('review-dots');
-            let currentReview = 0;
-
-            reviews.forEach((_, i) => {
-                const dot = document.createElement('span');
-                if (i === 0) dot.classList.add('active-dot');
-                dot.addEventListener('click', () => showReview(i));
-                dotsContainer.appendChild(dot);
-            });
-
-            function showReview(index) {
-                reviews[currentReview].classList.remove('active-review');
-                dotsContainer.children[currentReview].classList.remove('active-dot');
-                currentReview = index;
-                reviews[currentReview].classList.add('active-review');
-                dotsContainer.children[currentReview].classList.add('active-dot');
-            }
-
-            setInterval(() => {
-                const next = (currentReview + 1) % reviews.length;
-                showReview(next);
-            }, 5000);
-        })();
-
-        // Load featured tours with a horizontal carousel
-        var ftTours = []; var ftPage = 0;
+        // === Testimonials (static) ===
+        // Reviews displayed inline in the testimonials grid
 
         function makeTourCard(t, i) {
             var img = t.images && t.images.length > 0
                 ? t.images.find(function(i) { return i.is_primary; }) || t.images[0] : null;
             var url = img ? img.image_url : '/assets/images/placeholder.svg';
             var rating = t.avg_rating || 0;
-            var stars = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(Math.round(rating)) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - Math.round(rating));
-            return '<div class="card">'
-                + '<a href="/tour-detail.html?id=' + t.id + '" style="text-decoration:none;color:inherit;">'
+            var stars = '<i class="fas fa-star"></i>';
+            var desc = t.description || '';
+            var activityBadge = t.activity_type ? '<span class="card-chip"><i class="fas fa-tag"></i> ' + t.activity_type + '</span>' : '';
+            var reviewText = t.reviews_count > 0 ? '<span class="card-meta-item"><i class="fas fa-comment"></i> ' + t.reviews_count + ' reviews</span>' : '';
+            var isSaved = !!wishlistMap[t.id];
+            return '<div class="card card-tour" style="position:relative;">'
+                + '<button onclick="event.stopPropagation();toggleWishlist(\'' + t.id + '\')" style="position:absolute;top:0.75rem;left:0.75rem;z-index:3;background:white;border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-md);font-size:1.3rem;transition:transform 0.2s;" title="' + (isSaved ? 'Remove from wishlist' : 'Add to wishlist') + '">'
+                    + (isSaved ? '<span style="color:var(--accent);"><i class="fas fa-heart"></i></span>' : '<span style="color:var(--text-secondary);"><i class="far fa-heart"></i></span>')
+                + '</button>'
+                + '<a href="/tour-detail.html?id=' + t.id + '" style="text-decoration:none;color:inherit;display:flex;flex:1;">'
                     + '<div class="card-image-wrap">'
                         + '<img src="' + url + '" alt="' + (t.title || '').replace(/"/g, '&quot;') + '" class="card-image" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
-                        + '<div class="card-overlay">'
-                            + '<span class="card-overlay-location"><i class="fas fa-map-pin"></i> ' + (t.location || 'Kenya') + '</span>'
-                            + '<span class="card-overlay-price">' + window.formatPrice(t.price) + ' <small>' + t.duration_days + ' days</small></span>'
-                        + '</div>'
                     + '</div>'
+
                     + '<div class="card-body">'
+                        
+                        + '<div class="card-location" style="font-weight:400;color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.5rem;"><i class="fas fa-map-pin"></i> ' + (t.location || 'Kenya') + '</div>'
                         + '<h3 class="card-title">' + t.title + '</h3>'
-                        + (rating > 0 ? '<p class="stars" style="margin-bottom:0.25rem;font-size:0.85rem;">' + stars + ' (' + (t.reviews_count || 0) + ')</p>' : '')
-                        + '<a href="/tour-detail.html?id=' + t.id + '" class="btn btn-primary btn-sm" style="width:100%;">View Details</a>'
+                        + (rating > 0 ? '<div class="card-stars" style="margin-bottom:0.25rem;">' + stars + ' <span class="card-rating-text" style="font-size:0.85rem;">' + rating.toFixed(1) + ' (' + (t.reviews_count || 0) + ' reviews)</span></div>' : '')
+                   
+                        + '<div class="card-desc-wrap">'
+                            + (desc ? '<p class="card-text">' + desc + '</p>' : '')
+                            + activityBadge
+                        + '</div>'
+                        + '<div class="card-footer-bar">'
+                            + '<span class="card-price">' + window.formatPrice(t.price) + '</span>'
+                            + '<span class="card-cta">Details <i class="fas fa-arrow-right"></i></span>'
+                        + '</div>'
                     + '</div>'
                 + '</a>'
             + '</div>';
@@ -635,52 +742,18 @@
             }
         }
 
-        function createCarouselSection(container, items, makeCardFn, sectionId, footerHtml, prevLabel, nextLabel) {
-            var slides = items.slice(0, 8).map(function(item, i) {
-                return '<div class="carousel-slide">' + makeCardFn(item, i) + '</div>';
-            }).join('');
-
-            var html = '<div class="carousel-wrapper">'
-                + '<button class="carousel-nav prev" type="button" aria-label="' + prevLabel + '"><i class="fas fa-chevron-left"></i></button>'
-                + '<div class="carousel-track" id="' + sectionId + '-track">' + slides + '</div>'
-                + '<button class="carousel-nav next" type="button" aria-label="' + nextLabel + '"><i class="fas fa-chevron-right"></i></button>'
-            + '</div>'
-            + footerHtml;
-
-            container.innerHTML = html;
-            var track = container.querySelector('.carousel-track');
-            var prevBtn = container.querySelector('.carousel-nav.prev');
-            var nextBtn = container.querySelector('.carousel-nav.next');
-
-            function updateNav() {
-                var maxScroll = track.scrollWidth - track.clientWidth;
-                var atStart = track.scrollLeft <= 8;
-                var atEnd = track.scrollLeft >= maxScroll - 8;
-                prevBtn.classList.toggle('hidden', atStart);
-                nextBtn.classList.toggle('hidden', atEnd);
-            }
-
-            prevBtn.addEventListener('click', function() {
-                track.scrollBy({ left: -track.clientWidth * 0.9, behavior: 'smooth' });
-            });
-            nextBtn.addEventListener('click', function() {
-                track.scrollBy({ left: track.clientWidth * 0.9, behavior: 'smooth' });
-            });
-            track.addEventListener('scroll', updateNav);
-            setTimeout(updateNav, 50);
-            refreshAnimations(track);
-        }
-
-        // Load featured tours with a horizontal carousel
+        // Load featured tours
         var ftTours = [];
 
         function renderFeaturedTours() {
             var container = document.getElementById('featured-tours');
             if (!container || !ftTours.length) return;
-            var footerHtml = '<div class="carousel-footer">'
-                + '<a href="/tours.html" class="btn btn-outline">Browse all tours</a>'
-            + '</div>';
-            createCarouselSection(container, ftTours, makeTourCard, 'featured-tours', footerHtml, 'Previous tours', 'Next tours');
+            var items = ftTours.slice(0, 8);
+            while (items.length % 4) items.pop();
+            var cards = items.map(function(t, i) { return makeTourCard(t, i); }).join('');
+            container.innerHTML = '<div class="section-footer"><a href="/tours.html" class="btn btn-outline">Browse all tours</a></div>'
+                + '<div class="grid grid-4">' + cards + '</div>';
+            refreshAnimations(container);
         }
 
         async function loadFeaturedTours() {
@@ -697,7 +770,7 @@
             }
         }
 
-        // Load featured hotels with a horizontal carousel
+        // Load featured hotels
         var ftHotels = [];
 
         function makeHotelCard(h, i) {
@@ -705,21 +778,30 @@
                 ? h.images.find(function(i) { return i.is_primary; }) || h.images[0] : null;
             var url = img ? img.image_url : '/assets/images/placeholder.svg';
             var rating = h.avg_rating || h.rating || 0;
-            var stars = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(Math.round(rating)) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - Math.round(rating));
+            var stars = '<i class="fas fa-star"></i>';
             var amenities = Array.isArray(h.amenities) ? h.amenities.slice(0, 3) : [];
-            return '<div class="card">'
+            var desc = h.description || '';
+            var reviewText = h.reviews_count > 0 ? '<span class="card-meta-item"><i class="fas fa-comment"></i> ' + h.reviews_count + ' reviews</span>' : '';
+            return '<div class="card card-hotel">'
                 + '<div class="card-image-wrap">'
                     + '<img src="' + url + '" alt="' + (h.name || '').replace(/"/g, '&quot;') + '" class="card-image" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
-                    + '<div class="card-overlay">'
-                        + '<span class="card-overlay-location"><i class="fas fa-map-pin"></i> ' + (h.location || 'Kenya') + '</span>'
-                        + '<span class="card-overlay-price">' + window.formatPrice(h.price_per_night) + ' <small>/ night</small></span>'
-                    + '</div>'
                 + '</div>'
                 + '<div class="card-body">'
+                    + (rating > 0 ? '<div class="card-stars" style="margin-bottom:0.25rem;">' + stars + ' <span class="card-rating-text" style="font-size:0.85rem;">' + rating.toFixed(1) + ' (' + (h.reviews_count || 0) + ' reviews)</span></div>' : '')
+                    + '<div class="card-location" style="font-weight:400;color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.5rem;"><i class="fas fa-map-pin"></i> ' + (h.location || 'Kenya') + '</div>'
                     + '<h3 class="card-title">' + h.name + '</h3>'
-                    + (rating > 0 ? '<p class="stars" style="margin-bottom:0.25rem;font-size:0.85rem;">' + stars + ' (' + (h.reviews_count || 0) + ')</p>' : '')
-                    + (amenities.length ? '<div class="amenities-tags" style="margin-bottom:0.5rem;">' + amenities.map(function(a) { return '<span class="tag">' + a.trim() + '</span>'; }).join('') + '</div>' : '')
-                    + '<a href="/hotels.html" class="btn btn-primary btn-sm" style="width:100%;">View Details</a>'
+                    + '<div class="card-meta">'
+                        + (amenities.length ? '<span class="card-meta-item"><i class="fas fa-concierge-bell"></i> ' + amenities.length + ' amenities</span>' : '')
+                        + reviewText
+                    + '</div>'
+                    + '<div class="card-desc-wrap">'
+                        + (desc ? '<p class="card-text">' + desc + '</p>' : '')
+                    + '</div>'
+                    + (amenities.length ? '<div class="amenities-tags">' + amenities.map(function(a) { return '<span class="tag">' + a.trim() + '</span>'; }).join('') + '</div>' : '')
+                    + '<div class="card-footer-bar">'
+                        + '<span class="card-price">' + window.formatPrice(h.price_per_night) + ' <small>/night</small></span>'
+                        + '<span class="card-cta">View <i class="fas fa-arrow-right"></i></span>'
+                    + '</div>'
                 + '</div>'
             + '</div>';
         }
@@ -727,10 +809,12 @@
         function renderFeaturedHotels() {
             var container = document.getElementById('featured-hotels');
             if (!container || !ftHotels.length) return;
-            var footerHtml = '<div class="carousel-footer">'
-                + '<a href="/hotels.html" class="btn btn-outline">Browse all hotels</a>'
-            + '</div>';
-            createCarouselSection(container, ftHotels, makeHotelCard, 'featured-hotels', footerHtml, 'Previous hotels', 'Next hotels');
+            var items = ftHotels.slice(0, 8);
+            while (items.length % 4) items.pop();
+            var cards = items.map(function(h, i) { return makeHotelCard(h, i); }).join('');
+            container.innerHTML = '<div class="section-footer"><a href="/hotels.html" class="btn btn-outline">Browse all hotels</a></div>'
+                + '<div class="grid grid-4">' + cards + '</div>';
+            refreshAnimations(container);
         }
 
         async function loadFeaturedHotels() {
@@ -775,8 +859,69 @@
             }
         });
 
+        async function loadDestinations() {
+            var container = document.getElementById('destinations-grid');
+            try {
+                var result = await api.getDestinations();
+                var dests = result.destinations || [];
+                if (!dests.length) {
+                    container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><h3>No destinations yet</h3></div>';
+                    return;
+                }
+                var cards = dests.map(function(d) {
+                    return '<div class="destination-card" data-aos="fade-up" data-aos-delay="100">'
+                        + '<div class="dest-img"><img src="' + d.image_url + '" alt="' + d.name.replace(/"/g, '&quot;') + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'"></div>'
+                        + '<div class="dest-body"><h4>' + d.name + '</h4></div>'
+                    + '</div>';
+                }).join('');
+                container.innerHTML = cards;
+                if (window.AOS) AOS.refresh();
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><h3>Could not load destinations</h3></div>';
+            }
+        }
+
+        var wishlistMap = {};
+
+        async function loadWishlist() {
+            if (!api.token) return;
+            try {
+                var result = await api.get('/wishlist');
+                var items = Array.isArray(result) ? result : (result.wishlist || []);
+                wishlistMap = {};
+                items.forEach(function(item) {
+                    if (item.tour_id) wishlistMap[item.tour_id] = item.id;
+                });
+                if (ftTours.length) renderFeaturedTours();
+            } catch (err) {}
+        }
+
+        async function toggleWishlist(tourId) {
+            if (!api.token) {
+                showToast('Please login to save tours', 'warning');
+                openModal('login-modal');
+                return;
+            }
+            try {
+                if (wishlistMap[tourId]) {
+                    await api.delete('/wishlist/' + wishlistMap[tourId]);
+                    delete wishlistMap[tourId];
+                    showToast('Removed from wishlist', 'info');
+                } else {
+                    var res = await api.post('/wishlist', { tour_id: tourId });
+                    if (res.wishlist) wishlistMap[tourId] = res.wishlist.id;
+                    showToast('Added to wishlist!', 'success');
+                }
+                if (ftTours.length) renderFeaturedTours();
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        loadDestinations();
         loadFeaturedTours();
         loadFeaturedHotels();
+        loadWishlist();
     </script>
 </body>
 </html>

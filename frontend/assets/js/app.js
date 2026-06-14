@@ -237,7 +237,7 @@ function showEmailVerification(email) {
             </p>
             <p class="auth-note">
                 Didn't get the email?
-                <a href="#" onclick="event.preventDefault();resendOtp('${escapeHTML(email)}')" style="color:var(--primary-green);font-weight:600;">
+                <a href="#" onclick="event.preventDefault();resendOtp('${escapeHTML(email)}')" style="color:var(--primary);font-weight:600;">
                     Resend
                 </a>
             </p>
@@ -529,7 +529,7 @@ function initAuthModals() {
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;">Login</button>
                     <p style="text-align:center;margin-top:1rem;color:var(--text-secondary);">
-                        Don't have an account? <a href="#" onclick="event.preventDefault();closeModal('login-modal');openModal('register-modal');" style="color:var(--primary-green);font-weight:600;">Sign Up</a>
+                        Don't have an account? <a href="#" onclick="event.preventDefault();closeModal('login-modal');openModal('register-modal');" style="color:var(--primary);font-weight:600;">Sign Up</a>
                     </p>
                 </form>
             </div>
@@ -572,7 +572,7 @@ function initAuthModals() {
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;">Sign Up</button>
                     <p style="text-align:center;margin-top:1rem;color:var(--text-secondary);">
-                        Already have an account? <a href="#" onclick="event.preventDefault();closeModal('register-modal');openModal('login-modal');" style="color:var(--primary-green);font-weight:600;">Login</a>
+                        Already have an account? <a href="#" onclick="event.preventDefault();closeModal('register-modal');openModal('login-modal');" style="color:var(--primary);font-weight:600;">Login</a>
                     </p>
                 </form>
             </div>
@@ -748,10 +748,10 @@ async function loadUserMessages() {
                         <h3 style="margin:0 0 0.5rem;">${escapeHTML(msg.subject || 'Message from admin')}</h3>
                         <div style="font-size:0.85rem;color:var(--text-secondary);">${escapeHTML(new Date(msg.created_at).toLocaleString())}</div>
                     </div>
-                    <span style="font-size:0.85rem;color:${msg.is_read ? 'var(--text-secondary)' : 'var(--primary-green)'};font-weight:600;">${msg.is_read ? 'Read' : 'Unread'}</span>
+                    <span style="font-size:0.85rem;color:${msg.is_read ? 'var(--text-secondary)' : 'var(--primary)'};font-weight:600;">${msg.is_read ? 'Read' : 'Unread'}</span>
                 </div>
                 <p style="margin:0.75rem 0 0.75rem;line-height:1.6;white-space:pre-wrap;">${escapeHTML(msg.message)}</p>
-                ${msg.admin_reply ? `<div style="margin-top:0.75rem;padding:0.85rem;border-left:4px solid var(--accent-gold);background:rgba(255,243,224,0.65);">
+                ${msg.admin_reply ? `<div style="margin-top:0.75rem;padding:0.85rem;border-left:4px solid var(--accent);background:rgba(255,243,224,0.65);">
                     <strong>Admin Reply</strong>
                     <p style="margin:0.5rem 0 0;line-height:1.6;white-space:pre-wrap;">${escapeHTML(msg.admin_reply)}</p>
                 </div>` : ''}

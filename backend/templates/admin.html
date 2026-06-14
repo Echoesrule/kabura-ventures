@@ -16,10 +16,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=2">
     <style>
         .admin-page .navbar, .admin-page .footer { display: none !important; }
         .admin-page #login-modal,
@@ -31,7 +31,7 @@
         .admin-sidebar {
             position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
             width: 260px;
-            background: linear-gradient(180deg, #1B5E20 0%, #2E7D32 40%, #388E3C 100%);
+            background: linear-gradient(180deg, #112211 0%, #535A55 40%, #535A55 100%);
             color: #fff;
             display: flex; flex-direction: column;
             box-shadow: 4px 0 20px rgba(0,0,0,0.15);
@@ -42,7 +42,7 @@
             margin-bottom: 0.75rem;
         }
         .admin-sidebar .brand h3 {
-            color: var(--accent-gold);
+            color: var(--accent);
             font-weight: 700; font-size: 1.25rem;
             display: flex; align-items: center; gap: 0.5rem;
         }
@@ -66,8 +66,8 @@
         }
         .admin-sidebar .nav-item.active {
             background: rgba(255,255,255,0.12);
-            color: var(--accent-gold-light);
-            border-left-color: var(--accent-gold);
+            color: var(--accent-light);
+            border-left-color: var(--accent);
             font-weight: 600;
         }
         .admin-sidebar .nav-item i { width: 1.25rem; text-align: center; font-size: 1rem; }
@@ -81,17 +81,17 @@
 
         .admin-content {
             margin-left: 260px; flex: 1;
-            background: linear-gradient(135deg, #f5f7f0 0%, #f0f3ea 100%);
+            background: linear-gradient(135deg, rgba(138,168,153,0.04) 0%, rgba(138,168,153,0.06) 100%);
             min-height: 100vh; padding: 2rem;
         }
         .admin-content h2 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--primary-green-dark);
+            font-family: var(--font-heading);
+            color: var(--primary-dark);
             font-weight: 700;
             margin-bottom: 1.5rem;
             display: flex; align-items: center; gap: 0.5rem;
         }
-        .admin-content h2 i { color: var(--primary-green); font-size: 1.3rem; }
+        .admin-content h2 i { color: var(--primary); font-size: 1.3rem; }
 
         .stats-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -101,7 +101,7 @@
             background: #fff; border-radius: var(--radius-md);
             padding: 1.5rem;
             box-shadow: var(--shadow-sm);
-            border-left: 4px solid var(--primary-green);
+            border-left: 4px solid var(--primary);
             transition: all 0.3s ease;
         }
         .stat-card:hover {
@@ -117,37 +117,37 @@
         }
         .stat-card .stat-value {
             font-size: 1.75rem; font-weight: 700;
-            color: var(--primary-green-dark);
-            font-family: 'Poppins', sans-serif;
+            color: var(--primary-dark);
+            font-family: var(--font-heading);
         }
         .stat-card .stat-icon {
             float: right; font-size: 1.8rem;
-            color: var(--primary-green);
+            color: var(--primary);
             opacity: 0.2;
         }
 
         .card {
             background: #fff; border-radius: var(--radius-md);
             box-shadow: var(--shadow-sm);
-            border-top: 3px solid var(--primary-green);
+            border-top: 3px solid var(--primary);
             transition: all 0.3s ease;
         }
         .card:hover { box-shadow: var(--shadow-md); }
         .card h3 {
-            color: var(--primary-green-dark);
+            color: var(--primary-dark);
             font-weight: 600; font-size: 1rem;
             display: flex; align-items: center; gap: 0.5rem;
         }
-        .card h3 i { color: var(--primary-green); }
+        .card h3 i { color: var(--primary); }
 
         .action-bar {
             display: flex; justify-content: space-between;
             align-items: center; flex-wrap: wrap; gap: 1rem;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #e8f0e4, #dce8d6);
+            background: linear-gradient(135deg, rgba(138,168,153,0.06), rgba(138,168,153,0.08));
             padding: 1rem 1.5rem;
             border-radius: var(--radius-md);
-            border-left: 4px solid var(--primary-green);
+            border-left: 4px solid var(--primary);
         }
         .action-bar h2 { margin-bottom: 0; font-size: 1.2rem; }
 
@@ -155,7 +155,7 @@
             text-align: center; padding: 3rem 1rem;
             color: var(--text-secondary);
         }
-        .empty-state h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--earth-brown); }
+        .empty-state h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--accent); }
 
         .table-container { overflow-x: auto; }
         .table-container > div {
@@ -190,12 +190,12 @@
             display: flex; justify-content: space-between;
             align-items: center; padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(135deg, #f5f8f2, #edf3e8);
+            background: linear-gradient(135deg, rgba(138,168,153,0.04), rgba(138,168,153,0.06));
             border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         }
         .admin-page .modal-header h2 {
             margin: 0; font-size: 1.1rem;
-            color: var(--primary-green-dark);
+            color: var(--primary-dark);
         }
         .admin-page .modal-close {
             background: none; border: none; font-size: 1.5rem;
@@ -209,7 +209,7 @@
         .admin-page .form-group { margin-bottom: 1rem; }
         .admin-page .form-label {
             display: block; font-size: 0.85rem; font-weight: 600;
-            color: var(--primary-green-dark); margin-bottom: 0.35rem;
+            color: var(--primary-dark); margin-bottom: 0.35rem;
         }
 
         .admin-page .block-editor {
@@ -218,11 +218,11 @@
             background: #fff;
             overflow: hidden;
         }
-        .admin-page .block-editor:focus-within { border-color: var(--primary-green); }
+        .admin-page .block-editor:focus-within { border-color: var(--primary); }
         .wysiwyg-toolbar {
             display: flex; flex-wrap: wrap; gap: 4px;
             padding: 0.5rem 0.75rem;
-            background: #f5f7f0;
+            background: rgba(138,168,153,0.04);
             border: 1px solid var(--border-color);
             border-bottom: none;
             border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -239,8 +239,8 @@
             cursor: pointer; transition: all 0.15s;
         }
         .wysiwyg-toolbar button:hover {
-            background: var(--primary-green);
-            color: #fff; border-color: var(--primary-green);
+            background: var(--primary);
+            color: #fff; border-color: var(--primary);
         }
         .wysiwyg-content {
             border: 1px solid var(--border-color);
@@ -252,7 +252,7 @@
             outline: none;
             background: #fff;
         }
-        .wysiwyg-content:focus { border-color: var(--primary-green); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
+        .wysiwyg-content:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
         .wysiwyg-content h1 { font-size: 1.75rem; margin: 1rem 0 0.5rem; font-weight: 700; }
         .wysiwyg-content h2 { font-size: 1.5rem; margin: 0.9rem 0 0.4rem; font-weight: 700; }
         .wysiwyg-content h3 { font-size: 1.3rem; margin: 0.8rem 0 0.35rem; font-weight: 600; }
@@ -260,9 +260,9 @@
         .wysiwyg-content ul, .wysiwyg-content ol { margin: 0 0 0.75rem 1.5rem; }
         .wysiwyg-content li { margin-bottom: 0.25rem; }
 
-        .admin-page .blog-preview h1 { font-size: 2rem; margin: 1rem 0 0.5rem; color: var(--primary-green-dark); font-weight: 700; }
-        .admin-page .blog-preview h2 { font-size: 1.6rem; margin: 0.9rem 0 0.4rem; color: var(--primary-green-dark); font-weight: 700; }
-        .admin-page .blog-preview h3 { font-size: 1.35rem; margin: 0.8rem 0 0.35rem; color: var(--primary-green-dark); font-weight: 600; }
+        .admin-page .blog-preview h1 { font-size: 2rem; margin: 1rem 0 0.5rem; color: var(--primary-dark); font-weight: 700; }
+        .admin-page .blog-preview h2 { font-size: 1.6rem; margin: 0.9rem 0 0.4rem; color: var(--primary-dark); font-weight: 700; }
+        .admin-page .blog-preview h3 { font-size: 1.35rem; margin: 0.8rem 0 0.35rem; color: var(--primary-dark); font-weight: 600; }
         .admin-page .blog-preview h4 { font-size: 1.15rem; margin: 0.7rem 0 0.3rem; font-weight: 600; }
         .admin-page .blog-preview h5 { font-size: 1rem; margin: 0.6rem 0 0.25rem; font-weight: 600; }
         .admin-page .blog-preview h6 { font-size: 0.9rem; margin: 0.5rem 0 0.2rem; font-weight: 600; text-transform: uppercase; }
@@ -271,13 +271,13 @@
         .admin-page .blog-preview li { margin: 0.25rem 0; }
         .admin-page .blog-preview img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
         .admin-page .blog-preview blockquote {
-            border-left: 4px solid var(--primary-green);
+            border-left: 4px solid var(--primary);
             padding: 0.5rem 1rem; margin: 1rem 0;
-            background: #f5f8f2; border-radius: 0 8px 8px 0;
+            background: rgba(138,168,153,0.04); border-radius: 0 8px 8px 0;
             color: var(--text-secondary);
         }
         .admin-page .blog-preview pre {
-            background: #1a1a2e; color: #e4e4e4;
+            background: #112211; color: #535A55;
             padding: 1rem; border-radius: 8px;
             overflow-x: auto; font-size: 0.85rem; margin: 1rem 0;
         }
@@ -287,13 +287,13 @@
             width: 100%; padding: 0.65rem 0.85rem;
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-family: 'Roboto', sans-serif; font-size: 0.9rem;
+            font-family: var(--font-body); font-size: 0.9rem;
             transition: border-color 0.2s; background: #fff;
         }
         .admin-page .form-input:focus,
         .admin-page .form-select:focus,
         .admin-page .form-textarea:focus {
-            outline: none; border-color: var(--primary-green);
+            outline: none; border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
         }
         .admin-page .form-textarea { min-height: 100px; resize: vertical; }
@@ -301,25 +301,25 @@
         .admin-page .btn {
             padding: 0.6rem 1.25rem; border: none; border-radius: var(--radius-sm);
             cursor: pointer; font-size: 0.88rem; font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-heading);
             transition: all 0.25s ease; display: inline-flex;
             align-items: center; gap: 0.4rem;
         }
         .admin-page .btn-primary {
-            background: linear-gradient(135deg, #2E7D32, #388E3C);
+            background: linear-gradient(135deg, #535A55, #535A55);
             color: #fff;
         }
         .admin-page .btn-primary:hover {
-            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            background: linear-gradient(135deg, #112211, #535A55);
             box-shadow: 0 4px 12px rgba(46,125,50,0.3);
             transform: translateY(-1px);
         }
         .admin-page .btn-secondary {
-            background: #e8e8e8; color: var(--dark-text);
+            background: rgba(138,168,153,0.08); color: var(--dark-text);
         }
-        .admin-page .btn-secondary:hover { background: #d5d5d5; }
+        .admin-page .btn-secondary:hover { background: rgba(138,168,153,0.12); }
         .admin-page .btn-gold {
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
             color: #fff;
         }
         .admin-page .btn-gold:hover {
@@ -327,7 +327,7 @@
             transform: translateY(-1px);
         }
         .admin-page .btn-danger {
-            background: linear-gradient(135deg, #D32F2F, #E53935);
+            background: linear-gradient(135deg, #D32F2F, #C62828);
             color: #fff;
         }
         .admin-page .btn-danger:hover {
@@ -342,7 +342,7 @@
         .admin-page .spinner {
             width: 40px; height: 40px; margin: 2rem auto;
             border: 3px solid var(--border-color);
-            border-top-color: var(--primary-green);
+            border-top-color: var(--primary);
             border-radius: 50%; animation: spin 0.7s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -355,7 +355,7 @@
             border-radius: 6px; border: 2px solid var(--border-color);
             transition: border-color 0.2s;
         }
-        .admin-page .image-gallery img:hover { border-color: var(--primary-green); }
+        .admin-page .image-gallery img:hover { border-color: var(--primary); }
 
         .admin-page .verification-loading-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -370,12 +370,12 @@
         }
         .admin-page .toast {
             padding: 0.85rem 1.25rem; border-radius: var(--radius-sm);
-            font-family: 'Roboto', sans-serif; font-size: 0.88rem;
+            font-family: var(--font-body); font-size: 0.88rem;
             color: #fff; box-shadow: var(--shadow-md);
             animation: slideIn 0.3s ease;
             max-width: 360px;
         }
-        .admin-page .toast-success { background: var(--primary-green); }
+        .admin-page .toast-success { background: var(--primary); }
         .admin-page .toast-error { background: #D32F2F; }
         .admin-page .toast-info { background: #1976D2; }
         @keyframes slideIn {
@@ -422,6 +422,7 @@
             <div class="nav-item" data-section="subscribers"><i class="fas fa-users"></i> Subscribers</div>
             <div class="nav-item" data-section="blogs"><i class="fas fa-edit"></i> Blog</div>
             <div class="nav-item" data-section="payments"><i class="fas fa-money-bill-wave"></i> Payments</div>
+            <div class="nav-item" data-section="destinations"><i class="fas fa-map-marker-alt"></i> Destinations</div>
             <div class="nav-item" data-section="media"><i class="fas fa-video"></i> Media</div>
             <div class="nav-item" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics & Revenue</div>
             <div class="sidebar-footer">
@@ -791,6 +792,48 @@
                 </div>
             </div>
 
+            <!-- Destinations Management -->
+            <div class="admin-section" id="section-destinations" style="display:none;">
+                <div class="action-bar">
+                    <h2><i class="fas fa-map-marker-alt"></i> Destinations Management</h2>
+                    <button class="btn btn-primary" onclick="openDestForm()"><i class="fas fa-plus"></i> Add Destination</button>
+                </div>
+                <div id="admin-destinations-list"></div>
+
+                <!-- Destination Form Modal -->
+                <div class="modal-overlay" id="dest-form-modal">
+                    <div class="modal" style="max-width:500px;">
+                        <div class="modal-header">
+                            <h2 id="dest-form-title">Add Destination</h2>
+                            <button class="modal-close" onclick="closeModal('dest-form-modal')">&times;</button>
+                        </div>
+                        <form id="dest-form" enctype="multipart/form-data">
+                            <input type="hidden" id="dest-form-id">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-input" id="df-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Image URL (or upload below)</label>
+                                <input type="text" class="form-input" id="df-image-url" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Upload Image</label>
+                                <input type="file" class="form-input" id="df-image" accept="image/*">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sort Order</label>
+                                <input type="number" class="form-input" id="df-sort" value="0" min="0">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('dest-form-modal')">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- Media Management -->
             <div class="admin-section" id="section-media" style="display:none;">
                 <h2 style="margin-bottom:1.5rem;"><i class="fas fa-video"></i> Media Manager</h2>
@@ -858,7 +901,7 @@
                     return;
                 } catch (e) { lastErr = e; }
             }
-            root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#333;"><h2>Could not verify admin session</h2><p style="color:#666;">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:#2E7D32;color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
+            root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#161716;"><h2>Could not verify admin session</h2><p style="color:#535A55;">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:#D75A2B;color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
             root.style.display = 'block';
         })();
 
@@ -889,6 +932,7 @@
                 case 'payments': loadAdminPayments(); break;
                 case 'analytics': loadAnalytics(); break;
                 case 'media': loadAdminMedia(); break;
+                case 'destinations': loadAdminDestinations(); break;
             }
         }
 
@@ -904,7 +948,7 @@
 
                 document.getElementById('dashboard-stats').innerHTML = `
                     <div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${bookingsRes.total}</div></div>
-                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent-gold);">${bookingsRes.bookings.filter(b => b.status === 'pending').length}</div></div>
+                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent);">${bookingsRes.bookings.filter(b => b.status === 'pending').length}</div></div>
                     <div class="stat-card"><h3>Flight Requests</h3><div class="stat-value">${flightsRes.total}</div></div>
                     <div class="stat-card"><h3>Unread Messages</h3><div class="stat-value" style="color:#D32F2F;">${messagesRes.total}</div></div>
                 `;
@@ -936,9 +980,9 @@
                 const { revenue, bookings, platform, popular_tours } = result;
 
                 document.getElementById('analytics-summary').innerHTML = `
-                    <div class="stat-card"><h3>Total Revenue</h3><div class="stat-value" style="color:var(--primary-green);">KSh ${Number(revenue.total).toLocaleString()}</div></div>
+                    <div class="stat-card"><h3>Total Revenue</h3><div class="stat-value" style="color:var(--primary);">KSh ${Number(revenue.total).toLocaleString()}</div></div>
                     <div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${bookings.total}</div></div>
-                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent-gold);">${bookings.pending}</div></div>
+                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent);">${bookings.pending}</div></div>
                     <div class="stat-card"><h3>Total Users</h3><div class="stat-value">${platform.total_users}</div></div>
                     <div class="stat-card"><h3>Tours</h3><div class="stat-value">${platform.total_tours}</div></div>
                     <div class="stat-card"><h3>Hotels</h3><div class="stat-value">${platform.total_hotels}</div></div>
@@ -950,10 +994,10 @@
                     const max = Math.max(...items.map(i => i[valueKey]));
                     container.innerHTML = items.map(i => {
                         const pct = max > 0 ? (i[valueKey] / max * 100) : 0;
-                        const color = colorFn ? colorFn(i) : 'var(--primary-green)';
+                        const color = colorFn ? colorFn(i) : 'var(--primary)';
                         return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
                             <span style="min-width:80px;font-size:0.85rem;text-transform:capitalize;">${i[labelKey]}</span>
-                            <div style="flex:1;height:28px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
+                            <div style="flex:1;height:28px;background:rgba(138,168,153,0.06);border-radius:6px;overflow:hidden;">
                                 <div style="height:100%;width:${pct}%;background:${color};border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;min-width:${pct > 15 ? 'auto' : '0'};">
                                     ${pct > 15 ? (i[labelKey] === 'total' || i[labelKey] === 'amount' ? 'KSh ' + Number(i[valueKey]).toLocaleString() : i[valueKey]) : ''}
                                 </div>
@@ -971,8 +1015,8 @@
                         const pct = max > 0 ? (i[valueKey] / max * 100) : 0;
                         return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
                             <span style="min-width:90px;font-size:0.85rem;">${labelPrefix || ''}${i[labelKey]}</span>
-                            <div style="flex:1;height:28px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
-                                <div style="height:100%;width:${pct}%;background:var(--primary-green);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
+                            <div style="flex:1;height:28px;background:rgba(138,168,153,0.06);border-radius:6px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:var(--primary);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
                                     ${pct > 12 ? i[valueKey] : ''}
                                 </div>
                             </div>
@@ -982,9 +1026,9 @@
                 }
 
                 renderBarChart('revenue-by-method-chart', revenue.by_method, 'method', 'total', (i) =>
-                    i.method === 'mpesa' ? '#2E7D32' : i.method === 'card' ? '#1565C0' : i.method === 'cash' ? '#C9A227' : '#757575');
+                    i.method === 'mpesa' ? '#535A55' : i.method === 'card' ? '#1565C0' : i.method === 'cash' ? '#D75A2B' : '#535A55');
                 renderBarChart('revenue-by-type-chart', revenue.by_type, 'type', 'total', (i) =>
-                    i.type === 'partial' ? '#C9A227' : i.type === 'full' ? '#2E7D32' : i.type === 'refund' ? '#D32F2F' : '#757575');
+                    i.type === 'partial' ? '#D75A2B' : i.type === 'full' ? '#535A55' : i.type === 'refund' ? '#D32F2F' : '#535A55');
                 (function() {
                     const c = document.getElementById('revenue-trend-chart');
                     const items = revenue.monthly;
@@ -994,8 +1038,8 @@
                         const pct = max > 0 ? (i.total / max * 100) : 0;
                         return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
                             <span style="min-width:80px;font-size:0.85rem;">${i.month}</span>
-                            <div style="flex:1;height:28px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
-                                <div style="height:100%;width:${pct}%;background:var(--primary-green);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
+                            <div style="flex:1;height:28px;background:rgba(138,168,153,0.06);border-radius:6px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:var(--primary);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
                                     ${pct > 12 ? 'KSh ' + Number(i.total).toLocaleString() : ''}
                                 </div>
                             </div>
@@ -1042,7 +1086,7 @@
                             <td><span class="badge ${t.available ? 'badge-success' : 'badge-danger'}">${t.available ? 'Active' : 'Inactive'}</span></td>
                             <td>
                                 <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')">Edit</button>
-                                <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')" style="background:var(--accent-gold);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
+                                <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')" style="background:var(--accent);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteTour('${t.id}')">Delete</button>
                             </td>
                         </tr>
@@ -1117,11 +1161,11 @@
                             <td><strong>${h.name}</strong></td>
                             <td>${h.location || '-'}</td>
                             <td>KSh ${Number(h.price_per_night).toLocaleString()}</td>
-                            <td>${'<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(Math.round(h.rating))}</td>
+                            <td>${'<i class="fas fa-star" style="color:var(--accent);"></i>'.repeat(Math.round(h.rating))}</td>
                             <td><span class="badge ${h.available ? 'badge-success' : 'badge-danger'}">${h.available ? 'Active' : 'Inactive'}</span></td>
                             <td>
                                 <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')">Edit</button>
-                                <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')" style="background:var(--accent-gold);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
+                                <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')" style="background:var(--accent);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}')">Delete</button>
                             </td>
                         </tr>
@@ -1428,6 +1472,76 @@
             });
         })();
 
+        // === Destinations Management ===
+        async function loadAdminDestinations() {
+            const container = document.getElementById('admin-destinations-list');
+            container.innerHTML = '<div class="spinner"></div>';
+            try {
+                const result = await api.getDestinations();
+                const dests = result.destinations;
+                container.innerHTML = dests.length === 0
+                    ? '<div class="empty-state"><h3>No destinations created yet</h3></div>'
+                    : '<div class="table-container"><table><thead><tr><th>Image</th><th>Name</th><th>Sort Order</th><th>Actions</th></tr></thead><tbody>' +
+                    dests.map(d => `
+                        <tr>
+                            <td><img src="${d.image_url}" alt="${d.name}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;"></td>
+                            <td><strong>${d.name}</strong></td>
+                            <td>${d.sort_order}</td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary" onclick="editDest('${d.id}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteDest('${d.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('') + '</tbody></table></div>';
+            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load destinations</h3></div>'; }
+        }
+
+        function openDestForm(data = null) {
+            document.getElementById('dest-form-id').value = data ? data.id : '';
+            document.getElementById('df-name').value = data ? data.name : '';
+            document.getElementById('df-image-url').value = data ? data.image_url : '';
+            document.getElementById('df-sort').value = data ? data.sort_order : 0;
+            document.getElementById('df-image').value = '';
+            document.getElementById('dest-form-title').textContent = data ? 'Edit Destination' : 'Add Destination';
+            openModal('dest-form-modal');
+        }
+
+        function editDest(id) {
+            api.getDestinations().then(r => {
+                const d = r.destinations.find(x => x.id === id);
+                if (d) openDestForm(d);
+                else showToast('Destination not found', 'error');
+            }).catch(e => showToast(e.message, 'error'));
+        }
+
+        async function deleteDest(id) {
+            if (!confirm('Are you sure you want to delete this destination?')) return;
+            try { await api.deleteDestination(id); showToast('Destination deleted', 'success'); loadAdminDestinations(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        document.getElementById('dest-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('dest-form-id').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            try {
+                const data = new FormData();
+                data.append('name', document.getElementById('df-name').value.trim());
+                data.append('sort_order', parseInt(document.getElementById('df-sort').value) || 0);
+                const imageUrl = document.getElementById('df-image-url').value.trim();
+                if (imageUrl) data.append('image_url', imageUrl);
+                const fileInput = document.getElementById('df-image');
+                if (fileInput.files.length) data.append('image', fileInput.files[0]);
+                if (id) await api.updateDestination(id, data);
+                else await api.createDestination(data);
+                showToast(id ? 'Destination updated' : 'Destination created', 'success');
+                closeModal('dest-form-modal');
+                loadAdminDestinations();
+            } catch (err) { showToast(err.message, 'error'); }
+            finally { btn.disabled = false; }
+        });
+
         // === Media Management ===
         async function loadAdminMedia() {
             const container = document.getElementById('admin-media-list');
@@ -1710,11 +1824,11 @@
                 const deleteFn = type === 'tour' ? 'deleteTourImage' : 'deleteHotelImage';
                 const primaryFn = type === 'tour' ? 'setTourPrimaryImage' : 'setHotelPrimaryImage';
                 return `
-                    <div style="position:relative;width:100px;height:80px;border-radius:6px;overflow:hidden;border:2px solid ${isPrimary ? 'var(--primary-green)' : 'var(--border-color)'};flex-shrink:0;">
+                    <div style="position:relative;width:100px;height:80px;border-radius:6px;overflow:hidden;border:2px solid ${isPrimary ? 'var(--primary)' : 'var(--border-color)'};flex-shrink:0;">
                         <img src="${img.image_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
-                        ${isPrimary ? '<span style="position:absolute;top:2px;left:2px;background:var(--primary-green);color:white;font-size:0.6rem;padding:1px 5px;border-radius:3px;">PRIMARY</span>' : ''}
+                        ${isPrimary ? '<span style="position:absolute;top:2px;left:2px;background:var(--primary);color:white;font-size:0.6rem;padding:1px 5px;border-radius:3px;">PRIMARY</span>' : ''}
                         <div style="position:absolute;bottom:0;left:0;right:0;display:flex;">
-                            ${!isPrimary ? `<button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:var(--primary-green);color:white;border:none;cursor:pointer;border-radius:0;" onclick="${primaryFn}('${imageId}')" title="Set as primary"><i class="fas fa-star"></i></button>` : ''}
+                            ${!isPrimary ? `<button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:var(--primary);color:white;border:none;cursor:pointer;border-radius:0;" onclick="${primaryFn}('${imageId}')" title="Set as primary"><i class="fas fa-star"></i></button>` : ''}
                             <button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:#D32F2F;color:white;border:none;cursor:pointer;border-radius:0;" onclick="${deleteFn}('${imageId}', this)" title="Delete image"><i class="fas fa-times"></i></button>
                         </div>
                     </div>

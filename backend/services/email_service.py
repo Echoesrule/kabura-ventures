@@ -52,7 +52,7 @@ Kabura Adventures Team
 <h2>Kabura Adventures</h2>
 <p>Your verification code is:</p>
 <div style="font-size:32px;letter-spacing:8px;font-weight:bold;text-align:center;
-     padding:20px;background:#f0fdf4;border-radius:8px;margin:20px 0;">
+     padding:20px;background:rgba(138,168,153,0.06);border-radius:8px;margin:20px 0;">
 {otp_code}</div>
 <p>This code expires in <strong>10 minutes</strong>.</p>
 <p>If you did not create an account, please ignore this email.</p>

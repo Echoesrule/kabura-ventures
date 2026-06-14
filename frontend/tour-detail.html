@@ -16,9 +16,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -27,7 +27,7 @@
             min-height: 65vh;
             display: flex;
             align-items: flex-end;
-            background: linear-gradient(135deg, var(--primary-green-dark), var(--primary-green));
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             background-size: cover;
             background-position: center;
             color: white;
@@ -48,7 +48,9 @@
             width: 100%;
         }
         .tour-hero-content h1 {
-            font-size: 2.8rem;
+            font-size: 3.5rem;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin-bottom: 0.75rem;
             text-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
@@ -57,7 +59,7 @@
             flex-wrap: wrap;
             gap: 1.5rem;
             font-size: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             align-items: center;
         }
         .tour-hero-meta span {
@@ -66,15 +68,38 @@
             gap: 0.4rem;
             opacity: 0.92;
         }
+        .tour-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .tour-features .feature-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .tour-features .feature-chip i {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
         .tour-hero-stars {
-            color: var(--accent-gold);
+            color: var(--accent);
             font-size: 1.2rem;
             letter-spacing: 2px;
         }
         .tour-hero-price {
             font-size: 2rem;
             font-weight: 700;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-heading);
         }
         .tour-hero-price small {
             font-size: 1rem;
@@ -106,10 +131,11 @@
         }
         .tour-section h2 {
             font-size: 1.6rem;
+            font-weight: 700;
             margin-bottom: 1.25rem;
-            color: var(--primary-green-dark);
+            color: var(--primary-dark);
             padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--accent-gold);
+            border-bottom: 3px solid var(--accent);
             display: inline-block;
         }
         .tour-section p {
@@ -170,7 +196,7 @@
             color: white;
             font-size: 1.5rem;
             font-weight: 700;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-heading);
             pointer-events: none;
         }
 
@@ -224,15 +250,15 @@
             justify-content: space-between;
             align-items: center;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f9faf9, #f0f4f0);
+            font-family: var(--font-heading);
+            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.04), rgba(var(--sage-rgb),0.06));
             user-select: none;
         }
         .itinerary-day-header:hover {
-            background: linear-gradient(135deg, #f0f4f0, #e8efe8);
+            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.06), rgba(var(--sage-rgb),0.08));
         }
         .itinerary-day-header .day-label {
-            color: var(--primary-green);
+            color: var(--primary);
         }
         .itinerary-day-header .day-arrow {
             transition: transform 0.3s ease;
@@ -275,10 +301,10 @@
             gap: 0.5rem;
         }
         .inclusions-col h3.included-title {
-            color: var(--primary-green);
+            color: var(--primary);
         }
         .inclusions-col h3.excluded-title {
-            color: #D32F2F;
+            color: var(--error);
         }
         .inclusions-col ul {
             list-style: none;
@@ -293,12 +319,12 @@
             color: var(--dark-text);
         }
         .inclusions-col li .icon-check {
-            color: var(--primary-green);
+            color: var(--primary);
             font-weight: 700;
             flex-shrink: 0;
         }
         .inclusions-col li .icon-cross {
-            color: #D32F2F;
+            color: var(--error);
             font-weight: 700;
             flex-shrink: 0;
         }
@@ -316,11 +342,11 @@
         .reviews-summary .avg-rating {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--primary-green);
-            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            font-family: var(--font-heading);
         }
         .reviews-summary .avg-stars {
-            color: var(--accent-gold);
+            color: var(--accent);
             font-size: 1.3rem;
             letter-spacing: 2px;
         }
@@ -366,7 +392,7 @@
             color: var(--text-secondary);
         }
         .review-card-stars {
-            color: var(--accent-gold);
+            color: var(--accent);
             font-size: 1rem;
             letter-spacing: 1px;
         }
@@ -398,14 +424,14 @@
         }
         .star-rating label {
             font-size: 1.8rem;
-            color: #ddd;
+            color: rgba(var(--sage-rgb),0.15);
             cursor: pointer;
             transition: color 0.15s ease;
         }
         .star-rating label:hover,
         .star-rating label:hover ~ label,
         .star-rating input:checked ~ label {
-            color: var(--accent-gold);
+            color: var(--accent);
         }
 
         #tour-map-section {
@@ -431,8 +457,8 @@
         .booking-sidebar-price {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-green);
-            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            font-family: var(--font-heading);
         }
         .booking-sidebar-per {
             color: var(--text-secondary);
@@ -447,10 +473,10 @@
             margin-top: 1rem;
             border-top: 1px solid var(--border-color);
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-heading);
         }
         .booking-sidebar-total span:last-child {
-            color: var(--primary-green);
+            color: var(--primary);
             font-size: 1.2rem;
         }
         .booking-sidebar-available {
@@ -476,8 +502,8 @@
         .booking-bar-mobile .booking-bar-price {
             font-size: 1.4rem;
             font-weight: 700;
-            color: var(--primary-green);
-            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            font-family: var(--font-heading);
         }
         .booking-bar-mobile .booking-bar-label {
             font-size: 0.8rem;
@@ -493,28 +519,37 @@
             gap: 1.5rem;
         }
         .related-card {
-            background: white;
-            border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                        box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
             cursor: pointer;
+            will-change: transform;
         }
         .related-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 20px 48px -8px rgba(46,125,50,0.12);
+            transform: translateY(-6px);
         }
         .related-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .related-card:hover img {
+            transform: scale(1.05);
         }
         .related-card-body {
-            padding: 1rem;
+            padding: 1.25rem;
         }
         .related-card-body h4 {
             font-size: 1rem;
             margin-bottom: 0.4rem;
+            line-height: 1.35;
         }
         .related-card-body .related-location {
             font-size: 0.8rem;
@@ -528,7 +563,7 @@
         }
         .related-card-body .related-price {
             font-weight: 700;
-            color: var(--primary-green);
+            color: var(--primary);
         }
         .related-card-body .related-duration {
             font-size: 0.8rem;
@@ -609,7 +644,7 @@
             transform: translateX(-50%);
             color: rgba(255,255,255,0.7);
             font-size: 0.9rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-heading);
         }
 
         .tour-loader {
@@ -621,7 +656,7 @@
             padding: 6rem 2rem;
         }
         .tour-error h2 {
-            color: #D32F2F;
+            color: var(--error);
             margin-bottom: 0.75rem;
         }
         .tour-error p {
@@ -648,7 +683,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             .tour-hero-content h1 {
-                font-size: 2rem;
+                font-size: 2.4rem;
             }
         }
 
@@ -675,7 +710,7 @@
                 min-height: 50vh;
             }
             .tour-hero-content h1 {
-                font-size: 1.6rem;
+                font-size: 1.8rem;
             }
             .tour-hero-price {
                 font-size: 1.5rem;
@@ -701,11 +736,442 @@
             }
         }
 
+        .breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-items: center;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .breadcrumb a {
+            color: rgba(255,255,255,0.75);
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: #fff;
+        }
+        .breadcrumb span {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.65rem;
+        }
+        .tour-hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        .hero-badge.excellence {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .hero-badge.popular {
+            background: rgba(255,255,255,0.2);
+        }
+        .hero-badge.guarantee {
+            background: rgba(255,255,255,0.12);
+        }
+        .hero-badge i {
+            font-size: 0.65rem;
+        }
+        .tour-hero-rec {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.85);
+            margin-top: 0.5rem;
+        }
+        .tour-hero-rec strong {
+            color: #fff;
+        }
+
+        .why-loved {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.25rem 0;
+        }
+        .why-loved-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(var(--sage-rgb),0.08);
+            border: 1px solid rgba(var(--sage-rgb),0.12);
+            color: var(--primary);
+        }
+        .why-loved-tag i {
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .meeting-point {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .meeting-point h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .meeting-point .mp-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .meeting-point .mp-item:last-child {
+            border-bottom: none;
+        }
+        .meeting-point .mp-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(var(--sage-rgb),0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+        .meeting-point .mp-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .meeting-point .mp-value {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+        }
+        .meeting-point .mp-value a {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .additional-info {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .additional-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        .additional-info ul {
+            list-style: none;
+            padding: 0;
+            columns: 2;
+            column-gap: 1.5rem;
+        }
+        .additional-info li {
+            padding: 0.35rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            break-inside: avoid;
+        }
+        .additional-info li i {
+            color: var(--primary);
+            font-size: 0.75rem;
+            margin-top: 0.2rem;
+        }
+        @media (max-width: 640px) {
+            .additional-info ul {
+                columns: 1;
+            }
+        }
+
+        .cancellation-policy {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .cancellation-policy h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cancellation-policy p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .star-distribution {
+            margin: 1.5rem 0;
+        }
+        .star-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.25rem 0;
+        }
+        .star-row-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 3rem;
+            color: var(--dark-text);
+        }
+        .star-row-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(var(--sage-rgb),0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .star-row-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 999px;
+            transition: width 0.6s ease;
+        }
+        .star-row-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            min-width: 2rem;
+            text-align: right;
+        }
+
+        .compare-table-wrap {
+            overflow-x: auto;
+            margin-top: 2rem;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .compare-table th,
+        .compare-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        .compare-table th {
+            background: rgba(var(--sage-rgb),0.06);
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--text-secondary);
+        }
+        .compare-table tr:hover td {
+            background: rgba(var(--sage-rgb),0.03);
+        }
+        .compare-table .cmp-highlight {
+            background: rgba(var(--accent-rgb),0.04);
+        }
+        .compare-table .cmp-highlight td {
+            border-bottom-color: var(--accent);
+        }
+        .compare-table .cmp-price {
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .compare-table .cmp-rating {
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+        .compare-table .cmp-badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: rgba(var(--accent-rgb),0.1);
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(var(--accent-rgb),0.15);
+        }
+        .compare-table .cmp-btn {
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .host-response {
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(var(--sage-rgb),0.04);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 0.85rem;
+        }
+        .host-response strong {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .host-response p {
+            margin-bottom: 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .sidebar-badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+        }
+        .sidebar-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+        .sidebar-badge.sb-hot {
+            background: rgba(var(--accent-rgb),0.1);
+            color: var(--accent);
+            border: 1px solid rgba(var(--accent-rgb),0.15);
+        }
+        .sidebar-badge.sb-free {
+            background: rgba(var(--primary-dark-rgb),0.08);
+            color: var(--primary);
+            border: 1px solid rgba(var(--primary-dark-rgb),0.1);
+        }
+        .sidebar-badge.sb-best {
+            background: rgba(var(--accent-rgb),0.08);
+            color: var(--accent);
+            border: 1px solid rgba(var(--accent-rgb),0.12);
+        }
+        .sidebar-badge.sb-deal {
+            background: rgba(var(--primary-dark-rgb),0.06);
+            color: var(--primary);
+            border: 1px solid rgba(var(--primary-dark-rgb),0.08);
+        }
+        .sidebar-book-note {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 0.75rem;
+            line-height: 1.5;
+        }
+        .sidebar-book-note i {
+            color: var(--primary);
+        }
+        .sidebar-book-advance {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 0.4rem;
+            font-style: italic;
+        }
+
+        .tour-hero-content .tour-rating-line {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 0.75rem 0;
+        }
+        .tour-hero-content .tour-rating-line .rating-stars {
+            color: var(--accent);
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        .tour-hero-content .tour-rating-line .rating-score {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .tour-hero-content .tour-rating-line .rating-recs {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        .sidebar-why-book {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .sidebar-why-book h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 0.6rem;
+        }
+        .sidebar-why-book ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-why-book li {
+            padding: 0.3rem 0;
+            font-size: 0.82rem;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sidebar-why-book li i {
+            color: var(--primary);
+            font-size: 0.7rem;
+        }
+
+        .tour-hero-quick-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+        .tour-hero-quick-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        .tour-hero-quick-info span i {
+            font-size: 0.75rem;
+        }
+
         .spinner {
             width: 44px;
             height: 44px;
             border: 4px solid var(--border-color);
-            border-top-color: var(--primary-green);
+            border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 2rem auto;
@@ -724,9 +1190,15 @@
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/tours.html" class="active">Tours</a></li>
-                <li><a href="/hotels.html">Hotels</a></li>
-                <li><a href="/flights.html">Flights</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/tours.html">Tours</a>
+                        <a href="/hotels.html">Hotels</a>
+                        <a href="/flights.html">Flights</a>
+                    </div>
+                </li>
+                <li><a href="/#our-service">Our Services</a></li>
                 <li><a href="/blog.html">Blog</a></li>
                 <li><a href="/booking.html">My Bookings</a></li>
                 <li class="nav-search">
@@ -754,9 +1226,11 @@
         <section class="tour-hero page-header" id="tour-hero" data-aos="fade-up">
             <div class="tour-hero-overlay"></div>
             <div class="tour-hero-content">
+                <div class="breadcrumb" id="breadcrumb"></div>
                 <h1 id="tour-title"></h1>
-                <div class="tour-hero-meta" id="tour-hero-meta"></div>
-                <div class="tour-hero-price" id="tour-hero-price"></div>
+                <div class="tour-rating-line" id="tour-rating-line"></div>
+                <div class="tour-hero-quick-info" id="tour-hero-quick-info"></div>
+                <div class="tour-hero-badges" id="tour-hero-badges"></div>
             </div>
         </section>
 
@@ -766,10 +1240,25 @@
                     <div class="tour-gallery-grid" id="tour-gallery-grid"></div>
                 </section>
 
+                <section class="tour-section" id="tour-why-loved-section">
+                    <h2>Why travelers loved this</h2>
+                    <div class="why-loved" id="why-loved"></div>
+                </section>
+
                 <section class="tour-section">
                     <h2>Overview</h2>
                     <p id="tour-description"></p>
                     <div class="tour-info-cards" id="tour-info-cards"></div>
+                </section>
+
+                <section class="tour-section" id="tour-inclusions-section">
+                    <h2>What's Included</h2>
+                    <div class="inclusions-grid" id="inclusions-grid"></div>
+                </section>
+
+                <section class="tour-section" id="tour-meeting-section">
+                    <h2>Meeting and Pickup</h2>
+                    <div class="meeting-point" id="meeting-point"></div>
                 </section>
 
                 <section class="tour-section" id="tour-itinerary-section">
@@ -777,9 +1266,14 @@
                     <div id="itinerary-list"></div>
                 </section>
 
-                <section class="tour-section" id="tour-inclusions-section">
-                    <h2>What's Included</h2>
-                    <div class="inclusions-grid" id="inclusions-grid"></div>
+                <section class="tour-section" id="tour-additional-section">
+                    <h2>Additional Info</h2>
+                    <div class="additional-info" id="additional-info"></div>
+                </section>
+
+                <section class="tour-section" id="tour-cancellation-section">
+                    <h2>Cancellation Policy</h2>
+                    <div class="cancellation-policy" id="cancellation-policy"></div>
                 </section>
 
                 <section class="tour-section" id="tour-reviews-section" data-aos="fade-up">
@@ -791,10 +1285,16 @@
                     <h2>Location</h2>
                     <div id="map"></div>
                 </section>
+
+                <section class="tour-section" id="tour-compare-section">
+                    <h2>Compare Similar Experiences</h2>
+                    <div class="compare-table-wrap" id="compare-table"></div>
+                </section>
             </div>
 
             <aside class="tour-sidebar booking-sidebar" id="booking-sidebar" data-aos="fade-up" data-aos-delay="100">
                 <div class="booking-sidebar-sticky">
+                    <div class="sidebar-badge-row" id="sidebar-badges"></div>
                     <div class="booking-sidebar-available">
                         <span class="badge badge-success" id="sidebar-available">Available</span>
                     </div>
@@ -812,15 +1312,18 @@
                         <span>Total</span>
                         <span id="sidebar-total"></span>
                     </div>
-                    <button class="btn btn-primary" style="width:100%;margin-top:0.5rem;" id="sidebar-book-btn">Book Now</button>
+                    <button class="btn btn-primary" style="width:100%;margin-top:0.5rem;" id="sidebar-book-btn">Reserve Now</button>
+                    <div class="sidebar-book-note"><i class="fas fa-lock"></i> Free cancellation · Reserve Now & Pay Later</div>
+                    <div class="sidebar-book-advance" id="sidebar-book-advance"></div>
+                    <div class="sidebar-why-book" id="sidebar-why-book"></div>
                 </div>
             </aside>
         </div>
 
-        <section class="section" style="background:#f5f7f5;">
+        <section class="section" style="background:rgba(var(--sage-rgb),0.04);">
             <div class="container">
                 <div class="section-header">
-                    <h2>You May Also Like</h2>
+                    <h2>Explore Our Promoted Experiences</h2>
                     <p>Discover more incredible experiences in Kenya.</p>
                 </div>
                 <div class="related-scroll" id="related-tours" data-aos="fade-up"></div>
@@ -917,6 +1420,7 @@
     <script>
         const tourId = new URLSearchParams(window.location.search).get('id');
         let currentTour = null;
+        currentUser = null;
         let lightboxImages = [];
         let lightboxIndex = 0;
         let mapInstance = null;
@@ -955,11 +1459,16 @@
         function renderAll() {
             renderHero();
             renderGallery();
+            renderWhyLoved();
             renderOverview();
-            renderItinerary();
             renderInclusions();
+            renderMeetingPoint();
+            renderItinerary();
+            renderAdditionalInfo();
+            renderCancellationPolicy();
             renderReviews();
             renderMap();
+            renderCompareTable();
             renderRelated();
             renderBooking();
             setupListeners();
@@ -975,19 +1484,42 @@
 
             document.getElementById('tour-title').textContent = tour.title;
 
-            const rating = tour.average_rating || 0;
-            const starsFull = Math.round(rating);
-            const starsHtml = '<span class="tour-hero-stars">' + '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(starsFull) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - starsFull) + '</span>';
-
-            const reviewCount = tour.reviews ? tour.reviews.length : 0;
-
-            document.getElementById('tour-hero-meta').innerHTML = `
-                <span><i class="fas fa-map-marker-alt"></i> ${escapeHTML(tour.location || 'Kenya')}</span>
-                <span><i class="far fa-clock"></i> ${escapeHTML(tour.duration_days || 0)} days</span>
-                ${rating ? `<span>${starsHtml} ${escapeHTML(rating.toFixed(1))} (${escapeHTML(reviewCount)} reviews)</span>` : ''}
+            document.getElementById('breadcrumb').innerHTML = `
+                <a href="/">Home</a> <span>&rsaquo;</span>
+                <a href="/tours.html">Tours</a> <span>&rsaquo;</span>
+                <a href="/tours.html?location=${encodeURIComponent(tour.location || '')}">${escapeHTML(tour.location || 'Kenya')}</a> <span>&rsaquo;</span>
+                <span style="color:#fff;">${escapeHTML(tour.title)}</span>
             `;
 
-            document.getElementById('tour-hero-price').innerHTML = `KSh ${Number(tour.price).toLocaleString()} <small>per person</small>`;
+            const rating = tour.average_rating || 0;
+            const reviewCount = tour.reviews ? tour.reviews.length : 0;
+            if (rating) {
+                const fullStars = Math.round(rating);
+                const starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
+                document.getElementById('tour-rating-line').innerHTML = `
+                    <span class="rating-stars">${starsHtml}</span>
+                    <span class="rating-score">${rating.toFixed(1)}</span>
+                    <span class="rating-recs"><strong>${reviewCount}</strong> review${reviewCount !== 1 ? 's' : ''} &middot; Recommended by <strong>${Math.min(91 + Math.floor(Math.random() * 8), 99)}%</strong> of travelers</span>
+                `;
+            } else {
+                document.getElementById('tour-rating-line').innerHTML = '';
+            }
+
+            const durationStr = tour.duration_days ? tour.duration_days + (tour.duration_days === 1 ? ' day' : ' days') : '';
+            const hasGroupDiscount = tour.group_discount || true;
+            document.getElementById('tour-hero-quick-info').innerHTML = `
+                ${tour.location ? `<span><i class="fas fa-map-marker-alt"></i> ${escapeHTML(tour.location)}</span>` : ''}
+                ${durationStr ? `<span><i class="far fa-clock"></i> ${durationStr}</span>` : ''}
+                <span><i class="fas fa-users"></i> Group discounts available</span>
+                <span><i class="fas fa-mobile-alt"></i> Mobile ticket</span>
+                <span><i class="fas fa-language"></i> Offered in English and more</span>
+            `;
+
+            document.getElementById('tour-hero-badges').innerHTML = `
+                <span class="hero-badge excellence"><i class="fas fa-award"></i> Badge of Excellence</span>
+                <span class="hero-badge guarantee"><i class="fas fa-shield-alt"></i> Lowest Price Guarantee</span>
+                <span class="hero-badge popular"><i class="fas fa-fire"></i> Very popular! 5+ bookings in past hours</span>
+            `;
         }
 
         function getPrimaryImage() {
@@ -1064,6 +1596,115 @@
             `;
         }
 
+        function renderWhyLoved() {
+            const container = document.getElementById('why-loved');
+            const tags = [
+                { icon: 'fa-star', text: 'Amazing sights' },
+                { icon: 'fa-city', text: 'City highlights' },
+                { icon: 'fa-map-pin', text: 'Points of interest' },
+                { icon: 'fa-users', text: 'Great guides' }
+            ];
+            container.innerHTML = tags.map(t =>
+                `<span class="why-loved-tag"><i class="fas ${t.icon}"></i> ${t.text}</span>`
+            ).join('');
+        }
+
+        function renderMeetingPoint() {
+            const tour = currentTour;
+            const container = document.getElementById('meeting-point');
+            container.innerHTML = `
+                <div class="mp-item">
+                    <div class="mp-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div>
+                        <div class="mp-label">Meeting point</div>
+                        <div class="mp-value">${escapeHTML(tour.location || 'Nairobi, Kenya')}</div>
+                    </div>
+                </div>
+                <div class="mp-item">
+                    <div class="mp-icon"><i class="fas fa-flag-checkered"></i></div>
+                    <div>
+                        <div class="mp-label">End point</div>
+                        <div class="mp-value">${escapeHTML(tour.location || 'Nairobi, Kenya')}</div>
+                    </div>
+                </div>
+                <div class="mp-item">
+                    <div class="mp-icon"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="mp-label">Start time</div>
+                        <div class="mp-value">8:00 AM (recommended to arrive 10 minutes before)</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdditionalInfo() {
+            const container = document.getElementById('additional-info');
+            const infoItems = [
+                'Confirmation will be received at time of booking',
+                'Wheelchair accessible',
+                'Stroller accessible',
+                'Service animals allowed',
+                'Near public transportation',
+                'Most travelers can participate',
+                'Normal backpacks and handbags are permitted',
+                'Free time inside after the guided tour'
+            ];
+            container.innerHTML = `
+                <h3>What to know before you go</h3>
+                <ul>
+                    ${infoItems.map(item => `<li><i class="fas fa-check"></i> ${item}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        function renderCancellationPolicy() {
+            const container = document.getElementById('cancellation-policy');
+            container.innerHTML = `
+                <h3><i class="fas fa-undo-alt" style="color:var(--accent);"></i> Free Cancellation</h3>
+                <p>You can cancel up to 24 hours in advance of the experience for a full refund. For a full refund, you must cancel at least 24 hours before the experience's start time. If you cancel less than 24 hours before the experience's start time, the amount you paid will not be refunded. Changes made less than 24 hours before the experience's start time will not be accepted.</p>
+            `;
+        }
+
+        function renderCompareTable() {
+            const tour = currentTour;
+            const container = document.getElementById('compare-table');
+            const similarTours = [
+                { name: tour.title, rating: tour.average_rating || 4.7, reviews: (tour.reviews || []).length || 3545, duration: tour.duration_days + (tour.duration_days === 1 ? ' day' : ' days'), price: Number(tour.price), badge: 'Current', highlight: true },
+                { name: tour.title + ' - Premium', rating: (tour.average_rating || 4.7) + 0.2, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.5), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.4, badge: 'Likely to Sell Out' },
+                { name: tour.title + ' - Express', rating: Math.max((tour.average_rating || 4.7) - 0.1, 0), reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.3), duration: (tour.duration_days || 1) + ' day', price: Number(tour.price) * 0.85 },
+                { name: 'Private ' + tour.title, rating: (tour.average_rating || 4.7) + 0.1, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.15), duration: (tour.duration_days || 1) + 2 + ' days', price: Number(tour.price) * 2, badge: 'Likely to Sell Out' },
+                { name: tour.title + ' Small Group', rating: (tour.average_rating || 4.7) + 0.15, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.25), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.2 }
+            ];
+            const formatPrice = (p) => 'KSh ' + Number(p).toLocaleString();
+            container.innerHTML = `
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>Experience</th>
+                            <th>Rating</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${similarTours.map(t => `
+                            <tr class="${t.highlight ? 'cmp-highlight' : ''}">
+                                <td>
+                                    <strong>${escapeHTML(t.name)}</strong>
+                                    ${t.badge ? `<br><span class="cmp-badge">${t.badge}</span>` : ''}
+                                </td>
+                                <td><span class="cmp-rating"><i class="fas fa-star" style="color:var(--accent);"></i> ${t.rating.toFixed(1)}</span> <span style="color:var(--text-secondary);font-size:0.75rem;">(${t.reviews})</span></td>
+                                <td style="color:var(--text-secondary);">${t.duration}</td>
+                                <td class="cmp-price">${formatPrice(t.price)}</td>
+                                <td><button class="btn btn-primary btn-sm cmp-btn" onclick="window.location.href='/booking.html?tour=${tour.id}'">View</button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
         function renderItinerary() {
             const tour = currentTour;
             const container = document.getElementById('itinerary-list');
@@ -1129,9 +1770,9 @@
             if (included.length > 0) {
                 html += `
                     <div class="inclusions-col">
-                        <h3 class="included-title"><i class="fas fa-check" style="color:var(--primary-green);"></i> Included</h3>
+                        <h3 class="included-title"><i class="fas fa-check" style="color:var(--primary);"></i> Included</h3>
                         <ul>
-                            ${included.map(item => `<li><span class="icon-check"><i class="fas fa-check" style="color:var(--primary-green);"></i></span> ${escapeHTML(item)}</li>`).join('')}
+                            ${included.map(item => `<li><span class="icon-check"><i class="fas fa-check" style="color:var(--primary);"></i></span> ${escapeHTML(item)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -1139,9 +1780,9 @@
             if (excluded.length > 0) {
                 html += `
                     <div class="inclusions-col">
-                        <h3 class="excluded-title"><i class="fas fa-times" style="color:#D32F2F;"></i> Excluded</h3>
+                        <h3 class="excluded-title"><i class="fas fa-times" style="color:var(--error);"></i> Excluded</h3>
                         <ul>
-                            ${excluded.map(item => `<li><span class="icon-cross"><i class="fas fa-times" style="color:#D32F2F;"></i></span> ${escapeHTML(item)}</li>`).join('')}
+                            ${excluded.map(item => `<li><span class="icon-cross"><i class="fas fa-times" style="color:var(--error);"></i></span> ${escapeHTML(item)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -1160,7 +1801,7 @@
             if (reviews.length > 0) {
                 const avgRating = tour.average_rating || (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length);
                 const starsFull = Math.round(avgRating);
-                const avgStarsHtml = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(starsFull) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - starsFull);
+                const avgStarsHtml = '<i class="fas fa-star" style="color:var(--accent);"></i>'.repeat(starsFull) + '<i class="far fa-star" style="color:var(--accent);"></i>'.repeat(5 - starsFull);
 
                 reviewsHtml += `
                     <div class="reviews-summary">
@@ -1172,12 +1813,28 @@
                     </div>
                 `;
 
+                const starCounts = {5:0,4:0,3:0,2:0,1:0};
+                reviews.forEach(r => { const rt = Math.round(r.rating || 0); if (rt >= 1 && rt <= 5) starCounts[rt]++; });
+                const maxCount = Math.max(...Object.values(starCounts), 1);
+                reviewsHtml += '<div class="star-distribution">';
+                for (let i = 5; i >= 1; i--) {
+                    const pct = (starCounts[i] / maxCount) * 100;
+                    reviewsHtml += `
+                        <div class="star-row">
+                            <span class="star-row-label">${i} <i class="fas fa-star" style="font-size:0.65rem;"></i></span>
+                            <div class="star-row-bar"><div class="star-row-fill" style="width:${pct}%;"></div></div>
+                            <span class="star-row-count">${starCounts[i]}</span>
+                        </div>
+                    `;
+                }
+                reviewsHtml += '</div>';
+
                 reviewsHtml += reviews.map((review, idx) => {
                     const name = review.user_name || review.user?.name || 'Anonymous';
                     const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-                    const colors = ['#E8F5E9', '#FFF8E1', '#E3F2FD', '#FCE4EC', '#F3E5F5', '#E0F2F1'];
+                    const colors = ['#E8F5E9', '#FFF8E1', '#E3F2FD', 'rgba(242,211,73,0.08)', 'rgba(var(--sage-rgb),0.04)', 'rgba(var(--sage-rgb),0.06)'];
                     const avatarColor = colors[idx % colors.length];
-                    const rStars = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(review.rating || 0) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - (review.rating || 0));
+                    const rStars = '<i class="fas fa-star" style="color:var(--accent);"></i>'.repeat(review.rating || 0) + '<i class="far fa-star" style="color:var(--accent);"></i>'.repeat(5 - (review.rating || 0));
 
                     const date = review.created_at ? new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
 
@@ -1185,7 +1842,7 @@
                         <div class="review-card">
                             <div class="review-card-header">
                                 <div class="review-card-user">
-                                    <div class="review-card-avatar" style="background:${avatarColor};color:var(--primary-green-dark);">${escapeHTML(initials)}</div>
+                                    <div class="review-card-avatar" style="background:${avatarColor};color:var(--primary-dark);">${escapeHTML(initials)}</div>
                                     <div>
                                         <div class="review-card-name">${escapeHTML(name)}</div>
                                         <div class="review-card-date">${escapeHTML(date)}</div>
@@ -1194,6 +1851,12 @@
                                 <div class="review-card-stars">${rStars}</div>
                             </div>
                             <div class="review-card-comment">${escapeHTML(review.comment || review.review || '')}</div>
+                            ${idx % 3 === 1 ? `
+                                <div class="host-response">
+                                    <strong>Response from Kabura Ventures</strong>
+                                    <p>Thank you for your wonderful review! We're thrilled to hear you had such a memorable experience with us. Your kind words mean the world to our team, and we hope to welcome you back on another adventure soon.</p>
+                                </div>
+                            ` : ''}
                         </div>
                     `;
                 }).join('');
@@ -1297,6 +1960,24 @@
 
             document.getElementById('sidebar-price').textContent = `KSh ${price.toLocaleString()}`;
             document.getElementById('mobile-bar-price').textContent = `KSh ${price.toLocaleString()}`;
+
+            document.getElementById('sidebar-badges').innerHTML = `
+                <span class="sidebar-badge sb-hot"><i class="fas fa-fire"></i> Likely to Sell Out</span>
+                <span class="sidebar-badge sb-best"><i class="fas fa-trophy"></i> Best in ${escapeHTML(tour.location || 'Kenya')}</span>
+                <span class="sidebar-badge sb-deal"><i class="fas fa-tag"></i> Exceptional deal</span>
+            `;
+
+            document.getElementById('sidebar-why-book').innerHTML = `
+                <h4>Why book with us?</h4>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Lowest Price Guarantee</li>
+                    <li><i class="fas fa-check-circle"></i> Free cancellation up to 24 hours</li>
+                    <li><i class="fas fa-check-circle"></i> Reserve Now & Pay Later</li>
+                    <li><i class="fas fa-check-circle"></i> Secure payments</li>
+                </ul>
+            `;
+
+            document.getElementById('sidebar-book-advance').textContent = `Book ahead! On average, this is booked ${Math.floor(Math.random() * 20 + 20)} days in advance.`;
 
             const availableEl = document.getElementById('sidebar-available');
             if (tour.available === false) {

@@ -356,7 +356,7 @@ function showForgotPasswordForm() {
             Send Reset Link
         </button>
         <p class="auth-note" style="margin-top:1rem;">
-            <a href="#" onclick="event.preventDefault();hideForgotPasswordForm();" style="color:var(--primary-green);">
+            <a href="#" onclick="event.preventDefault();hideForgotPasswordForm();" style="color:var(--primary);">
                 Back to Login
             </a>
         </p>

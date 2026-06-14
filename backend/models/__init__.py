@@ -18,3 +18,4 @@ from .subscriber import Subscriber
 from .availability import TourAvailability
 from .currency import ExchangeRate
 from .blog import Blog
+from .destination import Destination

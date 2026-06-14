@@ -16,55 +16,62 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
         .blog-card {
-            background: white;
-            border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.95);
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
+            border: 1px solid rgba(138,168,153,0.06);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                        box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                        border-color 0.35s ease;
+            will-change: transform;
         }
         .blog-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 20px 48px -8px rgba(138,168,153,0.12);
+            transform: translateY(-6px);
+            border-color: rgba(138,168,153,0.15);
         }
         .blog-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .blog-card:hover img {
+            transform: scale(1.05);
         }
         .blog-card-body {
-            padding: 1.25rem;
+            padding: 1.5rem;
         }
         .blog-card-category {
             display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 50px;
-            background: #E8F5E9;
-            color: var(--primary-green-dark);
-            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(138,168,153,0.08);
+            color: var(--primary);
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 0.5rem;
+            border: 1px solid rgba(138,168,153,0.08);
         }
         .blog-card h3 {
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
+            line-height: 1.35;
         }
         .blog-card p {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            line-height: 1.6;
+            line-height: 1.65;
         }
         .blog-card-footer {
             display: flex;
@@ -85,7 +92,7 @@
         }
         .category-filter button {
             padding: 0.5rem 1.25rem;
-            border-radius: 50px;
+            border-radius: 999px;
             border: 2px solid var(--border-color);
             background: white;
             font-weight: 500;
@@ -94,21 +101,16 @@
             font-size: 0.85rem;
         }
         .category-filter button:hover {
-            border-color: var(--primary-green);
+            border-color: var(--accent);
         }
         .category-filter button.active {
-            background: var(--primary-green);
+            background: var(--accent);
             color: white;
-            border-color: var(--primary-green);
+            border-color: var(--accent);
         }
         .blog-search {
             max-width: 500px;
             margin: 0 auto 2rem;
-        }
-        @media (max-width: 768px) {
-            .blog-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -121,9 +123,15 @@
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/tours.html">Tours</a></li>
-                <li><a href="/hotels.html">Hotels</a></li>
-                <li><a href="/flights.html">Flights</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/tours.html">Tours</a>
+                        <a href="/hotels.html">Hotels</a>
+                        <a href="/flights.html">Flights</a>
+                    </div>
+                </li>
+                <li><a href="/#our-service">Our Services</a></li>
                 <li><a href="/blog.html">Blog</a></li>
                 <li><a href="/booking.html">My Bookings</a></li>
                 <li class="nav-search">
@@ -143,20 +151,19 @@
         </div>
     </nav>
 
-    <div class="page-header" data-aos="fade-up">
-        <h1>Travel Blog & Guides</h1>
-        <p>Tips, stories, and guides to help you plan the perfect Kenyan adventure.</p>
-    </div>
-
     <section class="section">
         <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Travel Blog & Guides</h2>
+                <p>Tips, stories, and guides to help you plan the perfect Kenyan adventure.</p>
+            </div>
             <div class="blog-search">
                 <input type="text" class="form-input" id="blog-search" data-aos="fade-up" placeholder="Search blogs..." style="text-align:center;">
             </div>
             <div class="category-filter" id="category-filter" data-aos="fade-up">
                 <button class="active" data-category="">All</button>
             </div>
-            <div class="blog-grid" id="blog-list" data-aos="fade-up" data-aos-delay="100"></div>
+            <div class="grid grid-4" id="blog-list" data-aos="fade-up" data-aos-delay="100"></div>
             <div style="text-align:center;margin-top:2rem;">
                 <button class="btn btn-primary" id="load-more" style="display:none;">Load More</button>
             </div>
@@ -283,7 +290,7 @@
 
                 result.blogs.forEach(blog => {
                     const card = document.createElement('div');
-                    card.className = 'blog-card';
+                    card.className = 'blog-card card';
                     const img = blog.image_url || '/assets/images/placeholder.svg';
                     const tags = Array.isArray(blog.tags) ? blog.tags.join(', ') : '';
                     card.innerHTML = `

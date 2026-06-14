@@ -6,6 +6,7 @@ from models.review import Review
 from models.availability import TourAvailability
 from models.currency import ExchangeRate
 from models.blog import Blog, slugify
+from models.destination import Destination
 from models import db
 
 Q = '?auto=compress&cs=tinysrgb&w=800'
@@ -483,5 +484,21 @@ def seed_database():
                 published_at=now - timedelta(days=i * 7)
             )
             db.session.add(blog)
+
+    # Seed destinations
+    if Destination.query.count() == 0:
+        destinations_data = [
+            {'name': 'Nairobi', 'image_url': 'https://images.unsplash.com/photo-1590682698101-ec5a1a3b9de4?w=400&h=400&fit=crop', 'sort_order': 1},
+            {'name': 'Maasai Mara', 'image_url': 'https://images.unsplash.com/photo-1534177616072-ef7dc120449d?w=400&h=400&fit=crop', 'sort_order': 2},
+            {'name': 'Mombasa', 'image_url': 'https://images.unsplash.com/photo-1587568379519-0a7b348d1c4f?w=400&h=400&fit=crop', 'sort_order': 3},
+            {'name': 'Amboseli', 'image_url': 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&h=400&fit=crop', 'sort_order': 4},
+            {'name': 'Lake Nakuru', 'image_url': 'https://images.unsplash.com/photo-1598188306155-25e6eb3c32e3?w=400&h=400&fit=crop', 'sort_order': 5},
+            {'name': 'Tsavo', 'image_url': 'https://images.unsplash.com/photo-1601275107377-86c03c31b08a?w=400&h=400&fit=crop', 'sort_order': 6},
+            {'name': 'Diani Beach', 'image_url': 'https://images.unsplash.com/photo-1586728652020-2f28f465ff19?w=400&h=400&fit=crop', 'sort_order': 7},
+            {'name': 'Mount Kenya', 'image_url': 'https://images.unsplash.com/photo-1601032757337-1252e4b3d824?w=400&h=400&fit=crop', 'sort_order': 8},
+        ]
+        for dd in destinations_data:
+            dest = Destination(name=dd['name'], image_url=dd['image_url'], sort_order=dd['sort_order'])
+            db.session.add(dest)
 
     db.session.commit()

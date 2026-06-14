@@ -16,8 +16,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -30,9 +30,15 @@
             <button class="hamburger"><i class="fas fa-bars"></i></button>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/tours.html">Tours</a></li>
-                <li><a href="/hotels.html">Hotels</a></li>
-                <li><a href="/flights.html">Flights</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/tours.html">Tours</a>
+                        <a href="/hotels.html">Hotels</a>
+                        <a href="/flights.html">Flights</a>
+                    </div>
+                </li>
+                <li><a href="/#our-service">Our Services</a></li>
                 <li><a href="/blog.html">Blog</a></li>
                 <li><a href="/booking.html">My Bookings</a></li>
                 <li class="nav-search">
@@ -52,20 +58,21 @@
         </div>
     </nav>
 
-    <div class="page-header reveal-visible" data-aos="flip-right" style="background: linear-gradient(135deg, #3f4f22 0%, #7f8d4b 45%, #d9c794 100%); padding: 5rem 2rem; position: relative; overflow: hidden; opacity: 1; transform: none;">
-        <div style="position: absolute; inset: 0; opacity: 0.12; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><path fill=%22rgba(255,255,255,0.08)%22 d=%22M0,40 C40,20 80,60 120,40 C160,20 200,60 240,40 L240,200 L0,200 Z%22/></svg>') repeat; background-size: 140px;"></div>
-        <div style="position: relative; z-index: 1;">
-            <h1 style="font-size: 2.8rem; margin-bottom: 0.5rem;">Hotels & Accommodation</h1>
-            <p style="opacity: 0.9; font-size: 1.15rem; max-width: 600px; margin: 0 auto;">Find the perfect place to stay during your Kenyan adventure.</p>
-        </div>
-    </div>
-
     <section class="section">
         <div class="container">
-            <div class="filter-bar" data-aos="flip-right">
-                <input type="text" class="form-input" id="search-location" placeholder="Search by location..." style="max-width:300px;">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Find Your Destination</h2>
+                <p>Find the perfect place to stay during your Kenyan adventure.</p>
             </div>
-            <div class="grid grid-3" id="hotels-list"></div>
+
+            <div class="tabs" id="destination-tabs" data-aos="fade-up">
+                <button class="tab active" data-location="">All Accommodations</button>
+            </div>
+
+            <div class="filter-bar" data-aos="fade-up-right">
+                <input type="text" class="form-input" id="search-location" placeholder="Search by name or location..." style="max-width:300px;">
+            </div>
+            <div class="grid grid-4" id="hotels-list"></div>
         </div>
     </section>
 
@@ -151,6 +158,34 @@
     <script src="/assets/js/app.js"></script>
     <script>
         let allHotels = [];
+        let currentLocation = '';
+
+        function getFilteredHotels() {
+            const search = document.getElementById('search-location').value.toLowerCase();
+            return allHotels.filter(h =>
+                (currentLocation === '' || (h.location && h.location.toLowerCase() === currentLocation.toLowerCase())) &&
+                ((h.location && h.location.toLowerCase().includes(search)) ||
+                h.name.toLowerCase().includes(search))
+            );
+        }
+
+        function buildLocationTabs() {
+            const tabsContainer = document.getElementById('destination-tabs');
+            const locations = [...new Set(allHotels.map(h => h.location).filter(Boolean))].sort();
+            locations.forEach(loc => {
+                const btn = document.createElement('button');
+                btn.className = 'tab';
+                btn.dataset.location = loc;
+                btn.textContent = loc;
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('#destination-tabs .tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLocation = btn.dataset.location;
+                    renderHotels(getFilteredHotels());
+                });
+                tabsContainer.appendChild(btn);
+            });
+        }
 
         async function loadHotels() {
             const container = document.getElementById('hotels-list');
@@ -159,6 +194,7 @@
             try {
                 const result = await api.getHotels({ per_page: 50 });
                 allHotels = result.hotels;
+                buildLocationTabs();
                 renderHotels(allHotels);
             } catch (err) {
                 container.innerHTML = '<div class="empty-state"><h3>Could not load hotels</h3><p>Please try again later.</p></div>';
@@ -178,21 +214,33 @@
                     ? hotel.images.find(i => i.is_primary) || hotel.images[0]
                     : null;
                 const imgUrl = img ? img.image_url : '/assets/images/placeholder.svg';
-                const stars = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(Math.round(hotel.rating)) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - Math.round(hotel.rating));
+                const rating = hotel.avg_rating || hotel.rating || 0;
+                const fullStars = Math.round(rating);
+                const starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
+                const amenities = Array.isArray(hotel.amenities) ? hotel.amenities.slice(0, 3) : [];
+                const desc = hotel.description ? escapeHTML(hotel.description) : '';
                 const effect = hotelEffects[index % hotelEffects.length];
                 const delay = (index % 3) * 90;
 
                 return `
-                    <div class="card" data-aos="${effect}" data-aos-delay="${delay}" onclick="showHotelDetails('${hotel.id}')" style="cursor:pointer;">
-                        <img src="${imgUrl}" alt="${escapeHTML(hotel.name)}" class="card-image" loading="lazy"
-                             onerror="this.src='/assets/images/placeholder.svg'">
+                    <div class="card card-hotel" data-aos="${effect}" data-aos-delay="${delay}" onclick="showHotelDetails('${hotel.id}')" style="cursor:pointer;">
+                        <div class="card-image-wrap">
+                            <img src="${imgUrl}" alt="${escapeHTML(hotel.name)}" class="card-image" loading="lazy"
+                                 onerror="this.src='/assets/images/placeholder.svg'">
+                        </div>
                         <div class="card-body">
-                            <div class="stars" style="margin-bottom:0.5rem;">${stars}</div>
+                            ${rating > 0 ? '<div class="card-stars" style="margin-bottom:0.25rem;">' + starsHtml + ' <span class="card-rating-text" style="font-size:0.85rem;">' + rating.toFixed(1) + ' (' + (hotel.reviews_count || 0) + ' reviews)</span></div>' : ''}
+                            <div class="card-location" style="font-weight:400;color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.5rem;"><i class="fas fa-map-pin"></i> ${escapeHTML(hotel.location || 'Kenya')}</div>
                             <h3 class="card-title">${escapeHTML(hotel.name)}</h3>
-                            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.5rem;"><i class="fas fa-map-marker-alt"></i> ${escapeHTML(hotel.location || 'Kenya')}</p>
-                            <p class="card-text">${escapeHTML(hotel.description ? hotel.description.substring(0, 100) + '...' : '')}</p>
-                            <span class="card-price">KSh ${Number(hotel.price_per_night).toLocaleString()} / night</span>
-                            <button class="btn btn-primary btn-sm" style="width:100%;margin-top:1rem;" onclick="event.stopPropagation();inquireHotel('${hotel.id}')">Inquire</button>
+                            <div class="card-meta">
+                                ${amenities.length ? '<span class="card-meta-item"><i class="fas fa-concierge-bell"></i> ' + amenities.length + ' amenities</span>' : ''}
+                            </div>
+                            ${desc ? '<p class="card-text">' + desc + '</p>' : ''}
+                            ${amenities.length ? '<div class="amenities-tags">' + amenities.map(function(a) { return '<span class="tag">' + escapeHTML(a.trim()) + '</span>'; }).join('') + '</div>' : ''}
+                            <div class="card-footer-bar">
+                                <span class="card-price">KSh ${Number(hotel.price_per_night).toLocaleString()} <small>/night</small></span>
+                                <span class="card-cta">View <i class="fas fa-arrow-right"></i></span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -214,7 +262,7 @@
                 ? hotel.images.find(i => i.is_primary) || hotel.images[0]
                 : null;
             const imgUrl = img ? img.image_url : '/assets/images/placeholder.svg';
-            const stars = '<i class="fas fa-star" style="color:var(--accent-gold);"></i>'.repeat(Math.round(hotel.rating)) + '<i class="far fa-star" style="color:var(--accent-gold);"></i>'.repeat(5 - Math.round(hotel.rating));
+            const stars = '<i class="fas fa-star" style="color:var(--accent);"></i>'.repeat(Math.round(hotel.rating)) + '<i class="far fa-star" style="color:var(--accent);"></i>'.repeat(5 - Math.round(hotel.rating));
 
             document.getElementById('hotel-modal-content').innerHTML = `
                 <img src="${imgUrl}" alt="${escapeHTML(hotel.name)}" style="width:100%;height:300px;object-fit:cover;border-radius:8px;margin-bottom:1.5rem;"
@@ -231,7 +279,7 @@
                     </div>
                 ` : ''}
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                    <span style="font-size:1.5rem;font-weight:700;color:var(--primary-green);">KSh ${Number(hotel.price_per_night).toLocaleString()} / night</span>
+                    <span style="font-size:1.5rem;font-weight:700;color:var(--primary);">KSh ${Number(hotel.price_per_night).toLocaleString()} / night</span>
                     <span class="badge ${hotel.available ? 'badge-success' : 'badge-danger'}">${hotel.available ? 'Available' : 'Unavailable'}</span>
                 </div>
                 <button class="btn btn-primary" style="width:100%;" onclick="closeModal('hotel-modal');inquireHotel('${hotel.id}')">Inquire About This Hotel</button>
@@ -249,13 +297,15 @@
             window.location.href = `/booking.html?hotel=${hotelId}`;
         }
 
-        document.getElementById('search-location')?.addEventListener('input', () => {
-            const search = document.getElementById('search-location').value.toLowerCase();
-            const filtered = allHotels.filter(h =>
-                (h.location && h.location.toLowerCase().includes(search)) ||
-                h.name.toLowerCase().includes(search)
-            );
-            renderHotels(filtered);
+        document.querySelector('#destination-tabs .tab:first-child').addEventListener('click', function () {
+            document.querySelectorAll('#destination-tabs .tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            currentLocation = '';
+            renderHotels(getFilteredHotels());
+        });
+
+        document.getElementById('search-location').addEventListener('input', () => {
+            renderHotels(getFilteredHotels());
         });
 
         loadHotels();

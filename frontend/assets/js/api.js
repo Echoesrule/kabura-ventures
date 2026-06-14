@@ -105,6 +105,12 @@ class ApiClient {
     async deleteTour(id) { return this.delete(`/tours/${id}`); }
     async deleteTourImage(id) { return this.delete(`/tours/images/${id}`); }
 
+    // Destinations
+    async getDestinations() { return this.get('/destinations'); }
+    async createDestination(data) { return this.post('/destinations', data); }
+    async updateDestination(id, data) { return this.put(`/destinations/${id}`, data); }
+    async deleteDestination(id) { return this.delete(`/destinations/${id}`); }
+
     // Bookings
     async createBooking(data) { return this.post('/bookings', data); }
     async getUserBookings() { return this.get('/bookings/user'); }

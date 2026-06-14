@@ -23,6 +23,7 @@ from routes.search import search_bp
 from routes.company import company_bp
 from routes.analytics import analytics_bp
 from routes.supabase_auth import supabase_auth_bp
+from routes.destinations import destinations_bp
 from services.seed import seed_database
 
 load_dotenv()
@@ -54,6 +55,7 @@ def create_app():
     app.register_blueprint(company_bp)
     app.register_blueprint(analytics_bp)
     app.register_blueprint(supabase_auth_bp)
+    app.register_blueprint(destinations_bp)
 
     @app.route('/')
     def index():
