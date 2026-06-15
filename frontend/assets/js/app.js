@@ -1,5 +1,12 @@
 // Kabura Ventures - Main Application Script
 
+function escHtml(str) {
+    if (!str) return '';
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+}
+
 // Toast system
 function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
@@ -62,7 +69,7 @@ window.addEventListener('storage', (e) => {
 async function updateAuthUI() {
     const token = localStorage.getItem('token');
     const authButtons = document.getElementById('auth-buttons');
-    const userMenu = document.getElementById('user-menu');
+    const dropdown = document.getElementById('user-dropdown-menu');
 
     if (!authButtons) return;
 
@@ -72,13 +79,26 @@ async function updateAuthUI() {
             const user = result.user;
             currentUser = user;
 
-            if (authButtons) {
-                authButtons.innerHTML = `
-                    <span style="font-weight:500;">Hi, ${user.name.split(' ')[0]}</span>
-                    <button class="btn btn-sm btn-secondary" onclick="openUserInbox()">Inbox</button>
-                    ${user.role === 'admin' ? '<a href="/admin" class="btn btn-sm btn-gold">Dashboard</a>' : ''}
-                    <button class="btn btn-sm btn-secondary" onclick="api.logout()">Logout</button>
-                `;
+            if (dropdown) {
+    dropdown.innerHTML = '<div class="nav-user-menu-card">'
+                    + '<div class="nav-user-menu-header">'
+                    + '<p class="nav-user-greeting">Hi, ' + escHtml(user.name || 'Traveler') + '</p>'
+                    + '<p class="nav-user-email">' + escHtml(user.email || '') + '</p>'
+                    + '</div>'
+                    + '<div class="nav-user-section-label">My Account</div>'
+                    + '<a href="/booking.html" class="nav-user-menu-item"><i class="fas fa-suitcase"></i> My Bookings</a>'
+                    + '<a href="/wishlist.html" class="nav-user-menu-item"><i class="fas fa-heart"></i> Wishlists</a>'
+                    + '<div class="nav-user-menu-divider"></div>'
+                    + '<div class="nav-user-section-label">Support</div>'
+                    + '<a href="/help.html" class="nav-user-menu-item"><i class="fas fa-question-circle"></i> Help Center</a>'
+                    + '<a href="/help.html#general" class="nav-user-menu-item"><i class="fas fa-info-circle"></i> FAQs</a>'
+                    + '<div class="nav-user-menu-divider"></div>'
+                    + '<div class="nav-user-footer">'
+                    + '<span class="nav-user-lang"><i class="fas fa-globe"></i> English</span>'
+                    + '<a href="#" class="nav-user-app">Get the App <i class="fas fa-external-link-alt"></i></a>'
+                    + '</div>'
+                    + '<a href="#" class="nav-user-menu-item nav-user-menu-logout" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>'
+                    + '</div>';
             }
         } catch {
             api.setToken(null);
@@ -90,12 +110,30 @@ async function updateAuthUI() {
 }
 
 function renderGuestAuth() {
-    const authButtons = document.getElementById('auth-buttons');
-    if (!authButtons) return;
-    authButtons.innerHTML = `
-        <button class="btn btn-sm btn-secondary" onclick="window.location.href='/login.html'">Login</button>
-        <button class="btn btn-sm btn-primary" onclick="window.location.href='/signup.html'">Sign Up</button>
-    `;
+    const dropdown = document.getElementById('user-dropdown-menu');
+    if (!dropdown) return;
+                dropdown.innerHTML = '<div class="nav-user-menu-card">'
+        + '<div class="nav-user-menu-header">'
+        + '<p class="nav-user-tagline">Travel more. Earn more. Save more.</p>'
+        + '<p class="nav-user-subtitle">Log in or sign up to unlock savings.</p>'
+        + '</div>'
+        + '<div class="nav-user-section-label">My Account</div>'
+        + '<div class="nav-user-roles">'
+        + '<button class="nav-user-role active">Traveler</button>'
+        + '<button class="nav-user-role">Partner</button>'
+        + '</div>'
+        + '<a href="/login.html" class="nav-user-login-btn">Log in</a>'
+        + '<a href="/signup.html" class="nav-user-signup-link">Sign Up</a>'
+        + '<div class="nav-user-menu-divider"></div>'
+        + '<div class="nav-user-section-label">Support</div>'
+        + '<a href="/help.html" class="nav-user-menu-item"><i class="fas fa-question-circle"></i> Help Center</a>'
+        + '<a href="/help.html#general" class="nav-user-menu-item"><i class="fas fa-info-circle"></i> FAQs</a>'
+        + '<div class="nav-user-menu-divider"></div>'
+        + '<div class="nav-user-footer">'
+        + '<span class="nav-user-lang"><i class="fas fa-globe"></i> English</span>'
+        + '<a href="#" class="nav-user-app">Get the App <i class="fas fa-external-link-alt"></i></a>'
+        + '</div>'
+        + '</div>';
 }
 
 // Login form
@@ -485,10 +523,150 @@ function initAuthPage() {
     setupPasswordStrength();
 }
 
-// Hamburger menu
-document.addEventListener('click', (e) => {
-    if (e.target.closest('.hamburger')) {
-        document.querySelector('.nav-links').classList.toggle('open');
+// Hamburger menu — builds and toggles a separate fullscreen mobile overlay
+function toggleMobileMenu(open) {
+    var overlay = document.getElementById('mobile-menu-overlay');
+    var btn = document.querySelector('.hamburger i');
+
+    if (open === undefined) {
+        if (overlay && overlay.style.display === 'block') open = false;
+        else open = true;
+    }
+
+    if (open) {
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'mobile-menu-overlay';
+            overlay.className = 'mobile-menu-overlay';
+            document.body.appendChild(overlay);
+        }
+        renderMobileMenu(overlay);
+        overlay.style.display = 'block';
+        if (btn) btn.className = 'fas fa-times';
+        document.body.style.overflow = 'hidden';
+    } else {
+        if (overlay) overlay.style.display = 'none';
+        if (btn) btn.className = 'fas fa-bars';
+        document.body.style.overflow = '';
+    }
+}
+
+function renderMobileMenu(container) {
+    var token = localStorage.getItem('token');
+    var user = currentUser;
+    var isLoggedIn = token && user;
+
+    var html = '<button class="mobile-menu-close" aria-label="Close menu"><i class="fas fa-times"></i></button>';
+    html += '<div class="mobile-menu-scroll"><div class="mobile-menu-card">';
+
+    if (isLoggedIn) {
+        html += '<div class="mobile-menu-card-header">'
+            + '<img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="mobile-menu-logo">'
+            + '<p class="mobile-menu-greeting">Hi, ' + escHtml(user.name || 'Traveler') + '</p>'
+            + '<p class="mobile-menu-email">' + escHtml(user.email || '') + '</p>'
+            + '</div>'
+            + '<div class="mobile-menu-section-label">My Account</div>'
+            + '<a href="/booking.html" class="mobile-menu-item"><i class="fas fa-suitcase"></i> My Bookings</a>'
+            + '<a href="/wishlist.html" class="mobile-menu-item"><i class="fas fa-heart"></i> Wishlists</a>'
+            + '<div class="mobile-menu-divider"></div>';
+    } else {
+        html += '<div class="mobile-menu-card-header">'
+            + '<img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="mobile-menu-logo">'
+            + '<p class="mobile-menu-tagline">Travel more</p>'
+            + '<p class="mobile-menu-tagline-sub">Save more. Earn more.</p>'
+            + '<p class="mobile-menu-subtitle">Log in or sign up to unlock savings.</p>'
+            + '</div>'
+            + '<div class="mobile-menu-section-label">My Account</div>'
+            + '<div class="mobile-menu-roles">'
+            + '<button class="mobile-menu-role active">Traveler</button>'
+            + '<button class="mobile-menu-role">Partner</button>'
+            + '</div>'
+            + '<a href="/login.html" class="mobile-menu-login-btn">Log in</a>'
+            + '<a href="/signup.html" class="mobile-menu-signup-link">Sign Up</a>'
+            + '<div class="mobile-menu-divider"></div>';
+    }
+
+    // Browse — nav links
+    html += '<div class="mobile-menu-section-label">Browse</div>';
+    document.querySelectorAll('.nav-links > li').forEach(function(li) {
+        if (li.classList.contains('mobile-brand') || li.id === 'auth-buttons' || li.classList.contains('currency-selector')) return;
+        var a = li.tagName === 'A' ? li : li.querySelector('a');
+        if (!a) return;
+        var href = a.getAttribute('href');
+        var t = a.textContent.replace(/^\s+|\s+$/g, '').replace(/\s*<.*?>/g, '');
+        if (!t) return;
+
+        // Dropdowns — collapsible with toggle
+        if (li.classList.contains('nav-dropdown')) {
+            var tText = a.textContent.replace(/^\s+|\s+$/g, '').replace(/\s*<.*?>/g, '');
+            if (tText === 'Packages') {
+                html += '<div class="mobile-menu-dropdown">'
+                    + '<button class="mobile-menu-dropdown-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'
+                    + '<span><i class="fas fa-box"></i> Packages</span><i class="fas fa-chevron-down"></i>'
+                    + '</button>'
+                    + '<div class="mobile-menu-dropdown-content">';
+                li.querySelectorAll('.nav-dropdown-menu a').forEach(function(sub) {
+                    var sh = sub.getAttribute('href');
+                    var st = sub.textContent.replace(/^\s+|\s+$/g, '');
+                    if (sh && st) html += '<a href="' + sh + '" class="mobile-menu-item mobile-menu-sub">' + st + '</a>';
+                });
+                html += '</div></div>';
+            } else if (tText === 'Our Services') {
+                html += '<div class="mobile-menu-dropdown">'
+                    + '<button class="mobile-menu-dropdown-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'
+                    + '<span><i class="fas fa-concierge-bell"></i> Our Services</span><i class="fas fa-chevron-down"></i>'
+                    + '</button>'
+                    + '<div class="mobile-menu-dropdown-content">';
+                li.querySelectorAll('.nav-service-card').forEach(function(card) {
+                    var sh = card.getAttribute('href');
+                    var st = card.querySelector('strong')?.textContent || '';
+                    if (sh && st) html += '<a href="' + sh + '" class="mobile-menu-item mobile-menu-sub">' + st + '</a>';
+                });
+                html += '</div></div>';
+            }
+            return;
+        }
+
+        if (!href || href === '#') return;
+        var icon = '';
+        if (t === 'Home') icon = '<i class="fas fa-home"></i>';
+        else if (t === 'Our Services') icon = '<i class="fas fa-concierge-bell"></i>';
+        else if (t === 'Blog') icon = '<i class="fas fa-newspaper"></i>';
+        else if (t === 'My Bookings') icon = '<i class="fas fa-suitcase"></i>';
+        html += '<a href="' + href + '" class="mobile-menu-item">' + icon + t + '</a>';
+    });
+
+    // Support
+    html += '<div class="mobile-menu-divider"></div>'
+        + '<div class="mobile-menu-section-label">Support</div>'
+        + '<a href="/help.html" class="mobile-menu-item"><i class="fas fa-question-circle"></i> Help Center</a>'
+        + '<a href="/help.html#general" class="mobile-menu-item"><i class="fas fa-info-circle"></i> FAQs</a>'
+        + '<div class="mobile-menu-divider"></div>'
+        + '<div class="mobile-menu-footer">'
+        + '<span class="mobile-menu-lang"><i class="fas fa-globe"></i> English</span>'
+        + '<a href="#" class="mobile-menu-app">Get the App <i class="fas fa-external-link-alt"></i></a>'
+        + '</div>';
+
+    if (isLoggedIn) {
+        html += '<a href="#" class="mobile-menu-item mobile-menu-logout" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>';
+    }
+
+    html += '</div></div>'; // close card + scroll
+    container.innerHTML = html;
+}
+
+// Hamburger click
+document.addEventListener('click', function(e) {
+    var hamburger = e.target.closest('.hamburger');
+    if (hamburger) { toggleMobileMenu(); return; }
+    // Close overlay on close button or outside click
+    if (e.target.closest('.mobile-menu-close')) { toggleMobileMenu(false); return; }
+    if (e.target.closest('.mobile-menu-overlay') && !e.target.closest('.mobile-menu-card') && !e.target.closest('.mobile-menu-close')) { toggleMobileMenu(false); return; }
+    // Role toggle
+    var role = e.target.closest('.mobile-menu-role');
+    if (role) {
+        var parent = role.closest('.mobile-menu-roles');
+        if (parent) { parent.querySelectorAll('.mobile-menu-role').forEach(function(r) { r.classList.remove('active'); }); role.classList.add('active'); }
     }
 });
 
@@ -902,7 +1080,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (capEl && data.image.caption) capEl.textContent = data.image.caption;
             }
         } catch (err) {
-            // ignore
-        }
+        // ignore
+            }
+        })();
+
+    // Load shared footer
+    fetch('/footer.html').then(function(r){return r.text();}).then(function(html){
+        var p = document.getElementById('footer-placeholder');
+        if (p) p.innerHTML = html;
+    }).catch(function(){});
+
+    // WhatsApp floating bubble
+    (function injectWhatsApp() {
+        if (document.getElementById('whatsapp-float')) return;
+        var a = document.createElement('a');
+        a.id = 'whatsapp-float';
+        a.className = 'whatsapp-float';
+        a.href = 'https://wa.me/254700000000';
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.setAttribute('aria-label', 'Chat on WhatsApp');
+        a.innerHTML = '<i class="fab fa-whatsapp"></i>';
+        document.body.appendChild(a);
     })();
+
+    // Role button toggle in user dropdown
+    document.addEventListener('click', function(e) {
+        var role = e.target.closest('.nav-user-role');
+        if (role) {
+            var parent = role.closest('.nav-user-roles');
+            if (parent) {
+                parent.querySelectorAll('.nav-user-role').forEach(function(r) { r.classList.remove('active'); });
+                role.classList.add('active');
+            }
+        }
+    });
 });
+

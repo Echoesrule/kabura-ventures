@@ -40,6 +40,12 @@ def create_booking(current_user):
         return_date=sanitize_input(data.get('return_date')) if data.get('return_date') else None,
         people_count=int(data['people_count']),
         special_requests=special,
+        guest_name=sanitize_input(data.get('guest_name', ''), max_length=100),
+        guest_email=sanitize_input(data.get('guest_email', ''), max_length=120),
+        guest_phone=sanitize_input(data.get('guest_phone', ''), max_length=30),
+        room_type=data.get('room_type'),
+        payment_method=data.get('payment_method', 'mpesa'),
+        total_amount=float(data.get('total_amount', 0)),
         status='pending',
         payment_status='unpaid'
     )

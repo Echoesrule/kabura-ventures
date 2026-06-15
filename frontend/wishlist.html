@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Kabura Ventures</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128x128.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256x256.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .wishlist-hero {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            padding: 4rem 0 3rem;
+            text-align: center;
+            color: white;
+        }
+        .wishlist-hero h1 { color: white; font-size: 2.4rem; margin-bottom: 0.5rem; }
+        .wishlist-hero p { color: rgba(255,255,255,0.75); font-size: 1.05rem; }
+        .wishlist-section { padding: 2rem 0 4rem; }
+        .wishlist-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
+        .wishlist-tab { background: none; border: none; padding: 0.5rem 1.25rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 999px; color: var(--text-secondary); transition: all 0.2s; font-family: var(--font-body); }
+        .wishlist-tab:hover { background: rgba(138,168,153,0.08); }
+        .wishlist-tab.active { background: var(--primary); color: white; }
+        .wishlist-tab span { display: inline-flex; align-items: center; justify-content: center; background: rgba(138,168,153,0.12); border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.75rem; margin-left: 0.35rem; color: var(--text-secondary); }
+        .wishlist-tab.active span { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
+        .wishlist-empty { text-align: center; padding: 4rem 2rem; }
+        .wishlist-empty i { font-size: 3.5rem; color: var(--text-secondary); opacity: 0.3; margin-bottom: 1rem; }
+        .wishlist-empty h3 { color: var(--dark-text); margin-bottom: 0.5rem; }
+        .wishlist-empty p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .wishlist-count { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+        @media (max-width: 768px) {
+            .wishlist-hero { padding: 3rem 0 2rem; }
+            .wishlist-hero h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                <img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="navbar-logo">
+            </a>
+            <button class="hamburger"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li class="mobile-brand"><a href="/" class="mobile-brand-link"><img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="mobile-logo"><span class="mobile-tagline">Explore Kenya's Finest Adventures</span></a></li>
+                <li><a href="/">Home</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/tours.html">Tours</a>
+                        <a href="/hotels.html">Hotels</a>
+                        <a href="/flights.html">Flights</a>
+                    </div>
+                </li>
+                <li class="nav-dropdown nav-dropdown-services">
+                    <a href="#" class="nav-dropdown-trigger">Our Services <i class="fas fa-chevron-down"></i></a>
+                    <div class="nav-dropdown-menu nav-dropdown-menu-services">
+                        <div class="nav-services-grid">
+                            <a href="/services.html#service-tours" class="nav-service-card">
+                                <div class="nav-service-card-img" style="background-image:url('/assets/images/giif.jpg')"></div>
+                                <div class="nav-service-card-content">
+                                    <div class="nav-service-card-icon"><i class="fa-solid fa-hippo"></i></div>
+                                    <div class="nav-service-card-text">
+                                        <strong>Tours & Safari Packages</strong>
+                                        <span>Curated Kenyan safari & tour experiences</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/services.html#service-travel" class="nav-service-card">
+                                <div class="nav-service-card-img" style="background-image:url('/assets/images/class.jpg')"></div>
+                                <div class="nav-service-card-content">
+                                    <div class="nav-service-card-icon"><i class="fa-solid fa-plane"></i></div>
+                                    <div class="nav-service-card-text">
+                                        <strong>Local & International Travel</strong>
+                                        <span>Seamless travel arrangements worldwide</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/services.html#service-hotel" class="nav-service-card">
+                                <div class="nav-service-card-img" style="background-image:url('/assets/images/swimm.jpg')"></div>
+                                <div class="nav-service-card-content">
+                                    <div class="nav-service-card-icon"><i class="fa-solid fa-hotel"></i></div>
+                                    <div class="nav-service-card-text">
+                                        <strong>Hotel & Accommodation</strong>
+                                        <span>Curated stays from luxury to budget-friendly</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/services.html#service-transport" class="nav-service-card">
+                                <div class="nav-service-card-img" style="background-image:url('/assets/images/hel.jpg')"></div>
+                                <div class="nav-service-card-content">
+                                    <div class="nav-service-card-icon"><i class="fa-solid fa-car"></i></div>
+                                    <div class="nav-service-card-text">
+                                        <strong>Airport Transfers & Transport</strong>
+                                        <span>Reliable pickups, drops & custom transport</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/services.html#service-honeymoon" class="nav-service-card">
+                                <div class="nav-service-card-img" style="background-image:url('/assets/images/balloon.jpg')"></div>
+                                <div class="nav-service-card-content">
+                                    <div class="nav-service-card-icon"><i class="fa-solid fa-heart"></i></div>
+                                    <div class="nav-service-card-text">
+                                        <strong>Honeymoon & Couples Getaways</strong>
+                                        <span>Romantic escapes for couples</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/services.html#service-corporate" class="nav-service-card">
+                                <div class="nav-service-card-img" style="background-image:url('/assets/images/giif.jpg')"></div>
+                                <div class="nav-service-card-content">
+                                    <div class="nav-service-card-icon"><i class="fa-solid fa-briefcase"></i></div>
+                                    <div class="nav-service-card-text">
+                                        <strong>Group & Corporate Travel</strong>
+                                        <span>Seamless group travel & corporate retreats</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/booking.html">My Bookings</a></li>
+                <li class="nav-user-dropdown" id="auth-buttons">
+                    <button class="nav-user-btn" id="nav-user-btn" aria-label="User menu">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="nav-user-menu" id="user-dropdown-menu"></div>
+                </li>
+                <li class="currency-selector">
+                    <select id="currency-switcher" aria-label="Select currency">
+                        <option value="KES">KSh</option>
+                        <option value="USD">$</option>
+                        <option value="EUR">&euro;</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="wishlist-hero">
+        <div class="container">
+            <h1><i class="fas fa-heart" style="color:var(--accent);margin-right:0.5rem;"></i>My Wishlist</h1>
+            <p>All your saved tours and hotels in one place</p>
+        </div>
+    </section>
+
+    <section class="wishlist-section">
+        <div class="container">
+            <div class="wishlist-tabs">
+                <button class="wishlist-tab active" data-tab="all" onclick="switchTab('all')">All <span id="count-all">0</span></button>
+                <button class="wishlist-tab" data-tab="tours" onclick="switchTab('tours')">Tours <span id="count-tours">0</span></button>
+                <button class="wishlist-tab" data-tab="hotels" onclick="switchTab('hotels')">Hotels <span id="count-hotels">0</span></button>
+            </div>
+            <div id="wishlist-container"></div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        var wishlistItems = [];
+        var currentTab = 'all';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.wishlist-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelector('.wishlist-tab[data-tab="' + tab + '"]').classList.add('active');
+            renderWishlist();
+        }
+
+        function getWishlistImage(item) {
+            if (item.tour && item.tour.images && item.tour.images.length > 0) {
+                var img = item.tour.images.find(function(i) { return i.is_primary; }) || item.tour.images[0];
+                return img ? img.image_url : '/assets/images/placeholder.svg';
+            }
+            if (item.hotel && item.hotel.images && item.hotel.images.length > 0) {
+                var img = item.hotel.images.find(function(i) { return i.is_primary; }) || item.hotel.images[0];
+                return img ? img.image_url : '/assets/images/placeholder.svg';
+            }
+            return '/assets/images/placeholder.svg';
+        }
+
+        function renderWishlist() {
+            var container = document.getElementById('wishlist-container');
+            var filtered = wishlistItems;
+            if (currentTab === 'tours') filtered = wishlistItems.filter(function(i) { return i.tour_id; });
+            else if (currentTab === 'hotels') filtered = wishlistItems.filter(function(i) { return i.hotel_id; });
+
+            if (filtered.length === 0) {
+                var icon = currentTab === 'tours' ? 'fa-hiking' : (currentTab === 'hotels' ? 'fa-hotel' : 'fa-heart');
+                var msg = currentTab === 'all' ? 'Your wishlist is empty' : 'No saved ' + currentTab + ' yet';
+                container.innerHTML = '<div class="wishlist-empty">'
+                    + '<i class="fas ' + icon + '"></i>'
+                    + '<h3>' + msg + '</h3>'
+                    + '<p>Start exploring and save your favorite tours and hotels!</p>'
+                    + '<a href="/tours.html" class="btn btn-primary">Browse Tours</a>'
+                    + ' <a href="/hotels.html" class="btn btn-secondary">Browse Hotels</a>'
+                    + '</div>';
+                return;
+            }
+
+            var html = '<div class="grid grid-3">';
+            filtered.forEach(function(item) {
+                if (item.tour) {
+                    var t = item.tour;
+                    var imgUrl = getWishlistImage(item);
+                    var cat = t.activity_type ? t.activity_type.toUpperCase() : '';
+                    var rating = t.avg_rating || 0;
+                    var fullStars = Math.round(rating);
+                    var starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
+                    var desc = t.description ? escapeHTML(t.description) : '';
+                    html += '<div class="card card-tour card-tour-deep">'
+                        + '<a href="/tour-detail.html?id=' + t.id + '" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">'
+                            + '<div class="card-image-wrap">'
+                                + '<button onclick="event.stopPropagation();removeWishlist(\'' + item.id + '\', \'' + t.id + '\')" class="card-wishlist-btn" title="Remove from wishlist">'
+                                    + '<i class="fas fa-heart" style="color:var(--accent);"></i>'
+                                + '</button>'
+                                + (cat ? '<span class="card-badge-cat">' + cat + '</span>' : '')
+                                + '<img src="' + imgUrl + '" alt="' + escapeHTML(t.title) + '" class="card-image" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
+                            + '</div>'
+                            + '<div class="card-body">'
+                                + '<div class="card-location-deep"><i class="fas fa-map-pin"></i> ' + escapeHTML(t.location || 'Kenya') + '</div>'
+                                + '<h3 class="card-title">' + escapeHTML(t.title) + '</h3>'
+                                + (desc ? '<p class="card-text">' + desc + '</p>' : '')
+                                + (rating > 0 ? '<div class="card-stars-deep">' + starsHtml + ' <span>' + rating.toFixed(1) + '</span></div>' : '')
+                                + '<div class="card-footer-deep">'
+                                    + '<div class="card-author-deep">'
+                                        + '<span class="card-author-name">BY KABURA VENTURES</span>'
+                                    + '</div>'
+                                    + '<div class="card-footer-bar">'
+                                        + '<span class="card-price">' + window.formatPrice(t.price) + '</span>'
+                                        + '<span class="card-cta">Details <i class="fas fa-arrow-right"></i></span>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>'
+                        + '</a>'
+                    + '</div>';
+                } else if (item.hotel) {
+                    var h = item.hotel;
+                    var imgUrl = getWishlistImage(item);
+                    var rating = h.avg_rating || h.rating || 0;
+                    var fullStars = Math.round(rating);
+                    var starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
+                    var desc = h.description ? escapeHTML(h.description) : '';
+                    html += '<div class="card card-tour card-tour-deep">'
+                        + '<a href="/hotel-detail.html?id=' + h.id + '" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">'
+                            + '<div class="card-image-wrap">'
+                                + '<button onclick="event.stopPropagation();removeWishlist(\'' + item.id + '\', null, \'' + h.id + '\')" class="card-wishlist-btn" title="Remove from wishlist">'
+                                    + '<i class="fas fa-heart" style="color:var(--accent);"></i>'
+                                + '</button>'
+                                + '<img src="' + imgUrl + '" alt="' + escapeHTML(h.name) + '" class="card-image" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
+                            + '</div>'
+                            + '<div class="card-body">'
+                                + '<div class="card-location-deep"><i class="fas fa-map-pin"></i> ' + escapeHTML(h.location || 'Kenya') + '</div>'
+                                + '<h3 class="card-title">' + escapeHTML(h.name) + '</h3>'
+                                + (desc ? '<p class="card-text">' + desc + '</p>' : '')
+                                + (rating > 0 ? '<div class="card-stars-deep">' + starsHtml + ' <span>' + rating.toFixed(1) + '</span></div>' : '')
+                                + '<div class="card-footer-deep">'
+                                    + '<div class="card-author-deep">'
+                                        + '<span class="card-author-name">BY KABURA VENTURES</span>'
+                                    + '</div>'
+                                    + '<div class="card-footer-bar">'
+                                        + '<span class="card-price">' + window.formatPrice(h.price_per_night) + ' <small>/night</small></span>'
+                                        + '<span class="card-cta">Details <i class="fas fa-arrow-right"></i></span>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>'
+                        + '</a>'
+                    + '</div>';
+                }
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        async function removeWishlist(wishlistId, tourId, hotelId) {
+            try {
+                await api.removeFromWishlist(wishlistId);
+                wishlistItems = wishlistItems.filter(function(i) { return i.id !== wishlistId; });
+                updateCounts();
+                renderWishlist();
+                showToast('Removed from wishlist', 'info');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        function updateCounts() {
+            var all = wishlistItems.length;
+            var tours = wishlistItems.filter(function(i) { return i.tour_id; }).length;
+            var hotels = wishlistItems.filter(function(i) { return i.hotel_id; }).length;
+            document.getElementById('count-all').textContent = all;
+            document.getElementById('count-tours').textContent = tours;
+            document.getElementById('count-hotels').textContent = hotels;
+        }
+
+        async function loadWishlistPage() {
+            if (!api.token) {
+                document.getElementById('wishlist-container').innerHTML = '<div class="wishlist-empty">'
+                    + '<i class="fas fa-heart"></i>'
+                    + '<h3>Login to view your wishlist</h3>'
+                    + '<p>Sign in to save and view your favorite tours and hotels.</p>'
+                    + '<a href="/login.html" class="btn btn-primary">Login</a>'
+                    + ' <a href="/signup.html" class="btn btn-secondary">Sign Up</a>'
+                    + '</div>';
+                return;
+            }
+            try {
+                var result = await api.getWishlist();
+                wishlistItems = result.wishlist || [];
+                updateCounts();
+                renderWishlist();
+            } catch (err) {
+                document.getElementById('wishlist-container').innerHTML = '<div class="wishlist-empty">'
+                    + '<i class="fas fa-exclamation-triangle"></i>'
+                    + '<h3>Could not load wishlist</h3>'
+                    + '<p>Please try again later.</p>'
+                    + '</div>';
+            }
+        }
+
+        loadWishlistPage();
+    </script>
+</body>
+</html>

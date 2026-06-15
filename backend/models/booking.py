@@ -16,6 +16,12 @@ class Booking(db.Model):
     status = db.Column(db.String(20), default='pending')
     payment_status = db.Column(db.String(20), default='unpaid')
     special_requests = db.Column(db.Text)
+    guest_name = db.Column(db.String(100))
+    guest_email = db.Column(db.String(120))
+    guest_phone = db.Column(db.String(30))
+    room_type = db.Column(db.String(30))
+    payment_method = db.Column(db.String(30))
+    total_amount = db.Column(db.Float, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -36,6 +42,12 @@ class Booking(db.Model):
             'status': self.status,
             'payment_status': self.payment_status,
             'special_requests': self.special_requests,
+            'guest_name': self.guest_name,
+            'guest_email': self.guest_email,
+            'guest_phone': self.guest_phone,
+            'room_type': self.room_type,
+            'payment_method': self.payment_method,
+            'total_amount': self.total_amount,
             'user': self.user.to_dict() if self.user else None,
             'tour': self.tour.to_dict() if self.tour else None,
             'hotel': self.hotel.to_dict() if self.hotel else None,
