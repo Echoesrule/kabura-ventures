@@ -12,6 +12,8 @@ BOOKING_PAYMENT_METHOD_ALIASES = {
     'cash': 'cash',
     'cash_on_arrival': 'cash',
     'card': 'card',
+    'paypal': 'paypal',
+    'bank_transfer': 'bank_transfer',
 }
 
 def normalize_booking_payment_method(value):

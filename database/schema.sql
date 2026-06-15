@@ -80,8 +80,14 @@ CREATE TABLE IF NOT EXISTS bookings (
     return_date DATE,
     people_count INTEGER NOT NULL DEFAULT 1,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'cancelled', 'completed', 'no_show')),
-    payment_status VARCHAR(20) DEFAULT 'unpaid' CHECK (payment_status IN ('unpaid', 'deposit_paid', 'fully_paid', 'refunded')),
+    payment_status VARCHAR(20) DEFAULT 'unpaid' CHECK (payment_status IN ('unpaid', 'partially_paid', 'fully_paid', 'refunded')),
     special_requests TEXT,
+    guest_name VARCHAR(100),
+    guest_email VARCHAR(120),
+    guest_phone VARCHAR(30),
+    room_type VARCHAR(30),
+    payment_method VARCHAR(30) DEFAULT 'mpesa',
+    total_amount FLOAT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -110,8 +116,8 @@ CREATE TABLE IF NOT EXISTS payments (
     flight_request_id UUID REFERENCES flight_requests(id) ON DELETE SET NULL,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     amount DECIMAL(12, 2) NOT NULL,
-    payment_method VARCHAR(50) CHECK (payment_method IN ('mpesa', 'cash', 'card')),
-    payment_type VARCHAR(50) CHECK (payment_type IN ('deposit', 'full', 'refund')),
+    payment_method VARCHAR(50) CHECK (payment_method IN ('mpesa', 'cash', 'card', 'paypal', 'bank_transfer')),
+    payment_type VARCHAR(50) CHECK (payment_type IN ('full', 'refund', 'partial')),
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
     transaction_ref VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

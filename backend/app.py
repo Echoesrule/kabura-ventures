@@ -111,6 +111,75 @@ def create_app():
                 db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_expiry TIMESTAMP'))
                 db.session.execute(db.text('ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_attempts INTEGER DEFAULT 0'))
                 db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"Warning: Could not migrate bookings table: {e}")
+            # migrate: align existing bookings tables with the current Booking model
+            try:
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS guest_name VARCHAR(100)'))
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS guest_email VARCHAR(120)'))
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS guest_phone VARCHAR(30)'))
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS room_type VARCHAR(30)'))
+                db.session.execute(db.text("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS payment_method VARCHAR(30) DEFAULT 'mpesa'"))
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS total_amount FLOAT DEFAULT 0'))
+                db.session.execute(db.text(
+                    "UPDATE bookings SET payment_status = 'partially_paid' WHERE payment_status = 'deposit_paid'"
+                ))
+                db.session.execute(db.text("""
+                    DO $$
+                    DECLARE constraint_name text;
+                    BEGIN
+                        FOR constraint_name IN
+                            SELECT conname
+                            FROM pg_constraint
+                            WHERE conrelid = 'bookings'::regclass
+                              AND contype = 'c'
+                              AND pg_get_constraintdef(oid) ILIKE '%payment_status%'
+                        LOOP
+                            EXECUTE format('ALTER TABLE bookings DROP CONSTRAINT %I', constraint_name);
+                        END LOOP;
+                    END $$;
+                """))
+                db.session.execute(db.text(
+                    "ALTER TABLE bookings ADD CONSTRAINT bookings_payment_status_check "
+                    "CHECK (payment_status IN ('unpaid', 'partially_paid', 'fully_paid', 'refunded'))"
+                ))
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"Warning: Could not migrate payments constraints: {e}")
+            # migrate: align payments constraints with accepted payment route values
+            try:
+                db.session.execute(db.text(
+                    "UPDATE payments SET payment_type = 'partial' WHERE payment_type = 'deposit'"
+                ))
+                db.session.execute(db.text("""
+                    DO $$
+                    DECLARE constraint_name text;
+                    BEGIN
+                        FOR constraint_name IN
+                            SELECT conname
+                            FROM pg_constraint
+                            WHERE conrelid = 'payments'::regclass
+                              AND contype = 'c'
+                              AND (
+                                  pg_get_constraintdef(oid) ILIKE '%payment_method%'
+                                  OR pg_get_constraintdef(oid) ILIKE '%payment_type%'
+                              )
+                        LOOP
+                            EXECUTE format('ALTER TABLE payments DROP CONSTRAINT %I', constraint_name);
+                        END LOOP;
+                    END $$;
+                """))
+                db.session.execute(db.text(
+                    "ALTER TABLE payments ADD CONSTRAINT payments_payment_method_check "
+                    "CHECK (payment_method IN ('mpesa', 'cash', 'card', 'paypal', 'bank_transfer'))"
+                ))
+                db.session.execute(db.text(
+                    "ALTER TABLE payments ADD CONSTRAINT payments_payment_type_check "
+                    "CHECK (payment_type IN ('full', 'refund', 'partial'))"
+                ))
+                db.session.commit()
             except Exception:
                 db.session.rollback()
             seed_database()
