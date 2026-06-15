@@ -85,7 +85,8 @@ async function updateAuthUI() {
             if (dropdown) {
     dropdown.innerHTML = '<div class="nav-user-menu-card">'
                     + '<div class="nav-user-menu-header">'
-                    + '<p class="nav-user-greeting">Hi, ' + escHtml(user.name || 'Traveler') + '</p>'
+                    + '<img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="nav-user-logo">'
+                    + '<p class="nav-user-greeting">Hello There,</br> ' + escHtml(user.name || 'Traveler') + '</p>'
                     + '<p class="nav-user-email">' + escHtml(user.email || '') + '</p>'
                     + '</div>'
                     + '<div class="nav-user-section-label">My Account</div>'
@@ -99,7 +100,7 @@ async function updateAuthUI() {
                     + '<div class="nav-user-menu-divider"></div>'
                     + '<div class="nav-user-footer">'
                     + '<span class="nav-user-lang"><i class="fas fa-globe"></i> English</span>'
-                    + '<a href="#" class="nav-user-app">Get the App <i class="fas fa-external-link-alt"></i></a>'
+                    + '<a href="#" class="nav-user-app">By Kabura <i class="fas fa-external-link-alt"></i></a>'
                     + '</div>'
                     + '<a href="#" class="nav-user-menu-item nav-user-menu-logout" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>'
                     + '</div>';
@@ -118,7 +119,8 @@ function renderGuestAuth() {
     if (!dropdown) return;
                 dropdown.innerHTML = '<div class="nav-user-menu-card">'
         + '<div class="nav-user-menu-header">'
-        + '<p class="nav-user-tagline">Travel more. Earn more. Save more.</p>'
+        + '<img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="nav-user-logo">'
+        + '<p class="nav-user-tagline">Explore.</br>Discover. Journey.</p>'
         + '<p class="nav-user-subtitle">Log in or sign up to unlock savings.</p>'
         + '</div>'
         + '<div class="nav-user-section-label">My Account</div>'
@@ -135,7 +137,7 @@ function renderGuestAuth() {
         + '<div class="nav-user-menu-divider"></div>'
         + '<div class="nav-user-footer">'
         + '<span class="nav-user-lang"><i class="fas fa-globe"></i> English</span>'
-        + '<a href="#" class="nav-user-app">Get the App <i class="fas fa-external-link-alt"></i></a>'
+        + '<a href="#" class="nav-user-app">By Kabura <i class="fas fa-external-link-alt"></i></a>'
         + '</div>'
         + '</div>';
 }
@@ -962,11 +964,24 @@ let currentCurrency = localStorage.getItem('preferred_currency') || 'KES';
 function formatPrice(amountKES) {
     const rate = currencyRates[currentCurrency]?.rate_to_kes || 1;
     const symbol = currencyRates[currentCurrency]?.symbol || 'KSh';
-    const converted = (amountKES / rate);
+    const converted = ((Number(amountKES) || 0) / rate);
     if (currentCurrency === 'KES') {
         return `KSh ${Math.round(converted).toLocaleString()}`;
     }
     return `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function priceHTML(amountKES, suffix = '') {
+    const value = Number(amountKES) || 0;
+    return `<span class="price-amount" data-kes="${value}">${formatPrice(value)}</span>${suffix}`;
+}
+
+function refreshCurrencyPrices() {
+    document.querySelectorAll('.price-amount[data-kes]').forEach(el => {
+        const kes = parseFloat(el.dataset.kes);
+        if (!Number.isNaN(kes)) el.textContent = formatPrice(kes);
+    });
+    window.dispatchEvent(new CustomEvent('currencychange', { detail: { currency: currentCurrency } }));
 }
 
 function escapeHTML(value) {
@@ -992,13 +1007,15 @@ async function initCurrencySwitcher() {
         sel.addEventListener('change', () => {
             currentCurrency = sel.value;
             localStorage.setItem('preferred_currency', currentCurrency);
-            document.querySelectorAll('.price-amount').forEach(el => {
-                const kes = parseFloat(el.dataset.kes);
-                if (kes) el.textContent = formatPrice(kes);
-            });
+            refreshCurrencyPrices();
         });
+        refreshCurrencyPrices();
     } catch { /* ignore */ }
 }
+
+window.formatPrice = formatPrice;
+window.priceHTML = priceHTML;
+window.refreshCurrencyPrices = refreshCurrencyPrices;
 
 // AOS (Animate on Scroll)
 function initializeAOS() {
