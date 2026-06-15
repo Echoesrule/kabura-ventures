@@ -7,6 +7,17 @@ from utils.helpers import validate_required_fields, sanitize_input, validate_len
 
 bookings_bp = Blueprint('bookings', __name__, url_prefix='/api/bookings')
 
+BOOKING_PAYMENT_METHOD_ALIASES = {
+    'mpesa': 'mpesa',
+    'cash': 'cash',
+    'cash_on_arrival': 'cash',
+    'card': 'card',
+}
+
+def normalize_booking_payment_method(value):
+    method = sanitize_input(value or 'mpesa', max_length=30).lower()
+    return BOOKING_PAYMENT_METHOD_ALIASES.get(method)
+
 @bookings_bp.route('', methods=['POST'])
 @token_required
 def create_booking(current_user):
@@ -21,6 +32,11 @@ def create_booking(current_user):
     valid_types = ['tour', 'hotel', 'flight', 'package']
     if data['booking_type'] not in valid_types:
         return jsonify({'error': f'Invalid booking type. Must be one of: {", ".join(valid_types)}'}), 400
+
+    payment_method = normalize_booking_payment_method(data.get('payment_method'))
+    if not payment_method:
+        valid_methods = ', '.join(BOOKING_PAYMENT_METHOD_ALIASES.keys())
+        return jsonify({'error': f'Invalid payment method. Must be one of: {valid_methods}'}), 400
 
     errors = []
     people_err = validate_number(data['people_count'], min_val=1, max_val=100, field_name='People count')
@@ -44,7 +60,7 @@ def create_booking(current_user):
         guest_email=sanitize_input(data.get('guest_email', ''), max_length=120),
         guest_phone=sanitize_input(data.get('guest_phone', ''), max_length=30),
         room_type=data.get('room_type'),
-        payment_method=data.get('payment_method', 'mpesa'),
+        payment_method=payment_method,
         total_amount=float(data.get('total_amount', 0)),
         status='pending',
         payment_status='unpaid'

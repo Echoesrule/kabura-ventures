@@ -78,6 +78,9 @@ async function updateAuthUI() {
             const result = await api.getProfile();
             const user = result.user;
             currentUser = user;
+            const adminMenuItem = user.role === 'admin'
+                ? '<a href="/admin" class="nav-user-menu-item"><i class="fas fa-chart-bar"></i> Dashboard</a>'
+                : '';
 
             if (dropdown) {
     dropdown.innerHTML = '<div class="nav-user-menu-card">'
@@ -86,6 +89,7 @@ async function updateAuthUI() {
                     + '<p class="nav-user-email">' + escHtml(user.email || '') + '</p>'
                     + '</div>'
                     + '<div class="nav-user-section-label">My Account</div>'
+                    + adminMenuItem
                     + '<a href="/booking.html" class="nav-user-menu-item"><i class="fas fa-suitcase"></i> My Bookings</a>'
                     + '<a href="/wishlist.html" class="nav-user-menu-item"><i class="fas fa-heart"></i> Wishlists</a>'
                     + '<div class="nav-user-menu-divider"></div>'
@@ -566,6 +570,7 @@ function renderMobileMenu(container) {
             + '<p class="mobile-menu-email">' + escHtml(user.email || '') + '</p>'
             + '</div>'
             + '<div class="mobile-menu-section-label">My Account</div>'
+            + (user.role === 'admin' ? '<a href="/admin" class="mobile-menu-item"><i class="fas fa-chart-bar"></i> Dashboard</a>' : '')
             + '<a href="/booking.html" class="mobile-menu-item"><i class="fas fa-suitcase"></i> My Bookings</a>'
             + '<a href="/wishlist.html" class="mobile-menu-item"><i class="fas fa-heart"></i> Wishlists</a>'
             + '<div class="mobile-menu-divider"></div>';
