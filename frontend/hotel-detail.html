@@ -645,7 +645,7 @@
                 reviews.forEach(function(r) {
                     var name = r.user_name || r.user?.name || 'Anonymous';
                     var initial = name.charAt(0).toUpperCase();
-                    var colors = ['#d7a12b', '#2a4a3a', '#8aa899', '#112211', '#7a5b04'];
+                    var colors = ['#C9A227', '#2a4a3a', '#8aa899', '#0d1f12', '#7a5b04'];
                     var colorIdx = Math.abs(name.charCodeAt(0) || 0) % colors.length;
                     var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                     var userRating = r.rating || 0;

@@ -847,13 +847,13 @@
                 <!-- Hero Videos Tab -->
                 <div id="tab-hero-videos" class="media-tab" style="display:block;">
                     <div class="action-bar">
-                        <h3><i class="fas fa-video"></i> Homepage Hero Videos</h3>
+                        <h3><i class="fas fa-photo-film"></i> Homepage Hero Media</h3>
                         <form id="video-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
-                            <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg" style="max-width:250px;" required>
-                            <button type="submit" class="btn btn-primary btn-sm">Upload Video</button>
+                            <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg,image/jpeg,image/png,image/webp,image/gif" style="max-width:250px;" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Upload</button>
                         </form>
                     </div>
-                    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Videos appear on homepage hero. Max 3 recommended. Supported: mp4, webm, ogg.</p>
+                    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Upload videos or images for the homepage hero. Max 3 recommended. Supported: mp4, webm, ogg, jpg, png, webp, gif.</p>
                     <div id="admin-media-list"></div>
                 </div>
 
@@ -1550,11 +1550,15 @@
                 const result = await api.getHeroMedia();
                 const media = result.media;
                 container.innerHTML = media.length === 0
-                    ? '<div class="empty-state"><h3>No videos uploaded</h3><p style="color:var(--text-secondary);">Upload MP4 videos above. Name them hero-1.mp4, hero-2.mp4, hero-3.mp4 to match the homepage references.</p></div>'
+                    ? '<div class="empty-state"><h3>No media uploaded</h3><p style="color:var(--text-secondary);">Upload videos or images above. They will appear in the homepage hero.</p></div>'
                     : '<div class="table-container"><table><thead><tr><th>Preview</th><th>Filename</th><th>Order</th><th>Active</th><th>Actions</th></tr></thead><tbody>' +
-                    media.map((m, i) => `
-                        <tr>
-                            <td><video src="${m.file_url}" style="width:100px;height:60px;object-fit:cover;border-radius:4px;" muted></video></td>
+                    media.map((m, i) => {
+                        const isVideo = /\.(mp4|webm|mov|ogg)/i.test(m.file_url);
+                        const preview = isVideo
+                            ? `<video src="${m.file_url}" style="width:100px;height:60px;object-fit:cover;border-radius:4px;" muted></video>`
+                            : `<img src="${m.file_url}" style="width:100px;height:60px;object-fit:cover;border-radius:4px;" alt="${m.filename}">`;
+                        return `<tr>
+                            <td>${preview}</td>
                             <td><strong>${m.filename}</strong></td>
                             <td>
                                 <button class="btn btn-sm btn-secondary" onclick="moveMedia('${m.id}', ${i - 1})" ${i === 0 ? 'disabled' : ''}>&uarr;</button>
@@ -1565,8 +1569,8 @@
                             <td>
                                 <button class="btn btn-sm btn-danger" onclick="deleteMedia('${m.id}')">Delete</button>
                             </td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
+                        </tr>`;
+                    }).join('') + '</tbody></table></div>';
             } catch (err) {
                 container.innerHTML = '<div class="empty-state"><h3>Failed to load media</h3></div>';
             }
@@ -1599,11 +1603,11 @@
             formData.append('file', document.getElementById('video-file').files[0]);
             try {
                 await api.uploadHeroMedia(formData);
-                showToast('Video uploaded!', 'success');
+                showToast('Media uploaded!', 'success');
                 e.target.reset();
                 loadAdminMedia();
             } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Upload Video'; }
+            finally { btn.disabled = false; btn.textContent = 'Upload'; }
         });
 
         // === Login Photo Management ===

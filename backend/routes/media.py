@@ -14,7 +14,9 @@ from flask import current_app
 
 media_bp = Blueprint('media', __name__, url_prefix='/api/media')
 
-ALLOWED_VIDEO = {'mp4', 'webm', 'ogg'}
+ALLOWED_HERO_MEDIA = {'mp4', 'webm', 'ogg', 'jpg', 'jpeg', 'png', 'gif', 'webp'}
+VIDEO_EXTENSIONS = {'mp4', 'webm', 'ogg'}
+IMAGE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
 
 @media_bp.route('/hero', methods=['GET'])
 def get_hero_media():
@@ -33,26 +35,34 @@ def upload_hero_media(current_user):
 
     original_name = secure_filename(file.filename)
     ext = original_name.rsplit('.', 1)[1].lower() if '.' in original_name else ''
-    if ext not in ALLOWED_VIDEO:
-        return jsonify({'error': 'Allowed video formats: mp4, webm, ogg'}), 400
-    if file.content_length and file.content_length > 200 * 1024 * 1024:
+    if ext not in ALLOWED_HERO_MEDIA:
+        return jsonify({'error': 'Allowed formats: mp4, webm, ogg, jpg, png, webp, gif'}), 400
+
+    is_video = ext in VIDEO_EXTENSIONS
+    if is_video and file.content_length and file.content_length > 200 * 1024 * 1024:
         return jsonify({'error': 'File exceeds maximum size of 200MB'}), 400
 
     filename = f"{uuid.uuid4()}.{ext}"
-    upload_path = os.path.join(current_app.root_path, '..', 'frontend', 'assets', 'videos', filename)
+    if is_video:
+        upload_path = os.path.join(current_app.root_path, '..', 'frontend', 'assets', 'videos', filename)
+        file_url = f'/assets/videos/{filename}'
+    else:
+        upload_path = os.path.join(current_app.root_path, '..', 'frontend', 'assets', 'images', filename)
+        file_url = f'/assets/images/{filename}'
+
     os.makedirs(os.path.dirname(upload_path), exist_ok=True)
     file.save(upload_path)
 
     count = HeroMedia.query.count()
     media = HeroMedia(
         filename=filename,
-        file_url=f'/assets/videos/{filename}',
+        file_url=file_url,
         sort_order=count
     )
     db.session.add(media)
     db.session.commit()
 
-    return jsonify({'message': 'Video uploaded', 'media': media.to_dict()}), 201
+    return jsonify({'message': 'Media uploaded', 'media': media.to_dict()}), 201
 
 @media_bp.route('/hero/<media_id>', methods=['DELETE'])
 @admin_required
@@ -61,13 +71,13 @@ def delete_hero_media(current_user, media_id):
     if not media:
         return jsonify({'error': 'Media not found'}), 404
 
-    file_path = os.path.join(current_app.root_path, '..', 'frontend', 'assets', 'videos', media.filename)
+    file_path = os.path.join(current_app.root_path, '..', 'frontend', media.file_url.lstrip('/'))
     if os.path.exists(file_path):
         os.remove(file_path)
 
     db.session.delete(media)
     db.session.commit()
-    return jsonify({'message': 'Video deleted'}), 200
+    return jsonify({'message': 'Media deleted'}), 200
 
 @media_bp.route('/hero/reorder', methods=['PUT'])
 @admin_required
