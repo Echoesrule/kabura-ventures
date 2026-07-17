@@ -27,8 +27,10 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = _build_database_uri(os.environ.get('DATABASE_URL'))
     SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
         'connect_args': {'sslmode': os.environ.get('DATABASE_SSL_MODE', 'require')}
-    } if os.environ.get('DATABASE_SSL_MODE') else {}
+    }
 
     RATE_LIMITING_ENABLED = True
     

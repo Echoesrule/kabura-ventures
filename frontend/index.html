@@ -640,34 +640,48 @@
         // ==========================================
         (async function() {
             const container = document.getElementById('hero-media-container');
+            let media = [];
+
             try {
                 const result = await api.getHeroMedia();
-                const media = (result.media || []).filter(m => m.file_url);
-                if (media.length > 0) {
-                    container.innerHTML = '';
-                    media.forEach((m, i) => {
-                        const slide = document.createElement('div');
-                        slide.className = 'hero-media-slide' + (i === 0 ? ' active-slide' : '');
-                        const isVideo = /\.(mp4|webm|mov)/i.test(m.file_url);
-                        if (isVideo) {
-                            const vid = document.createElement('video');
-                            vid.muted = true;
-                            vid.playsInline = true;
-                            vid.loop = true;
-                            vid.autoplay = true;
-                            vid.src = m.file_url;
-                            slide.appendChild(vid);
-                        } else {
-                            const img = document.createElement('img');
-                            img.src = m.file_url;
-                            img.alt = m.title || 'Kenya';
-                            img.loading = i === 0 ? 'eager' : 'lazy';
-                            slide.appendChild(img);
-                        }
-                        container.appendChild(slide);
-                    });
-                }
+                media = (result.media || []).filter(m => m.file_url);
             } catch (e) {}
+
+            if (media.length === 0) {
+                try {
+                    const API_BASE = window.location.origin;
+                    const res = await fetch(API_BASE + '/api/media/hero-image');
+                    const data = await res.json();
+                    if (data.image && data.image.file_url) {
+                        media = [data.image];
+                    }
+                } catch (e) {}
+            }
+
+            if (media.length > 0) {
+                container.innerHTML = '';
+                media.forEach((m, i) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'hero-media-slide' + (i === 0 ? ' active-slide' : '');
+                    const isVideo = /\.(mp4|webm|mov)/i.test(m.file_url);
+                    if (isVideo) {
+                        const vid = document.createElement('video');
+                        vid.muted = true;
+                        vid.playsInline = true;
+                        vid.loop = true;
+                        vid.autoplay = true;
+                        vid.src = m.file_url;
+                        slide.appendChild(vid);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = m.file_url;
+                        img.alt = m.title || 'Kenya';
+                        img.loading = i === 0 ? 'eager' : 'lazy';
+                        slide.appendChild(img);
+                    }
+                    container.appendChild(slide);
+                });
+            }
 
             const slides = container.querySelectorAll('.hero-media-slide');
             let currentSlide = 0;
