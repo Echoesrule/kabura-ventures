@@ -21,7 +21,14 @@ IMAGE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
 @media_bp.route('/hero', methods=['GET'])
 def get_hero_media():
     media = HeroMedia.query.filter_by(is_active=True).order_by(HeroMedia.sort_order).all()
-    return jsonify({'media': [m.to_dict() for m in media]}), 200
+    backend_url = current_app.config.get('BACKEND_URL') or request.url_root.rstrip('/')
+    items = []
+    for m in media:
+        d = m.to_dict()
+        if d['file_url'] and not d['file_url'].startswith('http'):
+            d['file_url'] = f"{backend_url}{d['file_url']}"
+        items.append(d)
+    return jsonify({'media': items}), 200
 
 @media_bp.route('/hero', methods=['POST'])
 @admin_required
@@ -45,13 +52,16 @@ def upload_hero_media(current_user):
     filename = f"{uuid.uuid4()}.{ext}"
     if is_video:
         upload_path = os.path.join(current_app.root_path, '..', 'frontend', 'assets', 'videos', filename)
-        file_url = f'/assets/videos/{filename}'
+        relative_url = f'/assets/videos/{filename}'
     else:
         upload_path = os.path.join(current_app.root_path, '..', 'frontend', 'assets', 'images', filename)
-        file_url = f'/assets/images/{filename}'
+        relative_url = f'/assets/images/{filename}'
 
     os.makedirs(os.path.dirname(upload_path), exist_ok=True)
     file.save(upload_path)
+
+    backend_url = current_app.config.get('BACKEND_URL') or request.url_root.rstrip('/')
+    file_url = f"{backend_url}{relative_url}"
 
     count = HeroMedia.query.count()
     media = HeroMedia(
@@ -110,7 +120,11 @@ def get_hero_image():
     img = HeroImage.query.filter_by(is_active=True).order_by(HeroImage.created_at.desc()).first()
     if not img:
         return jsonify({'image': None}), 200
-    return jsonify({'image': img.to_dict()}), 200
+    d = img.to_dict()
+    backend_url = current_app.config.get('BACKEND_URL') or request.url_root.rstrip('/')
+    if d['file_url'] and not d['file_url'].startswith('http'):
+        d['file_url'] = f"{backend_url}{d['file_url']}"
+    return jsonify({'image': d}), 200
 
 
 @media_bp.route('/hero-image', methods=['POST'])
