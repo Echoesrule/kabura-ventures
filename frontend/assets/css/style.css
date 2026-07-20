@@ -52,7 +52,6 @@ body {
     font-family: var(--font-body);
     font-weight: 400;
     color: var(--body-color);
-    background-color: var(--soft-white);
     line-height: var(--line-height-normal);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -63,7 +62,6 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 600;
     line-height: var(--line-height-tight);
-    color: var(--heading-color);
     text-rendering: optimizeLegibility;
 }
 
@@ -2628,98 +2626,48 @@ img {
     .circle-center .center-icon { font-size: 1.1rem; }
 }
 .footer {
-    background: #112211;
-    color: rgba(255,255,255,0.6);
     padding: 0;
-}
-
-/* Newsletter Section */
-.newsletter-section {
     position: relative;
-    padding: 3.5rem 0;
-    background-image: url('/assets/images/savannah.jpg');
-    background-size: cover;
-    object-fit: contain;
-    background-position: center;
 }
-
-.newsletter-overlay {
+.footer img {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #112211 40%, transparent 100%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     pointer-events: none;
-}
-
-.newsletter-content {
-    position: relative;
-    z-index: 1;
-    max-width: 500px;
-}
-
-.newsletter-content h3 {
-    font-size: 1.4rem;
-    color: white;
-    margin-bottom: 0.5rem;
-}
-
-.newsletter-content p {
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-}
-
-.newsletter-form {
-    display: flex;
-    max-width: 480px;
-    gap: 0.5rem;
-}
-
-.newsletter-form input {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 0.9rem;
-}
-
-.newsletter-form button {
-    padding: 0.75rem 1.5rem;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    font-family: var(--font-heading);
-}
-
-.newsletter-form button:hover {
-    background: var(--accent-light);
-}
-
-@media (max-width: 700px) {
-    .newsletter-content {
-        max-width: 100%;
-    }
-    .newsletter-form {
-        flex-direction: column;
-    }
+    z-index: 0;
 }
 
 .footer-main {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 3rem 2rem 2rem;
+    padding: 26rem 2rem 2rem;
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
     gap: 2.5rem;
+    position: relative;
+    z-index: 2;
 }
+
+.footer-main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+ 
+    width: 100vw;
+    background: url('/assets/images/mountain2.png') center top / cover no-repeat;
+    filter: brightness(0.2) blur(2px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+
 
 .footer-col h4 {
     color: white;
-    font-size: 0.85rem;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 1.25rem;
@@ -2727,7 +2675,7 @@ img {
 }
 
 .footer-col p {
-    color: rgba(255,255,255,0.6);
+    color: rgb(255, 255, 255);
     font-size: 0.85rem;
     line-height: 1.7;
     margin-bottom: 1rem;
@@ -2735,7 +2683,7 @@ img {
 
 .footer-col a {
     display: block;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.89);
     font-size: 0.85rem;
     line-height: 2.2;
     transition: color 0.2s ease;
@@ -2809,6 +2757,21 @@ img {
     gap: 1rem;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.footer-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: -1;
+    pointer-events: none;
 }
 
 .footer-bottom-links {
@@ -2866,12 +2829,6 @@ img {
     .footer-main {
         grid-template-columns: 1fr;
         gap: 2rem;
-    }
-    .newsletter-section {
-        padding: 2.5rem 0;
-    }
-    .newsletter-form {
-        flex-direction: column;
     }
     .footer-bottom {
         flex-direction: column;

@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/assets/css/style.css?v=5">
-    <link rel="stylesheet" href="/assets/css/homepage.css?v=1">
+    <link rel="stylesheet" href="/assets/css/homepage.css?v=4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
@@ -139,51 +139,99 @@
     <!-- HERO SECTION -->
     <!-- ============================================ -->
     <section id="premium-hero">
-        <!-- Hero Images -->
-        <div class="hero-media-container" id="hero-media-container">
-            <div class="hero-media-slide active-slide">
-                <img src="/assets/images/placeholder.svg" alt="Kenya" loading="eager">
+        <!-- Layer 1: Sky background -->
+        <img class="hero-layer hero-sky" src="/assets/images/lionsky.png" alt="" aria-hidden="true" loading="eager">
+        <img class="hero-layer hero-sky hero-sky-next" src="" alt="" aria-hidden="true">
+
+        <!-- Layer 2: Giant EXPLORE text (sits between sky and mountain) -->
+        <div class="hero-layer hero-explore" aria-hidden="true">
+            <h1>KARIBU</h1>
+        </div>
+
+        <!-- Layer 3: Mountain silhouette (naturally hides lower portion of text) -->
+        <img class="hero-layer hero-mountain" src="/assets/images/lion.png" alt="" aria-hidden="true" loading="eager">
+
+        <!-- Layer 3.5: Dark gradient overlay for text legibility -->
+        <div class="hero-layer hero-overlay"></div>
+
+        <!-- Layer 4: Kenya Map Animation + KENYA text + CTA -->
+        <div class="hero-layer hero-content">
+            <div class="hero-map-wrapper">
+                <canvas id="confetti-canvas"></canvas>
+                <div class="hero-map-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 550" class="kenya-map" id="kenya-svg">
+                        <path id="kenya-outline" d="
+                            M 160,35 
+                            C 170,20 195,15 200,30 
+                            C 205,45 220,50 240,48 
+                            C 270,45 310,65 330,75 
+                            C 345,82 355,75 365,85 
+                            C 375,95 440,120 445,125 
+                            C 450,130 425,160 420,180 
+                            C 415,200 410,260 405,330 
+                            C 402,345 425,370 445,395 
+                            C 450,402 430,420 410,410 
+                            C 390,400 375,430 365,450 
+                            C 355,470 345,520 330,540 
+                            C 310,515 280,480 255,465 
+                            C 250,460 255,445 250,430 
+                            C 245,415 170,360 110,315 
+                            C 95,305 130,295 145,290 
+                            C 155,285 145,270 135,270 
+                            C 120,270 130,250 145,235 
+                            C 165,215 185,185 155,145 
+                            C 135,120 115,100 115,95 
+                            Z" 
+                        />
+                    </svg>
+                    <div class="plane-container" id="plane">
+                        <svg class="plane-icon" viewBox="0 0 24 24">
+                            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                        </svg>
+                    </div>
+                    <div class="hero-map-text">
+                        <h1 class="hero-kenya">KENYA</h1>
+                        <p class="hero-description">The home of Wildlife</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Dark Overlay -->
-        <div class="hero-overlay"></div>
-
-        <!-- Hero Content -->
-        <div class="hero-content">
-            <div class="hero-text-rotator" id="hero-text-rotator">
-                <div class="bg-text" aria-hidden="true">
-                    <h1>EXPLORE</h1>
-                </div>
-                <div class="hero-header">
-                    <h1>KENYA</h1>
-                </div>
-            </div>
-            <p class="hero-description">The home of Wildlife</p>
-            <div class="hero-cta-group">
-                <a href="/tours.html" class="hero-cta-white magnetic-btn">
-                    <span>Explore Kabura Plans</span>
-                </a>
-                <div class ="arrow">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
+        <div class="hero-bottom-row">
+            <div class="intro-text">
+                <h2>Step Into<br> The Heart Of Kenya</h2>
+                <p>Explore the vast savannahs of kenya. Discover amaizing stuff. Meet interesting people. Welcome to Kenya. "Hakuna Matata"</p>
+                <div class="planbtn">
+                    <a href="/tours.html" class="hero-cta-white magnetic-btn">
+                        <span>Plan our Kenya Tours</span>
+                    </a>
+                    <a href="/tours.html" class="planbtn-arrow" aria-label="Plan our Kenya Tours">
+                        <img src="/assets/images/right-arrow.png" alt="" class="planbtn-arrow-img">
+                    </a>
                 </div>
             </div>
-        </div>
-
-        <!-- Floating Stats -->
-        <div class="hero-stats">
-            <div class="hero-stat-item">
-                <span class="hero-stat-number" data-count="1000">0</span><span>+</span>
-                <span class="hero-stat-label">Happy Travelers</span>
-            </div>
-            <div class="hero-stat-item">
-                <span class="hero-stat-number" data-count="50">0</span><span>+</span>
-                <span class="hero-stat-label">Destinations</span>
-            </div>
-            <div class="hero-stat-item">
-                <span class="hero-stat-number" data-count="15">0</span><span>+</span>
-                <span class="hero-stat-label">Years Experience</span>
+            <div class="sample-location-cards">
+                <div class="location-card location-card-1" data-image="/assets/images/savannah.jpg" data-name="MAASAI MARA" data-desc="Witness the Great Migration across endless golden plains">
+                    <img src="/assets/images/savannah.jpg" alt="Maasai Mara" loading="eager">
+                    <div class="location-card-overlay">
+                        <span class="location-card-name">Maasai Mara</span>
+                        <span class="location-card-tag"><i class="fas fa-map-marker-alt"></i> Kenya</span>
+                    </div>
+                </div>
+                <div class="location-card location-card-2" data-image="/assets/images/0b077ea0-8715-4255-af38-255ad10c5549.jpg" data-name="DIANI BEACH" data-desc="Turquoise waters and white sand on the Indian Ocean coast">
+                    <img src="/assets/images/0b077ea0-8715-4255-af38-255ad10c5549.jpg" alt="Diani Beach" loading="eager">
+                    <div class="location-card-overlay">
+                        <span class="location-card-name">Diani Beach</span>
+                        <span class="location-card-tag"><i class="fas fa-map-marker-alt"></i> Kenya</span>
+                    </div>
+                </div>
+                <div class="location-card location-card-3" data-image="/assets/images/80b9c371-ae39-4965-9d39-8a0672e366c0.jpg" data-name="MOUNT KENYA" data-desc="Summit the roof of Africa at dawn">
+                    <img src="/assets/images/80b9c371-ae39-4965-9d39-8a0672e366c0.jpg" alt="Mount Kenya" loading="eager">
+                    <div class="location-card-overlay">
+                        <span class="location-card-name">Mount Kenya</span>
+                        <span class="location-card-tag"><i class="fas fa-map-marker-alt"></i> Kenya</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -200,378 +248,411 @@
     <section id="featured-experiences" class="hp-section hp-section--white">
         <div class="hp-container">
             <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">Curated For You</span>
-                <h2 class="hp-section-title">Featured Experiences</h2>
-                <p class="hp-section-subtitle">Handpicked journeys that showcase the raw beauty and wonder of Kenya's most extraordinary landscapes.</p>
+                <h2 class="hp-section-title">Discover Thrilling Locations</h2>
             </div>
-            <div class="experiences-grid" id="destinations-grid">
-                <div class="skeleton-card"><div class="skeleton-img" style="height:100%;min-height:400px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- POPULAR DESTINATIONS -->
-    <!-- ============================================ -->
-    <section id="popular-destinations" class="hp-section hp-section--off-white">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">Explore Kenya</span>
-                <h2 class="hp-section-title">Popular Destinations</h2>
-                <p class="hp-section-subtitle">From the sweeping plains of the Maasai Mara to the crystal-clear waters of Diani Beach — every destination tells a story.</p>
-            </div>
-            <div id="featured-tours" class="destinations-magazine-grid">
-                <div class="skeleton-card" style="grid-column:span 2;grid-row:span 2;"><div class="skeleton-img" style="height:100%;min-height:400px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-                <div class="skeleton-card"><div class="skeleton-img" style="height:200px;border-radius:20px;"></div></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- LUXURY SAFARI PACKAGES -->
-    <!-- ============================================ -->
-    <section id="safari-packages" class="hp-section hp-section--white">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">Safari Packages</span>
-                <h2 class="hp-section-title">Luxury Safari Journeys</h2>
-                <p class="hp-section-subtitle">Every safari is a masterpiece — carefully designed to immerse you in the wild beauty of Kenya's most iconic landscapes.</p>
-            </div>
-        </div>
-        <div class="safari-packages-scroll" id="safari-tours-grid">
-            <div class="skeleton-card" style="min-width:380px;height:480px;border-radius:20px;"><div class="skeleton-img" style="height:60%;border-radius:20px 20px 0 0;"></div></div>
-            <div class="skeleton-card" style="min-width:380px;height:480px;border-radius:20px;"><div class="skeleton-img" style="height:60%;border-radius:20px 20px 0 0;"></div></div>
-            <div class="skeleton-card" style="min-width:380px;height:480px;border-radius:20px;"><div class="skeleton-img" style="height:60%;border-radius:20px 20px 0 0;"></div></div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- TRAVEL MEMORIES CAROUSEL -->
-    <!-- ============================================ -->
-    <section id="travel-memories" class="hp-section hp-section--dark">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label" style="color:rgba(255,255,255,0.5);">Travel Memories</span>
-                <h2 class="hp-section-title" style="color:#fff;">Moments Worth Treasuring</h2>
-                <p class="hp-section-subtitle" style="color:rgba(255,255,255,0.6);">Every journey with us becomes a story you'll tell for a lifetime.</p>
-            </div>
-        </div>
-        <div class="memories-carousel-container">
-            <div class="memories-carousel" id="memories-track">
-                <div class="memory-card active-card">
-                    <img src="/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg" alt="Safari Adventure" loading="lazy">
-                    <div class="memory-overlay">
-                        <div class="memory-stamp"><div class="stamp-icon"><i class="fas fa-passport"></i></div><div class="stamp-year">2024</div></div>
-                        <span class="memory-destination">Maasai Mara</span>
-                        <span class="memory-country-flag">🇰🇪 Kenya</span>
-                        <p class="memory-story">Witnessed the Great Migration — a million wildebeest thundering across the plains at sunrise.</p>
-                    </div>
-                </div>
-                <div class="memory-card side-card">
-                    <img src="/assets/images/0b077ea0-8715-4255-af38-255ad10c5549.jpg" alt="Beach Escape" loading="lazy">
-                    <div class="memory-overlay">
-                        <div class="memory-stamp"><div class="stamp-icon"><i class="fas fa-umbrella-beach"></i></div><div class="stamp-year">2024</div></div>
-                        <span class="memory-destination">Diani Beach</span>
-                        <span class="memory-country-flag">🇰🇪 Kenya</span>
-                        <p class="memory-story">Turquoise waters, white sand, and a sunset that painted the Indian Ocean in liquid gold.</p>
-                    </div>
-                </div>
-                <div class="memory-card side-card">
-                    <img src="/assets/images/107a6671-037c-4687-8741-b77dc9af6828.jpg" alt="Camping" loading="lazy">
-                    <div class="memory-overlay">
-                        <div class="memory-stamp"><div class="stamp-icon"><i class="fas fa-campground"></i></div><div class="stamp-year">2024</div></div>
-                        <span class="memory-destination">Amboseli</span>
-                        <span class="memory-country-flag">🇰🇪 Kenya</span>
-                        <p class="memory-story">Fell asleep under a canopy of stars with Kilimanjaro towering in the distance.</p>
-                    </div>
-                </div>
-                <div class="memory-card side-card">
-                    <img src="/assets/images/16a6ac20-b47f-430c-96a8-55f0985c65ad.jpg" alt="Balloon Safari" loading="lazy">
-                    <div class="memory-overlay">
-                        <div class="memory-stamp"><div class="stamp-icon"><i class="fas fa-wind"></i></div><div class="stamp-year">2024</div></div>
-                        <span class="memory-destination">Hot Air Balloon</span>
-                        <span class="memory-country-flag">🌍 East Africa</span>
-                        <p class="memory-story">Drifting silently above the savannah as herds of elephants wandered below at dawn.</p>
-                    </div>
-                </div>
-                <div class="memory-card side-card">
-                    <img src="/assets/images/3971f1c1-6347-426a-b799-c339b18125fc.jpg" alt="Cultural Visit" loading="lazy">
-                    <div class="memory-overlay">
-                        <div class="memory-stamp"><div class="stamp-icon"><i class="fas fa-users"></i></div><div class="stamp-year">2024</div></div>
-                        <span class="memory-destination">Maasai Village</span>
-                        <span class="memory-country-flag">🇰🇪 Kenya</span>
-                        <p class="memory-story">Shared chai with Maasai warriors and danced under the African sky.</p>
-                    </div>
-                </div>
-                <div class="memory-card side-card">
-                    <img src="/assets/images/80b9c371-ae39-4965-9d39-8a0672e366c0.jpg" alt="Mountain Hiking" loading="lazy">
-                    <div class="memory-overlay">
-                        <div class="memory-stamp"><div class="stamp-icon"><i class="fas fa-mountain"></i></div><div class="stamp-year">2024</div></div>
-                        <span class="memory-destination">Mount Kenya</span>
-                        <span class="memory-country-flag">🇰🇪 Kenya</span>
-                        <p class="memory-story">Summit at dawn — standing on the roof of Africa as the sun broke the horizon.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="memories-nav" id="memories-dots"></div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- LUXURY HOTELS -->
-    <!-- ============================================ -->
-    <section id="luxury-hotels" class="hp-section hp-section--off-white">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">Where You'll Stay</span>
-                <h2 class="hp-section-title">Luxury Hotels & Lodges</h2>
-                <p class="hp-section-subtitle">Handpicked accommodations that blend world-class comfort with the untamed beauty of the African wilderness.</p>
-            </div>
-            <div id="featured-hotels" class="hotels-glass-grid">
-                <div class="skeleton-card" style="border-radius:20px;"><div class="skeleton-img" style="height:260px;border-radius:20px 20px 0 0;"></div><div class="skeleton-body" style="padding:1.25rem;"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div></div></div>
-                <div class="skeleton-card" style="border-radius:20px;"><div class="skeleton-img" style="height:260px;border-radius:20px 20px 0 0;"></div><div class="skeleton-body" style="padding:1.25rem;"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div></div></div>
-                <div class="skeleton-card" style="border-radius:20px;"><div class="skeleton-img" style="height:260px;border-radius:20px 20px 0 0;"></div><div class="skeleton-body" style="padding:1.25rem;"><div class="skeleton-line w-60"></div><div class="skeleton-line w-40"></div></div></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- FLIGHT ASSISTANCE -->
-    <!-- ============================================ -->
-    <section id="flight-assistance" class="hp-section hp-section--dark">
-        <div class="hp-container">
-            <div class="flight-layout">
-                <div class="flight-form-area gs-reveal">
-                    <span class="hp-section-label" style="color:rgba(255,255,255,0.5);">Flight Assistance</span>
-                    <h2 class="hp-section-title" style="color:#fff;">Fly to Kenya with Ease</h2>
-                    <p class="hp-section-subtitle" style="color:rgba(255,255,255,0.6);">We partner with major airlines to find you the best routes and fares. From booking to airport transfers — we handle it all.</p>
-                    <div class="flight-booking-form" style="margin-top:2rem;">
-                        <div class="flight-form-row">
-                            <div class="flight-form-group">
-                                <label>From</label>
-                                <input type="text" placeholder="Your city" class="form-input">
-                            </div>
-                            <div class="flight-form-group">
-                                <label>To</label>
-                                <input type="text" value="Nairobi, Kenya" class="form-input" readonly>
-                            </div>
+            <div class="experiences-duo">
+                <div class="exp-duo-card" id="exp-duo-top">
+                    <div class="exp-duo-slides">
+                        <div class="exp-duo-slide active" data-name="Maasai Mara" data-location="Narok County, Kenya" data-desc="The crown jewel of African wildlife reserves. Every year between July and October, over two million wildebeest, zebras, and gazelles surge across its grasslands in the Great Migration — the greatest wildlife spectacle on Earth. Game drives reveal lions lounging in acacia shade, leopards draped over sausage trees, and cheetahs sprinting across open plains at breathtaking speeds.">
+                            <img src="/assets/images/maasai mara.jpg" alt="Maasai Mara">
                         </div>
-                        <div class="flight-form-row">
-                            <div class="flight-form-group">
-                                <label>Departure</label>
-                                <input type="date" class="form-input">
-                            </div>
-                            <div class="flight-form-group">
-                                <label>Return</label>
-                                <input type="date" class="form-input">
-                            </div>
+                        <div class="exp-duo-slide" data-name="Amboseli" data-location="Kajiado County, Kenya" data-desc="Few places on Earth offer a more dramatic backdrop than Amboseli, where the snow-capped dome of Mount Kilimanjaro towers over vast elephant herds. The park's dried lake beds and emerald swamps create striking contrasts, drawing flocks of flamingos, pelicans, and crowned cranes. Dawn here is sacred — golden light floods the plains as Kilimanjaro's glaciers catch fire.">
+                            <img src="/assets/images/mt- kenya.jpg" alt="Amboseli">
                         </div>
-                        <a href="/flights.html" class="flight-search-btn magnetic-btn">
-                            <span>Request Quote</span> <i class="fas fa-paper-plane"></i>
+                        <div class="exp-duo-slide" data-name="Samburu" data-location="Samburu County, Kenya" data-desc="Kenya's hidden northern frontier where rugged red-earth landscapes meet the lifegiving Ewaso Nyiro River. Samburu shelters species found nowhere else on the continent — Grevy's zebras with their narrow stripes, towering reticulated giraffes, and the graceful gerenuk standing on hind legs to browse. Cultural encounters with semi-nomadic Samburu warriors add a deeply authentic dimension.">
+                            <img src="/assets/images/mt- kenya.jpg" alt="Samburu">
+                        </div>
+                    </div>
+                    <div class="exp-duo-overlay">
+                        <div class="exp-duo-heading">
+                            <span class="exp-duo-name">Maasai Mara</span>
+                            <img src="/assets/images/right-arrow.png" alt="" class="exp-duo-arrow-img">
+                        </div>
+                        <span class="exp-duo-location"><i class="fas fa-map-marker-alt"></i> Narok County, Kenya</span>
+                        <p class="exp-duo-desc">The crown jewel of African wildlife reserves. Every year between July and October, over two million wildebeest, zebras, and gazelles surge across its grasslands in the Great Migration — the greatest wildlife spectacle on Earth.</p>
+                    </div>
+                    <button class="exp-duo-prev" aria-label="Previous"><img src="/assets/images/right-arrow.png" alt="" class="exp-duo-nav-img exp-duo-nav-img--prev"></button>
+                    <button class="exp-duo-next" aria-label="Next"><img src="/assets/images/right-arrow.png" alt="" class="exp-duo-nav-img exp-duo-nav-img--next"></button>
+                </div>
+                <div class="exp-duo-card" id="exp-duo-bottom">
+                    <div class="exp-duo-slides">
+                        <div class="exp-duo-slide" data-name="Diani Beach" data-location="Kwale County, Kenya" data-desc="A ribbon of powdery white sand stretching along Kenya's southern coastline, lapped by impossibly clear turquoise waters. Beneath the surface, vibrant coral gardens pulse with life — sea turtles glide past clownfish, and dolphin pods arc through the morning light. Above water, dune-backed beach bars serve fresh coconut cocktails as the Indian Ocean turns to liquid gold at sunset.">
+                            <img src="/assets/images/0b077ea0-8715-4255-af38-255ad10c5549.jpg" alt="Diani Beach">
+                        </div>
+                        <div class="exp-duo-slide active" data-name="Mount Kenya" data-location="Central Kenya" data-desc="Africa's second-highest peak and a UNESCO World Heritage Site, Mount Kenya rises dramatically from equatorial forests to glacial cirques. The trek to Point Lenana at 4,985 metres passes through bamboo jungles, giant heather moorlands, and otherworldly lobelia forests. Reaching the summit at dawn — watching the sun ignite Kilimanjaro's glaciers on the horizon — is a life-defining moment.">
+                            <img src="/assets/images/mt- kenya.jpg" alt="Mount Kenya">
+                        </div>
+                        <div class="exp-duo-slide" data-name="Lake Nakuru" data-location="Nakuru County, Kenya" data-desc="A shimmering alkaline lake encircled by wooded grasslands and yellow-barked acacia forest. Its shores erupt in waves of pink as millions of lesser flamingos gather alongside great white pelicans. Beyond the birdlife, Lake Nakuru National Park shelters endangered black and white rhinos, elusive leopards, and troops of baboons that patrol the lakeside with comical authority.">
+                            <img src="/assets/images/mt kenya.jpg" alt="Lake Nakuru">
+                        </div>
+                    </div>
+                    <div class="exp-duo-overlay">
+                        <div class="exp-duo-heading">
+                            <span class="exp-duo-name">Mount Kenya</span>
+                            <img src="/assets/images/right-arrow.png" alt="" class="exp-duo-arrow-img">
+                        </div>
+                        <span class="exp-duo-location"><i class="fas fa-map-marker-alt"></i> Central Kenya</span>
+                        <p class="exp-duo-desc">Africa's second-highest peak and a UNESCO World Heritage Site, Mount Kenya rises dramatically from equatorial forests to glacial cirques. The trek to Point Lenana at 4,985 metres passes through bamboo jungles, giant heather moorlands, and otherworldly lobelia forests.</p>
+                    </div>
+                    <button class="exp-duo-prev" aria-label="Previous"><img src="/assets/images/right-arrow.png" alt="" class="exp-duo-nav-img exp-duo-nav-img--prev"></button>
+                    <button class="exp-duo-next" aria-label="Next"><img src="/assets/images/right-arrow.png" alt="" class="exp-duo-nav-img exp-duo-nav-img--next"></button>
+                </div>
+            </div>
+            <div class="hp-section-cta-row hp-section-cta-row--bottom">
+                <a href="/destinations.html" class="hp-section-btn hp-section-btn--black">
+                    <span>View All Locations</span>
+                </a>
+                <a href="/destinations.html" class="hp-section-btn-arrow hp-section-btn-arrow--black" aria-label="View All Locations">
+                    <img src="/assets/images/right-arrow.png" alt="" class="hp-section-btn-arrow-img">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- WHAT WE OFFER -->
+    <!-- ============================================ -->
+    <section id="what-we-offer" class="hp-section hp-section--off-white">
+        <div class="hp-container">
+            <div class="hp-section-header gs-reveal">
+                <h2 class="hp-section-title">What We Offer</h2>
+                <p class="hp-section-subtitle">Everything you need for an unforgettable Kenyan adventure, curated with care.</p>
+            </div>
+        </div>
+        <div class="offer-carousel-wrap">
+            <div class="offer-carousel" id="offer-carousel">
+                <div class="offer-card">
+                    <img src="/assets/images/savannah.jpg" alt="Tour Guides" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Expert Tour Guides</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Passionate local guides who bring Kenya's wildlife and culture to life.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/0b077ea0-8715-4255-af38-255ad10c5549.jpg" alt="Hotels" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Lively Hotels</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Handpicked stays from luxury lodges to vibrant boutique hotels.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/80b9c371-ae39-4965-9d39-8a0672e366c0.jpg" alt="Honeymoons" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Honeymoons</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Romantic escapes designed for couples seeking unforgettable moments.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/3971f1c1-6347-426a-b799-c339b18125fc.jpg" alt="Safari" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Safari Adventures</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Thrilling game drives across Kenya's most iconic wildlife reserves.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg" alt="Culture" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Cultural Experiences</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Immerse yourself in Maasai traditions and authentic Kenyan heritage.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/ebe55aa8-79f4-4306-9e6d-0bc6ab6671ce.jpg" alt="Beach" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Beach Retreats</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Pristine coastal escapes along the Indian Ocean shoreline.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/80b9c371-ae39-4965-9d39-8a0672e366c0.jpg" alt="Mountains" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Mountain Treks</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Conquer legendary peaks from Mount Kenya to the Aberdares.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <img src="/assets/images/savannah.jpg" alt="Groups" class="offer-card-img">
+                    <div class="offer-card-overlay">
+                        <div class="offer-card-overlay-inner">
+                            <div class="offer-card-heading">
+                                <h3 class="offer-card-title">Group Tours</h3>
+                                <img src="/assets/images/right-arrow.png" alt="" class="offer-card-chevron">
+                            </div>
+                            <p class="offer-card-desc">Unforgettable group adventures tailored for friends and families.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="offer-nav-row">
+                <button class="offer-prev" aria-label="Previous"><img src="/assets/images/right-arrow.png" alt="" class="offer-nav-img offer-nav-img--prev"></button>
+                <button class="offer-next" aria-label="Next"><img src="/assets/images/right-arrow.png" alt="" class="offer-nav-img offer-nav-img--next"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- IN YOUR KABURA VENTURE -->
+    <!-- ============================================ -->
+    <section id="kabura-venture" class="hp-section hp-section--white">
+        <div class="hp-container">
+            <div class="venture-layout gs-reveal">
+                <div class="venture-text">
+                    <div class="grey">
+                        <h2>Unleash Your<br>Wild Spirit !!</h2>
+                    </div>
+                    <h2 class="venture-heading">In Your <br> Kabura Adventure</h2>
+                    <p class="venture-desc">Every detail is handled — from the moment you land in Kenya to the last sunset over the savannah. Our team crafts each trip around your pace, your interests, and your sense of adventure. You just show up and live it.</p>
+                </div>
+                <div class="venture-image">
+                    <img src="/assets/images/dir.jpg" alt="Kabura Venture">
+
+                    
+                  
+                </div>
+                  <div class="venture-btn-row">
+                    <a href="/tours.html" class="venture-btn">
+                        <span>Book a Plan</span>
+                    </a>
+                    <a href="/tours.html" class="venture-btn-arrow-circle" aria-label="Book a Plan">
+                        <img src="/assets/images/right-arrow.png" alt="" class="venture-btn-arrow">
+                    </a>
+                  </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- ENJOY EVERY SAFARI -->
+    <!-- ============================================ -->
+    <section id="enjoy-safari" class="hp-section hp-section--white">
+        <div class="hp-container">
+            <div class="venture-layout venture-layout--reversed gs-reveal">
+                <div class="venture-image">
+                    <img src="/assets/images/savannah.jpg" alt="Enjoy Every Safari">
+                </div>
+                <div class="venture-text">
+                    <div class="grey">
+                        <h2>Hakuna</br> Matata !!</h2>
+                    </div>
+                    <h2 class="venture-heading">Enjoy Every Safari</h2>
+                    <p class="venture-desc">An unforgettable adventure awaits — from golden savannahs to vibrant cultures, every moment is crafted to leave you breathless. This is not just a trip, it's the story you'll tell forever.</p>
+                    <div class="venture-btn-row">
+                        <a href="/tours.html" class="venture-btn">
+                            <span>Explore All Events</span>
+                        </a>
+                        <a href="/tours.html" class="venture-btn-arrow-circle" aria-label="Explore All Events">
+                            <img src="/assets/images/right-arrow.png" alt="" class="venture-btn-arrow">
                         </a>
                     </div>
                 </div>
-                <div class="flight-map-area gs-reveal">
-                    <div class="flight-map-dots">
-                        <div class="flight-map-dot" style="top:45%;left:70%;" title="Nairobi"></div>
-                        <div class="flight-map-dot" style="top:30%;left:22%;" title="London"></div>
-                        <div class="flight-map-dot" style="top:35%;left:12%;" title="New York"></div>
-                        <div class="flight-map-dot" style="top:50%;left:52%;" title="Dubai"></div>
-                        <div class="flight-map-dot" style="top:28%;left:42%;" title="Paris"></div>
-                        <div class="flight-map-dot" style="top:65%;left:78%;" title="Sydney"></div>
-                        <div class="flight-path" style="top:30%;left:22%;width:48%;transform:rotate(8deg);"></div>
-                        <div class="flight-path" style="top:35%;left:12%;width:58%;transform:rotate(5deg);"></div>
-                        <div class="flight-path" style="top:48%;left:52%;width:18%;transform:rotate(-15deg);"></div>
-                        <div class="flight-path" style="top:30%;left:42%;width:28%;transform:rotate(18deg);"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- ABOUT US -->
+    <!-- ============================================ -->
+    <section id="about-us" class="hp-section hp-section--white">
+        <div class="hp-container">
+            <div class="gs-reveal">
+                <h2 class="about-us-heading">About Us</h2>
+            </div>
+            <div class="about-hero gs-reveal">
+                <img src="/assets/images/camp2.jpg" alt="Kabura Adventures camping experience">
+                <div class="about-hero-overlay"></div>
+                <div class="about-hero-content">
+                    <h2 class="about-hero-heading">Twende Nayo,<br>Learn How We Operate</h2>
+                    <p class="about-hero-desc">Kabura Adventures is more than a tour company — we're storytellers, explorers, and locals who live for the wild. Every safari, every trail, every sunset is designed to move you.</p>
+
+                    <div class="about-values" style="margin-bottom:0.5rem;">
+                        <div class="about-value-pill about-value-pill--light">
+                            <i class="fas fa-compass"></i>
+                            <span>Authentic Experiences</span>
+                        </div>
+                        <div class="about-value-pill about-value-pill--light">
+                            <i class="fas fa-leaf"></i>
+                            <span>Eco-Conscious</span>
+                        </div>
+                        <div class="about-value-pill about-value-pill--light">
+                            <i class="fas fa-heart"></i>
+                            <span>Community First</span>
+                        </div>
                     </div>
+
+                    <div class="about-bottom-row">
+                        <div class="about-stats-animated">
+                            <div class="about-stat-item">
+                                <span class="about-stat-number" data-target="500">0 </span>
+                                <span class="about-stat-label">Happy Travelers</span>
+                            </div>
+                            <div class="about-stat-item">
+                                <span class="about-stat-number" data-target="10">0 </span>
+                                <span class="about-stat-label">Years Experience</span>
+                            </div>
+                            <div class="about-stat-item">
+                                <span class="about-stat-number" data-target="200">0</span>
+                                <span class="about-stat-label">Safaris Completed</span>
+                            </div>
+                        </div>
+                        
+                     <div class="learn-more">
+                           <a href="/about.html" class="about-learn-more">
+                            <span class="about-learn-more-text">Learn More</span>
+                            <div class="about-learn-more-chevron">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </a>
+                     </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ============================================ -->
-    <!-- WHY CHOOSE KABURA -->
+    <!-- FLY WITH US -->
     <!-- ============================================ -->
-    <section id="why-choose" class="hp-section hp-section--white">
+    <section id="fly-with-us" class="hp-section hp-section--white fly-with-us-section">
+        <div class="hp-container">
+            <img src="/assets/images/plane_trail-removebg-preview.png" alt="" class="fly-plane-trail" aria-hidden="true">
+            <div class="venture-layout venture-layout--reversed gs-reveal">
+                <div class="venture-image">
+                    <img src="/assets/images/hotairballon.png" alt="Fly With Kabura Adventures">
+                    <div class="venture-btn-row">
+                        <a href="/flights.html" class="venture-btn">
+                            <span>Book a Flight</span>
+                        </a>
+                        <a href="/flights.html" class="venture-btn-arrow-circle" aria-label="Book a Flight">
+                            <img src="/assets/images/right-arrow.png" alt="" class="venture-btn-arrow">
+                        </a>
+                    </div>
+                </div>
+                <div class="venture-text">
+                    <div class="grey">
+                        <h2>Soar Above<br>The Skies !!</h2>
+                    </div>
+                    <h2 class="venture-heading">Fly With Us</h2>
+                    <p class="venture-desc">Get there in style — we handle domestic and regional flights across Kenya and East Africa. From Nairobi to the Masai Mara, Mombasa to Zanzibar, we'll get you to your adventure seamlessly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- TESTIMONIALS -->
+    <!-- ============================================ -->
+    <section id="testimonials" class="hp-section hp-section--off-white">
         <div class="hp-container">
             <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">The Kabura Difference</span>
-                <h2 class="hp-section-title">Why Choose Kabura Adventures</h2>
-                <p class="hp-section-subtitle">We don't just plan trips — we craft life-changing experiences rooted in authenticity, safety, and genuine love for this land.</p>
-            </div>
-            <div class="why-choose-grid">
-                <div class="why-choose-card gs-reveal">
-                    <span class="why-choose-number">01</span>
-                    <div class="why-choose-icon"><i class="fas fa-compass"></i></div>
-                    <h3 class="why-choose-title">Local Expertise</h3>
-                    <p class="why-choose-desc">Born and raised in Kenya — our guides know every hidden trail, every secret watering hole, every story behind the landmarks.</p>
-                </div>
-                <div class="why-choose-card gs-reveal">
-                    <span class="why-choose-number">02</span>
-                    <div class="why-choose-icon"><i class="fas fa-gem"></i></div>
-                    <h3 class="why-choose-title">Bespoke Itineraries</h3>
-                    <p class="why-choose-desc">No cookie-cutter tours. Every journey is handcrafted around your interests, pace, and sense of adventure.</p>
-                </div>
-                <div class="why-choose-card gs-reveal">
-                    <span class="why-choose-number">03</span>
-                    <div class="why-choose-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3 class="why-choose-title">Safe & Trusted</h3>
-                    <p class="why-choose-desc">24/7 on-ground support, vetted accommodations, and secure booking. Your safety is never compromised.</p>
-                </div>
-                <div class="why-choose-card gs-reveal">
-                    <span class="why-choose-number">04</span>
-                    <div class="why-choose-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                    <h3 class="why-choose-title">Best Value Promise</h3>
-                    <p class="why-choose-desc">Direct partnerships with lodges and operators eliminate middlemen — giving you the best experience at the best price.</p>
-                </div>
+                <h2 class="hp-section-title">What Our Travelers Say</h2>
+                <p class="hp-section-subtitle">Real stories from real adventurers who explored Kenya with us.</p>
             </div>
         </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- CUSTOMER STORIES -->
-    <!-- ============================================ -->
-    <section id="customer-stories" class="hp-section hp-section--off-white">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">Testimonials</span>
-                <h2 class="hp-section-title">Stories From Our Travelers</h2>
-                <p class="hp-section-subtitle">Real experiences from real adventurers who explored Kenya with us.</p>
+        <div class="testimonials-wrap">
+                <div class="testimonials-quote-col">
+                <img src="/assets/images/clause-removebg-preview.png" alt="" class="testimonial-quote-mark" aria-hidden="true">
+                <div class="testimonials-cta-row">
+                    <a href="#" class="hp-section-btn hp-section-btn--black">
+                        <span>See All Reviews</span>
+                    </a>
+                    <a href="#" class="hp-section-btn-arrow hp-section-btn-arrow--black" aria-label="See All Reviews">
+                        <img src="/assets/images/right-arrow.png" alt="" class="hp-section-btn-arrow-img">
+                    </a>
+                </div>
             </div>
-            <div class="customer-stories-carousel" id="testimonials-track">
-                <div class="story-card">
-                    <div class="story-quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <div class="story-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <p class="story-quote">"An absolutely breathtaking experience! The Maasai Mara safari exceeded all our expectations. Our guide was incredibly knowledgeable and passionate."</p>
-                    <div class="story-author">
-                        <div class="story-portrait" style="background:linear-gradient(135deg,#2E7D32,#4CAF50);color:#fff;">SM</div>
+            <div class="testimonials-track" id="testimonials-track">
+                <div class="testimonial-card gs-reveal">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"From the moment we landed in Nairobi, everything was taken care of. The Maasai Mara was breathtaking — we saw all of the Big Five in a single day. Our guide, James, was incredible."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SL</div>
                         <div>
-                            <strong class="story-author-name">Sarah M.</strong>
-                            <span class="story-author-location">Nairobi, Kenya</span>
+                            <span class="testimonial-name">Sarah & Liam</span>
+                            <span class="testimonial-from">New York, USA</span>
                         </div>
                     </div>
                 </div>
-                <div class="story-card">
-                    <div class="story-quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <div class="story-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <p class="story-quote">"The beach getaway in Diani was pure paradise. Crystal clear waters, world-class snorkeling, and the resort was beyond luxurious."</p>
-                    <div class="story-author">
-                        <div class="story-portrait" style="background:linear-gradient(135deg,#C9A227,#A68520);color:#fff;">JK</div>
+                <div class="testimonial-card gs-reveal">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"We came for our honeymoon and it exceeded every expectation. The lodge in Amboseli had Kilimanjaro as a backdrop — pure magic. Kabura made everything seamless and personal."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AP</div>
                         <div>
-                            <strong class="story-author-name">James K.</strong>
-                            <span class="story-author-location">London, UK</span>
+                            <span class="testimonial-name">Amira & Pierre</span>
+                            <span class="testimonial-from">Paris, France</span>
                         </div>
                     </div>
                 </div>
-                <div class="story-card">
-                    <div class="story-quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <div class="story-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <p class="story-quote">"Mount Kenya trek was challenging but the Kabura team made sure we were safe and comfortable throughout. Standing on the summit at dawn — unforgettable."</p>
-                    <div class="story-author">
-                        <div class="story-portrait" style="background:linear-gradient(135deg,#6D4C41,#8D6E63);color:#fff;">AP</div>
+                <div class="testimonial-card gs-reveal">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Our family trip to Kenya was the adventure of a lifetime. The kids loved the giraffe centre and the balloon safari over the Mara was unreal. Can't wait to come back."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">KN</div>
                         <div>
-                            <strong class="story-author-name">Amina P.</strong>
-                            <span class="story-author-location">Dar es Salaam, TZ</span>
+                            <span class="testimonial-name">The Nakamura Family</span>
+                            <span class="testimonial-from">Tokyo, Japan</span>
                         </div>
                     </div>
                 </div>
-                <div class="story-card">
-                    <div class="story-quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <div class="story-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <p class="story-quote">"From booking to departure, everything was seamless. The Amboseli trip with views of Kilimanjaro was something I will never forget."</p>
-                    <div class="story-author">
-                        <div class="story-portrait" style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;">DR</div>
+                <div class="testimonial-card gs-reveal">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"I've travelled to 40+ countries and this was hands down the best experience. The cultural immersion, the wildlife, the attention to detail — Kabura operates on another level."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">DM</div>
                         <div>
-                            <strong class="story-author-name">David R.</strong>
-                            <span class="story-author-location">Cape Town, SA</span>
+                            <span class="testimonial-name">Daniel Mwangi</span>
+                            <span class="testimonial-from">London, UK</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="customer-stories-nav" id="testimonials-dots"></div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- INSTAGRAM GALLERY -->
-    <!-- ============================================ -->
-    <section id="instagram-gallery" class="hp-section hp-section--white">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal" style="text-align:center;">
-                <span class="hp-section-label">@kaburaadventures</span>
-                <h2 class="hp-section-title">Follow Our Journey</h2>
-            </div>
-            <div class="instagram-grid">
-                <a href="https://instagram.com/kaburaadventures" target="_blank" class="instagram-item gs-reveal"><img src="/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg" alt="Instagram" loading="lazy"><div class="instagram-overlay"><i class="fab fa-instagram"></i></div></a>
-                <a href="https://instagram.com/kaburaadventures" target="_blank" class="instagram-item gs-reveal"><img src="/assets/images/0b077ea0-8715-4255-af38-255ad10c5549.jpg" alt="Instagram" loading="lazy"><div class="instagram-overlay"><i class="fab fa-instagram"></i></div></a>
-                <a href="https://instagram.com/kaburaadventures" target="_blank" class="instagram-item gs-reveal"><img src="/assets/images/107a6671-037c-4687-8741-b77dc9af6828.jpg" alt="Instagram" loading="lazy"><div class="instagram-overlay"><i class="fab fa-instagram"></i></div></a>
-                <a href="https://instagram.com/kaburaadventures" target="_blank" class="instagram-item gs-reveal"><img src="/assets/images/16a6ac20-b47f-430c-96a8-55f0985c65ad.jpg" alt="Instagram" loading="lazy"><div class="instagram-overlay"><i class="fab fa-instagram"></i></div></a>
-                <a href="https://instagram.com/kaburaadventures" target="_blank" class="instagram-item gs-reveal"><img src="/assets/images/3971f1c1-6347-426a-b799-c339b18125fc.jpg" alt="Instagram" loading="lazy"><div class="instagram-overlay"><i class="fab fa-instagram"></i></div></a>
-                <a href="https://instagram.com/kaburaadventures" target="_blank" class="instagram-item gs-reveal"><img src="/assets/images/80b9c371-ae39-4965-9d39-8a0672e366c0.jpg" alt="Instagram" loading="lazy"><div class="instagram-overlay"><i class="fab fa-instagram"></i></div></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- TRAVEL BLOG -->
-    <!-- ============================================ -->
-    <section id="travel-blog" class="hp-section hp-section--off-white">
-        <div class="hp-container">
-            <div class="hp-section-header gs-reveal">
-                <span class="hp-section-label">From The Journal</span>
-                <h2 class="hp-section-title">Travel Stories & Guides</h2>
-            </div>
-            <div class="blog-magazine-layout" id="blog-grid">
-                <a href="/blog.html" class="blog-card blog-card-featured gs-reveal">
-                    <div class="blog-card-img-wrap"><img src="/assets/images/giif.jpg" alt="Blog" loading="lazy"></div>
-                    <div class="blog-card-body">
-                        <span class="blog-card-category">Safari Guide</span>
-                        <div class="blog-card-date">July 2026</div>
-                        <h3 class="blog-card-title">The Ultimate Guide to a Maasai Mara Safari</h3>
-                        <p class="blog-card-excerpt">Everything you need to know about planning the perfect safari — from choosing the right season to what to pack.</p>
-                        <span class="blog-card-read-more">Read Story <i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </a>
-                <a href="/blog.html" class="blog-card gs-reveal">
-                    <div class="blog-card-img-wrap"><img src="/assets/images/savannah.jpg" alt="Blog" loading="lazy"></div>
-                    <div class="blog-card-body">
-                        <span class="blog-card-category">Beach</span>
-                        <h3 class="blog-card-title">Diani Beach: Kenya's Hidden Paradise</h3>
-                        <span class="blog-card-read-more">Read Story <i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </a>
-                <a href="/blog.html" class="blog-card gs-reveal">
-                    <div class="blog-card-img-wrap"><img src="/assets/images/dir.jpg" alt="Blog" loading="lazy"></div>
-                    <div class="blog-card-body">
-                        <span class="blog-card-category">Adventure</span>
-                        <h3 class="blog-card-title">Trekking Mount Kenya: A Complete Guide</h3>
-                        <span class="blog-card-read-more">Read Story <i class="fas fa-arrow-right"></i></span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- BOOKING CTA -->
-    <!-- ============================================ -->
-    <section id="booking-cta" class="hp-section" style="position:relative;padding:0;overflow:hidden;min-height:60vh;display:flex;align-items:center;">
-        <div style="position:absolute;inset:0;background-image:url('/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg');background-size:cover;background-position:center;background-attachment:fixed;" class="parallax-layer"></div>
-        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,31,18,0.88),rgba(13,31,18,0.72));"></div>
-        <div class="booking-cta-content gs-reveal" style="position:relative;z-index:1;text-align:center;max-width:700px;margin:0 auto;padding:6rem 2rem;">
-            <span class="hp-section-label" style="color:var(--accent);margin-bottom:1rem;display:inline-block;">Ready?</span>
-            <h2 class="hp-section-title" style="color:#fff;font-size:clamp(2rem,4vw,3.5rem);margin-bottom:1rem;">Your African Adventure<br>Awaits</h2>
-            <p class="hp-section-subtitle" style="color:rgba(255,255,255,0.7);margin-bottom:2.5rem;">Let us craft a bespoke journey that will stay with you forever. From the first spark of wanderlust to the moment you touch down — we're with you every step of the way.</p>
-            <div class="booking-cta-buttons">
-                <a href="/tours.html" class="booking-cta-btn-primary magnetic-btn"><span>Start Planning</span> <i class="fas fa-arrow-right"></i></a>
-                <a href="https://wa.me/254716036542" target="_blank" class="booking-cta-btn-secondary magnetic-btn"><span>Chat on WhatsApp</span></a>
+            <div class="testimonials-nav">
+                <button class="testimonials-prev" aria-label="Previous"><img src="/assets/images/right-arrow.png" alt="" class="testimonials-nav-img testimonials-nav-img--prev"></button>
+                <button class="testimonials-next" aria-label="Next"><img src="/assets/images/right-arrow.png" alt="" class="testimonials-nav-img"></button>
             </div>
         </div>
     </section>
@@ -623,10 +704,24 @@
             });
         });
 
-        document.querySelectorAll('.why-choose-grid, .instagram-grid').forEach(grid => {
-            gsap.fromTo(grid.children, { opacity: 0, y: 50 }, {
-                opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
-                scrollTrigger: { trigger: grid, start: 'top 80%' }
+        // Animated stat counters
+        document.querySelectorAll('.about-stat-number[data-target]').forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'), 10);
+            ScrollTrigger.create({
+                trigger: counter,
+                start: 'top 85%',
+                once: true,
+                onEnter: () => {
+                    gsap.to(counter, {
+                        innerText: target,
+                        duration: 1.8,
+                        ease: 'power2.out',
+                        snap: { innerText: 1 },
+                        onUpdate: function () {
+                            counter.textContent = Math.round(parseFloat(counter.textContent));
+                        }
+                    });
+                }
             });
         });
 
@@ -635,267 +730,24 @@
             scrollTrigger: { trigger: '#premium-hero', start: 'top top', end: '60% top', scrub: 1 }
         });
 
-        // ==========================================
-        // HERO MEDIA CROSSFADE (loads from admin — video or image)
-        // ==========================================
-        (async function() {
-            const container = document.getElementById('hero-media-container');
-            let media = [];
+        gsap.to('.hero-explore', {
+            y: -120, ease: 'none',
+            scrollTrigger: { trigger: '#premium-hero', start: 'top top', end: 'bottom top', scrub: 1 }
+        });
 
-            try {
-                const result = await api.getHeroMedia();
-                media = (result.media || []).filter(m => m.file_url);
-            } catch (e) {}
-
-            if (media.length === 0) {
-                try {
-                    const API_BASE = window.location.origin;
-                    const res = await fetch(API_BASE + '/api/media/hero-image');
-                    const data = await res.json();
-                    if (data.image && data.image.file_url) {
-                        media = [data.image];
-                    }
-                } catch (e) {}
-            }
-
-            if (media.length > 0) {
-                container.innerHTML = '';
-                media.forEach((m, i) => {
-                    const slide = document.createElement('div');
-                    slide.className = 'hero-media-slide' + (i === 0 ? ' active-slide' : '');
-                    const isVideo = /\.(mp4|webm|mov)/i.test(m.file_url);
-                    if (isVideo) {
-                        const vid = document.createElement('video');
-                        vid.muted = true;
-                        vid.playsInline = true;
-                        vid.loop = true;
-                        vid.autoplay = true;
-                        vid.src = m.file_url;
-                        slide.appendChild(vid);
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = m.file_url;
-                        img.alt = m.title || 'Kenya';
-                        img.loading = i === 0 ? 'eager' : 'lazy';
-                        slide.appendChild(img);
-                    }
-                    container.appendChild(slide);
-                });
-            }
-
-            const slides = container.querySelectorAll('.hero-media-slide');
-            let currentSlide = 0;
-            if (slides.length > 1) {
-                setInterval(() => {
-                    slides[currentSlide].classList.remove('active-slide');
-                    currentSlide = (currentSlide + 1) % slides.length;
-                    slides[currentSlide].classList.add('active-slide');
-                }, 5000);
-            }
-        })();
+        gsap.to('.hero-sky, .hero-mountain', {
+            scale: 1.05, ease: 'none',
+            scrollTrigger: { trigger: '#premium-hero', start: 'top top', end: 'bottom top', scrub: 1 }
+        });
 
         // ==========================================
-        // STAT COUNTER ANIMATION
+        // MAGNETIC BUTTONS
         // ==========================================
-        let statsAnimated = false;
-        function animateStats() {
-            if (statsAnimated) return; statsAnimated = true;
-            document.querySelectorAll('.hero-stat-number').forEach(el => {
-                const target = parseInt(el.getAttribute('data-count'));
-                const start = performance.now();
-                function update(now) {
-                    const p = Math.min((now - start) / 2000, 1);
-                    el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target);
-                    if (p < 1) requestAnimationFrame(update);
-                }
-                requestAnimationFrame(update);
-            });
-        }
-        setTimeout(animateStats, 1500);
 
-        // ==========================================
-        // DESTINATIONS
-        // ==========================================
-        async function loadDestinations() {
-            var container = document.getElementById('destinations-grid');
-            try {
-                var result = await api.getDestinations();
-                var dests = result.destinations || [];
-                if (!dests.length) { container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);grid-column:1/-1;">No destinations yet</p>'; return; }
-                container.innerHTML = dests.map(function(d, i) {
-                    return '<div class="experience-card' + (i === 0 ? '' : '') + ' gs-reveal">'
-                        + '<div class="experience-img-wrap"><img src="' + d.image_url + '" alt="' + (d.name||'').replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'"></div>'
-                        + '<div class="experience-overlay"><span class="experience-name">' + d.name + '</span><span class="experience-location"><i class="fas fa-map-marker-alt"></i> Kenya</span></div>'
-                    + '</div>';
-                }).join('');
-                gsap.fromTo(container.children, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: container, start: 'top 80%' } });
-            } catch (err) { container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);grid-column:1/-1;">Could not load destinations</p>'; }
-        }
 
-        // ==========================================
-        // TOURS
-        // ==========================================
-        var ftTours = [];
 
-        function renderPopularDestinations() {
-            var container = document.getElementById('featured-tours');
-            if (!container || !ftTours.length) return;
-            var items = ftTours.slice(0, 5);
-            container.innerHTML = items.map(function(t) {
-                var img = t.images && t.images.length > 0 ? (t.images.find(function(i){return i.is_primary;}) || t.images[0]) : null;
-                var url = img ? img.image_url : '/assets/images/placeholder.svg';
-                var rating = t.avg_rating || 0;
-                return '<a href="/tour-detail.html?id=' + t.id + '" class="dest-card gs-reveal">'
-                    + '<div class="dest-img-wrap"><img src="' + url + '" alt="' + (t.title||'').replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'"></div>'
-                    + '<div class="dest-label"><div class="dest-label-left"><span class="dest-label-name">' + t.title + '</span><span class="dest-label-location"><i class="fas fa-map-marker-alt"></i> ' + (t.location||'Kenya') + '</span></div>'
-                    + '<div class="dest-label-right"><span class="dest-explore-btn"><i class="fas fa-arrow-right"></i></span></div></div>'
-                + '</a>';
-            }).join('');
-            gsap.fromTo(container.children, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: container, start: 'top 80%' } });
-        }
 
-        function renderSafariPackages() {
-            var container = document.getElementById('safari-tours-grid');
-            if (!container || !ftTours.length) return;
-            var items = ftTours.slice(0, 4);
-            container.innerHTML = items.map(function(t) {
-                var img = t.images && t.images.length > 0 ? (t.images.find(function(i){return i.is_primary;}) || t.images[0]) : null;
-                var url = img ? img.image_url : '/assets/images/placeholder.svg';
-                var rating = t.avg_rating || 0;
-                return '<a href="/tour-detail.html?id=' + t.id + '" class="safari-package-card">'
-                    + '<div class="safari-package-img-wrap"><img src="' + url + '" alt="' + (t.title||'').replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
-                    + (t.duration ? '<span class="safari-package-duration"><i class="fas fa-clock"></i> ' + t.duration + '</span>' : '') + '</div>'
-                    + '<div class="safari-package-body"><h3 class="safari-package-title">' + t.title + '</h3>'
-                    + '<div class="safari-package-meta">'
-                    + (rating > 0 ? '<span class="meta-item safari-package-rating"><i class="fas fa-star"></i> ' + rating.toFixed(1) + '</span>' : '')
-                    + (t.group_size ? '<span class="meta-item"><i class="fas fa-users"></i> Up to ' + t.group_size + '</span>' : '')
-                    + '</div>'
-                    + '<div class="safari-package-price"><span class="price-amount">' + window.formatPrice(t.price) + '</span><span class="price-label"> /person</span></div>'
-                    + '</div></a>';
-            }).join('');
-        }
 
-        async function loadFeaturedTours() {
-            try {
-                var result = await api.getTours({ featured: 'true', per_page: 8 });
-                ftTours = result.tours || [];
-                if (ftTours.length) { renderPopularDestinations(); renderSafariPackages(); }
-            } catch (err) { document.getElementById('featured-tours').innerHTML = '<p style="text-align:center;color:var(--text-secondary);grid-column:1/-1;">Could not load tours</p>'; }
-        }
-
-        // ==========================================
-        // HOTELS
-        // ==========================================
-        var ftHotels = [];
-
-        function renderFeaturedHotels() {
-            var container = document.getElementById('featured-hotels');
-            if (!container || !ftHotels.length) return;
-            var items = ftHotels.slice(0, 3);
-            container.innerHTML = items.map(function(h) {
-                var img = h.images && h.images.length > 0 ? (h.images.find(function(i){return i.is_primary;}) || h.images[0]) : null;
-                var url = img ? img.image_url : '/assets/images/placeholder.svg';
-                var rating = h.avg_rating || h.rating || 0;
-                var stars = Math.round(rating) || 5;
-                var starsHtml = '';
-                for (var s = 0; s < 5; s++) starsHtml += s < stars ? '<i class="fas fa-star"></i>' : '<i class="fas fa-star empty"></i>';
-                return '<a href="/hotel-detail.html?id=' + h.id + '" class="hotel-glass-card gs-reveal">'
-                    + '<div class="hotel-glass-img-wrap"><img src="' + url + '" alt="' + (h.name||'').replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
-                    + '<span class="hotel-glass-price-badge">' + window.formatPrice(h.price_per_night) + ' <small>/night</small></span></div>'
-                    + '<div class="hotel-glass-body"><h3 class="hotel-glass-name">' + h.name + '</h3>'
-                    + '<div class="hotel-glass-location"><i class="fas fa-map-marker-alt"></i> ' + (h.location||'Kenya') + '</div>'
-                    + '<div class="hotel-glass-stars">' + starsHtml + '</div>'
-                    + '<span class="hotel-glass-book-btn">Book Now <i class="fas fa-arrow-right"></i></span>'
-                    + '</div></a>';
-            }).join('');
-            gsap.fromTo(container.children, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: container, start: 'top 80%' } });
-        }
-
-        async function loadFeaturedHotels() {
-            try {
-                var result = await api.getHotels({ per_page: 4 });
-                ftHotels = result.hotels || [];
-                if (ftHotels.length) renderFeaturedHotels();
-            } catch (err) { document.getElementById('featured-hotels').innerHTML = '<p style="text-align:center;color:var(--text-secondary);">Could not load hotels</p>'; }
-        }
-
-        // ==========================================
-        // MEMORIES CAROUSEL
-        // ==========================================
-        const memoriesTrack = document.getElementById('memories-track');
-        const memoriesCards = memoriesTrack ? Array.from(memoriesTrack.children) : [];
-        let memoryIndex = 0, memoryAutoTimer = null;
-
-        function updateMemoryCards() {
-            if (!memoriesTrack || !memoriesCards.length) return;
-            const cw = memoriesTrack.parentElement.offsetWidth;
-            const cardW = Math.min(400, cw * 0.65);
-            const gap = 24;
-            const offset = (cw / 2) - (cardW / 2) - (memoryIndex * (cardW + gap));
-            memoriesTrack.style.transform = 'translateX(' + offset + 'px)';
-            memoriesTrack.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            memoriesCards.forEach((card, i) => {
-                const dist = Math.abs(i - memoryIndex);
-                card.style.opacity = i === memoryIndex ? 1 : Math.max(0.35, 1 - dist * 0.25);
-                card.style.filter = 'blur(' + Math.min(dist * 3, 8) + 'px)';
-                card.style.transform = 'scale(' + (i === memoryIndex ? 1 : Math.max(0.82, 1 - dist * 0.06)) + ')';
-                card.classList.toggle('active-card', i === memoryIndex);
-                card.classList.toggle('side-card', i !== memoryIndex);
-            });
-            var dots = document.getElementById('memories-dots');
-            if (dots) {
-                dots.innerHTML = memoriesCards.map(function(_, i) {
-                    return '<span class="memories-nav-dot' + (i === memoryIndex ? ' active' : '') + '" data-index="' + i + '"></span>';
-                }).join('');
-                dots.querySelectorAll('.memories-nav-dot').forEach(function(d) { d.addEventListener('click', function() { memoryIndex = parseInt(this.dataset.index); updateMemoryCards(); resetMemAuto(); }); });
-            }
-        }
-
-        function nextMemory() { memoryIndex = (memoryIndex + 1) % memoriesCards.length; updateMemoryCards(); }
-        function prevMemory() { memoryIndex = (memoryIndex - 1 + memoriesCards.length) % memoriesCards.length; updateMemoryCards(); }
-        function resetMemAuto() { clearInterval(memoryAutoTimer); memoryAutoTimer = setInterval(nextMemory, 5000); }
-
-        if (memoriesCards.length) {
-            updateMemoryCards(); resetMemAuto();
-            window.addEventListener('resize', updateMemoryCards);
-            // Touch drag
-            let touchX = 0;
-            memoriesTrack.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
-            memoriesTrack.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - touchX; if (d > 50) prevMemory(); else if (d < -50) nextMemory(); resetMemAuto(); });
-            // Mouse drag
-            let mouseDown = false, startMX = 0;
-            memoriesTrack.addEventListener('mousedown', e => { mouseDown = true; startMX = e.pageX; memoriesTrack.style.cursor = 'grabbing'; });
-            memoriesTrack.addEventListener('mouseleave', () => { mouseDown = false; memoriesTrack.style.cursor = 'grab'; });
-            memoriesTrack.addEventListener('mouseup', e => { if (!mouseDown) return; mouseDown = false; memoriesTrack.style.cursor = 'grab'; const d = e.pageX - startMX; if (d > 50) prevMemory(); else if (d < -50) nextMemory(); resetMemAuto(); });
-        }
-
-        // ==========================================
-        // TESTIMONIALS CAROUSEL
-        // ==========================================
-        const testTrack = document.getElementById('testimonials-track');
-        const testCards = testTrack ? Array.from(testTrack.children) : [];
-        let testIndex = 0, testAutoTimer = null;
-
-        function updateTestimonials() {
-            if (!testTrack || !testCards.length) return;
-            const cw = testTrack.parentElement.offsetWidth;
-            const cardW = testCards[0] ? testCards[0].offsetWidth + 24 : 300;
-            const maxIdx = Math.max(0, testCards.length - Math.floor(cw / cardW));
-            testIndex = Math.min(testIndex, maxIdx);
-            testTrack.style.transform = 'translateX(' + (-testIndex * cardW) + 'px)';
-            testTrack.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            var dots = document.getElementById('testimonials-dots');
-            if (dots) {
-                dots.innerHTML = testCards.map(function(_, i) {
-                    return '<span class="story-nav-dot' + (i === testIndex ? ' active' : '') + '" data-index="' + i + '"></span>';
-                }).join('');
-                dots.querySelectorAll('.story-nav-dot').forEach(function(d) { d.addEventListener('click', function() { testIndex = parseInt(this.dataset.index); updateTestimonials(); resetTestAuto(); }); });
-            }
-        }
-
-        function resetTestAuto() { clearInterval(testAutoTimer); testAutoTimer = setInterval(() => { testIndex = (testIndex + 1) % testCards.length; updateTestimonials(); }, 6000); }
-
-        if (testCards.length) { updateTestimonials(); resetTestAuto(); window.addEventListener('resize', updateTestimonials); }
 
         // ==========================================
         // MAGNETIC BUTTONS
@@ -909,11 +761,235 @@
         });
 
         // ==========================================
+        // LOCATION CARD HERO MORPH
+        // ==========================================
+        (function() {
+            var cards = document.querySelectorAll('.location-card[data-image]');
+            var heroSky = document.querySelector('.hero-sky:not(.hero-sky-next)');
+            var heroSkyNext = document.querySelector('.hero-sky-next');
+            var heroKenya = document.querySelector('.hero-kenya');
+            var heroDesc = document.querySelector('.hero-description');
+            if (!cards.length || !heroSky || !heroKenya) return;
+
+            var defaultImage = heroSky.src;
+            var defaultTitle = heroKenya.textContent;
+            var defaultDesc = heroDesc ? heroDesc.textContent : '';
+
+            function setActiveCard(card) {
+                cards.forEach(function(c) { c.classList.remove('is-active'); });
+                card.classList.add('is-active');
+            }
+
+            cards.forEach(function(card) {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var image = this.dataset.image;
+                    var name = this.dataset.name;
+                    var desc = this.dataset.desc;
+                    var isReset = this.classList.contains('is-active');
+
+                    if (isReset) {
+                        this.classList.remove('is-active');
+                        name = defaultTitle;
+                        desc = defaultDesc;
+                        heroSkyNext.style.opacity = '0';
+                    } else {
+                        setActiveCard(this);
+                        heroSkyNext.src = image;
+                        heroSkyNext.style.opacity = '1';
+                    }
+
+                    gsap.to(heroKenya, {
+                        opacity: 0, y: -20, duration: 0.3, ease: 'power2.in',
+                        onComplete: function() {
+                            heroKenya.textContent = name;
+                            gsap.fromTo(heroKenya, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+                        }
+                    });
+
+                    if (heroDesc && desc) {
+                        gsap.to(heroDesc, {
+                            opacity: 0, duration: 0.3, ease: 'power2.in',
+                            onComplete: function() {
+                                heroDesc.textContent = desc;
+                                gsap.fromTo(heroDesc, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+                            }
+                        });
+                    }
+                });
+            });
+        })();
+
+        // ==========================================
+        // EXPERIENCES DUO CAROUSEL
+        // ==========================================
+        document.querySelectorAll('.exp-duo-card').forEach(function(card) {
+            var slides = card.querySelectorAll('.exp-duo-slide');
+            var nameEl = card.querySelector('.exp-duo-name');
+            var locEl = card.querySelector('.exp-duo-location');
+            var descEl = card.querySelector('.exp-duo-desc');
+            var current = 0;
+
+            function goTo(index) {
+                slides[current].classList.remove('active');
+                current = (index + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                nameEl.textContent = slides[current].dataset.name;
+                locEl.innerHTML = '<i class="fas fa-map-marker-alt"></i> ' + slides[current].dataset.location;
+                if (descEl) descEl.textContent = slides[current].dataset.desc;
+            }
+
+            card.querySelector('.exp-duo-prev').addEventListener('click', function() { goTo(current - 1); });
+            card.querySelector('.exp-duo-next').addEventListener('click', function() { goTo(current + 1); });
+        });
+
+        (function() {
+            var carousel = document.getElementById('offer-carousel');
+            var prevBtn = document.querySelector('.offer-prev');
+            var nextBtn = document.querySelector('.offer-next');
+            if (!carousel || !prevBtn || !nextBtn) return;
+            var card = carousel.querySelector('.offer-card');
+            if (!card) return;
+            var scrollAmount = card.offsetWidth + 24;
+            prevBtn.addEventListener('click', function() { carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); });
+            nextBtn.addEventListener('click', function() { carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
+        })();
+
+        // ==========================================
+        // TESTIMONIALS CAROUSEL
+        // ==========================================
+        (function() {
+            var track = document.getElementById('testimonials-track');
+            var prevBtn = document.querySelector('.testimonials-prev');
+            var nextBtn = document.querySelector('.testimonials-next');
+            if (!track || !prevBtn || !nextBtn) return;
+            var card = track.querySelector('.testimonial-card');
+            if (!card) return;
+            var scrollAmount = card.offsetWidth + 24;
+            prevBtn.addEventListener('click', function() { track.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); });
+            nextBtn.addEventListener('click', function() { track.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
+        })();
+
+        // ==========================================
+        // KENYA MAP DRAWING ANIMATION + CONFETTI
+        // ==========================================
+        (function() {
+            var kenyaPath = document.getElementById('kenya-outline');
+            var plane = document.getElementById('plane');
+            var svg = document.getElementById('kenya-svg');
+            var canvas = document.getElementById('confetti-canvas');
+            if (!kenyaPath || !plane || !svg || !canvas) return;
+            var ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                var wrapper = canvas.parentElement;
+                canvas.width = wrapper.offsetWidth;
+                canvas.height = wrapper.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            var totalLength = kenyaPath.getTotalLength();
+            kenyaPath.style.setProperty('--path-length', totalLength);
+
+            var duration = 6000;
+            var startTime = null;
+            var confettiParticles = [];
+            var hasPopped = false;
+            var colors = ['#000000', '#BB1515', '#006600', '#FFFFFF'];
+
+            function Particle(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 6 + 4;
+                var angle = Math.random() * Math.PI * 2;
+                var speed = Math.random() * 6 + 4;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.alpha = 1;
+                this.gravity = 0.15;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10 - 5;
+            }
+
+            Particle.prototype.update = function() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.alpha -= 0.015;
+                this.rotation += this.rotationSpeed;
+            };
+
+            Particle.prototype.draw = function() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            };
+
+            function triggerConfetti(startX, startY) {
+                for (var i = 0; i < 120; i++) {
+                    confettiParticles.push(new Particle(startX, startY));
+                }
+            }
+
+            function mainLoop(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var elapsed = timestamp - startTime;
+                var progress = Math.min(elapsed / duration, 1);
+
+                // Drive stroke drawing from JS to stay in sync with plane
+                kenyaPath.style.strokeDashoffset = totalLength * (1 - progress);
+
+                if (progress < 1) {
+                    var currentLength = progress * totalLength;
+                    var point = kenyaPath.getPointAtLength(currentLength);
+                    var lookAheadLength = Math.min(currentLength + 10, totalLength);
+                    var nextPoint = kenyaPath.getPointAtLength(lookAheadLength);
+                    var angle = Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) * (180 / Math.PI) + 90;
+
+                    var svgRect = svg.getBoundingClientRect();
+                    var viewBox = svg.viewBox.baseVal;
+                    var containerRect = svg.parentElement.getBoundingClientRect();
+                    var localX = (point.x * (svgRect.width / viewBox.width)) + svgRect.left - containerRect.left;
+                    var localY = (point.y * (svgRect.height / viewBox.height)) + svgRect.top - containerRect.top;
+
+                    plane.style.transform = 'translate(' + (localX - 15) + 'px, ' + (localY - 15) + 'px) rotate(' + angle + 'deg)';
+                    plane.style.transformOrigin = 'center center';
+                    if (progress > 0) plane.classList.add('active');
+                } else if (!hasPopped) {
+                    hasPopped = true;
+                    plane.classList.add('hidden');
+                    var finalPoint = kenyaPath.getPointAtLength(totalLength);
+                    var svgBBox = svg.getBoundingClientRect();
+                    var vb = svg.viewBox.baseVal;
+                    var finalX = (finalPoint.x * (svgBBox.width / vb.width)) + svgBBox.left;
+                    var finalY = (finalPoint.y * (svgBBox.height / vb.height)) + svgBBox.top;
+                    triggerConfetti(finalX, finalY);
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (confettiParticles.length > 0) {
+                    for (var i = confettiParticles.length - 1; i >= 0; i--) {
+                        confettiParticles[i].update();
+                        confettiParticles[i].draw();
+                        if (confettiParticles[i].alpha <= 0) confettiParticles.splice(i, 1);
+                    }
+                }
+
+                requestAnimationFrame(mainLoop);
+            }
+
+            requestAnimationFrame(mainLoop);
+        })();
+
+        // ==========================================
         // LOAD DATA
         // ==========================================
-        loadDestinations();
-        loadFeaturedTours();
-        loadFeaturedHotels();
 
     })();
     </script>
