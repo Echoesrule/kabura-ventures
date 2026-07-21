@@ -17,150 +17,66 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=3">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/tours.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-inner">
-            <a href="/" class="navbar-brand">
-                <img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="navbar-logo">
-            </a>
-            <button class="hamburger"><i class="fas fa-bars"></i></button>
-            <ul class="nav-links">
-                <li class="mobile-brand"><a href="/" class="mobile-brand-link"><img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="mobile-logo"><span class="mobile-tagline">Explore Kenya's Finest Adventures</span></a></li>
-                <li><a href="/">Home</a></li>
-                <li class="nav-dropdown">
-                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
-                    <div class="nav-dropdown-menu">
-                        <a href="/tours.html">Tours</a>
-                        <a href="/hotels.html">Hotels</a>
-                        <a href="/flights.html">Flights</a>
-                    </div>
-                </li>
-                <li class="nav-dropdown nav-dropdown-services">
-                    <a href="#" class="nav-dropdown-trigger">Our Services <i class="fas fa-chevron-down"></i></a>
-                    <div class="nav-dropdown-menu nav-dropdown-menu-services">
-                        <div class="nav-services-grid">
-                            <a href="/services.html#service-tours" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/giif.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-hippo"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Tours & Safari Packages</strong>
-                                        <span>Immersive wildlife safaris across Kenya's iconic parks & reserves</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-travel" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/dir.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fas fa-globe-americas"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Local & International Travel</strong>
-                                        <span>Comprehensive travel planning for local escapes & international adventures</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-hotel" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/bed.png')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fas fa-hotel"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Hotel & Accommodation</strong>
-                                        <span>Curated stays at Kenya's finest lodges, resorts & boutique hotels</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-transport" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/savannah.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fas fa-shuttle-van"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Airport Transfers & Transport</strong>
-                                        <span>Reliable airport pickup, inter-city travel & safari transfers</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-honeymoon" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/24507e11-925c-49f5-9350-c47f4ab48036.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fas fa-heart"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Honeymoon & Couples Getaways</strong>
-                                        <span>Romantic escapes from beachfront resorts to intimate safari hideaways</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-corporate" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/a92b092c-4068-485c-a32c-d988b2897317.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fas fa-briefcase"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Group & Corporate Travel</strong>
-                                        <span>Seamless group travel & corporate retreats with dedicated support</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </li>
-                <li><a href="/blog.html">Blog</a></li>
-                <li><a href="/booking.html">My Bookings</a></li>
-                <li class="nav-user-dropdown" id="auth-buttons">
-                    <button class="nav-user-btn" id="nav-user-btn" aria-label="User menu">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                    <div class="nav-user-menu" id="user-dropdown-menu"></div>
-                </li>
-                <li class="currency-selector">
-                    <select id="currency-switcher" aria-label="Select currency">
-                        <option value="KES">KSh</option>
-                        <option value="USD">$</option>
-                        <option value="EUR">&euro;</option>
-                    </select>
-                </li>
-            </ul>
+    <div id="navbar-placeholder"></div>
+
+    <section class="tours-hero">
+        <div class="tours-hero-content">
+            <h1>Find your<br><em>perfect adventure.</em></h1>
+            <p>From the open plains of the Mara to the peaks of Mount Kenya, discover curated tours designed for every kind of traveler.</p>
+            <div class="tours-hero-meta">
+                <span>Curated experiences</span>
+                <span>Local expertise</span>
+                <span>Flexible booking</span>
+            </div>
+            <div class="tours-hero-cta">
+                <a href="#tours-listing" class="tours-hero-btn"><span>Explore tours</span></a>
+                <a href="#tours-listing" class="tours-hero-arrow" aria-label="Explore tours">
+                    <img src="/assets/images/right-arrow.png" alt="" class="tours-hero-arrow-img" loading="lazy">
+                </a>
+            </div>
         </div>
-    </nav>
+    </section>
 
-    <section class="section">
-        <div class="container" id="tours-container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Find Your Destination</h2>
-                <p>Discover Kenya's most incredible destinations with our carefully curated tours.</p>
-            </div>
-
-            <div class="tabs" id="destination-tabs" data-aos="fade-up">
-                <button class="tab active" data-type="">All Destinations</button>
-            </div>
-
-            <div class="filter-bar" data-aos="fade-up-right">
-                <input type="text" class="form-input" id="filter-search" placeholder="Search tours..." style="max-width:200px;">
-                <input type="text" class="form-input" id="filter-location" placeholder="Location..." style="max-width:160px;">
-                <div style="display:flex;align-items:center;gap:0.5rem;">
-                    <label style="font-weight:600;font-size:0.85rem;color:var(--text-secondary);white-space:nowrap;">KSh</label>
-                    <input type="number" class="form-input" id="filter-min-price" placeholder="Min" style="max-width:90px;" min="0">
-                    <span style="color:var(--text-secondary);">&mdash;</span>
-                    <input type="number" class="form-input" id="filter-max-price" placeholder="Max" style="max-width:90px;" min="0">
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;">
-                    <input type="number" class="form-input" id="filter-min-duration" placeholder="Min days" style="max-width:100px;" min="1">
-                    <span style="color:var(--text-secondary);">&mdash;</span>
-                    <input type="number" class="form-input" id="filter-max-duration" placeholder="Max days" style="max-width:100px;" min="1">
-                </div>
-                <button class="btn btn-secondary btn-sm" id="clear-filters">Clear</button>
-            </div>
-
-            <div id="filter-badges" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;"></div>
-
-            <div id="results-count" style="margin-bottom:1rem;color:var(--text-secondary);font-size:0.9rem;"></div>
-
-            <div class="grid grid-3" id="tours-list"></div>
-
-            <div id="pagination" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-top:2rem;flex-wrap:wrap;"></div>
+    <section class="tours-listing" id="tours-listing">
+        <div class="tours-listing-header">
+            <h2>All Destinations</h2>
+            <p>Discover Kenya's most incredible destinations with our carefully curated tours.</p>
         </div>
+
+        <div class="tours-tabs" id="destination-tabs">
+            <button class="tours-tab active" data-type="">All Destinations</button>
+        </div>
+
+        <div class="tours-filter-bar-wrap">
+            <div class="tours-filters">
+                <input type="text" class="filter-input" id="filter-search" placeholder="Search tours...">
+                <input type="text" class="filter-input" id="filter-location" placeholder="Location...">
+                <div class="filter-group">
+                    <span class="filter-label">KSh</span>
+                    <input type="number" class="filter-input" id="filter-min-price" placeholder="Min" style="width:80px;" min="0">
+                    <span class="filter-sep">&mdash;</span>
+                    <input type="number" class="filter-input" id="filter-max-price" placeholder="Max" style="width:80px;" min="0">
+                </div>
+                <div class="filter-group">
+                    <input type="number" class="filter-input" id="filter-min-duration" placeholder="Min days" style="width:90px;" min="1">
+                    <span class="filter-sep">&mdash;</span>
+                    <input type="number" class="filter-input" id="filter-max-duration" placeholder="Max days" style="width:90px;" min="1">
+                </div>
+                <button class="filter-clear" id="clear-filters"><i class="fas fa-times" style="font-size:0.65rem;"></i> Clear</button>
+            </div>
+        </div>
+
+        <div class="filter-badges" id="filter-badges"></div>
+        <div class="tours-results" id="results-count"></div>
+
+        <div class="tours-grid" id="tours-list"></div>
+        <div class="tours-pagination" id="pagination"></div>
     </section>
 
     <div class="modal-overlay" id="tour-modal">
@@ -175,384 +91,11 @@
 
     <div id="footer-placeholder"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
     <script src="/assets/js/app.js"></script>
-    <script>
-        let currentPage = 1;
-        let totalTours = 0;
-        let currentTours = [];
-        let wishlistMap = {};
-
-        const filterSearch = document.getElementById('filter-search');
-        const filterLocation = document.getElementById('filter-location');
-        const filterMinPrice = document.getElementById('filter-min-price');
-        const filterMaxPrice = document.getElementById('filter-max-price');
-        const filterMinDuration = document.getElementById('filter-min-duration');
-        const filterMaxDuration = document.getElementById('filter-max-duration');
-        const tabsContainer = document.getElementById('destination-tabs');
-        const urlParams = new URLSearchParams(window.location.search);
-        let currentActivityType = '';
-
-        function getFilters() {
-            return {
-                search: filterSearch.value.trim(),
-                activity_type: currentActivityType,
-                location: filterLocation.value.trim(),
-                min_price: filterMinPrice.value,
-                max_price: filterMaxPrice.value,
-                min_duration: filterMinDuration.value,
-                max_duration: filterMaxDuration.value
-            };
-        }
-
-        function setFiltersFromParams() {
-            if (urlParams.has('search')) filterSearch.value = urlParams.get('search');
-            if (urlParams.has('activity_type')) {
-                currentActivityType = urlParams.get('activity_type');
-            }
-            if (urlParams.has('location')) filterLocation.value = urlParams.get('location');
-            if (urlParams.has('min_price')) filterMinPrice.value = urlParams.get('min_price');
-            if (urlParams.has('max_price')) filterMaxPrice.value = urlParams.get('max_price');
-            if (urlParams.has('min_duration')) filterMinDuration.value = urlParams.get('min_duration');
-            if (urlParams.has('max_duration')) filterMaxDuration.value = urlParams.get('max_duration');
-            if (urlParams.has('page')) currentPage = parseInt(urlParams.get('page')) || 1;
-        }
-
-        function buildQueryParams() {
-            const filters = getFilters();
-            const params = new URLSearchParams();
-            Object.entries(filters).forEach(([k, v]) => { if (v) params.set(k, v); });
-            params.set('page', currentPage);
-            params.set('per_page', 12);
-            return params;
-        }
-
-        function updateURL() {
-            const params = buildQueryParams();
-            const qs = params.toString();
-            const newUrl = window.location.pathname + (qs ? '?' + qs : '');
-            window.history.replaceState({}, '', newUrl);
-        }
-
-        async function loadActivityTypes() {
-            try {
-                const result = await api.get('/tours/activity-types');
-                const types = Array.isArray(result) ? result : (result.types || []);
-                types.forEach(type => {
-                    const btn = document.createElement('button');
-                    btn.className = 'tab';
-                    btn.dataset.type = type;
-                    btn.textContent = type;
-                    btn.addEventListener('click', function () {
-                        document.querySelectorAll('#destination-tabs .tab').forEach(t => t.classList.remove('active'));
-                        btn.classList.add('active');
-                        currentActivityType = btn.dataset.type === '' ? '' : btn.dataset.type;
-                        currentPage = 1;
-                        loadTours();
-                    });
-                    tabsContainer.appendChild(btn);
-                });
-                if (currentActivityType) {
-                    document.querySelectorAll('#destination-tabs .tab').forEach(t => {
-                        if (t.dataset.type === currentActivityType) {
-                            t.classList.add('active');
-                        } else {
-                            t.classList.remove('active');
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error('Failed to load activity types:', err);
-            }
-        }
-
-        async function loadWishlist() {
-            if (!api.token) return;
-            try {
-                const result = await api.get('/wishlist');
-                const items = Array.isArray(result) ? result : (result.wishlist || []);
-                wishlistMap = {};
-                items.forEach(item => {
-                    if (item.tour_id) wishlistMap[item.tour_id] = item.id;
-                });
-                renderTours(currentTours);
-            } catch (err) {
-                console.error('Failed to load wishlist:', err);
-            }
-        }
-
-        async function toggleWishlist(tourId) {
-            if (!api.token) {
-                showToast('Please login to save tours', 'warning');
-                openModal('login-modal');
-                return;
-            }
-            try {
-                if (wishlistMap[tourId]) {
-                    await api.delete('/wishlist/' + wishlistMap[tourId]);
-                    delete wishlistMap[tourId];
-                } else {
-                    const res = await api.post('/wishlist', { tour_id: tourId });
-                    if (res.wishlist) wishlistMap[tourId] = res.wishlist.id;
-                }
-                renderTours(currentTours);
-            } catch (err) {
-                showToast(err.message, 'error');
-            }
-        }
-
-        async function loadTours() {
-            const container = document.getElementById('tours-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            document.getElementById('filter-badges').innerHTML = '';
-            document.getElementById('results-count').textContent = '';
-
-            const params = buildQueryParams();
-            updateURL();
-
-            try {
-                const result = await api.getTours(Object.fromEntries(params));
-                currentTours = result.tours || [];
-                totalTours = result.total || currentTours.length;
-                const totalPages = result.pages || Math.ceil(totalTours / 12);
-                renderFilterBadges();
-                renderResultsCount(currentTours.length, totalTours);
-                renderTours(currentTours);
-                renderPagination(currentPage, totalPages);
-            } catch (err) {
-                container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><h3>Could not load tours</h3><p>Please try again later.</p></div>';
-            }
-        }
-
-        function renderStars(rating, count) {
-            const r = Math.round(rating || 0);
-            const stars = '<i class="fas fa-star" style="color:var(--accent);"></i>'.repeat(r) + '<i class="far fa-star" style="color:var(--accent);"></i>'.repeat(5 - r);
-            return count !== undefined ? stars + ' (' + count + ')' : stars;
-        }
-
-        function formatTourDate(dateStr) {
-            if (!dateStr) return '';
-            var d = new Date(dateStr);
-            var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-            return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
-        }
-
-        function renderTours(tours) {
-            const container = document.getElementById('tours-list');
-
-            if (tours.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><h3>No tours match your filters</h3><p>Try adjusting your search criteria.</p><button class="btn btn-primary" onclick="resetFilters()" style="margin-top:1rem;">Reset Filters</button></div>';
-                return;
-            }
-
-            const tourEffects = ['fade-up', 'fade-up-right', 'zoom-in', 'fade-up-left', 'zoom-in-up'];
-            container.innerHTML = tours.map((tour, index) => {
-                const img = tour.images && tour.images.length > 0
-                    ? tour.images.find(i => i.is_primary) || tour.images[0]
-                    : null;
-                const imgUrl = img ? img.image_url : '/assets/images/placeholder.svg';
-                const isSaved = !!wishlistMap[tour.id];
-                const rating = tour.avg_rating || 0;
-                const reviewCount = tour.reviews_count || 0;
-                const effect = tourEffects[index % tourEffects.length];
-                const delay = (index % 3) * 80;
-                var fullStars = Math.round(rating);
-                var starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
-                var desc = tour.description ? escapeHTML(tour.description) : '';
-                var category = tour.activity_type ? escapeHTML(tour.activity_type.toUpperCase()) : '';
-                var dateStr = formatTourDate(tour.created_at);
-                return '<div class="card card-tour card-tour-deep" data-aos="' + effect + '" data-aos-delay="' + delay + '">'
-                    + '<a href="/tour-detail.html?id=' + tour.id + '" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">'
-                        + '<div class="card-image-wrap">'
-                            + (api.token
-                                ? '<button onclick="event.stopPropagation();toggleWishlist(\'' + tour.id + '\')" class="card-wishlist-btn" title="' + (isSaved ? 'Remove from wishlist' : 'Add to wishlist') + '">'
-                                    + (isSaved ? '<i class="fas fa-heart" style="color:var(--accent);"></i>' : '<i class="far fa-heart" style="color:var(--text-secondary);"></i>')
-                                + '</button>'
-                                : '')
-                            + (category ? '<span class="card-badge-cat">' + category + '</span>' : '')
-                            + '<img src="' + imgUrl + '" alt="' + escapeHTML(tour.title) + '" class="card-image" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
-                        + '</div>'
-                        + '<div class="card-body">'
-                            + '<div class="card-location-deep"><i class="fas fa-map-pin"></i> ' + escapeHTML(tour.location || 'Kenya') + '</div>'
-                            + '<h3 class="card-title">' + escapeHTML(tour.title) + '</h3>'
-                            + (desc ? '<p class="card-text">' + desc + '</p>' : '')
-                            + (rating > 0 ? '<div class="card-stars-deep">' + starsHtml + ' <span>' + rating.toFixed(1) + ' (' + reviewCount + ')</span></div>' : '')
-                            + '<div class="card-footer-deep">'
-                                + '<div class="card-author-deep">'
-                                    + '<span class="card-author-name">BY KABURA VENTURES</span>'
-                                    + (dateStr ? '<span class="card-date-deep">' + dateStr + '</span>' : '')
-                                + '</div>'
-                                + '<div class="card-footer-bar">'
-                                    + '<span class="card-price">' + window.formatPrice(tour.price) + '</span>'
-                                    + '<span class="card-cta">Details <i class="fas fa-arrow-right"></i></span>'
-                                + '</div>'
-                            + '</div>'
-                        + '</div>'
-                    + '</a>'
-                + '</div>';
-            }).join('');
-
-            if (window.AOS) {
-                AOS.refresh();
-            } else {
-                setupScrollReveal();
-            }
-        }
-
-        function renderFilterBadges() {
-            const container = document.getElementById('filter-badges');
-            const filters = getFilters();
-            const badges = [];
-
-            if (filters.search) badges.push({ key: 'search', label: '"' + filters.search + '"' });
-            if (filters.activity_type) badges.push({ key: 'activity', label: filters.activity_type });
-            if (filters.location) badges.push({ key: 'location', label: filters.location });
-            if (filters.min_price) badges.push({ key: 'min-price', label: 'Min KSh ' + Number(filters.min_price).toLocaleString() });
-            if (filters.max_price) badges.push({ key: 'max-price', label: 'Max KSh ' + Number(filters.max_price).toLocaleString() });
-            if (filters.min_duration) badges.push({ key: 'min-duration', label: 'Min ' + filters.min_duration + ' days' });
-            if (filters.max_duration) badges.push({ key: 'max-duration', label: 'Max ' + filters.max_duration + ' days' });
-
-            if (badges.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-
-            container.innerHTML = badges.map(b =>
-                '<span class="badge badge-secondary" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;" onclick="removeFilter(\'' + b.key + '\')">'
-                + b.label + ' <span style="font-size:1.1rem;line-height:1;">&times;</span>'
-                + '</span>'
-            ).join('')
-            + '<button class="btn btn-sm" style="background:none;border:none;color:var(--primary);font-weight:600;cursor:pointer;padding:0.25rem 0.5rem;font-size:0.8rem;" onclick="resetFilters()">Clear all</button>';
-        }
-
-        function removeFilter(key) {
-            if (key === 'activity') {
-                currentActivityType = '';
-                document.querySelectorAll('#destination-tabs .tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('#destination-tabs .tab:first-child').classList.add('active');
-            } else {
-                const map = {
-                    'search': filterSearch,
-                    'location': filterLocation,
-                    'min-price': filterMinPrice,
-                    'max-price': filterMaxPrice,
-                    'min-duration': filterMinDuration,
-                    'max-duration': filterMaxDuration
-                };
-                const el = map[key];
-                if (el) el.value = '';
-            }
-            currentPage = 1;
-            loadTours();
-        }
-
-        function resetFilters() {
-            filterSearch.value = '';
-            currentActivityType = '';
-            document.querySelectorAll('#destination-tabs .tab').forEach(t => t.classList.remove('active'));
-            document.querySelector('#destination-tabs .tab:first-child').classList.add('active');
-            filterLocation.value = '';
-            filterMinPrice.value = '';
-            filterMaxPrice.value = '';
-            filterMinDuration.value = '';
-            filterMaxDuration.value = '';
-            currentPage = 1;
-            loadTours();
-        }
-
-        function renderResultsCount(showing, total) {
-            document.getElementById('results-count').textContent = 'Showing ' + showing + ' of ' + total + ' tours';
-        }
-
-        function renderPagination(page, totalPages) {
-            const container = document.getElementById('pagination');
-            if (totalPages <= 1) {
-                container.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            html += '<button class="btn btn-sm btn-secondary" onclick="goToPage(' + (page - 1) + ')"' + (page <= 1 ? ' disabled' : '') + '>Prev</button>';
-
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === page) {
-                    html += '<span class="btn btn-sm btn-primary" style="cursor:default;">' + i + '</span>';
-                } else {
-                    html += '<button class="btn btn-sm btn-secondary" onclick="goToPage(' + i + ')">' + i + '</button>';
-                }
-            }
-
-            html += '<button class="btn btn-sm btn-secondary" onclick="goToPage(' + (page + 1) + ')"' + (page >= totalPages ? ' disabled' : '') + '>Next</button>';
-            container.innerHTML = html;
-        }
-
-        function goToPage(page) {
-            currentPage = page;
-            loadTours();
-        }
-
-        function onFilterChange() {
-            currentPage = 1;
-            loadTours();
-        }
-
-        function debounce(fn, ms) {
-            let timer;
-            return function () {
-                clearTimeout(timer);
-                timer = setTimeout(fn, ms);
-            };
-        }
-
-        const debouncedFilter = debounce(onFilterChange, 400);
-
-        document.querySelector('#destination-tabs .tab:first-child').addEventListener('click', function () {
-            document.querySelectorAll('#destination-tabs .tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            currentActivityType = '';
-            currentPage = 1;
-            loadTours();
-        });
-
-        filterSearch.addEventListener('input', debouncedFilter);
-        filterLocation.addEventListener('input', debouncedFilter);
-        filterMinPrice.addEventListener('input', debouncedFilter);
-        filterMaxPrice.addEventListener('input', debouncedFilter);
-        filterMinDuration.addEventListener('input', debouncedFilter);
-        filterMaxDuration.addEventListener('input', debouncedFilter);
-        document.getElementById('clear-filters').addEventListener('click', resetFilters);
-
-        function showTourDetails(tourId) {
-            window.location.href = '/tour-detail.html?id=' + tourId;
-        }
-
-        function bookTour(tourId) {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                showToast('Please login to book a tour', 'warning');
-                openModal('login-modal');
-                return;
-            }
-            window.location.href = '/booking.html?tour=' + tourId;
-        }
-
-        setFiltersFromParams();
-        loadActivityTypes().then(function () {
-            setFiltersFromParams();
-            return loadTours();
-        }).then(function () {
-            var idParam = urlParams.get('id');
-            if (idParam) {
-                var check = setInterval(function () {
-                    if (currentTours.find(function (t) { return t.id === idParam; })) {
-                        clearInterval(check);
-                        setTimeout(function () { showTourDetails(idParam); }, 300);
-                    }
-                }, 200);
-                setTimeout(function () { clearInterval(check); }, 10000);
-            }
-        });
-        if (api.token) loadWishlist();
-    </script>
+    <script src="/assets/js/tours.js"></script>
 </body>
 </html>

@@ -6,6 +6,29 @@ from utils.helpers import validate_required_fields, sanitize_input, validate_num
 
 reviews_bp = Blueprint('reviews', __name__, url_prefix='/api/reviews')
 
+@reviews_bp.route('', methods=['GET'])
+def get_reviews():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    tour_id = request.args.get('tour_id')
+    hotel_id = request.args.get('hotel_id')
+
+    query = Review.query
+
+    if tour_id:
+        query = query.filter_by(tour_id=tour_id)
+    if hotel_id:
+        query = query.filter_by(hotel_id=hotel_id)
+
+    reviews = query.order_by(Review.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
+    return jsonify({
+        'reviews': [r.to_dict() for r in reviews.items],
+        'total': reviews.total,
+        'page': reviews.page,
+        'pages': reviews.pages
+    }), 200
+
 @reviews_bp.route('', methods=['POST'])
 @token_required
 def create_review(current_user):

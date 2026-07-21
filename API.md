@@ -157,6 +157,16 @@ Database (SQL)
 
 ---
 
+## 9. REVIEWS API
+
+| Action | Method | Endpoint | Notes |
+|--------|--------|----------|-------|
+| Get reviews | GET | `/api/reviews` | Public - paginated |
+| Create review | POST | `/api/reviews` | Auth required |
+| Delete review | DELETE | `/api/reviews/{id}` | Owner or Admin |
+
+---
+
 ## 8. NOTIFICATIONS API
 
 | Action | Method | Endpoint | Notes |

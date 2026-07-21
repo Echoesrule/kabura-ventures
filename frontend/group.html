@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-activity-type="group" data-category-name="group" data-fallback-img="/assets/images/savannah.jpg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Tours — Kabura Adventures</title>
+    <meta name="description" content="Unforgettable group adventures tailored for friends, families, and corporate teams. Group tours and safari packages in Kenya with Kabura Adventures.">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link rel="stylesheet" href="/assets/css/homepage.css?v=4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/category.css">
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <section class="category-hero">
+        <img class="category-hero-bg" src="/assets/images/savannah.jpg" alt="Group Safari Kenya" loading="eager">
+        <div class="category-hero-overlay"></div>
+        <div class="category-hero-content">
+            <span class="category-hero-badge">Groups & Teams</span>
+            <h1 class="category-hero-title">Group Tours</h1>
+            <p class="category-hero-desc">Unforgettable group adventures tailored for friends, families, and corporate teams. Shared experiences that create lasting bonds across Kenya's wild landscapes.</p>
+            <a href="#tours-section" class="category-hero-cta"><span>Explore Group Tours</span><i class="fas fa-arrow-down"></i></a>
+        </div>
+    </section>
+
+    <section class="category-tours-section" id="tours-section">
+        <div class="category-section-header"><h2>Available Group Experiences</h2><p>Discover Kenya's best group adventures</p></div>
+        <div class="category-filter-bar">
+            <input type="text" class="form-input" id="filter-search" placeholder="Search group tours...">
+            <input type="text" class="form-input" id="filter-location" placeholder="Location...">
+            <div style="display:flex;align-items:center;gap:.5rem;"><input type="number" class="form-input" id="filter-min-price" placeholder="Min KSh" min="0" style="max-width:120px;"><span style="color:#999;">—</span><input type="number" class="form-input" id="filter-max-price" placeholder="Max KSh" min="0" style="max-width:120px;"></div>
+            <button class="btn btn-secondary btn-sm" id="clear-filters">Clear</button>
+        </div>
+        <div id="results-count" class="category-results-count"></div>
+        <div class="category-tours-grid" id="tours-list"></div>
+        <div class="category-pagination" id="pagination"></div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/category.js"></script>
+</body>
+</html>

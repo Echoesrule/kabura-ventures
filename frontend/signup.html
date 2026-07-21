@@ -17,10 +17,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=3">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
+<body class="no-nav">
     <div class="auth-bg-iframe" aria-hidden="true">
         <iframe src="/" tabindex="-1"></iframe>
     </div>
@@ -29,7 +29,7 @@
             <div class="auth-card">
                 <div class="auth-left">
                     <div class="auth-brand">
-                        <img src="/assets/images/kabura-logo.png" alt="Kabura" class="auth-logo">
+                        <img src="/assets/images/kabura-logo.png" alt="Kabura" class="auth-logo" loading="lazy">
                         <h1>Create Account</h1>
                         <p class="auth-sub">Join Kabura to manage bookings and discover exclusive tours.</p>
                     </div>
@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <div class="auth-right" role="img" aria-label="Scenic view">
-                    <img id="auth-hero-image" src="/assets/images/placeholder.svg" alt="Hero" class="auth-hero-img">
+                    <img id="auth-hero-image" src="/assets/images/placeholder.svg" alt="Hero" class="auth-hero-img" loading="lazy">
                     <div class="auth-overlay">
                         <div class="overlay-bubble" id="auth-hero-caption"></div>
                     </div>
@@ -116,12 +116,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
     <script src="/assets/js/app.js"></script>
-    <script>
-        // Initialize Supabase auth on auth pages
-        document.addEventListener('DOMContentLoaded', () => {
-            initSupabaseAuthPage();
-        });
-    </script>
 </body>
 </html>

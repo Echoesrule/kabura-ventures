@@ -1,0 +1,92 @@
+        .services-page-hero {
+            background: linear-gradient(135deg, #0d1f12 0%, #1a3a2a 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+        .services-page-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+        .services-page-hero p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .service-detail-section {
+            padding: 4rem 2rem;
+        }
+        .service-detail-section:nth-child(even) {
+            background: white;
+        }
+        .service-detail-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .service-detail-grid.reversed {
+            direction: rtl;
+        }
+        .service-detail-grid.reversed > * {
+            direction: ltr;
+        }
+        .service-detail-image {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .service-detail-image img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            display: block;
+        }
+        .service-detail-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .service-detail-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .service-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .service-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--dark-text);
+        }
+        .service-features li i {
+            color: var(--accent);
+            width: 1.25rem;
+            text-align: center;
+        }
+        .service-detail-active {
+            animation: serviceHighlight 1.5s ease;
+        }
+        @keyframes serviceHighlight {
+            0%, 100% { background: transparent; }
+            50% { background: rgba(215,90,43,0.06); }
+        }
+        @media (max-width: 768px) {
+            .services-page-hero h1 { font-size: 2rem; }
+            .service-detail-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .service-detail-image img { height: 240px; }
+            .service-detail-content h2 { font-size: 1.5rem; }
+        }

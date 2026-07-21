@@ -35,6 +35,18 @@ TOUR_IMAGES = {
         'https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg' + Q,
         'https://images.pexels.com/photos/753626/pexels-photo-753626.jpeg' + Q,
     ],
+    'Romantic Safari Escape': [
+        'https://images.pexels.com/photos/158255/pexels-photo-158255.jpeg' + Q,
+        'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg' + Q,
+    ],
+    'Maasai Cultural Immersion': [
+        'https://images.pexels.com/photos/3889843/pexels-photo-3889843.jpeg' + Q,
+        'https://images.pexels.com/photos/819764/pexels-photo-819764.jpeg' + Q,
+    ],
+    'Great Rift Valley Group Safari': [
+        'https://images.pexels.com/photos/750540/pexels-photo-750540.jpeg' + Q,
+        'https://images.pexels.com/photos/158255/pexels-photo-158255.jpeg' + Q,
+    ],
 }
 
 HOTEL_IMAGES = {
@@ -138,6 +150,63 @@ ITINERARIES = {
         'Day 5: Departure\n'
         'Morning at leisure. Transfer to the airport.'
     ),
+    'Romantic Safari Escape': (
+        'Day 1: Nairobi to Maasai Mara\n'
+        'Private transfer from JKIA to a luxury tented camp in the Mara. '
+        'Welcome champagne and private bush dinner under the stars.\n\n'
+        'Day 2: Private Game Drive & Bush Breakfast\n'
+        'Sunrise private game drive with your personal guide. '
+        'Bush breakfast set up in a scenic location. Afternoon couples spa treatment. '
+        'Sundowner cocktails overlooking the savannah.\n\n'
+        'Day 3: Hot Air Balloon Safari\n'
+        'Early morning hot air balloon ride over the Mara at sunrise. '
+        'Champagne bush breakfast upon landing. Afternoon leisure at the lodge. '
+        'Private candlelit dinner in your tent.\n\n'
+        'Day 4: Cultural Visit & Farewell\n'
+        'Morning visit to a Maasai village together. '
+        'Afternoon game drive to spot wildlife you may have missed. '
+        'Farewell dinner with Maasai warriors performance.\n\n'
+        'Day 5: Departure\n'
+        'Morning game drive en route to the airstrip. '
+        'Scenic flight back to Nairobi.'
+    ),
+    'Maasai Cultural Immersion': (
+        'Day 1: Nairobi to Maasai Land\n'
+        'Drive to Kajiado County, heartland of the Maasai people. '
+        'Meet your Maasai host family and settle into a community homestay. '
+        'Welcome dinner with traditional foods.\n\n'
+        'Day 2: Village Life & Traditions\n'
+        'Morning participation in daily activities — cattle herding, '
+        'water fetching, and food preparation. Afternoon learn traditional '
+        'beadwork and jewelry making. Evening storytelling around the fire.\n\n'
+        'Day 3: Warrior Training & Dance\n'
+        'Experience Maasai warrior training — jumping, spear throwing, '
+        'and fire-making. Learn the traditional Adumu (jumping dance). '
+        'Afternoon visit to a local school supported by tourism revenue.\n\n'
+        'Day 4: Nature Walk & Conservation\n'
+        'Guided nature walk with Maasai trackers. Learn about medicinal '
+        'plants and wildlife coexistence. Afternoon conservation briefing '
+        'and community project visit. Farewell ceremony.\n\n'
+        'Day 5: Departure\n'
+        'Morning farewell breakfast. Transfer back to Nairobi.'
+    ),
+    'Great Rift Valley Group Safari': (
+        'Day 1: Nairobi to Lake Nakuru\n'
+        'Group departure from Nairobi. Scenic drive through the Great Rift Valley. '
+        'Afternoon game drive at Lake Nakuru National Park. Group dinner at the lodge.\n\n'
+        'Day 2: Lake Nakuru & Lake Naivasha\n'
+        'Morning game drive to see flamingos, rhinos, and lions. '
+        'Transfer to Lake Naivasha. Afternoon boat ride to see hippos and birds. '
+        'Evening campfire social with the group.\n\n'
+        'Day 3: Hell\'s Gate National Park\n'
+        'Cycling tour through Hell\'s Gate — one of the few parks you can walk in. '
+        'Rock climbing and canyon exploration. Afternoon hot springs visit. '
+        'Group barbecue dinner.\n\n'
+        'Day 4: Maasai Market & Departure\n'
+        'Morning visit to a Maasai market for souvenirs. '
+        'Group photo session. Lunch at a Rift Valley viewpoint. '
+        'Return to Nairobi by evening.'
+    ),
 }
 
 INCLUDED = (
@@ -188,6 +257,21 @@ TOURS_EXTRA = [
         'title': 'Diani Sea Adventure',
         'activity_type': 'beach',
         'latitude': -4.3, 'longitude': 39.5833,
+    },
+    {
+        'title': 'Romantic Safari Escape',
+        'activity_type': 'honeytours',
+        'latitude': -1.4833, 'longitude': 35.0,
+    },
+    {
+        'title': 'Maasai Cultural Immersion',
+        'activity_type': 'cultural',
+        'latitude': -1.85, 'longitude': 36.78,
+    },
+    {
+        'title': 'Great Rift Valley Group Safari',
+        'activity_type': 'group',
+        'latitude': -0.3667, 'longitude': 36.0833,
     },
 ]
 
@@ -300,6 +384,51 @@ def seed_database():
                 'latitude': -4.3,
                 'longitude': 39.5833,
                 'itinerary': ITINERARIES['Diani Sea Adventure'],
+                'included': INCLUDED,
+                'excluded': EXCLUDED,
+            },
+            {
+                'title': 'Romantic Safari Escape',
+                'description': 'An intimate safari designed for couples. Private game drives, bush breakfasts, hot air balloon rides, and candlelit dinners under the stars in the Maasai Mara.',
+                'price': 85000,
+                'duration_days': 5,
+                'location': 'Maasai Mara, Kenya',
+                'max_people': 2,
+                'featured': True,
+                'activity_type': 'honeytours',
+                'latitude': -1.4833,
+                'longitude': 35.0,
+                'itinerary': ITINERARIES['Romantic Safari Escape'],
+                'included': INCLUDED,
+                'excluded': EXCLUDED,
+            },
+            {
+                'title': 'Maasai Cultural Immersion',
+                'description': 'Live with the Maasai people and experience their ancient traditions firsthand. Participate in daily activities, learn beadwork, warrior training, and hear stories around the fire.',
+                'price': 32000,
+                'duration_days': 5,
+                'location': 'Kajiado, Kenya',
+                'max_people': 12,
+                'featured': True,
+                'activity_type': 'cultural',
+                'latitude': -1.85,
+                'longitude': 36.78,
+                'itinerary': ITINERARIES['Maasai Cultural Immersion'],
+                'included': INCLUDED,
+                'excluded': EXCLUDED,
+            },
+            {
+                'title': 'Great Rift Valley Group Safari',
+                'description': 'A group adventure through Kenya\'s stunning Great Rift Valley. Visit Lake Nakuru, Lake Naivasha, and Hell\'s Gate with new friends. Perfect for families, friends, and teams.',
+                'price': 28000,
+                'duration_days': 4,
+                'location': 'Rift Valley, Kenya',
+                'max_people': 25,
+                'featured': False,
+                'activity_type': 'group',
+                'latitude': -0.3667,
+                'longitude': 36.0833,
+                'itinerary': ITINERARIES['Great Rift Valley Group Safari'],
                 'included': INCLUDED,
                 'excluded': EXCLUDED,
             }
@@ -429,6 +558,63 @@ def seed_database():
                     comment=r['comment']
                 )
                 db.session.add(review)
+
+    has_hotel_reviews = Review.query.filter(Review.hotel_id.isnot(None)).count() > 0
+    if not has_hotel_reviews:
+        hotel_reviews_data = [
+            {
+                'hotel_name': 'Mara Serena Safari Lodge',
+                'reviews': [
+                    {'rating': 5, 'comment': 'Waking up to the sound of lions was surreal. The lodge views over the Mara are unmatched. Staff went above and beyond.'},
+                    {'rating': 5, 'comment': 'The food was exceptional — better than most Nairobi restaurants. Game drives were perfectly timed for wildlife viewing.'},
+                    {'rating': 4, 'comment': 'Beautiful lodge with stunning views. The pool area is lovely. Only downside was the Wi-Fi was spotty.'},
+                    {'rating': 5, 'comment': 'Our honeymoon suite overlooked a watering hole. We watched elephants drink from our balcony. Pure magic.'},
+                    {'rating': 4, 'comment': 'World-class safari experience. The guides are passionate and incredibly knowledgeable about the Mara ecosystem.'},
+                ]
+            },
+            {
+                'hotel_name': 'Sarova Whitesands Beach Resort',
+                'reviews': [
+                    {'rating': 5, 'comment': 'The beach is absolutely stunning. Crystal clear water and powdery white sand. The resort has everything you need.'},
+                    {'rating': 4, 'comment': 'Great family resort with multiple pools and restaurants. The kids loved the water sports activities.'},
+                    {'rating': 5, 'comment': 'The dhow dinner cruise was the highlight of our trip. Fresh seafood under the stars — pure romance.'},
+                    {'rating': 4, 'comment': 'Beautiful property with excellent service. The spa treatments were heavenly after a long week of travel.'},
+                    {'rating': 5, 'comment': 'We stayed for 5 nights and didn\'t want to leave. The beach bar sunsets are unforgettable.'},
+                ]
+            },
+            {
+                'hotel_name': 'The Ark Lodge',
+                'reviews': [
+                    {'rating': 5, 'comment': 'The most unique hotel experience of our lives. Watching buffalo and elephants at the waterhole from the observation deck was incredible.'},
+                    {'rating': 4, 'comment': 'A truly special place. The tree-level rooms give you a different perspective on the forest. Game viewing is effortless.'},
+                    {'rating': 5, 'comment': 'The night sounds of the forest are magical. Elephants came right up to the lodge. Unforgettable wildlife encounter.'},
+                    {'rating': 4, 'comment': 'Great concept and execution. The food was good and the staff were friendly. The Aberdares are beautiful.'},
+                    {'rating': 5, 'comment': 'If you want something different from a typical safari lodge, this is it. We saw rare bongo antelope from our room.'},
+                ]
+            },
+            {
+                'hotel_name': 'Lake Naivasha Sopa Resort',
+                'reviews': [
+                    {'rating': 4, 'comment': 'Gorgeous lakeside setting with beautiful gardens. The boat ride to see hippos was a highlight for the kids.'},
+                    {'rating': 4, 'comment': 'Peaceful and relaxing. The golf course is well maintained. Perfect base for exploring Hell\'s Gate and Crescent Island.'},
+                    {'rating': 5, 'comment': 'We loved the boat trip at sunset. Seeing hippos surface as the sun went down was magical. Great value for money.'},
+                    {'rating': 3, 'comment': 'Nice resort but showing its age in some areas. The food is decent and the location is beautiful.'},
+                    {'rating': 4, 'comment': 'The gardens are stunning — we spotted giraffes and zebras right from our room. Friendly staff and good service.'},
+                ]
+            },
+        ]
+        if customer:
+            for hotel_reviews in hotel_reviews_data:
+                hotel = Hotel.query.filter_by(name=hotel_reviews['hotel_name']).first()
+                if hotel:
+                    for r in hotel_reviews['reviews']:
+                        review = Review(
+                            user_id=customer.id,
+                            hotel_id=hotel.id,
+                            rating=r['rating'],
+                            comment=r['comment']
+                        )
+                        db.session.add(review)
 
     if TourAvailability.query.count() == 0:
         for tour in Tour.query.all():

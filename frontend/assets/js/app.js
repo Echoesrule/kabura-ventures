@@ -1106,11 +1106,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })();
 
-    // Load shared footer
-    fetch('/footer.html').then(function(r){return r.text();}).then(function(html){
-        var p = document.getElementById('footer-placeholder');
-        if (p) p.innerHTML = html;
-    }).catch(function(){});
 
     // WhatsApp floating bubble
     (function injectWhatsApp() {

@@ -163,6 +163,10 @@ class ApiClient {
     async subscribeNewsletter(data) { return this.post('/subscribers', data); }
 
     // Reviews
+    async getReviews(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/reviews${query ? '?' + query : ''}`);
+    }
     async createReview(data) { return this.post('/reviews', data); }
     async deleteReview(id) { return this.delete(`/reviews/${id}`); }
 

@@ -17,364 +17,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=3">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        .booking-hero {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
-            padding: 3rem 0 2.5rem;
-            text-align: center;
-            color: white;
-        }
-        .booking-hero h1 { color: white; font-size: 2rem; margin-bottom: 0.4rem; }
-        .booking-hero p { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
-
-        .booking-checkout-layout {
-            display: flex;
-            gap: 2rem;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
-            align-items: flex-start;
-        }
-        .booking-checkout-main { flex: 1; min-width: 0; }
-        .booking-checkout-sidebar { width: 380px; flex-shrink: 0; position: sticky; top: 90px; }
-
-        .checkout-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            margin-bottom: 1.25rem;
-            box-shadow: var(--shadow-sm);
-        }
-        .checkout-card-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .checkout-card-title i { color: var(--accent); font-size: 0.9rem; }
-
-        .booking-summary-item {
-            display: flex;
-            gap: 1rem;
-            padding: 0 0 1rem 0;
-        }
-        .booking-summary-img {
-            width: 100px;
-            min-width: 100px;
-            height: 75px;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-        }
-        .booking-summary-img img { width: 100%; height: 100%; object-fit: cover; }
-        .booking-summary-info { flex: 1; }
-        .booking-summary-info h3 { font-size: 1rem; margin-bottom: 0.2rem; line-height: 1.3; }
-        .booking-summary-info .summary-location { font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.3rem; }
-        .booking-summary-info .summary-rating { font-size: 0.75rem; color: var(--accent); margin-top: 0.15rem; }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.6rem 0;
-            font-size: 0.9rem;
-        }
-        .summary-row:not(:last-child) { border-bottom: 1px solid rgba(0,0,0,0.04); }
-        .summary-row .label { color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; }
-        .summary-row .label i { font-size: 0.75rem; width: 1rem; color: var(--accent); }
-        .summary-row .value { font-weight: 600; color: var(--dark-text); }
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0 0;
-            margin-top: 0.5rem;
-            border-top: 2px solid var(--border-color);
-            font-size: 1.1rem;
-            font-weight: 700;
-            font-family: var(--font-heading);
-        }
-        .summary-total .total-amount { color: var(--primary); font-size: 1.3rem; }
-
-        .policy-box {
-            background: rgba(138,168,153,0.04);
-            border-radius: var(--radius-sm);
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-top: 1rem;
-        }
-        .policy-box i { color: var(--primary); margin-right: 0.3rem; }
-
-        .form-row { margin-bottom: 1rem; }
-        .form-row label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem; color: var(--dark-text); }
-        .form-row .form-input, .form-row .form-select { width: 100%; }
-
-        .payment-options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .payment-option-card {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.85rem 0.75rem;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-        }
-        .payment-option-card:hover { border-color: rgba(var(--accent-rgb),0.3); background: rgba(var(--accent-rgb),0.02); }
-        .payment-option-card.selected { border-color: var(--accent); background: rgba(var(--accent-rgb),0.04); }
-        .payment-option-card input { accent-color: var(--primary); }
-        .payment-option-card .pay-icon { font-size: 1.3rem; width: 1.5rem; text-align: center; }
-        .payment-option-card .pay-label { font-weight: 600; font-size: 0.85rem; }
-
-        .booking-history-section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1.5rem 4rem;
-        }
-        .booking-history-section h2 {
-            font-size: 1.4rem;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .booking-history-section h2 i { color: var(--accent); }
-
-        .booking-cards { display: flex; flex-direction: column; gap: 0.5rem; }
-        .booking-card-header {
-            display: none;
-            padding: 0.7rem 1rem;
-            font-weight: 600;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-            background: rgba(138,168,153,0.04);
-            border-bottom: 2px solid var(--border-color);
-            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-        }
-        .booking-card-header, .booking-card {
-            display: grid;
-            grid-template-columns: 80px 1fr 140px 60px 90px 90px 100px;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        .booking-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 0.75rem 1rem;
-            transition: box-shadow 0.2s;
-        }
-        .booking-card:hover { box-shadow: var(--shadow-sm); }
-        .booking-card-field { font-size: 0.85rem; }
-        .booking-card-field .mobile-label { display: none; }
-
-        @media (max-width: 768px) {
-            .booking-card-header { display: none !important; }
-            .booking-card { grid-template-columns: 1fr; gap: 0; padding: 0.75rem; }
-            .booking-card-field {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.5rem 0;
-                border-bottom: 1px solid #f0f0f0;
-                font-size: 0.85rem;
-            }
-            .booking-card-field:last-child { border-bottom: none; }
-            .booking-card-field .mobile-label {
-                display: inline;
-                font-size: 0.7rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                color: var(--text-secondary);
-                font-weight: 600;
-                white-space: nowrap;
-                margin-right: 0.5rem;
-            }
-            .booking-card-field .field-value { text-align: right; flex-shrink: 0; }
-        }
-
-        .booking-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .booking-tab {
-            background: none;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border-radius: 999px;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-            font-family: var(--font-body);
-        }
-        .booking-tab:hover { background: rgba(138,168,153,0.08); }
-        .booking-tab.active { background: var(--primary); color: white; }
-
-        @media (max-width: 1024px) {
-            .booking-checkout-layout { flex-direction: column; }
-            .booking-checkout-sidebar { width: 100%; position: static; }
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeScaleIn {
-            0% { transform: scale(0); opacity: 0; }
-            60% { transform: scale(1.15); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @media (max-width: 768px) {
-            .booking-hero { padding: 2rem 0 1.5rem; }
-            .booking-hero h1 { font-size: 1.5rem; }
-            .payment-options-grid { grid-template-columns: 1fr; }
-            .booking-checkout-layout { padding: 1rem 1rem 3rem; }
-            .booking-history-section { padding: 0 1rem 3rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/booking.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-inner">
-            <a href="/" class="navbar-brand">
-                <img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="navbar-logo">
-            </a>
-            <button class="hamburger"><i class="fas fa-bars"></i></button>
-            <ul class="nav-links">
-                <li class="mobile-brand"><a href="/" class="mobile-brand-link"><img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="mobile-logo"><span class="mobile-tagline">Explore Kenya's Finest Adventures</span></a></li>
-                <li><a href="/">Home</a></li>
-                <li class="nav-dropdown">
-                    <a href="#" class="nav-dropdown-trigger">Packages <i class="fas fa-chevron-down"></i></a>
-                    <div class="nav-dropdown-menu">
-                        <a href="/tours.html">Tours</a>
-                        <a href="/hotels.html">Hotels</a>
-                        <a href="/flights.html">Flights</a>
-                    </div>
-                </li>
-                <li class="nav-dropdown nav-dropdown-services">
-                    <a href="#" class="nav-dropdown-trigger">Our Services <i class="fas fa-chevron-down"></i></a>
-                    <div class="nav-dropdown-menu nav-dropdown-menu-services">
-                        <div class="nav-services-grid">
-                            <a href="/services.html#service-tours" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/giif.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-hippo"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Tours & Safari Packages</strong>
-                                        <span>Curated Kenyan safari & tour experiences</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-travel" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/class.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-plane"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Local & International Travel</strong>
-                                        <span>Seamless travel arrangements worldwide</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-hotel" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/swimm.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-hotel"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Hotel & Accommodation</strong>
-                                        <span>Curated stays from luxury to budget-friendly</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-transport" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/hel.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-car"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Airport Transfers & Transport</strong>
-                                        <span>Reliable pickups, drops & custom transport</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-honeymoon" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/balloon.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-heart"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Honeymoon & Couples Getaways</strong>
-                                        <span>Romantic escapes for couples</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="/services.html#service-corporate" class="nav-service-card">
-                                <div class="nav-service-card-img" style="background-image:url('/assets/images/giif.jpg')"></div>
-                                <div class="nav-service-card-content">
-                                    <div class="nav-service-card-icon"><i class="fa-solid fa-briefcase"></i></div>
-                                    <div class="nav-service-card-text">
-                                        <strong>Group & Corporate Travel</strong>
-                                        <span>Seamless group travel & corporate retreats</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </li>
-                <li><a href="/blog.html">Blog</a></li>
-                <li><a href="/booking.html">My Bookings</a></li>
-                <li class="nav-user-dropdown" id="auth-buttons">
-                    <button class="nav-user-btn" id="nav-user-btn" aria-label="User menu">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                    <div class="nav-user-menu" id="user-dropdown-menu"></div>
-                </li>
-                <li class="currency-selector">
-                    <select id="currency-switcher" aria-label="Select currency">
-                        <option value="KES">KSh</option>
-                        <option value="USD">$</option>
-                        <option value="EUR">&euro;</option>
-                    </select>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div id="navbar-placeholder"></div>
 
     <section class="booking-hero">
-        <div class="container">
-            <h1><i class="fas fa-suitcase" style="margin-right:0.5rem;color:var(--accent);"></i>Booking &amp; Reservations</h1>
-            <p>Complete your reservation or manage your existing bookings</p>
+        <div class="booking-hero-copy">
+            <div class="booking-hero-eyebrow">Kabura reservations</div>
+            <h1>Your next story<br>starts with <strong>the booking.</strong></h1>
+            <p>Complete your reservation or manage your existing bookings — all in one place.</p>
         </div>
     </section>
 
-    <div class="booking-checkout-layout" id="checkout-section" style="display:none;">
+    <div class="booking-body" id="checkout-section" style="display:none;">
+        <div class="booking-checkout-layout">
         <div class="booking-checkout-main">
             <div style="margin-bottom:1rem;">
-                <button class="btn btn-secondary" id="back-to-bookings-btn-top"><i class="fas fa-arrow-left"></i> Back to My Bookings</button>
+                <button class="back-btn" id="back-to-bookings-btn-top">Back to My Bookings</button>
             </div>
             <div class="checkout-card" id="booking-summary-card">
-                <div class="checkout-card-title"><i class="fas fa-file-invoice"></i> Booking Summary</div>
+                <div class="checkout-card-title">Booking Summary</div>
                 <div id="booking-summary-content">
-                    <p style="color:var(--text-secondary);">Select a tour or hotel to see the summary here.</p>
+                    <p style="color:#628465;">Select a tour or hotel to see the summary here.</p>
                 </div>
             </div>
 
             <div class="checkout-card" id="booking-form-card">
-                <div class="checkout-card-title"><i class="fas fa-user"></i> Your Information</div>
+                <div class="checkout-card-title">Your Information</div>
                 <form id="booking-form">
                     <input type="hidden" id="booking-type" value="">
                     <input type="hidden" id="booking-item-id" value="">
@@ -414,7 +87,7 @@
                     </div>
                     <div class="form-row">
                         <label>Special Requests</label>
-                        <textarea class="form-textarea" id="booking-requests" placeholder="Any special requirements or preferences?" rows="3" style="width:100%;padding:0.75rem;border:1px solid var(--border-color);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:0.9rem;"></textarea>
+                        <textarea class="form-textarea" id="booking-requests" placeholder="Any special requirements or preferences?" rows="3"></textarea>
                     </div>
                 </form>
             </div>
@@ -422,11 +95,11 @@
 
         <div class="booking-checkout-sidebar">
             <div class="checkout-card">
-                <div class="checkout-card-title"><i class="fas fa-credit-card"></i> Payment Method</div>
+                <div class="checkout-card-title">Payment Method</div>
                 <div class="payment-options-grid" id="payment-options">
                     <label class="payment-option-card selected" data-value="mpesa">
                         <input type="radio" name="pay-method" value="mpesa" checked style="display:none;">
-                        <span class="pay-icon" style="color:#4CAF50;"><i class="fas fa-mobile-screen-button"></i></span>
+                        <span class="pay-icon" style="color:#122218;"><i class="fas fa-mobile-screen-button"></i></span>
                         <span class="pay-label">M-Pesa</span>
                     </label>
                     <label class="payment-option-card" data-value="paypal">
@@ -436,53 +109,56 @@
                     </label>
                     <label class="payment-option-card" data-value="cash">
                         <input type="radio" name="pay-method" value="cash" style="display:none;">
-                        <span class="pay-icon" style="color:var(--primary);"><i class="fas fa-money-bill-wave"></i></span>
+                        <span class="pay-icon" style="color:#122218;"><i class="fas fa-money-bill-wave"></i></span>
                         <span class="pay-label">Cash on Arrival</span>
                     </label>
                     <label class="payment-option-card" data-value="bank_transfer">
                         <input type="radio" name="pay-method" value="bank_transfer" style="display:none;">
-                        <span class="pay-icon" style="color:var(--accent);"><i class="fas fa-university"></i></span>
+                        <span class="pay-icon" style="color:#122218;"><i class="fas fa-university"></i></span>
                         <span class="pay-label">Bank Transfer</span>
                     </label>
                 </div>
 
-                <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border-color);">
-                    <div class="summary-row"><span class="label"><i class="fas fa-bed"></i> Accommodation</span><span class="value" id="sidebar-base-price">KSh 0</span></div>
-                    <div class="summary-row"><span class="label"><i class="fas fa-moon"></i> Nights</span><span class="value" id="sidebar-nights">1</span></div>
-                    <div class="summary-row"><span class="label"><i class="fas fa-user"></i> Guests</span><span class="value" id="sidebar-guests">1</span></div>
+                <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(18,34,24,0.08);">
+                    <div class="summary-row"><span class="label">Accommodation</span><span class="value" id="sidebar-base-price">KSh 0</span></div>
+                    <div class="summary-row"><span class="label">Nights</span><span class="value" id="sidebar-nights">1</span></div>
+                    <div class="summary-row"><span class="label">Guests</span><span class="value" id="sidebar-guests">1</span></div>
                     <div class="summary-total">
                         <span>Total</span>
                         <span class="total-amount" id="sidebar-total">KSh 0</span>
                     </div>
                 </div>
 
-                <div style="background:#FFF8E1;padding:0.75rem 1rem;border-radius:var(--radius-sm);margin:1rem 0;font-size:0.8rem;color:var(--dark-text);text-align:center;">
-                    <i class="fas fa-info-circle" style="color:var(--accent);"></i> You will be contacted with payment instructions after submission.
+                <div class="info-note">
+                    You will be contacted with payment instructions after submission.
                 </div>
 
-                <button class="btn btn-primary btn-lg" style="width:100%;" id="submit-booking-btn">
-                    <i class="fas fa-check-circle"></i> Confirm Booking
-                </button>
+                <button class="submit-btn" id="submit-booking-btn">Confirm Booking</button>
 
-                <div style="margin-top:0.5rem;">
-                    <button class="btn btn-secondary" style="width:100%;" id="back-to-bookings-btn">
-                        <i class="fas fa-arrow-left"></i> Back to My Bookings
-                    </button>
+                <div style="margin-top:0.75rem;">
+                    <button class="back-btn" style="width:100%;justify-content:center;margin-bottom:0;" id="back-to-bookings-btn">Back to My Bookings</button>
                 </div>
 
                 <div class="policy-box">
-                    <i class="fas fa-shield-alt"></i> Free cancellation up to 24 hours before check-in.<br>
-                    <i class="fas fa-lock"></i> Your information is secure and encrypted.
+                    Free cancellation up to 24 hours before check-in.<br>
+                    Your information is secure and encrypted.
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
     <div class="booking-history-section" id="history-section">
-        <h2><i class="fas fa-history"></i> My Bookings</h2>
-        <div style="margin-bottom:1.25rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <button class="btn btn-primary" id="new-booking-btn"><i class="fas fa-plus"></i> New Booking</button>
-            <button class="btn btn-outline" id="download-bookings-btn"><i class="fas fa-download"></i> Download CSV</button>
+        <div class="booking-history-header">
+            <h2>My Bookings</h2>
+            <p>View and manage all your reservations</p>
+        </div>
+        <div class="booking-action-row" style="margin-bottom:1.5rem;">
+            <div class="booking-action-btn-group">
+                <button class="booking-action-btn" id="new-booking-btn">New Booking</button>
+                <button class="booking-action-btn-plus" id="new-booking-btn-plus">+</button>
+            </div>
+            <button class="booking-action-btn-outline" id="download-bookings-btn">Download CSV</button>
         </div>
         <div class="booking-tabs">
             <button class="booking-tab active" data-status="all" onclick="switchBookingTab('all')">All</button>
@@ -495,502 +171,29 @@
     </div>
 
     <div id="submit-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2.5rem 3rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);min-width:300px;">
+        <div style="background:rgba(255,255,255,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.8);border-radius:20px;padding:2.5rem 3rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);min-width:300px;">
             <div id="submit-loading-state">
-                <div style="width:56px;height:56px;border:4px solid #e8e8e8;border-top-color:var(--primary);border-radius:50%;margin:0 auto 1rem;animation:spin 0.7s linear infinite;"></div>
-                <p style="font-weight:600;font-size:1.05rem;margin:0;">Submitting your booking...</p>
-                <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.4rem 0 0;">Please wait a moment</p>
+                <div style="width:56px;height:56px;border:4px solid rgba(18,34,24,0.1);border-top-color:#122218;border-radius:50%;margin:0 auto 1rem;animation:spin 0.7s linear infinite;"></div>
+                <p style="font-weight:600;font-size:1.05rem;margin:0;font-family:'Poppins',sans-serif;color:#172019;">Submitting your booking...</p>
+                <p style="color:#628465;font-size:0.85rem;margin:0.4rem 0 0;">Please wait a moment</p>
             </div>
             <div id="submit-success-state" style="display:none;">
-                <div style="width:56px;height:56px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;animation:fadeScaleIn 0.4s ease;">
+                <div style="width:56px;height:56px;border-radius:50%;background:#122218;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;animation:fadeScaleIn 0.4s ease;">
                     <i class="fas fa-check" style="color:white;font-size:26px;"></i>
                 </div>
-                <p style="font-weight:600;font-size:1.05rem;color:#4CAF50;margin:0;">Booking Submitted!</p>
-                <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.4rem 0 0;">We'll contact you with confirmation details.</p>
+                <p style="font-weight:600;font-size:1.05rem;color:#122218;margin:0;font-family:'Poppins',sans-serif;">Booking Submitted!</p>
+                <p style="color:#628465;font-size:0.85rem;margin:0.4rem 0 0;">We'll contact you with confirmation details.</p>
             </div>
         </div>
     </div>
 
     <div id="footer-placeholder"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
     <script src="/assets/js/app.js"></script>
-    <script>
-        var urlParams = new URLSearchParams(window.location.search);
-        var preselectedTour = urlParams.get('tour');
-        var preselectedHotel = urlParams.get('hotel');
-        var prefilledCheckin = urlParams.get('checkin');
-        var prefilledCheckout = urlParams.get('checkout');
-        var prefilledGuests = urlParams.get('guests');
-        var selectedItem = null;
-        var selectedType = '';
-        var allBookings = [];
-        var bookingsFilter = 'all';
-
-        function showNewBookingForm() {
-            document.getElementById('history-section').style.display = 'none';
-            document.getElementById('checkout-section').style.display = 'flex';
-            window.scrollTo({ top: document.getElementById('checkout-section').offsetTop - 80, behavior: 'smooth' });
-        }
-
-        function showMyBookingsView() {
-            document.getElementById('checkout-section').style.display = 'none';
-            document.getElementById('history-section').style.display = 'block';
-            selectedItem = null;
-            selectedType = '';
-            document.getElementById('booking-type').value = '';
-            document.getElementById('booking-item-id').value = '';
-            document.getElementById('booking-room-type-row').style.display = 'none';
-            renderBookingSummary();
-        }
-
-        function switchBookingTab(status) {
-            bookingsFilter = status;
-            document.querySelectorAll('.booking-tab').forEach(function(t) { t.classList.remove('active'); });
-            document.querySelector('.booking-tab[data-status="' + status + '"]').classList.add('active');
-            renderBookings();
-        }
-
-        async function initCheckout() {
-            var nameInput = document.getElementById('booking-name');
-            var emailInput = document.getElementById('booking-email');
-            if (api.token) {
-                try {
-                    var profile = await api.getProfile();
-                    if (profile.user) {
-                        nameInput.value = profile.user.name || '';
-                        emailInput.value = profile.user.email || '';
-                    }
-                } catch (e) {}
-            }
-
-            if (preselectedTour) {
-                try {
-                    var res = await api.getTour(preselectedTour);
-                    selectedItem = res.tour || res;
-                    selectedType = 'tour';
-                    document.getElementById('booking-type').value = 'tour';
-                    document.getElementById('booking-item-id').value = preselectedTour;
-                    renderBookingSummary();
-                } catch (e) { console.error(e); }
-            } else if (preselectedHotel) {
-                try {
-                    var res = await api.getHotel(preselectedHotel);
-                    selectedItem = res.hotel || res;
-                    selectedType = 'hotel';
-                    document.getElementById('booking-type').value = 'hotel';
-                    document.getElementById('booking-item-id').value = preselectedHotel;
-                    document.getElementById('booking-room-type-row').style.display = 'block';
-                    renderBookingSummary();
-                } catch (e) { console.error(e); }
-            }
-
-            if (prefilledCheckin) document.getElementById('booking-date').value = prefilledCheckin;
-            if (prefilledCheckout) document.getElementById('booking-return').value = prefilledCheckout;
-            if (prefilledGuests) document.getElementById('booking-people').value = prefilledGuests;
-
-            if (preselectedTour || preselectedHotel) {
-                showNewBookingForm();
-            }
-        }
-
-        function renderBookingSummary() {
-            var container = document.getElementById('booking-summary-content');
-            if (!selectedItem) {
-                container.innerHTML = '<p style="color:var(--text-secondary);">Select a tour or hotel to see the summary here.</p>';
-                return;
-            }
-
-            var imgUrl = '/assets/images/placeholder.svg';
-            if (selectedItem.images && selectedItem.images.length > 0) {
-                var img = selectedItem.images.find(function(i) { return i.is_primary; }) || selectedItem.images[0];
-                if (img) imgUrl = img.image_url;
-            }
-
-            var title = selectedItem.title || selectedItem.name || 'Item';
-            var location = selectedItem.location || 'Kenya';
-            var rating = selectedItem.avg_rating || selectedItem.rating || 0;
-            var reviewCount = selectedItem.reviews_count || 0;
-            var price = selectedType === 'hotel' ? selectedItem.price_per_night : selectedItem.price;
-            var priceLabel = selectedType === 'hotel' ? '/night' : '/person';
-
-            var starsHtml = '';
-            if (rating > 0) {
-                var full = Math.round(rating);
-                starsHtml = '<div class="summary-rating">' + '<i class="fas fa-star"></i>'.repeat(full) + '<i class="far fa-star"></i>'.repeat(5 - full) + ' ' + rating.toFixed(1) + ' (' + reviewCount + ')</div>';
-            }
-
-            container.innerHTML = '<div class="booking-summary-item">'
-                + '<div class="booking-summary-img"><img src="' + imgUrl + '" alt="' + escapeHTML(title) + '" onerror="this.src=\'/assets/images/placeholder.svg\'"></div>'
-                + '<div class="booking-summary-info">'
-                    + '<h3>' + escapeHTML(title) + '</h3>'
-                    + '<div class="summary-location"><i class="fas fa-map-pin"></i> ' + escapeHTML(location) + '</div>'
-                    + starsHtml
-                + '</div>'
-                + '</div>'
-                + '<div class="summary-row"><span class="label"><i class="fas fa-tag"></i> Type</span><span class="value" style="text-transform:capitalize;">' + selectedType + '</span></div>'
-                + '<div class="summary-row"><span class="label"><i class="fas fa-calculator"></i> Base price</span><span class="value">' + window.formatPrice(price) + ' ' + priceLabel + '</span></div>';
-
-            updateSidebar();
-        }
-
-        function updateSidebar() {
-            if (!selectedItem) return;
-            var price = selectedType === 'hotel' ? selectedItem.price_per_night : selectedItem.price;
-            var checkin = document.getElementById('booking-date').value;
-            var checkout = document.getElementById('booking-return').value;
-            var guests = parseInt(document.getElementById('booking-people').value) || 1;
-            var nights = 1;
-
-            if (selectedType === 'hotel' && checkin && checkout) {
-                nights = Math.max(1, Math.round((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24)));
-            }
-
-            var total = price * nights;
-
-            document.getElementById('sidebar-base-price').textContent = window.formatPrice(price);
-            document.getElementById('sidebar-nights').textContent = nights;
-            document.getElementById('sidebar-guests').textContent = guests;
-            document.getElementById('sidebar-total').textContent = window.formatPrice(total);
-        }
-
-        function setupPaymentSelection() {
-            document.querySelectorAll('.payment-option-card').forEach(function(card) {
-                card.addEventListener('click', function() {
-                    document.querySelectorAll('.payment-option-card').forEach(function(c) { c.classList.remove('selected'); });
-                    this.classList.add('selected');
-                    this.querySelector('input[type="radio"]').checked = true;
-                });
-            });
-        }
-
-        document.getElementById('booking-date').addEventListener('change', updateSidebar);
-        document.getElementById('booking-return').addEventListener('change', updateSidebar);
-        document.getElementById('booking-people').addEventListener('change', updateSidebar);
-
-        document.getElementById('submit-booking-btn').addEventListener('click', async function() {
-            var token = localStorage.getItem('token');
-            if (!token) {
-                showToast('Please login to make a booking', 'warning');
-                openModal('login-modal');
-                return;
-            }
-
-            if (!selectedItem) {
-                showToast('No item selected. Browse tours or hotels first.', 'warning');
-                return;
-            }
-
-            var date = document.getElementById('booking-date').value;
-            if (!date) { showToast('Please select a date', 'warning'); return; }
-
-            var overlay = document.getElementById('submit-overlay');
-            var loadingState = document.getElementById('submit-loading-state');
-            var successState = document.getElementById('submit-success-state');
-            overlay.style.display = 'flex';
-            loadingState.style.display = 'block';
-            successState.style.display = 'none';
-
-            try {
-                await api.createBooking({
-                    booking_type: selectedType,
-                    tour_id: selectedType === 'tour' ? document.getElementById('booking-item-id').value : null,
-                    hotel_id: selectedType === 'hotel' ? document.getElementById('booking-item-id').value : null,
-                    travel_date: date,
-                    return_date: document.getElementById('booking-return').value || null,
-                    people_count: parseInt(document.getElementById('booking-people').value),
-                    special_requests: document.getElementById('booking-requests').value,
-                    guest_name: document.getElementById('booking-name').value,
-                    guest_email: document.getElementById('booking-email').value,
-                    guest_phone: document.getElementById('booking-phone').value,
-                    room_type: document.getElementById('booking-room-type')?.value || null,
-                    payment_method: document.querySelector('input[name="pay-method"]:checked')?.value || 'mpesa',
-                    total_amount: parseFloat(document.getElementById('sidebar-total').textContent.replace(/[^0-9.]/g, '')) || 0
-                });
-                loadingState.style.display = 'none';
-                successState.style.display = 'block';
-                document.getElementById('booking-form').reset();
-                await new Promise(function(r) { setTimeout(r, 1800); });
-                overlay.style.display = 'none';
-                showMyBookingsView();
-                loadMyBookings();
-                showToast('Booking submitted successfully! Awaiting confirmation.', 'success');
-            } catch (err) {
-                overlay.style.display = 'none';
-                showToast(err.message, 'error');
-            }
-        });
-
-        async function loadMyBookings() {
-            var container = document.getElementById('bookings-list');
-            var token = localStorage.getItem('token');
-            if (!token) {
-                container.innerHTML = '<div class="empty-state" style="padding:3rem 1rem;"><i class="fas fa-user-lock" style="font-size:2.5rem;color:var(--text-secondary);opacity:0.3;margin-bottom:0.75rem;"></i><h3>Login to view your bookings</h3><p style="color:var(--text-secondary);">Sign in to see your booking history.</p></div>';
-                return;
-            }
-
-            try {
-                var result = await api.getUserBookings();
-                allBookings = result.bookings || [];
-                renderBookings();
-            } catch (err) {
-                container.innerHTML = '<div class="empty-state" style="padding:3rem 1rem;"><h3>Could not load bookings</h3></div>';
-            }
-        }
-
-        function renderBookings() {
-            var container = document.getElementById('bookings-list');
-            var filtered = allBookings;
-            if (bookingsFilter !== 'all') {
-                filtered = allBookings.filter(function(b) { return b.status === bookingsFilter; });
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="padding:3rem 1rem;"><i class="fas fa-ticket-alt" style="font-size:2.5rem;color:var(--text-secondary);opacity:0.3;margin-bottom:0.75rem;"></i><h3>No ' + (bookingsFilter !== 'all' ? bookingsFilter : '') + ' bookings</h3><p style="color:var(--text-secondary);">' + (allBookings.length === 0 ? 'Create your first booking above.' : 'No bookings match this filter.') + '</p></div>';
-                return;
-            }
-
-            var labels = ['Type', 'Details', 'Dates', 'Guests', 'Status', 'Payment', 'Action'];
-            var html = '<div class="booking-cards"><div class="booking-card-header">'
-                + labels.map(function(l) { return '<span>' + l + '</span>'; }).join('')
-                + '</div>';
-
-            filtered.forEach(function(b) {
-                var details = b.booking_type;
-                if (b.tour) details = b.tour.title;
-                else if (b.hotel) details = b.hotel.name;
-
-                var statusBadge = { pending: 'badge-warning', confirmed: 'badge-success', cancelled: 'badge-danger', completed: 'badge-info', no_show: 'badge-secondary' }[b.status] || 'badge-secondary';
-                var displayPayment = { unpaid: 'Unpaid', partially_paid: 'Partial', fully_paid: 'Paid', refunded: 'Refunded' }[b.payment_status] || b.payment_status;
-                var paymentBadge = { unpaid: 'badge-danger', partially_paid: 'badge-warning', fully_paid: 'badge-success', refunded: 'badge-info' }[b.payment_status] || 'badge-secondary';
-
-                var actionsHtml = '<div style="display:flex;gap:0.3rem;flex-wrap:wrap;">'
-                    + ((b.status === 'confirmed' || b.status === 'pending') && b.payment_status !== 'fully_paid'
-                        ? '<button class="btn btn-sm btn-gold" onclick="openPayment(\'' + b.id + '\', \'' + (b.total_amount || 0) + '\')">Pay</button>'
-                        : '')
-                    + '<button class="btn btn-sm btn-outline" onclick="printReceipt(\'' + b.id + '\')"><i class="fas fa-receipt"></i></button>'
-                    + '</div>';
-
-                var fields = [
-                    '<span class="badge badge-info" style="text-transform:capitalize;">' + b.booking_type + '</span>',
-                    '<strong>' + escapeHTML(details) + '</strong>',
-                    b.travel_date + (b.return_date ? ' &rarr; ' + b.return_date : ''),
-                    b.people_count,
-                    '<span class="badge ' + statusBadge + '">' + b.status + '</span>',
-                    '<span class="badge ' + paymentBadge + '">' + displayPayment + '</span>',
-                    actionsHtml
-                ];
-
-                html += '<div class="booking-card">';
-                fields.forEach(function(f, i) {
-                    html += '<div class="booking-card-field">'
-                        + '<span class="mobile-label">' + labels[i] + '</span>'
-                        + '<span class="field-value">' + f + '</span>'
-                        + '</div>';
-                });
-                html += '</div>';
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        function openPayment(bookingId, amount) {
-            document.getElementById('pay-booking-id').value = bookingId;
-            document.getElementById('pay-amount').value = amount || '';
-            openModal('payment-modal');
-        }
-
-        document.getElementById('payment-form')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            var btn = this.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.textContent = 'Processing...';
-            try {
-                var selectedMethod = document.querySelector('#payment-options .selected')?.dataset?.value || document.querySelector('input[name="pay-method"]:checked')?.value || 'mpesa';
-                await api.createPayment({
-                    booking_id: document.getElementById('pay-booking-id').value,
-                    amount: parseFloat(document.getElementById('pay-amount').value),
-                    payment_method: selectedMethod,
-                    payment_type: 'full',
-                    transaction_ref: document.getElementById('pay-ref').value
-                });
-                showToast('Payment request submitted! We will contact you with instructions.', 'success');
-                closeModal('payment-modal');
-                this.reset();
-                loadMyBookings();
-            } catch (err) {
-                showToast(err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Submit Payment Request';
-            }
-        });
-
-        function printReceipt(bookingId) {
-            var b = allBookings.find(function(x) { return x.id === bookingId; });
-            if (!b) { showToast('Booking not found', 'error'); return; }
-
-            var details = b.booking_type;
-            var location = '';
-            var imgHtml = '';
-            if (b.tour) {
-                details = b.tour.title || b.booking_type;
-                location = b.tour.location || '';
-                if (b.tour.images && b.tour.images.length) {
-                    var img = b.tour.images.find(function(i) { return i.is_primary; }) || b.tour.images[0];
-                    imgHtml = '<img src="' + img.image_url + '" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:1rem;" onerror="this.style.display=\'none\'">';
-                }
-            } else if (b.hotel) {
-                details = b.hotel.name || b.booking_type;
-                location = b.hotel.location || '';
-                if (b.hotel.images && b.hotel.images.length) {
-                    var img = b.hotel.images.find(function(i) { return i.is_primary; }) || b.hotel.images[0];
-                    imgHtml = '<img src="' + img.image_url + '" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:1rem;" onerror="this.style.display=\'none\'">';
-                }
-            }
-
-            var statusColors = { pending: '#F59E0B', confirmed: '#10B981', cancelled: '#EF4444', completed: '#3B82F6', no_show: '#6B7280' };
-            var payLabels = { unpaid: 'Unpaid', partially_paid: 'Partially Paid', fully_paid: 'Paid', refunded: 'Refunded' };
-
-            var win = window.open('', '_blank');
-            win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Booking Receipt - Kabura Ventures</title>'
-                + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">'
-                + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Archivo+Black&display=swap" rel="stylesheet">'
-                + '<style>'
-                + '* { margin: 0; padding: 0; box-sizing: border-box; }'
-                + 'body { font-family: Inter, sans-serif; background: #f3f4f6; padding: 2rem 1rem; color: #1f2937; }'
-                + '.receipt { max-width: 680px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }'
-                + '.receipt-header { background: linear-gradient(135deg, #0B3B2C, #1a6b4a); padding: 2rem 2rem 1.5rem; text-align: center; color: #fff; }'
-                + '.receipt-header img { height: 48px; margin-bottom: 0.75rem; }'
-                + '.receipt-header h1 { font-family: "Archivo Black", sans-serif; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; opacity: 0.9; }'
-                + '.receipt-header .receipt-id { font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem; }'
-                + '.receipt-body { padding: 1.5rem 2rem 2rem; }'
-                + '.receipt-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }'
-                + '.receipt-section { margin-bottom: 1.25rem; }'
-                + '.receipt-section:last-child { margin-bottom: 0; }'
-                + '.receipt-section h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-bottom: 0.6rem; }'
-                + '.receipt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }'
-                + '.receipt-field label { display: block; font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.15rem; }'
-                + '.receipt-field .value { font-weight: 600; font-size: 0.9rem; color: #1f2937; }'
-                + '.receipt-divider { border: none; border-top: 1px dashed #e5e7eb; margin: 1.25rem 0; }'
-                + '.receipt-total-row { display: flex; justify-content: space-between; align-items: center; }'
-                + '.receipt-total-row .label { font-size: 0.85rem; color: #6b7280; }'
-                + '.receipt-total-row .amount { font-weight: 700; font-size: 1.2rem; color: #0B3B2C; }'
-                + '.receipt-footer { text-align: center; padding: 1.25rem 2rem; border-top: 1px solid #e5e7eb; font-size: 0.75rem; color: #9ca3af; line-height: 1.6; }'
-                + '.receipt-footer strong { color: #6b7280; }'
-                + '@media print { body { background: #fff; padding: 0; } .receipt { box-shadow: none; border-radius: 0; } .no-print { display: none; } }'
-                + '.no-print { text-align: center; margin-top: 1rem; }'
-                + '.no-print button { background: #0B3B2C; color: #fff; border: none; padding: 0.6rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: Inter, sans-serif; font-size: 0.85rem; }'
-                + '.no-print button:hover { background: #1a6b4a; }'
-                + '</style></head><body>'
-                + '<div class="receipt">'
-                + '<div class="receipt-header">'
-                + '<img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" onerror="this.style.display=\'none\'">'
-                + '<h1>Booking Receipt</h1>'
-                + '<div class="receipt-id">Ref: #KB-' + b.id.slice(0,8).toUpperCase() + '</div>'
-                + '</div>'
-                + '<div class="receipt-body">'
-                + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">'
-                + '<span class="receipt-badge" style="background:' + (statusColors[b.status] || '#6B7280') + '15;color:' + (statusColors[b.status] || '#6B7280') + ';border:1px solid ' + (statusColors[b.status] || '#6B7280') + '30;">' + b.status + '</span>'
-                + '<span style="font-size:0.8rem;color:#9ca3af;">' + (b.created_at ? new Date(b.created_at).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : '') + '</span>'
-                + '</div>'
-                + imgHtml
-                + '<div class="receipt-section"><h3>Booking Details</h3><div class="receipt-grid">'
-                + '<div class="receipt-field"><label>Type</label><div class="value" style="text-transform:capitalize;">' + b.booking_type + '</div></div>'
-                + '<div class="receipt-field"><label>Destination</label><div class="value">' + escapeHTML(location || 'Kenya') + '</div></div>'
-                + '<div class="receipt-field"><label>Item</label><div class="value">' + escapeHTML(details) + '</div></div>'
-                + '<div class="receipt-field"><label>Guests</label><div class="value">' + (b.people_count || 1) + '</div></div>'
-                + '<div class="receipt-field"><label>Travel Date</label><div class="value">' + (b.travel_date || '-') + '</div></div>'
-                + '<div class="receipt-field"><label>Return Date</label><div class="value">' + (b.return_date || '-') + '</div></div>'
-                + (b.room_type ? '<div class="receipt-field"><label>Room Type</label><div class="value" style="text-transform:capitalize;">' + b.room_type + '</div></div>' : '')
-                + '</div></div>'
-                + '<hr class="receipt-divider">'
-                + '<div class="receipt-section"><h3>Customer Information</h3><div class="receipt-grid">'
-                + '<div class="receipt-field"><label>Name</label><div class="value">' + escapeHTML(b.guest_name || '-') + '</div></div>'
-                + '<div class="receipt-field"><label>Email</label><div class="value">' + escapeHTML(b.guest_email || '-') + '</div></div>'
-                + '<div class="receipt-field"><label>Phone</label><div class="value">' + escapeHTML(b.guest_phone || '-') + '</div></div>'
-                + '<div class="receipt-field"><label>Payment Method</label><div class="value" style="text-transform:capitalize;">' + (b.payment_method || '-') + '</div></div>'
-                + '</div></div>'
-                + '<hr class="receipt-divider">'
-                + '<div class="receipt-section"><h3>Payment Summary</h3>'
-                + '<div class="receipt-total-row"><span class="label">Status</span><span class="receipt-badge" style="background:' + (statusColors[b.status] || '#6B7280') + '15;color:' + (statusColors[b.status] || '#6B7280') + ';border:1px solid ' + (statusColors[b.status] || '#6B7280') + '30;font-size:0.7rem;">' + (payLabels[b.payment_status] || b.payment_status) + '</span></div>'
-                + '<div class="receipt-total-row" style="margin-top:0.6rem;"><span class="label">Total Amount</span><span class="amount">' + (b.total_amount ? window.formatPrice(b.total_amount) : '-') + '</span></div>'
-                + (b.special_requests ? '<div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#f9fafb;border-radius:6px;font-size:0.8rem;color:#6b7280;"><strong>Special Requests:</strong> ' + escapeHTML(b.special_requests) + '</div>' : '')
-                + '</div>'
-                + '</div>'
-                + '<div class="receipt-footer">'
-                + '<strong>Kabura Ventures</strong> &mdash; Explore Kenya\'s Finest Adventures<br>'
-                + 'Nairobi, Kenya | info@kaburadventures.com | +254 700 000 000'
-                + '</div>'
-                + '</div>'
-                + '<div class="no-print"><button onclick="window.print()"><i class="fas fa-print"></i> Print / Save PDF</button></div>'
-                + '</body></html>');
-            win.document.close();
-        }
-
-        function downloadBookings() {
-            if (!allBookings.length) {
-                showToast('No bookings to download', 'warning');
-                return;
-            }
-            var data = bookingsFilter === 'all' ? allBookings : allBookings.filter(function(b) { return b.status === bookingsFilter; });
-            var rows = [['Type','Details','Travel Date','Return Date','Guests','Status','Payment Status','Total','Booked On']];
-            data.forEach(function(b) {
-                var details = b.booking_type;
-                if (b.tour) details = b.tour.title;
-                else if (b.hotel) details = b.hotel.name;
-                rows.push([
-                    b.booking_type,
-                    (details || '').replace(/,/g, ' '),
-                    b.travel_date || '',
-                    b.return_date || '',
-                    b.people_count || '',
-                    b.status || '',
-                    b.payment_status || '',
-                    b.total_amount || '',
-                    b.created_at ? b.created_at.slice(0,10) : ''
-                ]);
-            });
-            var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
-            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            var link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'my-bookings-' + new Date().toISOString().slice(0,10) + '.csv';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
-            showToast('Bookings downloaded!', 'success');
-        }
-
-        function escapeHTML(value) {
-            if (value == null) return '';
-            return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
-        }
-
-        document.getElementById('download-bookings-btn')?.addEventListener('click', downloadBookings);
-
-        document.getElementById('new-booking-btn')?.addEventListener('click', function() {
-            var token = localStorage.getItem('token');
-            if (!token) {
-                showToast('Please login to make a booking', 'warning');
-                openModal('login-modal');
-                return;
-            }
-            showNewBookingForm();
-        });
-
-        document.getElementById('back-to-bookings-btn')?.addEventListener('click', function() {
-            showMyBookingsView();
-        });
-
-        document.getElementById('back-to-bookings-btn-top')?.addEventListener('click', function() {
-            showMyBookingsView();
-        });
-
-        setupPaymentSelection();
-        initCheckout();
-        loadMyBookings();
-    </script>
+    <script src="/assets/js/booking.js"></script>
 </body>
 </html>
