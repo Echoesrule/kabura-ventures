@@ -1,0 +1,357 @@
+/* Destinations Page */
+.dest-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Hero */
+.dest-hero {
+    position: relative;
+    height: 55vh;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.dest-hero-bg {
+    position: absolute;
+    inset: 0;
+}
+.dest-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.dest-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.6));
+}
+.dest-hero-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: #fff;
+    padding: 0 2rem;
+}
+.dest-hero-inner h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+}
+.dest-hero-inner p {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Section Label */
+.dest-label {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--dark-text);
+    opacity: 0.5;
+    margin-bottom: 0.75rem;
+}
+
+/* Intro */
+.dest-intro {
+    padding: 4.5rem 0 2rem;
+}
+.dest-intro-content {
+    max-width: 600px;
+}
+.dest-intro-content h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.75rem;
+}
+.dest-intro-content p {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* Magazine Grid */
+.dest-grid-section {
+    padding: 2rem 0 5rem;
+}
+.dest-magazine-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 300px;
+    gap: 1.25rem;
+}
+.dest-magazine-grid .dest-card:first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+}
+
+/* Destination Card */
+.dest-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #e5e5e0;
+}
+.dest-card .dest-img-wrap {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.dest-card .dest-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+.dest-card:hover .dest-img-wrap img {
+    transform: scale(1.08);
+}
+.dest-card .dest-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 2;
+}
+.dest-card:hover .dest-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+.dest-card .dest-label-left .dest-label-name {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.15rem;
+}
+.dest-card .dest-label-left .dest-label-location {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+.dest-card .dest-label-left .dest-label-location i {
+    font-size: 0.65rem;
+}
+.dest-card .dest-explore-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+}
+.dest-card .dest-explore-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+/* First card always shows label */
+.dest-magazine-grid .dest-card:first-child .dest-label {
+    opacity: 1;
+    transform: none;
+}
+
+/* Card Description Overlay */
+.dest-card .dest-desc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem;
+    background: linear-gradient(rgba(0,0,0,0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 2;
+}
+.dest-card:hover .dest-desc {
+    opacity: 1;
+}
+.dest-card .dest-desc p {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+}
+/* First card always shows desc */
+.dest-magazine-grid .dest-card:first-child .dest-desc {
+    opacity: 1;
+}
+
+/* What to Expect */
+.dest-expect-section {
+    padding: 4rem 0 5rem;
+    background: var(--soft-white);
+}
+.dest-expect-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.dest-expect-header h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: var(--dark-text);
+}
+.dest-expect-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.dest-expect-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.dest-expect-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+.dest-expect-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--soft-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+.dest-expect-icon i {
+    font-size: 1.1rem;
+    color: var(--dark-text);
+}
+.dest-expect-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.6rem;
+}
+.dest-expect-card p {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* CTA */
+.dest-cta-section {
+    padding: 2rem 0 4rem;
+}
+.dest-cta {
+    text-align: center;
+    background: linear-gradient(135deg, #0d1f12, #1a3a2a);
+    border-radius: 20px;
+    padding: 4rem 2rem;
+    color: #fff;
+}
+.dest-cta h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.dest-cta p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 2rem;
+}
+.dest-cta-btn {
+    display: inline-block;
+    padding: 0.85rem 2.5rem;
+    border-radius: 60px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.dest-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dest-magazine-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 280px;
+    }
+    .dest-magazine-grid .dest-card:first-child {
+        grid-column: 1 / 3;
+        grid-row: 1 / 2;
+    }
+    .dest-expect-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dest-hero {
+        height: 45vh;
+        min-height: 320px;
+    }
+    .dest-magazine-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 240px;
+    }
+    .dest-magazine-grid .dest-card:first-child {
+        grid-column: auto;
+        grid-row: auto;
+    }
+    .dest-card .dest-label,
+    .dest-card .dest-desc {
+        opacity: 1;
+        transform: none;
+    }
+    .dest-expect-grid {
+        grid-template-columns: 1fr;
+    }
+    .dest-cta {
+        padding: 3rem 1.5rem;
+    }
+}

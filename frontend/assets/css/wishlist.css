@@ -9,9 +9,9 @@
         .wishlist-section { padding: 2rem 0 4rem; }
         .wishlist-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
         .wishlist-tab { background: none; border: none; padding: 0.5rem 1.25rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 999px; color: var(--text-secondary); transition: all 0.2s; font-family: var(--font-body); }
-        .wishlist-tab:hover { background: rgba(138,168,153,0.08); }
-        .wishlist-tab.active { background: var(--primary); color: white; }
-        .wishlist-tab span { display: inline-flex; align-items: center; justify-content: center; background: rgba(138,168,153,0.12); border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.75rem; margin-left: 0.35rem; color: var(--text-secondary); }
+        .wishlist-tab:hover { background: rgba(var(--sage-rgb),0.08); }
+        .wishlist-tab.active { background: var(--dark-text); color: white; }
+        .wishlist-tab span { display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--sage-rgb),0.12); border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.75rem; margin-left: 0.35rem; color: var(--text-secondary); }
         .wishlist-tab.active span { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
         .wishlist-empty { text-align: center; padding: 4rem 2rem; }
         .wishlist-empty i { font-size: 3.5rem; color: var(--text-secondary); opacity: 0.3; margin-bottom: 1rem; }

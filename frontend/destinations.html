@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destinations - Kabura Ventures</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128x128.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256x256.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/destinations.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <section class="dest-hero">
+        <div class="dest-hero-bg">
+            <img src="/assets/images/savannah.jpg" alt="Kenya landscapes" loading="eager">
+            <div class="dest-hero-overlay"></div>
+        </div>
+        <div class="dest-hero-inner">
+            <h1>Explore Kenya's<br>Top Destinations</h1>
+            <p>From the wild savannahs of the Maasai Mara to the pristine white sands of Diani Beach — discover where your next adventure takes you.</p>
+        </div>
+    </section>
+
+    <section class="dest-intro">
+        <div class="dest-container">
+            <div class="dest-intro-content" data-aos="fade-up">
+                <span class="dest-label">Where Will You Go?</span>
+                <h2>Kenya is calling</h2>
+                <p>Each destination offers something unique — wildlife encounters, cultural immersion, breathtaking landscapes, or pure relaxation. Pick your adventure and we'll handle the rest.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="dest-grid-section">
+        <div class="dest-container">
+            <div class="dest-magazine-grid" id="destinations-grid">
+                <!-- Populated by destinations.js -->
+            </div>
+        </div>
+    </section>
+
+    <section class="dest-expect-section">
+        <div class="dest-container">
+            <div class="dest-expect-header" data-aos="fade-up">
+                <span class="dest-label">What to Expect</span>
+                <h2>Why travel with Kabura</h2>
+            </div>
+            <div class="dest-expect-grid">
+                <div class="dest-expect-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="dest-expect-icon"><i class="fas fa-binoculars"></i></div>
+                    <h3>Expert Local Guides</h3>
+                    <p>Our guides are born and raised in Kenya. They know the hidden gems, the best wildlife spots, and the stories behind every landscape.</p>
+                </div>
+                <div class="dest-expect-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="dest-expect-icon"><i class="fas fa-hotel"></i></div>
+                    <h3>Premium Accommodation</h3>
+                    <p>Hand-picked lodges, camps, and resorts that blend comfort with authentic Kenyan hospitality. Every stay is carefully curated.</p>
+                </div>
+                <div class="dest-expect-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="dest-expect-icon"><i class="fas fa-route"></i></div>
+                    <h3>Custom Itineraries</h3>
+                    <p>No cookie-cutter trips. We design every journey around your interests, pace, and budget — because no two travelers are the same.</p>
+                </div>
+                <div class="dest-expect-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="dest-expect-icon"><i class="fas fa-headset"></i></div>
+                    <h3>24/7 Support</h3>
+                    <p>From the moment you book to the moment you return home, our team is just a call away. Your safety and comfort come first.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dest-cta-section">
+        <div class="dest-container">
+            <div class="dest-cta" data-aos="fade-up">
+                <h2>Can't decide? We'll help you choose.</h2>
+                <p>Tell us what kind of experience you're after and we'll craft the perfect itinerary.</p>
+                <a href="/tours.html" class="dest-cta-btn">Browse All Tours</a>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/destinations.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 800, once: true });</script>
+</body>
+</html>

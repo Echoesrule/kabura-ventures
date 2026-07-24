@@ -10,7 +10,7 @@
             background: rgba(255,255,255,0.95);
             border-radius: var(--radius-lg);
             overflow: hidden;
-            border: 1px solid rgba(138,168,153,0.06);
+            border: 1px solid rgba(var(--sage-rgb),0.06);
             box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
             transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
                         box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
@@ -18,9 +18,9 @@
             will-change: transform;
         }
         .blog-card:hover {
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 20px 48px -8px rgba(138,168,153,0.12);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 20px 48px -8px rgba(var(--sage-rgb),0.12);
             transform: translateY(-6px);
-            border-color: rgba(138,168,153,0.15);
+            border-color: rgba(var(--sage-rgb),0.15);
         }
         .blog-card img {
             width: 100%;
@@ -39,14 +39,14 @@
             display: inline-block;
             padding: 0.25rem 0.75rem;
             border-radius: 999px;
-            background: rgba(138,168,153,0.08);
+            background: rgba(var(--sage-rgb),0.08);
             color: var(--primary);
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 0.5rem;
-            border: 1px solid rgba(138,168,153,0.08);
+            border: 1px solid rgba(var(--sage-rgb),0.08);
         }
         .blog-card h3 {
             font-size: 1.1rem;

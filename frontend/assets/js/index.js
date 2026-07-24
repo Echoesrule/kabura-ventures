@@ -84,66 +84,6 @@
         });
 
         // ==========================================
-        // LOCATION CARD HERO MORPH
-        // ==========================================
-        (function() {
-            var cards = document.querySelectorAll('.location-card[data-image]');
-            var heroSky = document.querySelector('.hero-sky:not(.hero-sky-next)');
-            var heroSkyNext = document.querySelector('.hero-sky-next');
-            var heroKenya = document.querySelector('.hero-kenya');
-            var heroDesc = document.querySelector('.hero-description');
-            if (!cards.length || !heroSky || !heroKenya) return;
-
-            var defaultImage = heroSky.src;
-            var defaultTitle = heroKenya.textContent;
-            var defaultDesc = heroDesc ? heroDesc.textContent : '';
-
-            function setActiveCard(card) {
-                cards.forEach(function(c) { c.classList.remove('is-active'); });
-                card.classList.add('is-active');
-            }
-
-            cards.forEach(function(card) {
-                card.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var image = this.dataset.image;
-                    var name = this.dataset.name;
-                    var desc = this.dataset.desc;
-                    var isReset = this.classList.contains('is-active');
-
-                    if (isReset) {
-                        this.classList.remove('is-active');
-                        name = defaultTitle;
-                        desc = defaultDesc;
-                        heroSkyNext.style.opacity = '0';
-                    } else {
-                        setActiveCard(this);
-                        heroSkyNext.src = image;
-                        heroSkyNext.style.opacity = '1';
-                    }
-
-                    gsap.to(heroKenya, {
-                        opacity: 0, y: -20, duration: 0.3, ease: 'power2.in',
-                        onComplete: function() {
-                            heroKenya.textContent = name;
-                            gsap.fromTo(heroKenya, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
-                        }
-                    });
-
-                    if (heroDesc && desc) {
-                        gsap.to(heroDesc, {
-                            opacity: 0, duration: 0.3, ease: 'power2.in',
-                            onComplete: function() {
-                                heroDesc.textContent = desc;
-                                gsap.fromTo(heroDesc, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' });
-                            }
-                        });
-                    }
-                });
-            });
-        })();
-
-        // ==========================================
         // EXPERIENCES DUO CAROUSEL
         // ==========================================
         document.querySelectorAll('.exp-duo-card').forEach(function(card) {
