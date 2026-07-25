@@ -41,6 +41,7 @@
             renderGallery();
             renderWhyLoved();
             renderOverview();
+            renderWildlife();
             renderInclusions();
             renderMeetingPoint();
             renderItinerary();
@@ -76,7 +77,7 @@
             const reviewCount = tour.reviews ? tour.reviews.length : 0;
             if (rating) {
                 const fullStars = Math.round(rating);
-                const starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
+                const starsHtml = svgIcon('star',{size:14}).repeat(fullStars) + svgIcon('star-outline',{size:14}).repeat(5 - fullStars);
                 document.getElementById('tour-rating-line').innerHTML = `
                     <span class="rating-stars">${starsHtml}</span>
                     <span class="rating-score">${rating.toFixed(1)}</span>
@@ -151,38 +152,58 @@
 
             document.getElementById('tour-info-cards').innerHTML = `
                 <div class="tour-info-card">
-                    <div class="tour-info-icon"><i class="far fa-clock"></i></div>
+                    <div class="tour-info-icon">${svgIcon('clock')}</div>
                     <h4>Duration</h4>
                     <p>${escapeHTML(tour.duration_days || 0)} days</p>
                 </div>
                 <div class="tour-info-card">
-                    <div class="tour-info-icon"><i class="fas fa-users"></i></div>
+                    <div class="tour-info-icon">${svgIcon('users')}</div>
                     <h4>Max People</h4>
                     <p>${escapeHTML(tour.max_people || 'N/A')}</p>
                 </div>
                 <div class="tour-info-card">
-                    <div class="tour-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="tour-info-icon">${svgIcon('map-pin')}</div>
                     <h4>Location</h4>
                     <p>${escapeHTML(tour.location || 'Kenya')}</p>
                 </div>
                 <div class="tour-info-card">
-                    <div class="tour-info-icon"><i class="fas fa-tag"></i></div>
+                    <div class="tour-info-icon">${svgIcon('tag')}</div>
                     <h4>Activity Type</h4>
                     <p>${escapeHTML(tour.activity_type || tour.category || 'Safari')}</p>
                 </div>
             `;
         }
 
+        function renderWildlife() {
+            const tour = currentTour;
+            const container = document.getElementById('tour-wildlife-grid');
+            if (!tour.wildlife) {
+                document.getElementById('tour-wildlife-section').style.display = 'none';
+                return;
+            }
+            const animals = tour.wildlife.split(',').map(a => a.trim()).filter(Boolean);
+            if (animals.length === 0) {
+                document.getElementById('tour-wildlife-section').style.display = 'none';
+                return;
+            }
+            container.innerHTML = animals.map(animal =>
+                `<div class="wildlife-chip">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></svg>
+                    <span>${escapeHTML(animal)}</span>
+                </div>`
+            ).join('');
+        }
+
         function renderWhyLoved() {
             const container = document.getElementById('why-loved');
             const tags = [
-                { icon: 'fa-star', text: 'Amazing sights' },
-                { icon: 'fa-city', text: 'City highlights' },
-                { icon: 'fa-map-pin', text: 'Points of interest' },
-                { icon: 'fa-users', text: 'Great guides' }
+                { icon: 'star', text: 'Amazing sights' },
+                { icon: 'city', text: 'City highlights' },
+                { icon: 'map-pin', text: 'Points of interest' },
+                { icon: 'users', text: 'Great guides' }
             ];
             container.innerHTML = tags.map(t =>
-                `<span class="why-loved-tag"><i class="fas ${t.icon}"></i> ${t.text}</span>`
+                `<span class="why-loved-tag">${svgIcon(t.icon, {size:14})} ${t.text}</span>`
             ).join('');
         }
 
@@ -191,21 +212,21 @@
             const container = document.getElementById('meeting-point');
             container.innerHTML = `
                 <div class="mp-item">
-                    <div class="mp-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="mp-icon">${svgIcon('map-pin')}</div>
                     <div>
                         <div class="mp-label">Meeting point</div>
                         <div class="mp-value">${escapeHTML(tour.location || 'Nairobi, Kenya')}</div>
                     </div>
                 </div>
                 <div class="mp-item">
-                    <div class="mp-icon"><i class="fas fa-flag-checkered"></i></div>
+                    <div class="mp-icon">${svgIcon('flag-checkered')}</div>
                     <div>
                         <div class="mp-label">End point</div>
                         <div class="mp-value">${escapeHTML(tour.location || 'Nairobi, Kenya')}</div>
                     </div>
                 </div>
                 <div class="mp-item">
-                    <div class="mp-icon"><i class="fas fa-clock"></i></div>
+                    <div class="mp-icon">${svgIcon('clock')}</div>
                     <div>
                         <div class="mp-label">Start time</div>
                         <div class="mp-value">8:00 AM (recommended to arrive 10 minutes before)</div>
@@ -229,7 +250,7 @@
             container.innerHTML = `
                 <h3>What to know before you go</h3>
                 <ul>
-                    ${infoItems.map(item => `<li><i class="fas fa-check"></i> ${item}</li>`).join('')}
+                    ${infoItems.map(item => `<li>${svgIcon('check',{size:14,color:'var(--primary)'})} ${item}</li>`).join('')}
                 </ul>
             `;
         }
@@ -237,7 +258,7 @@
         function renderCancellationPolicy() {
             const container = document.getElementById('cancellation-policy');
             container.innerHTML = `
-                <h3><i class="fas fa-undo-alt" style="color:var(--accent);"></i> Free Cancellation</h3>
+                <h3>${svgIcon('undo',{color:'var(--accent)'})} Free Cancellation</h3>
                 <p>You can cancel up to 24 hours in advance of the experience for a full refund. For a full refund, you must cancel at least 24 hours before the experience's start time. If you cancel less than 24 hours before the experience's start time, the amount you paid will not be refunded. Changes made less than 24 hours before the experience's start time will not be accepted.</p>
             `;
         }
@@ -271,7 +292,7 @@
                                     <strong>${escapeHTML(t.name)}</strong>
                                     ${t.badge ? `<br><span class="cmp-badge">${t.badge}</span>` : ''}
                                 </td>
-                                <td><span class="cmp-rating"><i class="fas fa-star" style="color:var(--accent);"></i> ${t.rating.toFixed(1)}</span> <span style="color:var(--text-secondary);font-size:0.75rem;">(${t.reviews})</span></td>
+                                <td><span class="cmp-rating">${svgIcon('star',{size:14,color:'var(--accent)'})} ${t.rating.toFixed(1)}</span> <span style="color:var(--text-secondary);font-size:0.75rem;">(${t.reviews})</span></td>
                                 <td style="color:var(--text-secondary);">${t.duration}</td>
                                 <td class="cmp-price">${formatPrice(t.price)}</td>
                                 <td><button class="btn btn-primary btn-sm cmp-btn" onclick="window.location.href='/booking.html?tour=${tour.id}'">View</button></td>
@@ -309,7 +330,7 @@
                     <div class="itinerary-day">
                         <div class="itinerary-day-header" onclick="toggleItinerary(this)">
                             <span class="day-label">Day ${escapeHTML(dayNum)}</span>
-                            <span class="day-arrow"><i class="fas fa-chevron-down"></i></span>
+                            <span class="day-arrow">${svgIcon('chevron-down')}</span>
                         </div>
                         <div class="itinerary-day-content">
                             <p>${escapeHTML(dayContent)}</p>
@@ -347,9 +368,9 @@
             if (included.length > 0) {
                 html += `
                     <div class="inclusions-col">
-                        <h3 class="included-title"><i class="fas fa-check" style="color:var(--primary);"></i> Included</h3>
+                        <h3 class="included-title">${svgIcon('check',{color:'var(--primary)'})} Included</h3>
                         <ul>
-                            ${included.map(item => `<li><span class="icon-check"><i class="fas fa-check" style="color:var(--primary);"></i></span> ${escapeHTML(item)}</li>`).join('')}
+                            ${included.map(item => `<li><span class="icon-check">${svgIcon('check',{color:'var(--primary)'})}</span> ${escapeHTML(item)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -357,9 +378,9 @@
             if (excluded.length > 0) {
                 html += `
                     <div class="inclusions-col">
-                        <h3 class="excluded-title"><i class="fas fa-times" style="color:var(--error);"></i> Excluded</h3>
+                        <h3 class="excluded-title">${svgIcon('times',{color:'var(--error)'})} Excluded</h3>
                         <ul>
-                            ${excluded.map(item => `<li><span class="icon-cross"><i class="fas fa-times" style="color:var(--error);"></i></span> ${escapeHTML(item)}</li>`).join('')}
+                            ${excluded.map(item => `<li><span class="icon-cross">${svgIcon('times',{color:'var(--error)'})}</span> ${escapeHTML(item)}</li>`).join('')}
                         </ul>
                     </div>
                 `;
@@ -406,7 +427,7 @@
                     const colors = ['#122218', '#2a4a3a', '#8aa899', '#0d1f12', '#333'];
                     const colorIdx = Math.abs(name.charCodeAt(0) || 0) % colors.length;
                     const date = review.created_at ? new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-                    const stars = '<i class="fas fa-star"></i>'.repeat(review.rating || 0) + '<i class="far fa-star"></i>'.repeat(5 - (review.rating || 0));
+                    const stars = svgIcon('star',{size:14}).repeat(review.rating || 0) + svgIcon('star-outline',{size:14}).repeat(5 - (review.rating || 0));
                     rightHtml += '<div class="review-card" data-comment="' + escapeHTML((review.comment || review.review || '').toLowerCase()) + '" data-name="' + escapeHTML(name.toLowerCase()) + '">'
                         + '<div class="review-card-header">'
                             + '<div class="review-card-user">'
@@ -449,7 +470,7 @@
             var html = '';
             for (var i = 5; i >= 1; i--) {
                 var pct = (starCounts[i] / total) * 100;
-                html += '<div class="star-row"><span class="star-row-label">' + i + ' <i class="fas fa-star" style="font-size:0.6rem;color:var(--accent);"></i></span>'
+                html += '<div class="star-row"><span class="star-row-label">' + i + ' ' + svgIcon('star',{size:10,color:'var(--accent)'}) + '</span>'
                     + '<div class="star-row-bar"><div class="star-row-fill" style="width:' + pct + '%"></div></div>'
                     + '<span class="star-row-count">' + starCounts[i] + '</span></div>';
             }
@@ -463,11 +484,11 @@
                 + '<h3>Write a Review</h3>'
                 + '<form id="review-form">'
                     + '<div class="star-rating" id="star-rating">'
-                        + '<input type="radio" name="rating" id="star5" value="5"><label for="star5" title="5 stars"><i class="fas fa-star"></i></label>'
-                        + '<input type="radio" name="rating" id="star4" value="4"><label for="star4" title="4 stars"><i class="fas fa-star"></i></label>'
-                        + '<input type="radio" name="rating" id="star3" value="3"><label for="star3" title="3 stars"><i class="fas fa-star"></i></label>'
-                        + '<input type="radio" name="rating" id="star2" value="2"><label for="star2" title="2 stars"><i class="fas fa-star"></i></label>'
-                        + '<input type="radio" name="rating" id="star1" value="1"><label for="star1" title="1 star"><i class="fas fa-star"></i></label>'
+                        + '<input type="radio" name="rating" id="star5" value="5"><label for="star5" title="5 stars">' + svgIcon('star') + '</label>'
+                        + '<input type="radio" name="rating" id="star4" value="4"><label for="star4" title="4 stars">' + svgIcon('star') + '</label>'
+                        + '<input type="radio" name="rating" id="star3" value="3"><label for="star3" title="3 stars">' + svgIcon('star') + '</label>'
+                        + '<input type="radio" name="rating" id="star2" value="2"><label for="star2" title="2 stars">' + svgIcon('star') + '</label>'
+                        + '<input type="radio" name="rating" id="star1" value="1"><label for="star1" title="1 star">' + svgIcon('star') + '</label>'
                     + '</div>'
                     + '<div class="form-group">'
                         + '<textarea class="form-textarea" id="review-comment" placeholder="Share your experience..." required></textarea>'
@@ -534,7 +555,7 @@
                             <img src="${imgUrl}" alt="${t.title}" loading="lazy" onerror="this.src='/assets/images/placeholder.svg'">
                             <div class="related-card-body">
                                 <h4>${t.title}</h4>
-                                <div class="related-location"><i class="fas fa-map-marker-alt"></i> ${t.location || 'Kenya'}</div>
+                                <div class="related-location">${svgIcon('map-pin')} ${t.location || 'Kenya'}</div>
                                 <div class="related-meta">
                                     <span class="related-price">KSh ${Number(t.price).toLocaleString()}</span>
                                     <span class="related-duration">${t.duration_days || 0} days</span>
@@ -556,18 +577,18 @@
             document.getElementById('mobile-bar-price').textContent = `KSh ${price.toLocaleString()}`;
 
             document.getElementById('sidebar-badges').innerHTML = `
-                <span class="sidebar-badge sb-hot"><i class="fas fa-fire"></i> Likely to Sell Out</span>
-                <span class="sidebar-badge sb-best"><i class="fas fa-trophy"></i> Best in ${escapeHTML(tour.location || 'Kenya')}</span>
-                <span class="sidebar-badge sb-deal"><i class="fas fa-tag"></i> Exceptional deal</span>
+                <span class="sidebar-badge sb-hot">${svgIcon('fire')} Likely to Sell Out</span>
+                <span class="sidebar-badge sb-best">${svgIcon('trophy')} Best in ${escapeHTML(tour.location || 'Kenya')}</span>
+                <span class="sidebar-badge sb-deal">${svgIcon('tag')} Exceptional deal</span>
             `;
 
             document.getElementById('sidebar-why-book').innerHTML = `
                 <h4>Why book with us?</h4>
                 <ul>
-                    <li><i class="fas fa-check-circle"></i> Lowest Price Guarantee</li>
-                    <li><i class="fas fa-check-circle"></i> Free cancellation up to 24 hours</li>
-                    <li><i class="fas fa-check-circle"></i> Reserve Now & Pay Later</li>
-                    <li><i class="fas fa-check-circle"></i> Secure payments</li>
+                    <li>${svgIcon('check-circle',{size:14,color:'var(--primary)'})} Lowest Price Guarantee</li>
+                    <li>${svgIcon('check-circle',{size:14,color:'var(--primary)'})} Free cancellation up to 24 hours</li>
+                    <li>${svgIcon('check-circle',{size:14,color:'var(--primary)'})} Reserve Now & Pay Later</li>
+                    <li>${svgIcon('check-circle',{size:14,color:'var(--primary)'})} Secure payments</li>
                 </ul>
             `;
 

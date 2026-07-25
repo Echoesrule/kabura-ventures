@@ -1,5 +1,88 @@
 // Kabura Ventures - Main Application Script
 
+/* ── SVG Icon Registry ───────────────────────────────────────── */
+function svgIcon(name, opts) {
+    opts = opts || {};
+    var s = opts.size || 16;
+    var c = opts.color || 'currentColor';
+    var sw = opts.strokeWidth || 2;
+    var cls = opts.className || '';
+    var d = svgIcon.paths[name];
+    if (!d) return '';
+    var extra = '';
+    if (opts.fill) extra += ' fill="' + opts.fill + '" ';
+    if (opts.style) extra += ' style="' + opts.style + '" ';
+    return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="' + c + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round" class="svg-icon' + (cls ? ' ' + cls : '') + '" ' + extra + '>' + d + '</svg>';
+}
+svgIcon.paths = {
+    'star':            '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    'star-outline':    '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    'clock':           '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    'users':           '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'map-pin':         '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    'tag':             '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+    'city':            '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M10 9h1"/><path d="M14 9h1"/><path d="M10 13h1"/><path d="M14 13h1"/>',
+    'check':           '<polyline points="20 6 9 17 4 12"/>',
+    'times':           '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    'undo':            '<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>',
+    'chevron-down':    '<polyline points="6 9 12 15 18 9"/>',
+    'chevron-left':    '<polyline points="15 18 9 12 15 6"/>',
+    'chevron-right':   '<polyline points="9 18 15 12 9 6"/>',
+    'fire':            '<path d="M12 12c2-2.96 0-7-1-8 0 3.038-1.773 4.741-3 6-1.226 1.26-2 3.24-2 5a6 6 0 1 0 12 0c0-1.532-1.056-3.94-2-5-1.786 3-2.791 3-4 2z"/>',
+    'trophy':          '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+    'check-circle':    '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    'lock':            '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    'bed':             '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+    'comment':         '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    'wifi':            '<path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>',
+    'parking':         '<rect x="3" y="3" width="18" height="18" rx="2"/><text x="12" y="16" text-anchor="middle" fill="currentColor" stroke="none" font-size="12" font-weight="700" font-family="sans-serif">P</text>',
+    'coffee':          '<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>',
+    'swimmer':         '<path d="M2 12c1.5-2 3.5-3 5-3s3.5 1 5 3 3.5 3 5 3 3.5-1 5-3"/><path d="M4 20l2-4 3 2 3-4 3 2 3-4 2 4"/>',
+    'dumbbell':        '<path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M3 6.5v11"/><path d="M21 6.5v11"/><path d="M3 10v4"/><path d="M21 10v4"/>',
+    'utensils':        '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>',
+    'glass-cheers':    '<path d="M8 2h8l-1 8H9L8 2z"/><path d="M12 10v4"/><path d="M8 22h8"/><path d="M7 14h10"/><path d="M6 14l-2 8"/><path d="M18 14l2 8"/>',
+    'snowflake':       '<line x1="12" y1="2" x2="12" y2="22"/><path d="M20 16l-4-4 4-4"/><path d="M4 8l4 4-4 4"/><path d="M16 4l-4 4-4-4"/><path d="M8 20l4-4 4 4"/>',
+    'temp-high':       '<path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>',
+    'tv':              '<rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/>',
+    'paw':             '<circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>',
+    'umbrella':        '<path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0"/>',
+    'spa':             '<path d="M12 22c-4.97 0-9-2.69-9-6 0-4 9-10 9-10s9 6 9 10c0 3.31-4.03 6-9 6z"/><path d="M12 12V6"/><path d="M9 9l3-3 3 3"/>',
+    'briefcase':       '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    'soap':            '<path d="M8.5 2C5.46 2 3 4.46 3 7.5S5.46 13 8.5 13H9v7a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-7h.5c3.04 0 5.5-2.46 5.5-5.5S20.54 2 17.5 2"/><path d="M12 2v4"/>',
+    'shuttle-van':     '<path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+    'plane':           '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+    'bell':            '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+    'user':            '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    'smoking':         '<path d="M2 16h16"/><path d="M18 16V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M20 8v4"/><path d="M22 8v4"/>',
+    'no-smoking':      '<circle cx="12" cy="12" r="10"/><line x1="2" y1="2" x2="22" y2="22"/>',
+    'wheelchair':      '<circle cx="12" cy="4" r="2"/><path d="M19 13v-2a4 4 0 0 0-4-4H9"/><path d="M9 13v6"/><path d="M5 13v6"/><path d="M15 19a4 4 0 1 1-8 0"/>',
+    'seedling':        '<path d="M12 22V10"/><path d="M6 14c0-4 2-7 6-7s6 3 6 7"/><path d="M4 20c0-5 3.5-8 8-8s8 3 8 8"/>',
+    'tree':            '<path d="M12 22v-7"/><path d="M7 15l5-5 5 5"/><path d="M5 11l7-7 7 7"/>',
+    'mountain':        '<path d="M8 21l4-10 4 10"/><path d="M2 21l7-14 3 6"/><path d="M14 11l7-14-9 14"/>',
+    'water':           '<path d="M2 12c2-3 4-5 6-5s4 3 6 3 4-3 6-3"/><path d="M2 17c2-3 4-5 6-5s4 3 6 3 4-3 6-3"/><path d="M2 22c2-3 4-5 6-5s4 3 6 3 4-3 6-3"/>',
+    'door-open':       '<path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157"/><path d="M6 16l4-8"/>',
+    'laptop':          '<rect x="3" y="4" width="18" height="12" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/>',
+    'ruler':           '<path d="M21.7 7.3l-5-5-12 12 5 5 12-12z"/><path d="M15 10l2 2"/><path d="M18 7l2 2"/><path d="M7 17l-3 3"/>',
+    'couch':           '<path d="M4 11V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v3"/><path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v4H6v-4a2 2 0 0 0-4 0z"/>',
+    'flag-checkered':  '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+    'map-marker-alt':  '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    'star-half':       '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+    'question-circle': '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    'info':            '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+    'search':          '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    'suitcase':        '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    'credit-card':     '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>',
+    'hiking':          '<circle cx="13.5" cy="6.5" r="2.5"/><path d="M7 21l3-7 3 2 4-5 3 5"/><path d="M5 21l4-8"/>',
+    'hotel-building':  '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/>',
+    'headset':         '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>',
+    'envelope':        '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+    'phone':           '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>',
+    'message-circle':  '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+    'shield':          '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    'send':            '<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>'
+};
+/* ── End SVG Icon Registry ───────────────────────────────────── */
+
 function escHtml(str) {
     if (!str) return '';
     var d = document.createElement('div');
@@ -79,7 +162,7 @@ async function updateAuthUI() {
             const user = result.user;
             currentUser = user;
             const adminMenuItem = user.role === 'admin'
-                ? '<a href="/admin" class="nav-user-menu-item"><i class="fas fa-chart-bar"></i> Dashboard</a>'
+                ? '<a href="/admin" class="nav-user-menu-item">Dashboard</a>'
                 : '';
 
             if (dropdown) {
@@ -91,18 +174,18 @@ async function updateAuthUI() {
                     + '</div>'
                     + '<div class="nav-user-section-label">My Account</div>'
                     + adminMenuItem
-                    + '<a href="/booking.html" class="nav-user-menu-item"><i class="fas fa-suitcase"></i> My Bookings</a>'
-                    + '<a href="/wishlist.html" class="nav-user-menu-item"><i class="fas fa-heart"></i> Wishlists</a>'
+                    + '<a href="/booking.html" class="nav-user-menu-item">My Bookings</a>'
+                    + '<a href="/wishlist.html" class="nav-user-menu-item">Wishlists</a>'
                     + '<div class="nav-user-menu-divider"></div>'
                     + '<div class="nav-user-section-label">Support</div>'
-                    + '<a href="/help.html" class="nav-user-menu-item"><i class="fas fa-question-circle"></i> Help Center</a>'
-                    + '<a href="/help.html#general" class="nav-user-menu-item"><i class="fas fa-info-circle"></i> FAQs</a>'
+                    + '<a href="/help.html" class="nav-user-menu-item">Help Center</a>'
+                    + '<a href="/help.html#general" class="nav-user-menu-item">FAQs</a>'
                     + '<div class="nav-user-menu-divider"></div>'
                     + '<div class="nav-user-footer">'
-                    + '<span class="nav-user-lang"><i class="fas fa-globe"></i> English</span>'
-                    + '<a href="#" class="nav-user-app">By Kabura <i class="fas fa-external-link-alt"></i></a>'
+                    + '<span class="nav-user-lang">English</span>'
+                    + '<a href="#" class="nav-user-app">By Kabura</a>'
                     + '</div>'
-                    + '<a href="#" class="nav-user-menu-item nav-user-menu-logout" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>'
+                    + '<a href="#" class="nav-user-menu-item nav-user-menu-logout" onclick="api.logout()">Logout</a>'
                     + '</div>';
             }
         } catch {
@@ -132,12 +215,12 @@ function renderGuestAuth() {
         + '<a href="/signup.html" class="nav-user-signup-link">Sign Up</a>'
         + '<div class="nav-user-menu-divider"></div>'
         + '<div class="nav-user-section-label">Support</div>'
-        + '<a href="/help.html" class="nav-user-menu-item"><i class="fas fa-question-circle"></i> Help Center</a>'
-        + '<a href="/help.html#general" class="nav-user-menu-item"><i class="fas fa-info-circle"></i> FAQs</a>'
+        + '<a href="/help.html" class="nav-user-menu-item">Help Center</a>'
+        + '<a href="/help.html#general" class="nav-user-menu-item">FAQs</a>'
         + '<div class="nav-user-menu-divider"></div>'
         + '<div class="nav-user-footer">'
-        + '<span class="nav-user-lang"><i class="fas fa-globe"></i> English</span>'
-        + '<a href="#" class="nav-user-app">By Kabura <i class="fas fa-external-link-alt"></i></a>'
+        + '<span class="nav-user-lang">English</span>'
+        + '<a href="#" class="nav-user-app">By Kabura</a>'
         + '</div>'
         + '</div>';
 }

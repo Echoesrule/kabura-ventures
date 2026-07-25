@@ -17,286 +17,144 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
+    <link rel="stylesheet" href="/assets/css/help.css?v=2">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
 </head>
-<body>
+<body class="help-page">
     <div id="navbar-placeholder"></div>
 
+    <!-- ── Hero: text left, image right ──────────────────────── -->
     <section class="help-hero">
-        <div class="container">
-            <h1><i class="fas fa-question-circle" style="margin-right:0.5rem;"></i>Help Center</h1>
-            <p>Find answers to common questions, browse our guides, or get in touch with our support team.</p>
-            <div class="help-search">
-                <i class="fas fa-search"></i>
-                <input type="text" id="faq-search" placeholder="Search for answers..." oninput="filterFAQs(this.value)">
+        <div class="help-hero-inner container">
+            <div class="help-hero-text">
+                <span class="help-hero-badge">Welcome  To Support Center</span>
+                <h1>How can we <br> help you today?</h1>
+                <p>Browse answers to common questions, explore our guides, or reach out to our support team.</p>
+            </div>
+            <div class="help-hero-image">
+                <img src="/assets/images/guide1.jpg" alt="Savannah landscape">
             </div>
         </div>
     </section>
 
-    <section class="section" style="padding-top:2rem;">
+    <!-- ── Search Bar ────────────────────────────────────────── -->
+    <section class="help-search-section">
         <div class="container">
-            <div class="help-categories">
-                <a href="#general" class="help-cat-card" onclick="scrollToGroup('general')">
-                    <i class="fas fa-info-circle"></i>
+            <div class="help-search-wrap">
+                <span class="help-search-icon" id="help-search-icon"></span>
+                <input type="text" id="faq-search" placeholder="Search for answers..." oninput="filterFAQs(this.value)">
+                <div class="help-search-actions">
+                    <button class="help-search-btn" onclick="filterFAQs(document.getElementById('faq-search').value)">Search</button>
+                    <span class="help-search-btn-arrow" onclick="filterFAQs(document.getElementById('faq-search').value)"><img src="/assets/images/right-arrow.png" alt="" class="help-search-btn-arrow-img"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Common Troubleshooting ────────────────────────────── -->
+    <section class="help-troubleshoot">
+        <div class="container">
+            <p class="help-troubleshoot-line">Common troubleshooting topics: <a href="javascript:void(0)" onclick="showCategory('general')">Login &amp; account issues</a> &middot; <a href="javascript:void(0)" onclick="showCategory('bookings')">Booking problems</a> &middot; <a href="javascript:void(0)" onclick="showCategory('payments')">Payment &amp; refunds</a> &middot; <a href="javascript:void(0)" onclick="showCategory('tours')">Tour preparation</a></p>
+        </div>
+    </section>
+
+    <!-- ── Browse Help Cards ──────────────────────────────────── -->
+    <section class="help-browse">
+        <div class="container">
+            <div class="help-info-header" data-aos="fade-up">
+                <h2>Information</h2>
+                <p>Explore our help resources by topic. Find detailed guides, FAQs, and everything you need to make the most of your Kabura Adventures experience.</p>
+            </div>
+
+            <div class="help-browse-header" data-aos="fade-up" data-aos-delay="50">
+                <h3>Browse Help</h3>
+            </div>
+
+            <div class="help-browse-grid" data-aos="fade-up" data-aos-delay="100">
+                <a href="javascript:void(0)" class="help-browse-card" onclick="showCategory('general')">
+                    <div class="help-browse-card-icon" id="cat-general"></div>
                     <strong>General</strong>
-                    <span>Account &amp; basics</span>
+                    <span>Account basics, security, and currency settings</span>
                 </a>
-                <a href="#bookings" class="help-cat-card" onclick="scrollToGroup('bookings')">
-                    <i class="fas fa-suitcase"></i>
+                <a href="javascript:void(0)" class="help-browse-card" onclick="showCategory('bookings')">
+                    <div class="help-browse-card-icon" id="cat-bookings"></div>
                     <strong>Bookings</strong>
-                    <span>Reservations &amp; changes</span>
+                    <span>Reservations, modifications, and cancellations</span>
                 </a>
-                <a href="#payments" class="help-cat-card" onclick="scrollToGroup('payments')">
-                    <i class="fas fa-credit-card"></i>
+                <a href="javascript:void(0)" class="help-browse-card" onclick="showCategory('payments')">
+                    <div class="help-browse-card-icon" id="cat-payments"></div>
                     <strong>Payments</strong>
-                    <span>Pricing &amp; refunds</span>
+                    <span>Pricing, deposits, and refund policies</span>
                 </a>
-                <a href="#tours" class="help-cat-card" onclick="scrollToGroup('tours')">
-                    <i class="fas fa-hiking"></i>
+                <a href="javascript:void(0)" class="help-browse-card" onclick="showCategory('tours')">
+                    <div class="help-browse-card-icon" id="cat-tours"></div>
                     <strong>Tours</strong>
-                    <span>Safaris &amp; excursions</span>
+                    <span>Safari guides, packing, and excursion details</span>
                 </a>
-                <a href="#hotels" class="help-cat-card" onclick="scrollToGroup('hotels')">
-                    <i class="fas fa-hotel"></i>
+                <a href="javascript:void(0)" class="help-browse-card" onclick="showCategory('hotels')">
+                    <div class="help-browse-card-icon" id="cat-hotels"></div>
                     <strong>Hotels</strong>
-                    <span>Accommodation &amp; stays</span>
+                    <span>Accommodation, check-in, and transfers</span>
                 </a>
-                <a href="#support" class="help-cat-card" onclick="scrollToGroup('support')">
-                    <i class="fas fa-headset"></i>
+                <a href="javascript:void(0)" class="help-browse-card" onclick="showCategory('policies')">
+                    <div class="help-browse-card-icon" id="cat-policies"></div>
+                    <strong>Policies</strong>
+                    <span>Cancellation, refund, privacy &amp; terms</span>
+                </a>
+                <a href="#support" class="help-browse-card" onclick="scrollToSupport()">
+                    <div class="help-browse-card-icon" id="cat-support"></div>
                     <strong>Contact</strong>
-                    <span>Get in touch</span>
+                    <span>Get in touch with our support team</span>
                 </a>
             </div>
+        </div>
+    </section>
 
-            <div class="faq-section" id="faq-section">
-                <!-- General -->
-                <div class="faq-group" data-category="general" id="general">
-                    <h2 class="faq-group-title"><i class="fas fa-info-circle"></i> General</h2>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            How do I create an account?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Click the user icon in the top-right corner and select "Sign Up". Fill in your name, email, and password. Once registered, you can browse tours, hotels, save items to your wishlist, and make bookings.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            How do I reset my password?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>On the login page, click "Forgot Password" and enter your registered email address. We'll send you a link to reset your password. If you don't receive the email within a few minutes, check your spam folder.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Is my personal information secure?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Yes. We use industry-standard encryption to protect your data. Your payment information is processed securely through our trusted partners and is never stored on our servers.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            How does the currency switcher work?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>You can switch between KES (Kenyan Shillings), USD (US Dollars), and EUR (Euros) using the dropdown in the navigation bar. Prices will automatically convert using live exchange rates.</p>
-                        </div>
-                    </div>
+    <!-- ── FAQ Section (rendered by JS on card click) ────────── -->
+    <section class="help-faqs" id="help-faqs" style="display:none;">
+        <div class="container">
+            <div id="faq-container"></div>
+        </div>
+    </section>
+
+    <!-- ── Contact Card ──────────────────────────────────────── -->
+    <section class="help-contact-section">
+        <div class="container">
+            <div class="help-contact-card" id="support" data-aos="fade-up">
+                <img src="/assets/images/savannah.jpg" alt="" class="help-contact-bg" aria-hidden="true" loading="lazy">
+                <div class="help-contact-overlay"></div>
+                <div class="help-contact-left">
+                
+                    <h3>Still need help?</h3>
+                    <p>Our support team is available Mon-Sat, 8AM-6PM EAT. Reach out and we'll get back to you within 24 hours.</p>
                 </div>
-
-                <!-- Bookings -->
-                <div class="faq-group" data-category="bookings" id="bookings">
-                    <h2 class="faq-group-title"><i class="fas fa-suitcase"></i> Bookings</h2>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            How do I book a tour or hotel?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Browse our tours or hotels and click "Details" or "View" on any listing. On the detail page, select your preferred date, number of guests, and click "Book Now". Follow the checkout process to confirm your reservation.</p>
+                <div class="help-contact-right">
+                    <div class="help-contact-item">
+                        <span class="help-contact-item-icon" id="contact-email-icon"></span>
+                        <div>
+                            <strong>Email</strong>
+                            <span>Kaburaadventures@gmail.com</span>
                         </div>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Can I modify or cancel a booking?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Yes. Go to "My Bookings" in your account menu to view all your reservations. Depending on the cancellation policy of the specific tour or hotel, you may be able to modify or cancel your booking. Please refer to the terms shown during checkout.</p>
+                    <div class="help-contact-item">
+                        <span class="help-contact-item-icon" id="contact-phone-icon"></span>
+                        <div>
+                            <strong>Phone</strong>
+                            <span>0716036542</span>
                         </div>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            How will I know my booking is confirmed?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>After completing your booking, you'll receive a confirmation email with your booking reference number. You can also view all your confirmed bookings under "My Bookings" in your account.</p>
+                    <div class="help-contact-item">
+                        <span class="help-contact-item-icon" id="contact-location-icon"></span>
+                        <div>
+                            <strong>Location</strong>
+                            <span>Nairobi, Kenya</span>
                         </div>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Can I book for a group?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Absolutely! During the booking process, you can specify the number of guests. For large groups or corporate retreats, <a href="/services.html#service-corporate">visit our Group & Corporate Travel page</a> or contact us directly for customized packages.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Payments -->
-                <div class="faq-group" data-category="payments" id="payments">
-                    <h2 class="faq-group-title"><i class="fas fa-credit-card"></i> Payments</h2>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            What payment methods do you accept?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>We accept Visa, Mastercard, PayPal, and M-Pesa (Kenya's mobile money service). All payments are processed securely through trusted payment gateways.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Do you require a deposit?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Deposit requirements vary by tour or hotel. Most bookings require a 30-50% deposit at the time of booking, with the balance due before or upon arrival. Specific terms are displayed during checkout.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            What is your refund policy?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Refund policies vary by provider:</p>
-                            <ul>
-                                <li><strong>Tours:</strong> Free cancellation up to 48 hours before departure. 50% refund for cancellations within 24-48 hours.</li>
-                                <li><strong>Hotels:</strong> Free cancellation up to 24 hours before check-in.</li>
-                            </ul>
-                            <p>Please refer to the specific terms shown during booking.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tours -->
-                <div class="faq-group" data-category="tours" id="tours">
-                    <h2 class="faq-group-title"><i class="fas fa-hiking"></i> Tours &amp; Safaris</h2>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            What should I pack for a safari?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>We recommend packing light, neutral-colored clothing, comfortable walking shoes, a hat, sunscreen, insect repellent, binoculars, a camera, and a reusable water bottle. For specific tours, a detailed packing list is provided in your booking confirmation.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Are meals included in tour packages?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Meal inclusions vary by tour. Most full-day and multi-day tours include breakfast, lunch, and dinner. Check the specific tour details on the listing page for exact inclusions.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            What is the maximum group size?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Group sizes vary by tour type. Our standard safari tours typically accommodate 6-8 guests per vehicle for an intimate experience. Private tours are also available for solo travelers, couples, or groups who prefer a personalized experience.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Are children allowed on tours?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Yes, children are welcome on most tours. Age restrictions may apply for certain adventure activities. Check the specific tour listing for age requirements or <a href="/services.html#service-tours">contact us</a> for family-friendly recommendations.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hotels -->
-                <div class="faq-group" data-category="hotels" id="hotels">
-                    <h2 class="faq-group-title"><i class="fas fa-hotel"></i> Hotels &amp; Accommodation</h2>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            What types of accommodation do you offer?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>We offer a wide range of accommodation options including luxury lodges, boutique hotels, budget-friendly guesthouses, beach resorts, and tented camps. Use the filters on our <a href="/hotels.html">Hotels page</a> to find the perfect stay for your budget and preferences.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Can I request early check-in or late check-out?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Early check-in and late check-out are subject to availability. You can request these during the booking process or by contacting the property directly. Additional charges may apply.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            Are airport transfers included?
-                            <i class="fas fa-chevron-down faq-toggle"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Airport transfers are not automatically included in hotel bookings. However, you can add airport transfers through our <a href="/services.html#service-transport">Airport Transports service</a> or request them when making your reservation.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section" style="padding-bottom:0;">
-                <div class="help-contact-card" id="support">
-                    <h3><i class="fas fa-headset" style="color:var(--accent);margin-right:0.5rem;"></i>Still need help?</h3>
-                    <p>Our support team is available Mon-Sat, 8AM-6PM EAT. Reach out and we'll get back to you.</p>
-                    <div class="help-contact-grid">
-                        <div class="help-contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <strong>Email</strong>
-                                <span>Kaburaadventures@gmail.com</span>
-                            </div>
-                        </div>
-                        <div class="help-contact-item">
-                            <i class="fas fa-phone-alt"></i>
-                            <div>
-                                <strong>Phone</strong>
-                                <span>0716036542</span>
-                            </div>
-                        </div>
-                        <div class="help-contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <strong>Location</strong>
-                                <span>Nairobi, Kenya</span>
-                            </div>
-                        </div>
-                        <div class="help-contact-item">
-                            <i class="fas fa-comment-dots"></i>
-                            <div>
-                                <strong>Messages</strong>
-                                <span><a href="#" onclick="event.preventDefault();if(typeof openUserInbox==='function')openUserInbox();" style="color:var(--accent);font-weight:600;">Send us a message</a></span>
-                            </div>
-                        </div>
+                    <div class="help-contact-cta-row">
+                        <a href="#" class="help-contact-cta" onclick="event.preventDefault();if(typeof openUserInbox==='function')openUserInbox();">Send us a message</a>
+                        <a href="#" class="help-contact-cta-arrow" onclick="event.preventDefault();if(typeof openUserInbox==='function')openUserInbox();"><img src="/assets/images/right-arrow.png" alt="" class="help-contact-cta-arrow-img"></a>
                     </div>
                 </div>
             </div>

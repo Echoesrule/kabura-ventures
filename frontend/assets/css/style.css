@@ -277,6 +277,7 @@ img {
     align-items: center;
     gap: 0.6rem;
     list-style: none;
+    margin-right: 12rem;
 }
 
 .nav-links > li > a,
@@ -567,8 +568,7 @@ img {
     margin-top: 0.75rem;
 }
 
-.nav-user-dropdown:hover .nav-user-menu,
-.nav-user-dropdown:focus-within .nav-user-menu {
+.nav-user-dropdown.open .nav-user-menu {
     display: block;
 }
 
@@ -655,17 +655,17 @@ img {
     padding: 0.68rem 0.75rem;
     border-radius: 999px;
     border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.05);
+    background: var(--dark-text);
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.979);
     text-align: center;
 }
 
 .nav-user-role.active {
-    background: rgba(255,255,255,0.15);
+    background: #333;
     color: #fff;
     border-color: rgba(255,255,255,0.25);
 }
@@ -681,7 +681,7 @@ img {
     margin: 0.2rem 1.15rem 0.65rem;
     padding: 0.85rem;
     border-radius: 999px;
-    background: rgba(255,255,255,0.12);
+    background: var(--dark-text);
     color: #fff !important;
     font-weight: 700;
     font-size: 0.9rem;
@@ -691,7 +691,7 @@ img {
 }
 
 .nav-user-login-btn:hover {
-    background: rgba(255,255,255,0.2);
+    background: #333;
     color: #fff;
     transform: scale(1.02);
 }
@@ -4930,7 +4930,7 @@ tr:hover {
 html,
 body {
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 @media (max-width: 768px) {

@@ -16,10 +16,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css?v=2">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
     <style>
         .admin-page .navbar, .admin-page .footer { display: none !important; }
         .admin-page #login-modal,
@@ -31,7 +31,7 @@
         .admin-sidebar {
             position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
             width: 260px;
-            background: linear-gradient(180deg, #112211 0%, #535A55 40%, #535A55 100%);
+            background: linear-gradient(180deg, #0a1a0e 0%, #1B5E20 40%, #1B5E20 100%);
             color: #fff;
             display: flex; flex-direction: column;
             box-shadow: 4px 0 20px rgba(0,0,0,0.15);
@@ -81,7 +81,7 @@
 
         .admin-content {
             margin-left: 260px; flex: 1;
-            background: linear-gradient(135deg, rgba(138,168,153,0.04) 0%, rgba(138,168,153,0.06) 100%);
+            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.04) 0%, rgba(var(--sage-rgb),0.06) 100%);
             min-height: 100vh; padding: 2rem;
         }
         .admin-content h2 {
@@ -144,7 +144,7 @@
             display: flex; justify-content: space-between;
             align-items: center; flex-wrap: wrap; gap: 1rem;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, rgba(138,168,153,0.06), rgba(138,168,153,0.08));
+            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.06), rgba(var(--sage-rgb),0.08));
             padding: 1rem 1.5rem;
             border-radius: var(--radius-md);
             border-left: 4px solid var(--primary);
@@ -164,8 +164,8 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .table-container > div:last-child { border-bottom: none; }
-        .table-container > div:nth-child(even) { background: rgba(46,125,50,0.03); }
-        .table-container > div:hover { background: rgba(46,125,50,0.06); }
+        .table-container > div:nth-child(even) { background: rgba(var(--primary-dark-rgb),0.03); }
+        .table-container > div:hover { background: rgba(var(--primary-dark-rgb),0.06); }
 
         .admin-page .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -190,7 +190,7 @@
             display: flex; justify-content: space-between;
             align-items: center; padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(135deg, rgba(138,168,153,0.04), rgba(138,168,153,0.06));
+            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.04), rgba(var(--sage-rgb),0.06));
             border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         }
         .admin-page .modal-header h2 {
@@ -222,7 +222,7 @@
         .wysiwyg-toolbar {
             display: flex; flex-wrap: wrap; gap: 4px;
             padding: 0.5rem 0.75rem;
-            background: rgba(138,168,153,0.04);
+            background: rgba(var(--sage-rgb),0.04);
             border: 1px solid var(--border-color);
             border-bottom: none;
             border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -252,7 +252,7 @@
             outline: none;
             background: #fff;
         }
-        .wysiwyg-content:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(46,125,50,0.1); }
+        .wysiwyg-content:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(var(--sage-rgb),0.1); }
         .wysiwyg-content h1 { font-size: 1.75rem; margin: 1rem 0 0.5rem; font-weight: 700; }
         .wysiwyg-content h2 { font-size: 1.5rem; margin: 0.9rem 0 0.4rem; font-weight: 700; }
         .wysiwyg-content h3 { font-size: 1.3rem; margin: 0.8rem 0 0.35rem; font-weight: 600; }
@@ -273,11 +273,11 @@
         .admin-page .blog-preview blockquote {
             border-left: 4px solid var(--primary);
             padding: 0.5rem 1rem; margin: 1rem 0;
-            background: rgba(138,168,153,0.04); border-radius: 0 8px 8px 0;
+            background: rgba(var(--sage-rgb),0.04); border-radius: 0 8px 8px 0;
             color: var(--text-secondary);
         }
         .admin-page .blog-preview pre {
-            background: #112211; color: #535A55;
+            background: #102117; color: #fff;
             padding: 1rem; border-radius: 8px;
             overflow-x: auto; font-size: 0.85rem; margin: 1rem 0;
         }
@@ -294,7 +294,7 @@
         .admin-page .form-select:focus,
         .admin-page .form-textarea:focus {
             outline: none; border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
+            box-shadow: 0 0 0 3px rgba(var(--sage-rgb),0.12);
         }
         .admin-page .form-textarea { min-height: 100px; resize: vertical; }
 
@@ -306,24 +306,24 @@
             align-items: center; gap: 0.4rem;
         }
         .admin-page .btn-primary {
-            background: linear-gradient(135deg, #535A55, #535A55);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-dark));
             color: #fff;
         }
         .admin-page .btn-primary:hover {
-            background: linear-gradient(135deg, #112211, #535A55);
-            box-shadow: 0 4px 12px rgba(46,125,50,0.3);
+            background: linear-gradient(135deg, var(--primary-hover), var(--primary-dark));
+            box-shadow: 0 4px 12px rgba(var(--primary-dark-rgb),0.3);
             transform: translateY(-1px);
         }
         .admin-page .btn-secondary {
-            background: rgba(138,168,153,0.08); color: var(--dark-text);
+            background: rgba(var(--sage-rgb),0.08); color: var(--dark-text);
         }
-        .admin-page .btn-secondary:hover { background: rgba(138,168,153,0.12); }
+        .admin-page .btn-secondary:hover { background: rgba(var(--sage-rgb),0.12); }
         .admin-page .btn-gold {
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
             color: #fff;
         }
         .admin-page .btn-gold:hover {
-            box-shadow: 0 4px 12px rgba(201,162,39,0.3);
+            box-shadow: 0 4px 12px rgba(var(--accent-rgb),0.3);
             transform: translateY(-1px);
         }
         .admin-page .btn-danger {
@@ -331,7 +331,7 @@
             color: #fff;
         }
         .admin-page .btn-danger:hover {
-            box-shadow: 0 4px 12px rgba(211,47,47,0.3);
+            box-shadow: 0 4px 12px rgba(198,40,40,0.3);
             transform: translateY(-1px);
         }
         .admin-page .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
@@ -342,7 +342,7 @@
         .admin-page .spinner {
             width: 40px; height: 40px; margin: 2rem auto;
             border: 3px solid var(--border-color);
-            border-top-color: var(--primary);
+            border-top-color: var(--primary-dark);
             border-radius: 50%; animation: spin 0.7s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -352,7 +352,7 @@
         }
         .admin-page .image-gallery img {
             width: 80px; height: 64px; object-fit: cover;
-            border-radius: 6px; border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm); border: 2px solid var(--border-color);
             transition: border-color 0.2s;
         }
         .admin-page .image-gallery img:hover { border-color: var(--primary); }
@@ -494,6 +494,20 @@
                                     <label class="form-label">Max People</label>
                                     <input type="number" class="form-input" id="tf-max-people" value="20">
                                 </div>
+                            </div>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Latitude</label>
+                                    <input type="number" step="any" class="form-input" id="tf-latitude" placeholder="-1.2921">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Longitude</label>
+                                    <input type="number" step="any" class="form-input" id="tf-longitude" placeholder="36.8219">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Wildlife You'll See (comma separated)</label>
+                                <input type="text" class="form-input" id="tf-wildlife" placeholder="Lions, Elephants, Giraffes, Zebras">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">
@@ -884,7 +898,7 @@
             const root = document.getElementById('admin-root');
             const token = localStorage.getItem('token');
             if (!token) {
-                root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>You must be logged in as admin.</p></div>';
+                root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:var(--font-body);"><p>You must be logged in as admin.</p></div>';
                 root.style.display = 'block'; return;
             }
             let lastErr;
@@ -893,7 +907,7 @@
                     if (retry) await new Promise(r => setTimeout(r, 2000 * retry));
                     const profile = await api.getProfile();
                     if (profile.user.role !== 'admin') {
-                        root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>Admin access required.</p></div>';
+                        root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:var(--font-body);"><p>Admin access required.</p></div>';
                         root.style.display = 'block'; return;
                     }
                     root.style.display = 'block';
@@ -901,7 +915,7 @@
                     return;
                 } catch (e) { lastErr = e; }
             }
-            root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#161716;"><h2>Could not verify admin session</h2><p style="color:#535A55;">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:#D75A2B;color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
+            root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:var(--font-body);color:var(--dark-text);"><h2 style="font-family:var(--font-heading);">Could not verify admin session</h2><p style="color:var(--text-secondary);">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:var(--primary-dark);color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
             root.style.display = 'block';
         })();
 
@@ -1101,6 +1115,9 @@
             document.getElementById('tf-price').value = data ? data.price : '';
             document.getElementById('tf-duration').value = data ? data.duration_days : '';
             document.getElementById('tf-location').value = data ? data.location : '';
+            document.getElementById('tf-wildlife').value = data ? data.wildlife || '' : '';
+            document.getElementById('tf-latitude').value = data ? (data.latitude || '') : '';
+            document.getElementById('tf-longitude').value = data ? (data.longitude || '') : '';
             document.getElementById('tf-max-people').value = data ? data.max_people : 20;
             document.getElementById('tf-featured').checked = data ? data.featured : false;
             document.getElementById('tour-form-title').textContent = data ? 'Edit Tour' : 'Add Tour';
@@ -1130,6 +1147,11 @@
             data.append('price', document.getElementById('tf-price').value);
             data.append('duration_days', document.getElementById('tf-duration').value);
             data.append('location', document.getElementById('tf-location').value);
+            data.append('wildlife', document.getElementById('tf-wildlife').value);
+            var lat = document.getElementById('tf-latitude').value;
+            var lng = document.getElementById('tf-longitude').value;
+            if (lat) data.append('latitude', lat);
+            if (lng) data.append('longitude', lng);
             data.append('max_people', document.getElementById('tf-max-people').value);
             data.append('featured', document.getElementById('tf-featured').checked ? 'true' : 'false');
 

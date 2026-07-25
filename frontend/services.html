@@ -19,16 +19,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css?v=5">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/flights.css">
     <link rel="stylesheet" href="/assets/css/services.css">
 </head>
 <body>
     <div id="navbar-placeholder"></div>
 
-    <section class="services-page-hero">
-        <h1>Our Services</h1>
-        <p>From wildlife safaris to corporate retreats — we deliver exceptional travel experiences across Kenya and beyond.</p>
+    <section class="services-hero">
+        <div class="services-hero-content">
+            <div class="services-overline">What we do</div>
+            <h1>Travel, <em>simplified.</em></h1>
+            <p>From wildlife safaris to corporate retreats — we deliver exceptional travel experiences across Kenya and beyond.</p>
+            <div class="services-hero-meta">
+                <span>Expert planning</span>
+                <span>Local knowledge</span>
+                <span>End-to-end support</span>
+            </div>
+            <div class="services-hero-cta">
+                <a href="#service-tours" class="services-hero-btn"><span>Our services</span></a>
+                <a href="#service-tours" class="services-hero-arrow" aria-label="Our services">
+                    <img src="/assets/images/right-arrow.png" alt="" class="services-hero-arrow-img" loading="lazy">
+                </a>
+            </div>
+        </div>
     </section>
+
+    <div class="flight-search-wrap">
+        <div class="flight-tabs" aria-label="Travel services">
+            <a href="/tours.html" class="flight-tab flight-tab-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Tours</a>
+            <a href="/hotels.html" class="flight-tab flight-tab-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M8 10h.01M16 10h.01M12 10h.01M8 14h.01M16 14h.01M12 14h.01"/></svg>Hotels</a>
+            <a href="/flights.html" class="flight-tab flight-tab-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg>Flights</a>
+            <button type="button" class="flight-tab active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>Transfers</button>
+        </div>
+    </div>
 
     <section class="service-detail-section" id="service-tours">
         <div class="service-detail-grid">
@@ -39,13 +62,13 @@
                 <h2>Tours & Safari Packages</h2>
                 <p>Immerse yourself in Kenya's wild heart with our expertly guided tours and safari packages. From the iconic Maasai Mara to the majestic Amboseli, we take you deep into Africa's most breathtaking landscapes.</p>
                 <ul class="service-features">
-                    <li><i class="fas fa-check-circle"></i> Guided game drives in premium safari vehicles</li>
-                    <li><i class="fas fa-check-circle"></i> Accommodation at carefully selected lodges & camps</li>
-                    <li><i class="fas fa-check-circle"></i> All park fees, permits, and conservation levies included</li>
-                    <li><i class="fas fa-check-circle"></i> Flexible itineraries — private, group, or family safaris</li>
-                    <li><i class="fas fa-check-circle"></i> Expert local guides with deep wildlife knowledge</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Guided game drives in premium safari vehicles</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Accommodation at carefully selected lodges & camps</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> All park fees, permits, and conservation levies included</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Flexible itineraries — private, group, or family safaris</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Expert local guides with deep wildlife knowledge</li>
                 </ul>
-                <a href="/tours.html" class="btn btn-primary">Browse Tours</a>
+                <a href="/tours.html" class="btn btn-primary">Browse Tours <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
             </div>
         </div>
     </section>
@@ -59,13 +82,13 @@
                 <h2>Local & International Travel Planning</h2>
                 <p>Whether you're planning a weekend getaway to the Kenyan coast or a multi-country adventure across East Africa, our travel planners handle every detail so you can focus on the experience.</p>
                 <ul class="service-features">
-                    <li><i class="fas fa-check-circle"></i> Custom itinerary design for any destination</li>
-                    <li><i class="fas fa-check-circle"></i> Flight bookings & route optimization</li>
-                    <li><i class="fas fa-check-circle"></i> Visa assistance & travel documentation support</li>
-                    <li><i class="fas fa-check-circle"></i> Travel insurance recommendations</li>
-                    <li><i class="fas fa-check-circle"></i> 24/7 support during your travels</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Custom itinerary design for any destination</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Flight bookings & route optimization</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Visa assistance & travel documentation support</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Travel insurance recommendations</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 24/7 support during your travels</li>
                 </ul>
-                <a href="/#contact" class="btn btn-primary">Inquire Now</a>
+                <a href="/#contact" class="btn btn-primary">Inquire Now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
             </div>
         </div>
     </section>
@@ -79,13 +102,13 @@
                 <h2>Hotel & Accommodation Booking</h2>
                 <p>We offer curated stays at Kenya's finest lodges, resorts, and boutique hotels. Our direct partnerships mean you get the best rates and exclusive perks.</p>
                 <ul class="service-features">
-                    <li><i class="fas fa-check-circle"></i> Best rate guarantee on all bookings</li>
-                    <li><i class="fas fa-check-circle"></i> Hand-picked accommodation for every budget</li>
-                    <li><i class="fas fa-check-circle"></i> Exclusive discounts & room upgrades where available</li>
-                    <li><i class="fas fa-check-circle"></i> Flexible cancellation policies</li>
-                    <li><i class="fas fa-check-circle"></i> Verified guest reviews & honest recommendations</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Best rate guarantee on all bookings</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Hand-picked accommodation for every budget</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Exclusive discounts & room upgrades where available</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Flexible cancellation policies</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Verified guest reviews & honest recommendations</li>
                 </ul>
-                <a href="/hotels.html" class="btn btn-primary">Browse Hotels</a>
+                <a href="/hotels.html" class="btn btn-primary">Browse Hotels <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
             </div>
         </div>
     </section>
@@ -99,13 +122,13 @@
                 <h2>Airport Transfers & Transport Services</h2>
                 <p>Travel with confidence with our reliable transportation services. From airport pickups to inter-city transfers and safari transport, we ensure you arrive safely and comfortably.</p>
                 <ul class="service-features">
-                    <li><i class="fas fa-check-circle"></i> Meet & greet airport pickup service</li>
-                    <li><i class="fas fa-check-circle"></i> Modern, air-conditioned fleet</li>
-                    <li><i class="fas fa-check-circle"></i> Professional, licensed drivers</li>
-                    <li><i class="fas fa-check-circle"></i> Inter-city and cross-border transfers</li>
-                    <li><i class="fas fa-check-circle"></i> Custom group transport arrangements</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Meet & greet airport pickup service</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Modern, air-conditioned fleet</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Professional, licensed drivers</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Inter-city and cross-border transfers</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Custom group transport arrangements</li>
                 </ul>
-                <a href="/#contact" class="btn btn-primary">Book Transport</a>
+                <a href="/#contact" class="btn btn-primary">Book Transport <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
             </div>
         </div>
     </section>
@@ -119,13 +142,13 @@
                 <h2>Honeymoon & Couples Getaways</h2>
                 <p>Celebrate your love with a romantic escape designed just for two. From beachfront resorts on the Kenyan coast to intimate safari hideaways under the stars, we create unforgettable moments.</p>
                 <ul class="service-features">
-                    <li><i class="fas fa-check-circle"></i> Private safari vehicles & dedicated guides</li>
-                    <li><i class="fas fa-check-circle"></i> Candlelit dinners in the bush or on the beach</li>
-                    <li><i class="fas fa-check-circle"></i> Couples spa treatments & wellness packages</li>
-                    <li><i class="fas fa-check-circle"></i> Photography packages to capture every moment</li>
-                    <li><i class="fas fa-check-circle"></i> Honeymoon suite upgrades & welcome amenities</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Private safari vehicles & dedicated guides</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Candlelit dinners in the bush or on the beach</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Couples spa treatments & wellness packages</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Photography packages to capture every moment</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Honeymoon suite upgrades & welcome amenities</li>
                 </ul>
-                <a href="/#contact" class="btn btn-primary">Plan Your Getaway</a>
+                <a href="/#contact" class="btn btn-primary">Plan Your Getaway <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
             </div>
         </div>
     </section>
@@ -139,22 +162,22 @@
                 <h2>Group & Corporate Travel Arrangements</h2>
                 <p>Seamlessly organized group travel and corporate retreats with dedicated coordination and support. We handle logistics for teams of any size.</p>
                 <ul class="service-features">
-                    <li><i class="fas fa-check-circle"></i> Corporate retreat planning & team-building activities</li>
-                    <li><i class="fas fa-check-circle"></i> Conference & event venue coordination</li>
-                    <li><i class="fas fa-check-circle"></i> Group transport & accommodation booking</li>
-                    <li><i class="fas fa-check-circle"></i> Incentive travel programs</li>
-                    <li><i class="fas fa-check-circle"></i> Dedicated event coordinator throughout</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Corporate retreat planning & team-building activities</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Conference & event venue coordination</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Group transport & accommodation booking</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Incentive travel programs</li>
+                    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Dedicated event coordinator throughout</li>
                 </ul>
-                <a href="/#contact" class="btn btn-primary">Inquire for Groups</a>
+                <a href="/#contact" class="btn btn-primary">Inquire for Groups <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
             </div>
         </div>
     </section>
 
-    <section class="section" style="background: linear-gradient(135deg, #0d1f12, #1a3a2a); color: white; text-align: center; padding: 4rem 2rem;">
-        <div class="container">
-            <h2 style="color: white; margin-bottom: 1rem;">Ready to Start Your Journey?</h2>
-            <p style="opacity: 0.8; max-width: 500px; margin: 0 auto 2rem;">Contact us today and let's create your perfect Kenya experience.</p>
-            <a href="/#contact" class="btn btn-primary" style="background: var(--accent); color: white; padding: 1rem 2.5rem; font-size: 1.1rem;">Get In Touch</a>
+    <section class="services-cta-section">
+        <div class="services-cta-inner">
+            <h2>Ready to Start Your Journey?</h2>
+            <p>Contact us today and let's create your perfect Kenya experience.</p>
+            <a href="/#contact" class="btn btn-primary">Get In Touch <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
         </div>
     </section>
 

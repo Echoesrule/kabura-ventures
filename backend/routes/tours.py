@@ -92,6 +92,7 @@ def create_tour(current_user):
     title = sanitize_input(data.get('title', ''), max_length=255)
     description = sanitize_input(data.get('description', ''), max_length=5000)
     location = sanitize_input(data.get('location', ''), max_length=255)
+    wildlife = sanitize_input(data.get('wildlife', ''), max_length=1000)
 
     errors = []
     for label, val in [('Title', title), ('Location', location)]:
@@ -114,6 +115,9 @@ def create_tour(current_user):
         location=location,
         max_people=int(data.get('max_people', 20)),
         featured=data.get('featured', 'false').lower() == 'true',
+        wildlife=wildlife,
+        latitude=float(data['latitude']) if data.get('latitude') else None,
+        longitude=float(data['longitude']) if data.get('longitude') else None,
         available=True
     )
     db.session.add(tour)
@@ -169,6 +173,12 @@ def update_tour(current_user, tour_id):
         err = validate_number(data['max_people'], min_val=1, max_val=1000, field_name='Max people')
         if err: errors.append(err)
         tour.max_people = int(data['max_people'])
+    if 'wildlife' in data:
+        tour.wildlife = sanitize_input(data['wildlife'], max_length=1000)
+    if 'latitude' in data:
+        tour.latitude = float(data['latitude']) if data['latitude'] else None
+    if 'longitude' in data:
+        tour.longitude = float(data['longitude']) if data['longitude'] else None
     if errors:
         return jsonify({'error': '. '.join(errors)}), 400
     if 'featured' in data:

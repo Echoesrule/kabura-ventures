@@ -50,6 +50,9 @@
         .tour-card-wishlist:hover { background: #fff; transform: scale(1.1); }
         .tour-card-body { padding: 1.15rem; flex: 1; display: flex; flex-direction: column; }
         .tour-card-location { font-size: 0.69rem; color: var(--text-secondary); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+        .tour-card-wildlife { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: var(--primary); font-weight: 600; margin-bottom: 0.3rem; line-height: 1.3; }
+        .tour-card-wildlife svg { flex-shrink: 0; opacity: 0.7; }
+        .tour-card-wildlife span { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
         .tour-card-title { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--dark-text); margin-bottom: 0.4rem; line-height: 1.3; }
         .tour-card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .tour-card-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.78rem; color: var(--text-secondary); }

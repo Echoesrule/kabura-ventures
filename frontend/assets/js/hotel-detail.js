@@ -56,7 +56,7 @@
             var reviewCount = h.reviews_count || 0;
             if (rating > 0) {
                 var full = Math.round(rating);
-                var stars = '<i class="fas fa-star"></i>'.repeat(full) + '<i class="far fa-star"></i>'.repeat(5 - full);
+                var stars = svgIcon('star',{size:14}).repeat(full) + svgIcon('star-outline',{size:14}).repeat(5 - full);
                 document.getElementById('hotel-rating-line').innerHTML = '<span class="rating-stars">' + stars + '</span> <span class="rating-score">' + rating.toFixed(1) + '</span> <span class="rating-recs">(' + reviewCount + ' reviews)</span>';
             }
 
@@ -101,10 +101,10 @@
             document.getElementById('hotel-description').textContent = h.description || 'No description available.';
 
             var infoHtml = '';
-            infoHtml += '<div class="hotel-info-card"><i class="fas fa-bed"></i><h4>Price/night</h4><p>' + window.formatPrice(h.price_per_night) + '</p></div>';
-            infoHtml += '<div class="hotel-info-card"><i class="fas fa-star"></i><h4>Rating</h4><p>' + (h.avg_rating || h.rating || 0).toFixed(1) + '</p></div>';
-            infoHtml += '<div class="hotel-info-card"><i class="fas fa-comment"></i><h4>Reviews</h4><p>' + (h.reviews_count || 0) + '</p></div>';
-            if (h.location) infoHtml += '<div class="hotel-info-card"><i class="fas fa-map-marker-alt"></i><h4>Location</h4><p>' + escapeHTML(h.location) + '</p></div>';
+            infoHtml += '<div class="hotel-info-card">' + svgIcon('bed') + '<h4>Price/night</h4><p>' + window.formatPrice(h.price_per_night) + '</p></div>';
+            infoHtml += '<div class="hotel-info-card">' + svgIcon('star') + '<h4>Rating</h4><p>' + (h.avg_rating || h.rating || 0).toFixed(1) + '</p></div>';
+            infoHtml += '<div class="hotel-info-card">' + svgIcon('comment') + '<h4>Reviews</h4><p>' + (h.reviews_count || 0) + '</p></div>';
+            if (h.location) infoHtml += '<div class="hotel-info-card">' + svgIcon('map-pin') + '<h4>Location</h4><p>' + escapeHTML(h.location) + '</p></div>';
             document.getElementById('hotel-info-cards').innerHTML = infoHtml;
         }
 
@@ -116,28 +116,28 @@
                 return;
             }
             var icons = {
-                'wifi': 'fa-wifi', 'free wifi': 'fa-wifi', 'parking': 'fa-parking', 'free parking': 'fa-parking',
-                'breakfast': 'fa-coffee', 'free breakfast': 'fa-coffee', 'pool': 'fa-swimmer', 'swimming pool': 'fa-swimmer',
-                'gym': 'fa-dumbbell', 'fitness': 'fa-dumbbell', 'restaurant': 'fa-utensils', 'bar': 'fa-glass-cheers',
-                'ac': 'fa-snowflake', 'air conditioning': 'fa-snowflake', 'heating': 'fa-temperature-high',
-                'tv': 'fa-tv', 'kitchen': 'fa-kitchen-set', 'washer': 'fa-tshirt', 'pets': 'fa-paw', 'pet friendly': 'fa-paw',
-                'beach': 'fa-umbrella-beach', 'spa': 'fa-spa', 'business': 'fa-briefcase', 'laundry': 'fa-soap',
-                'shuttle': 'fa-shuttle-van', 'airport': 'fa-plane', 'airport shuttle': 'fa-plane',
-                'room service': 'fa-concierge-bell', 'concierge': 'fa-concierge-bell', 'front desk': 'fa-user-tie',
-                'check in': 'fa-clock', 'check out': 'fa-clock', 'smoking': 'fa-smoking', 'non smoking': 'fa-smoking-ban',
-                'accessible': 'fa-wheelchair', 'wheelchair': 'fa-wheelchair', 'elevator': 'fa-elevator',
-                'garden': 'fa-seedling', 'terrace': 'fa-tree', 'view': 'fa-mountain', 'ocean view': 'fa-water',
-                'lake view': 'fa-water', 'mountain view': 'fa-mountain', 'city view': 'fa-city',
-                'balcony': 'fa-door-open', 'patio': 'fa-door-open', 'desk': 'fa-laptop', 'workspace': 'fa-laptop'
+                'wifi': 'wifi', 'free wifi': 'wifi', 'parking': 'parking', 'free parking': 'parking',
+                'breakfast': 'coffee', 'free breakfast': 'coffee', 'pool': 'swimmer', 'swimming pool': 'swimmer',
+                'gym': 'dumbbell', 'fitness': 'dumbbell', 'restaurant': 'utensils', 'bar': 'glass-cheers',
+                'ac': 'snowflake', 'air conditioning': 'snowflake', 'heating': 'temp-high',
+                'tv': 'tv', 'kitchen': 'utensils', 'washer': 'soap', 'pets': 'paw', 'pet friendly': 'paw',
+                'beach': 'umbrella', 'spa': 'spa', 'business': 'briefcase', 'laundry': 'soap',
+                'shuttle': 'shuttle-van', 'airport': 'plane', 'airport shuttle': 'plane',
+                'room service': 'bell', 'concierge': 'bell', 'front desk': 'user',
+                'check in': 'clock', 'check out': 'clock', 'smoking': 'smoking', 'non smoking': 'no-smoking',
+                'accessible': 'wheelchair', 'wheelchair': 'wheelchair',
+                'garden': 'seedling', 'terrace': 'tree', 'view': 'mountain', 'ocean view': 'water',
+                'lake view': 'water', 'mountain view': 'mountain',
+                'balcony': 'door-open', 'patio': 'door-open', 'desk': 'laptop', 'workspace': 'laptop'
             };
             var grid = document.getElementById('amenities-grid');
             grid.innerHTML = amenities.map(function(a) {
                 var key = a.trim().toLowerCase();
-                var icon = 'fa-check-circle';
+                var icon = 'check-circle';
                 for (var k in icons) {
                     if (key.indexOf(k) !== -1 || k.indexOf(key) !== -1) { icon = icons[k]; break; }
                 }
-                return '<div class="amenity-item"><i class="fas ' + icon + '"></i><span>' + escapeHTML(a.trim()) + '</span></div>';
+                return '<div class="amenity-item">' + svgIcon(icon, {size:16}) + '<span>' + escapeHTML(a.trim()) + '</span></div>';
             }).join('');
         }
 
@@ -145,9 +145,9 @@
             var container = document.getElementById('rooms-list');
             var h = currentHotel;
             var roomTypes = [
-                { name: 'Standard Room', desc: 'Comfortable room with essential amenities for a pleasant stay.', guests: 2, beds: '1 Queen', icon: 'fa-bed' },
-                { name: 'Deluxe Room', desc: 'Spacious room with upgraded furnishings and premium amenities.', guests: 2, beds: '1 King', icon: 'fa-bed' },
-                { name: 'Suite', desc: 'Luxurious suite with separate living area and stunning views.', guests: 3, beds: '1 King + Sofa', icon: 'fa-couch' }
+                { name: 'Standard Room', desc: 'Comfortable room with essential amenities for a pleasant stay.', guests: 2, beds: '1 Queen', icon: 'bed' },
+                { name: 'Deluxe Room', desc: 'Spacious room with upgraded furnishings and premium amenities.', guests: 2, beds: '1 King', icon: 'bed' },
+                { name: 'Suite', desc: 'Luxurious suite with separate living area and stunning views.', guests: 3, beds: '1 King + Sofa', icon: 'couch' }
             ];
             container.innerHTML = roomTypes.map(function(r, i) {
                 var price = h.price_per_night * (i === 0 ? 1 : i === 1 ? 1.45 : 2.1);
@@ -157,10 +157,10 @@
                         + '<h4>' + r.name + '</h4>'
                         + '<p class="room-desc">' + r.desc + '</p>'
                         + '<div class="room-features">'
-                            + '<span><i class="fas fa-user"></i> Up to ' + r.guests + ' guests</span>'
-                            + '<span><i class="fas fa-bed"></i> ' + r.beds + '</span>'
-                            + '<span><i class="fas fa-ruler-combined"></i> 28-35 m²</span>'
-                            + '<span><i class="fas fa-wifi"></i> Free WiFi</span>'
+                            + '<span>' + svgIcon('user') + ' Up to ' + r.guests + ' guests</span>'
+                            + '<span>' + svgIcon('bed') + ' ' + r.beds + '</span>'
+                            + '<span>' + svgIcon('ruler') + ' 28-35 m²</span>'
+                            + '<span>' + svgIcon('wifi') + ' Free WiFi</span>'
                         + '</div>'
                         + '<div class="room-card-footer" style="margin-top:0.75rem;">'
                             + '<div class="room-price">' + window.formatPrice(price) + ' <small>/night</small></div>'
@@ -211,7 +211,7 @@
                     var colorIdx = Math.abs(name.charCodeAt(0) || 0) % colors.length;
                     var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                     var userRating = r.rating || 0;
-                    var stars = '<i class="fas fa-star"></i>'.repeat(Math.round(userRating)) + '<i class="far fa-star"></i>'.repeat(5 - Math.round(userRating));
+                    var stars = svgIcon('star',{size:14}).repeat(Math.round(userRating)) + svgIcon('star-outline',{size:14}).repeat(5 - Math.round(userRating));
                     rightHtml += '<div class="review-card" data-comment="' + escapeHTML((r.comment || r.review || '').toLowerCase()) + '" data-name="' + escapeHTML(name.toLowerCase()) + '">'
                         + '<div class="review-card-header">'
                             + '<div class="review-card-user">'
@@ -257,7 +257,7 @@
             var html = '';
             for (var i = 5; i >= 1; i--) {
                 var pct = (dist[i] / total) * 100;
-                html += '<div class="star-row"><span class="star-row-label">' + i + ' <i class="fas fa-star" style="font-size:0.6rem;color:#122218;"></i></span>'
+                html += '<div class="star-row"><span class="star-row-label">' + i + ' ' + svgIcon('star',{size:10,color:'#122218'}) + '</span>'
                     + '<div class="star-row-bar"><div class="star-row-fill" style="width:' + pct + '%"></div></div>'
                     + '<span class="star-row-count">' + dist[i] + '</span></div>';
             }
@@ -269,11 +269,11 @@
             return '<div class="review-form-container">'
                 + '<h3>Write a Review</h3>'
                 + '<div class="star-rating" id="review-stars">'
-                    + '<input type="radio" name="rating" id="star5" value="5"><label for="star5"><i class="fas fa-star"></i></label>'
-                    + '<input type="radio" name="rating" id="star4" value="4"><label for="star4"><i class="fas fa-star"></i></label>'
-                    + '<input type="radio" name="rating" id="star3" value="3"><label for="star3"><i class="fas fa-star"></i></label>'
-                    + '<input type="radio" name="rating" id="star2" value="2"><label for="star2"><i class="fas fa-star"></i></label>'
-                    + '<input type="radio" name="rating" id="star1" value="1"><label for="star1"><i class="fas fa-star"></i></label>'
+                    + '<input type="radio" name="rating" id="star5" value="5"><label for="star5">' + svgIcon('star') + '</label>'
+                    + '<input type="radio" name="rating" id="star4" value="4"><label for="star4">' + svgIcon('star') + '</label>'
+                    + '<input type="radio" name="rating" id="star3" value="3"><label for="star3">' + svgIcon('star') + '</label>'
+                    + '<input type="radio" name="rating" id="star2" value="2"><label for="star2">' + svgIcon('star') + '</label>'
+                    + '<input type="radio" name="rating" id="star1" value="1"><label for="star1">' + svgIcon('star') + '</label>'
                 + '</div>'
                 + '<textarea class="form-input" id="review-comment" placeholder="Share your experience..." rows="4" style="width:100%;margin-bottom:0.75rem;"></textarea>'
                 + '<button class="btn btn-primary" onclick="submitReview()">Submit Review</button>'
@@ -341,10 +341,10 @@
 
             document.getElementById('sidebar-why-book').innerHTML = '<h4>Why book with us?</h4>'
                 + '<ul>'
-                + '<li><i class="fas fa-check"></i> Best price guarantee</li>'
-                + '<li><i class="fas fa-check"></i> Free cancellation</li>'
-                + '<li><i class="fas fa-check"></i> Secure payments</li>'
-                + '<li><i class="fas fa-check"></i> 24/7 customer support</li>'
+                + '<li>' + svgIcon('check',{size:14,color:'var(--primary)'}) + ' Best price guarantee</li>'
+                + '<li>' + svgIcon('check',{size:14,color:'var(--primary)'}) + ' Free cancellation</li>'
+                + '<li>' + svgIcon('check',{size:14,color:'var(--primary)'}) + ' Secure payments</li>'
+                + '<li>' + svgIcon('check',{size:14,color:'var(--primary)'}) + ' 24/7 customer support</li>'
                 + '</ul>';
         }
 
@@ -400,10 +400,10 @@
                         + '<img src="' + img + '" alt="' + escapeHTML(h.name) + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
                         + '<div class="related-card-body">'
                             + '<h4>' + escapeHTML(h.name) + '</h4>'
-                            + '<div class="related-location"><i class="fas fa-map-pin"></i> ' + escapeHTML(h.location || 'Kenya') + '</div>'
+                            + '<div class="related-location">' + svgIcon('map-pin',{size:14}) + ' ' + escapeHTML(h.location || 'Kenya') + '</div>'
                             + '<div class="related-meta">'
                                 + '<span class="related-price">' + window.formatPrice(h.price_per_night) + ' <small style="font-weight:400;font-size:0.7rem;color:var(--text-secondary);">/night</small></span>'
-                                + (rating > 0 ? '<span class="related-rating"><i class="fas fa-star" style="color:var(--accent);"></i> ' + rating.toFixed(1) + '</span>' : '')
+                                + (rating > 0 ? '<span class="related-rating">' + svgIcon('star',{size:14,color:'var(--accent)'}) + ' ' + rating.toFixed(1) + '</span>' : '')
                             + '</div>'
                         + '</div>'
                     + '</a>';

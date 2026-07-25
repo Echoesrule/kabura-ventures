@@ -20,6 +20,7 @@ class Tour(db.Model):
     itinerary = db.Column(db.Text)
     included = db.Column(db.Text)
     excluded = db.Column(db.Text)
+    wildlife = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -48,6 +49,7 @@ class Tour(db.Model):
             'itinerary': self.itinerary,
             'included': self.included,
             'excluded': self.excluded,
+            'wildlife': self.wildlife,
             'images': [img.to_dict() for img in self.images.all()],
             'reviews': [r.to_dict() for r in reviews_q],
             'avg_rating': float(avg),
@@ -67,6 +69,7 @@ class Tour(db.Model):
             'location': self.location,
             'activity_type': self.activity_type,
             'featured': self.featured,
+            'wildlife': self.wildlife,
             'images': [img.to_dict() for img in self.images.all()],
             'avg_rating': float(avg),
             'reviews_count': count,

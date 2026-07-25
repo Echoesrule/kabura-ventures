@@ -182,6 +182,12 @@ def create_app():
                 db.session.commit()
             except Exception:
                 db.session.rollback()
+            # migrate: add wildlife column to tours if missing
+            try:
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS wildlife TEXT'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
             seed_database()
         except Exception as e:
             print(f"Warning: Could not initialize database: {e}")

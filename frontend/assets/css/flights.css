@@ -97,10 +97,10 @@
         .flight-hero-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 40px; color: #fff; font-size: .85rem; font-weight: 800; text-decoration: none; font-family: var(--font-body); }
         .flight-hero-link i { transition: transform .2s ease; }
         .flight-hero-link:hover i { transform: translateX(4px); }
-        .flight-search-wrap { position: relative; z-index: 2; max-width: 1080px; margin: -46px auto 0; padding: 0 24px; }
+        .flight-search-wrap { position: relative; z-index: 5; max-width: 1080px; margin: -46px auto 0; padding: 0 24px; }
         .flight-tabs { display: flex; align-items: stretch; height: 62px; }
-        .flight-tab { border: 0; background: rgba(255,255,255,0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: var(--dark-text); padding: 0 28px; font: 700 .88rem var(--font-body); cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.8); }
-        .flight-tab:first-child { border-radius: 8px 0 0 0; background: var(--dark-text); color: #fff; border-color: var(--dark-text); }
+        .flight-tab { border: 0; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: var(--dark-text); padding: 0 28px; font: 700 .88rem var(--font-body); cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.8); }
+        .flight-tab.active { border-radius: 8px 0 0 0; background: var(--dark-text); color: #fff; border-color: var(--dark-text); }
         .flight-tab:hover { background: rgba(255,255,255,0.9); }
         .flight-tab i { margin-right: 9px; }
         .flight-tab-muted { opacity: .78; }

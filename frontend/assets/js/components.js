@@ -5,6 +5,10 @@
         fetch(file).then(function(r) { return r.text(); }).then(function(html) {
             el.innerHTML = html;
             highlightActiveNav();
+            if (id === 'navbar-placeholder') {
+                initUserDropdown();
+                if (typeof updateAuthUI === 'function') updateAuthUI();
+            }
         }).catch(function() {});
     }
 
@@ -46,5 +50,14 @@
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
+    }
+
+    function initUserDropdown() {
+        document.addEventListener('click', function(e) {
+            var dd = document.getElementById('auth-buttons');
+            if (dd && !e.target.closest('.nav-user-dropdown')) {
+                dd.classList.remove('open');
+            }
+        });
     }
 })();

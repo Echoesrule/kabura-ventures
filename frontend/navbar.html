@@ -85,7 +85,7 @@
             <li><a href="/blog.html">Blog</a></li>
             <li><a href="/booking.html">My Bookings</a></li>
             <li class="nav-user-dropdown" id="auth-buttons">
-                <button class="nav-user-btn" id="nav-user-btn" aria-label="User menu">
+                <button class="nav-user-btn" id="nav-user-btn" aria-label="User menu" onclick="event.stopPropagation();this.closest('.nav-user-dropdown').classList.toggle('open')">
                     <i class="fas fa-user-circle"></i>
                 </button>
                 <div class="nav-user-menu" id="user-dropdown-menu"></div>
