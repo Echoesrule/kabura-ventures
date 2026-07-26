@@ -141,19 +141,6 @@ body.admin-layout {
     background: linear-gradient(90deg, rgba(5, 20, 11, .9) 0%, rgba(8, 24, 13, .58) 45%, rgba(5, 17, 9, .1) 100%), linear-gradient(0deg, rgba(4, 14, 8, .65) 0%, transparent 54%);
     z-index: 1;
 }
-.admin-hero-bg {
-    position: absolute;
-    inset: 0;
-}
-.admin-hero-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-}
-.admin-hero-overlay {
-    display: none;
-}
 .admin-hero-inner {
     position: relative;
     z-index: 2;
@@ -368,6 +355,11 @@ body.admin-layout {
 .admin-badge--confirmed { background: rgba(1,2,1,0.08); color: var(--primary); }
 .admin-badge--completed { background: rgba(90,90,90,0.08); color: var(--text-secondary); }
 
+/* ── Footer offset ──────────────────────────────────────────── */
+.admin-layout #footer-placeholder {
+    margin-left: 260px;
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 1024px) {
     .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -386,6 +378,9 @@ body.admin-layout {
         display: flex;
     }
     .admin-main {
+        margin-left: 0;
+    }
+    .admin-layout #footer-placeholder {
         margin-left: 0;
     }
     .admin-hero {
