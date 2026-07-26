@@ -1,13 +1,13 @@
 /* ============================================================
-   ADMIN DASHBOARD — Sidebar Layout
-   Uses root design tokens from style.css
+   ADMIN DASHBOARD — Matches client page design language
+   Uses booking-hero pattern + about section spacing + help card styles
    ============================================================ */
 
 /* ── Layout ─────────────────────────────────────────────────── */
 body.admin-layout {
     display: flex;
     min-height: 100vh;
-    background: var(--soft-white, #f6f7f3);
+    background: #f6f7f3;
 }
 
 /* ── Sidebar ────────────────────────────────────────────────── */
@@ -47,7 +47,6 @@ body.admin-layout {
     letter-spacing: 0.02em;
 }
 
-/* ── Sidebar Nav ────────────────────────────────────────────── */
 .admin-sidebar-nav {
     flex: 1;
     padding: 1rem 0.75rem;
@@ -91,7 +90,6 @@ body.admin-layout {
     flex-shrink: 0;
 }
 
-/* ── Sidebar Footer ─────────────────────────────────────────── */
 .admin-sidebar-footer {
     padding: 0.75rem;
     border-top: 1px solid rgba(255,255,255,0.08);
@@ -126,32 +124,96 @@ body.admin-layout {
     flex-direction: column;
 }
 
-/* ── Top Bar ────────────────────────────────────────────────── */
+/* ── Hero (matches booking-hero pattern) ────────────────────── */
+.admin-hero {
+    position: relative;
+    min-height: 320px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: 100px max(5vw, 28px) 48px;
+    background: #102117 url('/assets/images/savannah.jpg') center / cover no-repeat;
+}
+.admin-hero::before {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background: linear-gradient(90deg, rgba(5, 20, 11, .9) 0%, rgba(8, 24, 13, .58) 45%, rgba(5, 17, 9, .1) 100%), linear-gradient(0deg, rgba(4, 14, 8, .65) 0%, transparent 54%);
+    z-index: 1;
+}
+.admin-hero-bg {
+    position: absolute;
+    inset: 0;
+}
+.admin-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+.admin-hero-overlay {
+    display: none;
+}
+.admin-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1180px;
+    margin: 0 auto;
+    width: 100%;
+    color: #fff;
+}
+.admin-hero-inner > * {
+    max-width: 610px;
+}
+.admin-hero-eyebrow {
+    margin-bottom: 13px;
+    color: rgba(255,255,255,.7);
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.admin-hero h1 {
+    margin: 0 0 0.4rem;
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: 0;
+}
+.admin-hero p {
+    max-width: 480px;
+    margin: 0;
+    color: rgba(255,255,255,.8);
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+
+/* ── Top Bar (matches booking-history-header) ───────────────── */
 .admin-topbar {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(246,247,243,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-light, #e0e6df);
-    padding: 1rem 2rem;
+    background: rgba(246,247,243,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(18,34,24,0.06);
+    padding: 1.25rem 2.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-
 .admin-topbar-title {
     font-family: var(--font-heading);
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     font-weight: 500;
     color: var(--dark-text);
     margin: 0;
 }
-
 .admin-topbar-user {
     font-family: var(--font-body);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-secondary);
 }
@@ -159,7 +221,7 @@ body.admin-layout {
 /* ── Content Area ───────────────────────────────────────────── */
 .admin-content {
     flex: 1;
-    padding: 2rem;
+    padding: 2.5rem;
     max-width: 1400px;
 }
 
@@ -167,35 +229,31 @@ body.admin-layout {
 .admin-section {
     display: none;
 }
-
 .admin-section.active {
     display: block;
 }
 
-/* ── Stats Grid ─────────────────────────────────────────────── */
+/* ── Stats Grid (matches about-stats pattern) ───────────────── */
 .admin-stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
 }
-
 .admin-stat-card {
     background: #fff;
-    border-radius: var(--radius-md, 12px);
+    border-radius: 14px;
     padding: 1.4rem 1.3rem;
     display: flex;
     align-items: center;
     gap: 1rem;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
-    border: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid rgba(18,34,24,0.04);
 }
-
 .admin-stat-card:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
     transform: translateY(-2px);
 }
-
 .admin-stat-icon {
     width: 48px;
     height: 48px;
@@ -206,18 +264,15 @@ body.admin-layout {
     font-size: 1.05rem;
     flex-shrink: 0;
 }
-
 .admin-stat-icon--bookings { background: rgba(1,2,1,0.06); color: var(--primary); }
 .admin-stat-icon--users    { background: rgba(201,162,39,0.1); color: var(--accent); }
 .admin-stat-icon--tours    { background: rgba(18,34,24,0.08); color: #1a2e1f; }
 .admin-stat-icon--messages { background: rgba(90,90,90,0.07); color: var(--text-secondary); }
-
 .admin-stat-info {
     display: flex;
     flex-direction: column;
     min-width: 0;
 }
-
 .admin-stat-value {
     font-family: var(--font-heading);
     font-size: 1.6rem;
@@ -225,7 +280,6 @@ body.admin-layout {
     color: var(--dark-text);
     line-height: 1.2;
 }
-
 .admin-stat-label {
     font-size: 0.78rem;
     color: var(--text-secondary);
@@ -233,28 +287,26 @@ body.admin-layout {
     letter-spacing: 0.01em;
 }
 
-/* ── Panels ─────────────────────────────────────────────────── */
+/* ── Panels (matches checkout-card style) ───────────────────── */
 .admin-panels {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
 }
-
 .admin-panel {
     background: #fff;
-    border-radius: var(--radius-md, 12px);
+    border-radius: 14px;
     overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid rgba(18,34,24,0.04);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
-
 .admin-panel-header {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(18,34,24,0.06);
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-
 .admin-panel-header h2 {
     font-family: var(--font-heading);
     font-size: 1.05rem;
@@ -262,11 +314,9 @@ body.admin-layout {
     color: var(--dark-text);
     margin: 0;
 }
-
 .admin-panel-body {
     padding: 0;
 }
-
 .admin-empty-state {
     color: var(--text-secondary);
     text-align: center;
@@ -274,20 +324,18 @@ body.admin-layout {
     font-size: 0.9rem;
 }
 
-/* ── Table ──────────────────────────────────────────────────── */
+/* ── Table (matches booking table style) ────────────────────── */
 .admin-table {
     width: 100%;
     border-collapse: collapse;
 }
-
 .admin-table th,
 .admin-table td {
     text-align: left;
     padding: 0.85rem 1.5rem;
     font-size: 0.88rem;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
+    border-bottom: 1px solid rgba(18,34,24,0.05);
 }
-
 .admin-table th {
     font-family: var(--font-body);
     font-weight: 600;
@@ -295,22 +343,19 @@ body.admin-layout {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    background: var(--soft-white, #f8f8f6);
+    background: #f8f8f6;
 }
-
 .admin-table td {
     color: var(--dark-text);
 }
-
 .admin-table tr:last-child td {
     border-bottom: none;
 }
-
 .admin-table tr:hover td {
-    background: rgba(0,0,0,0.015);
+    background: rgba(18,34,24,0.015);
 }
 
-/* ── Badges ─────────────────────────────────────────────────── */
+/* ── Badges (matches booking tab style) ─────────────────────── */
 .admin-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
@@ -319,7 +364,6 @@ body.admin-layout {
     font-weight: 600;
     letter-spacing: 0.02em;
 }
-
 .admin-badge--pending   { background: rgba(201,162,39,0.12); color: #8a6d10; }
 .admin-badge--confirmed { background: rgba(1,2,1,0.08); color: var(--primary); }
 .admin-badge--completed { background: rgba(90,90,90,0.08); color: var(--text-secondary); }
@@ -335,27 +379,28 @@ body.admin-layout {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
     }
-
     .admin-sidebar.open {
         transform: translateX(0);
     }
-
     .admin-sidebar-toggle {
         display: flex;
     }
-
     .admin-main {
         margin-left: 0;
     }
-
+    .admin-hero {
+        min-height: 260px;
+        padding: 80px 24px 36px;
+    }
+    .admin-hero h1 {
+        font-size: 2rem;
+    }
     .admin-topbar {
         padding: 1rem 1rem 1rem 4rem;
     }
-
     .admin-content {
-        padding: 1.25rem;
+        padding: 1.5rem;
     }
-
     .admin-stats-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
     .admin-stat-card { padding: 1.1rem; }
     .admin-stat-value { font-size: 1.3rem; }
@@ -363,8 +408,11 @@ body.admin-layout {
 }
 
 @media (max-width: 480px) {
+    .admin-hero { min-height: 220px; padding: 70px 16px 28px; }
+    .admin-hero h1 { font-size: 1.6rem; }
+    .admin-hero p { font-size: 0.85rem; }
     .admin-stats-grid { grid-template-columns: 1fr; }
     .admin-stat-icon { width: 42px; height: 42px; }
     .admin-stat-value { font-size: 1.2rem; }
-    .admin-topbar-title { font-size: 1.1rem; }
+    .admin-topbar-title { font-size: 1rem; }
 }
