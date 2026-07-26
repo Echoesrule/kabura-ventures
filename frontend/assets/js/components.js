@@ -7,6 +7,7 @@
             highlightActiveNav();
             if (id === 'navbar-placeholder') {
                 initUserDropdown();
+                initAnnouncementBar();
                 if (typeof updateAuthUI === 'function') updateAuthUI();
             }
         }).catch(function() {});
@@ -38,18 +39,51 @@
         }
     });
 
+    function syncAnnouncementOffset() {
+        var topBars = document.querySelector('.site-top-bars');
+        var offset = 0;
+        if (topBars && topBars.style.display !== 'none') {
+            offset = topBars.offsetHeight || 0;
+        }
+        document.documentElement.style.setProperty('--announcement-offset', offset + 'px');
+    }
+
+    function initAnnouncementBar() {
+        var topBars = document.querySelector('.site-top-bars');
+        var bar = document.querySelector('.announcement-bar');
+        if (topBars) topBars.style.display = '';
+        if (bar) {
+            bar.classList.remove('is-dismissed');
+            bar.style.display = '';
+        }
+        syncAnnouncementOffset();
+        if (!bar) return;
+        var closeBtn = bar.querySelector('.announcement-bar-close');
+        if (!closeBtn) return;
+        closeBtn.addEventListener('click', function() {
+            bar.classList.add('is-dismissed');
+            syncAnnouncementOffset();
+            setTimeout(function() {
+                bar.style.display = 'none';
+                syncAnnouncementOffset();
+            }, 250);
+        });
+        window.addEventListener('resize', syncAnnouncementOffset, { passive: true });
+    }
+
     function initNavbarScroll() {
         var onScroll = function() {
             var navbar = document.querySelector('.navbar');
-            var bar = document.querySelector('.announcement-bar');
+            var topBars = document.querySelector('.site-top-bars');
             if (!navbar) return;
             if (window.scrollY > 40) {
                 navbar.classList.add('scrolled');
-                if (bar) bar.style.display = 'none';
+                if (topBars) topBars.style.display = 'none';
             } else {
                 navbar.classList.remove('scrolled');
-                if (bar) bar.style.display = '';
+                if (topBars) topBars.style.display = '';
             }
+            syncAnnouncementOffset();
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
