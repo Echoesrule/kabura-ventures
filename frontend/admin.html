@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Kabura Adventures</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128x128.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256x256.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=9">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/admin.css?v=9">
+</head>
+<body class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-header">
+            <img src="/assets/images/kabura-logo.png" alt="Kabura Adventures" class="admin-sidebar-logo">
+            <span class="admin-sidebar-brand">Kabura Admin</span>
+        </div>
+        <nav class="admin-sidebar-nav">
+            <a href="#" class="admin-sidebar-link active" data-section="dashboard">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="bookings">
+                <i class="fas fa-suitcase"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="messages">
+                <i class="fas fa-envelope"></i>
+                <span>Messages</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="tours">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Tours</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="users">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+        </nav>
+        <div class="admin-sidebar-footer">
+            <a href="/" class="admin-sidebar-link">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Site</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="admin-sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="admin-topbar-left">
+                <h1 class="admin-topbar-title" id="section-title">Dashboard</h1>
+            </div>
+            <div class="admin-topbar-right">
+                <span class="admin-topbar-user" id="admin-user-name">Admin</span>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Dashboard Section -->
+            <section class="admin-section active" id="section-dashboard">
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--bookings"><i class="fas fa-suitcase"></i></div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-bookings">—</span>
+                            <span class="admin-stat-label">Total Bookings</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--users"><i class="fas fa-users"></i></div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-users">—</span>
+                            <span class="admin-stat-label">Registered Users</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--tours"><i class="fas fa-map-marked-alt"></i></div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-tours">—</span>
+                            <span class="admin-stat-label">Active Tours</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--messages"><i class="fas fa-envelope"></i></div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-messages">—</span>
+                            <span class="admin-stat-label">Unread Messages</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-panels">
+                    <div class="admin-panel" id="panel-recent-bookings">
+                        <div class="admin-panel-header">
+                            <h2>Recent Bookings</h2>
+                        </div>
+                        <div class="admin-panel-body" id="dashboard-bookings-list">
+                            <p class="admin-empty-state">Loading bookings...</p>
+                        </div>
+                    </div>
+                    <div class="admin-panel" id="panel-recent-messages">
+                        <div class="admin-panel-header">
+                            <h2>Recent Messages</h2>
+                        </div>
+                        <div class="admin-panel-body" id="dashboard-messages-list">
+                            <p class="admin-empty-state">Loading messages...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookings Section -->
+            <section class="admin-section" id="section-bookings">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>All Bookings</h2>
+                    </div>
+                    <div class="admin-panel-body" id="bookings-list">
+                        <p class="admin-empty-state">Loading bookings...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section class="admin-section" id="section-messages">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>All Messages</h2>
+                    </div>
+                    <div class="admin-panel-body" id="messages-list">
+                        <p class="admin-empty-state">Loading messages...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tours Section -->
+            <section class="admin-section" id="section-tours">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Manage Tours</h2>
+                    </div>
+                    <div class="admin-panel-body" id="tours-list">
+                        <p class="admin-empty-state">Loading tours...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section class="admin-section" id="section-users">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Manage Users</h2>
+                    </div>
+                    <div class="admin-panel-body" id="users-list">
+                        <p class="admin-empty-state">Loading users...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/admin.js"></script>
+</body>
+</html>

@@ -211,7 +211,12 @@ function renderGuestAuth() {
         + '<button class="nav-user-role active">Traveler</button>'
         + '<button class="nav-user-role">Partner</button>'
         + '</div>'
+        + '<div class="nav-user-login-row">'
         + '<a href="/login.html" class="nav-user-login-btn">Log in</a>'
+        + '<a href="/login.html" class="nav-user-login-arrow" aria-label="Log in">'
+        + '<img src="/assets/images/right-arrow.png" alt="" class="nav-user-login-arrow-img" loading="lazy">'
+        + '</a>'
+        + '</div>'
         + '<a href="/signup.html" class="nav-user-signup-link">Sign Up</a>'
         + '<div class="nav-user-menu-divider"></div>'
         + '<div class="nav-user-section-label">Support</div>'
@@ -655,29 +660,34 @@ function renderMobileMenu(container) {
             + '<p class="mobile-menu-email">' + escHtml(user.email || '') + '</p>'
             + '</div>'
             + '<div class="mobile-menu-section-label">My Account</div>'
-            + (user.role === 'admin' ? '<a href="/admin" class="mobile-menu-item"><i class="fas fa-chart-bar"></i> Dashboard</a>' : '')
-            + '<a href="/booking.html" class="mobile-menu-item"><i class="fas fa-suitcase"></i> My Bookings</a>'
-            + '<a href="/wishlist.html" class="mobile-menu-item"><i class="fas fa-heart"></i> Wishlists</a>'
+            + (user.role === 'admin' ? '<a href="/admin" class="mobile-menu-item">Dashboard</a>' : '')
+            + '<a href="/booking.html" class="mobile-menu-item">My Bookings</a>'
+            + '<a href="/wishlist.html" class="mobile-menu-item">Wishlists</a>'
             + '<div class="mobile-menu-divider"></div>';
     } else {
         html += '<div class="mobile-menu-card-header">'
             + '<img src="/assets/images/kabura-logo.png" alt="Kabura Ventures" class="mobile-menu-logo">'
-            + '<p class="mobile-menu-tagline">Travel more</p>'
-            + '<p class="mobile-menu-tagline-sub">Save more. Earn more.</p>'
-            + '<p class="mobile-menu-subtitle">Log in or sign up to unlock savings.</p>'
+            + '<p class="mobile-menu-tagline">Explore Kenya</p>'
+            + '<p class="mobile-menu-tagline-sub">with Kabura Adventures</p>'
+            + '<p class="mobile-menu-subtitle">Sign in to access bookings, wishlists & more.</p>'
             + '</div>'
             + '<div class="mobile-menu-section-label">My Account</div>'
             + '<div class="mobile-menu-roles">'
             + '<button class="mobile-menu-role active">Traveler</button>'
             + '<button class="mobile-menu-role">Partner</button>'
             + '</div>'
+            + '<div class="mobile-menu-login-row">'
             + '<a href="/login.html" class="mobile-menu-login-btn">Log in</a>'
-            + '<a href="/signup.html" class="mobile-menu-signup-link">Sign Up</a>'
+            + '<a href="/login.html" class="mobile-menu-login-arrow" aria-label="Log in">'
+            + '<img src="/assets/images/right-arrow.png" alt="" class="mobile-menu-login-arrow-img" loading="lazy">'
+            + '</a>'
+            + '</div>'
+            + '<a href="/signup.html" class="mobile-menu-signup-link">Create an account</a>'
             + '<div class="mobile-menu-divider"></div>';
     }
 
     // Browse — nav links
-    html += '<div class="mobile-menu-section-label">Browse</div>';
+    html += '<div class="mobile-menu-section-label">Explore</div>';
     document.querySelectorAll('.nav-links > li').forEach(function(li) {
         if (li.classList.contains('mobile-brand') || li.id === 'auth-buttons' || li.classList.contains('currency-selector')) return;
         var a = li.tagName === 'A' ? li : li.querySelector('a');
@@ -692,7 +702,7 @@ function renderMobileMenu(container) {
             if (tText === 'Packages') {
                 html += '<div class="mobile-menu-dropdown">'
                     + '<button class="mobile-menu-dropdown-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'
-                    + '<span><i class="fas fa-box"></i> Packages</span><i class="fas fa-chevron-down"></i>'
+                    + '<span>Packages</span><i class="fas fa-chevron-down"></i>'
                     + '</button>'
                     + '<div class="mobile-menu-dropdown-content">';
                 li.querySelectorAll('.nav-dropdown-menu a').forEach(function(sub) {
@@ -704,7 +714,7 @@ function renderMobileMenu(container) {
             } else if (tText === 'Our Services') {
                 html += '<div class="mobile-menu-dropdown">'
                     + '<button class="mobile-menu-dropdown-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'
-                    + '<span><i class="fas fa-concierge-bell"></i> Our Services</span><i class="fas fa-chevron-down"></i>'
+                    + '<span>Our Services</span><i class="fas fa-chevron-down"></i>'
                     + '</button>'
                     + '<div class="mobile-menu-dropdown-content">';
                 li.querySelectorAll('.nav-service-card').forEach(function(card) {
@@ -718,27 +728,22 @@ function renderMobileMenu(container) {
         }
 
         if (!href || href === '#') return;
-        var icon = '';
-        if (t === 'Home') icon = '<i class="fas fa-home"></i>';
-        else if (t === 'Our Services') icon = '<i class="fas fa-concierge-bell"></i>';
-        else if (t === 'Blog') icon = '<i class="fas fa-newspaper"></i>';
-        else if (t === 'My Bookings') icon = '<i class="fas fa-suitcase"></i>';
-        html += '<a href="' + href + '" class="mobile-menu-item">' + icon + t + '</a>';
+        html += '<a href="' + href + '" class="mobile-menu-item">' + t + '</a>';
     });
 
     // Support
     html += '<div class="mobile-menu-divider"></div>'
         + '<div class="mobile-menu-section-label">Support</div>'
-        + '<a href="/help.html" class="mobile-menu-item"><i class="fas fa-question-circle"></i> Help Center</a>'
-        + '<a href="/help.html#general" class="mobile-menu-item"><i class="fas fa-info-circle"></i> FAQs</a>'
+        + '<a href="/help.html" class="mobile-menu-item">Help Center</a>'
+        + '<a href="/help.html#general" class="mobile-menu-item">FAQs</a>'
         + '<div class="mobile-menu-divider"></div>'
         + '<div class="mobile-menu-footer">'
-        + '<span class="mobile-menu-lang"><i class="fas fa-globe"></i> English</span>'
-        + '<a href="#" class="mobile-menu-app">Get the App <i class="fas fa-external-link-alt"></i></a>'
+        + '<span class="mobile-menu-lang">English</span>'
+        + '<a href="tel:+254716036542" class="mobile-menu-app">+254 716 036 542</a>'
         + '</div>';
 
     if (isLoggedIn) {
-        html += '<a href="#" class="mobile-menu-item mobile-menu-logout" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>';
+        html += '<a href="#" class="mobile-menu-item mobile-menu-logout" onclick="api.logout()">Logout</a>';
     }
 
     html += '</div></div>'; // close card + scroll

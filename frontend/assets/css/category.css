@@ -36,4 +36,6 @@
 .category-pagination button:hover{background:var(--dark-text);color:#fff;border-color:var(--dark-text)}
 .category-pagination button.active-page{background:var(--dark-text);color:#fff;border-color:var(--dark-text)}
 .category-pagination button:disabled{opacity:.4;cursor:not-allowed}
-@media(max-width:768px){.category-hero{height:50vh;min-height:400px}.category-tours-grid{grid-template-columns:1fr}.category-filter-bar{flex-direction:column}}
+@media(max-width:1024px){.category-tours-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
+@media(max-width:768px){.category-hero{height:50vh;min-height:360px}.category-hero-badge{font-size:.7rem;padding:.4rem 1rem}.category-hero-desc{font-size:.95rem}.category-tours-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}.category-filter-bar{flex-direction:column}.category-tours-section{padding:3.5rem 1.25rem}}
+@media(max-width:480px){.category-hero{height:45vh;min-height:300px}.category-hero-title{font-size:2rem}.category-hero-desc{font-size:.9rem}.category-tours-grid{grid-template-columns:1fr}.category-tours-section{padding:2.5rem 1rem}.category-tour-img{height:200px}.category-tour-body{padding:1.25rem}}

@@ -169,6 +169,16 @@ body { background: #f6f7f3; }
 @media (min-width: 769px) and (max-width: 1024px) {
     .booking-cards { grid-template-columns: repeat(2, 1fr); }
 }
+@media (max-width: 480px) {
+    .booking-hero { min-height: 380px; padding: 100px 16px 32px; }
+    .booking-hero h1 { font-size: 1.85rem; }
+    .booking-body { padding: 1.5rem 1rem 2.5rem; }
+    .booking-history-section { padding: 0 1rem 2.5rem; }
+    .booking-history-header h2 { font-size: 1.4rem; }
+    .checkout-card { padding: 1.25rem; }
+    .booking-card-body { padding: 0.85rem; }
+    .booking-card-name { font-size: 0.85rem; }
+}
 
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeScaleIn {

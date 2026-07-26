@@ -1,24 +1,115 @@
-        .wishlist-hero {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
-            padding: 4rem 0 3rem;
-            text-align: center;
-            color: white;
-        }
-        .wishlist-hero h1 { color: white; font-size: 2.4rem; margin-bottom: 0.5rem; }
-        .wishlist-hero p { color: rgba(255,255,255,0.75); font-size: 1.05rem; }
-        .wishlist-section { padding: 2rem 0 4rem; }
-        .wishlist-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
-        .wishlist-tab { background: none; border: none; padding: 0.5rem 1.25rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 999px; color: var(--text-secondary); transition: all 0.2s; font-family: var(--font-body); }
-        .wishlist-tab:hover { background: rgba(var(--sage-rgb),0.08); }
-        .wishlist-tab.active { background: var(--dark-text); color: white; }
-        .wishlist-tab span { display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--sage-rgb),0.12); border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.75rem; margin-left: 0.35rem; color: var(--text-secondary); }
-        .wishlist-tab.active span { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
-        .wishlist-empty { text-align: center; padding: 4rem 2rem; }
-        .wishlist-empty i { font-size: 3.5rem; color: var(--text-secondary); opacity: 0.3; margin-bottom: 1rem; }
-        .wishlist-empty h3 { color: var(--dark-text); margin-bottom: 0.5rem; }
-        .wishlist-empty p { color: var(--text-secondary); margin-bottom: 1.5rem; }
-        .wishlist-count { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
-        @media (max-width: 768px) {
-            .wishlist-hero { padding: 3rem 0 2rem; }
-            .wishlist-hero h1 { font-size: 1.8rem; }
-        }
+body { background: #f6f7f3; }
+
+/* Hero — matches booking-hero pattern */
+.wishlist-hero {
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: 130px max(5vw, 28px) 60px;
+    background: #102117;
+}
+.wishlist-hero-bg {
+    position: absolute;
+    inset: 0;
+}
+.wishlist-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.wishlist-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(5,20,11,0.88) 0%, rgba(8,24,13,0.55) 45%, rgba(5,17,9,0.1) 100%),
+                linear-gradient(0deg, rgba(4,14,8,0.65) 0%, transparent 54%);
+}
+.wishlist-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1180px;
+    margin: 0 auto;
+    width: 100%;
+    color: #fff;
+}
+.wishlist-hero-eyebrow {
+    margin-bottom: 13px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.wishlist-hero h1 {
+    margin: 0 0 0.5rem;
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 600;
+    line-height: 1.08;
+}
+.wishlist-hero p {
+    max-width: 480px;
+    margin: 0 0 1.5rem;
+    color: rgba(255,255,255,0.8);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+.wishlist-hero-btn-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* White button variant for hero */
+.hp-section-btn--white {
+    background: #fff;
+    color: var(--dark-text);
+    border-color: #fff;
+}
+.hp-section-btn--white:hover {
+    background: var(--dark-text);
+    color: #fff;
+}
+.hp-section-btn-arrow--white {
+    background: #fff;
+    border-color: #fff;
+}
+.hp-section-btn-arrow--white:hover {
+    background: #f0f0f0;
+}
+
+/* Tabs & section */
+.wishlist-section { padding: 2rem 0 4rem; }
+.wishlist-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
+.wishlist-tab { background: none; border: none; padding: 0.5rem 1.25rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 999px; color: var(--text-secondary); transition: all 0.2s; font-family: var(--font-body); }
+.wishlist-tab:hover { background: rgba(var(--sage-rgb),0.08); }
+.wishlist-tab.active { background: var(--dark-text); color: white; }
+.wishlist-tab span { display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--sage-rgb),0.12); border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.75rem; margin-left: 0.35rem; color: var(--text-secondary); }
+.wishlist-tab.active span { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
+.wishlist-empty { text-align: center; padding: 4rem 2rem; }
+.wishlist-empty i { font-size: 3.5rem; color: var(--text-secondary); opacity: 0.3; margin-bottom: 1rem; }
+.wishlist-empty h3 { color: var(--dark-text); margin-bottom: 0.5rem; }
+.wishlist-empty p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+.wishlist-count { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+
+@media (max-width: 768px) {
+    .wishlist-hero { min-height: 360px; padding: 110px 24px 40px; }
+    .wishlist-hero h1 { font-size: 2.2rem; }
+    .wishlist-section { padding: 1.5rem 1rem 3rem; }
+    .wishlist-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0; border-bottom: none; gap: 0.35rem; }
+    .wishlist-tabs::-webkit-scrollbar { display: none; }
+    .wishlist-tab { flex-shrink: 0; padding: 0.45rem 1rem; font-size: 0.82rem; }
+    .wishlist-empty { padding: 3rem 1.5rem; }
+}
+
+@media (max-width: 480px) {
+    .wishlist-hero { min-height: 320px; padding: 100px 16px 32px; }
+    .wishlist-hero h1 { font-size: 1.75rem; }
+    .wishlist-hero p { font-size: 0.9rem; }
+    .wishlist-tab { padding: 0.4rem 0.85rem; font-size: 0.78rem; }
+    .wishlist-tab span { font-size: 0.7rem; padding: 0.05rem 0.35rem; }
+    .wishlist-empty i { font-size: 2.5rem; }
+    .wishlist-empty h3 { font-size: 1rem; }
+}

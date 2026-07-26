@@ -250,3 +250,14 @@
             .service-detail-image img { height: 240px; }
             .service-detail-content h2 { font-size: 1.5rem; }
         }
+
+        @media (max-width: 480px) {
+            .services-hero { min-height: 380px; padding: 100px 16px 32px; }
+            .services-hero h1 { font-size: 2rem; }
+            .services-hero p { font-size: 0.9rem; }
+            .service-detail-section { padding: 3rem 1rem; }
+            .service-detail-image img { height: 200px; }
+            .service-detail-content h2 { font-size: 1.3rem; }
+            .services-cta-section { padding: 3.5rem 1.25rem; }
+            .services-cta-section h2 { font-size: 1.6rem; }
+        }

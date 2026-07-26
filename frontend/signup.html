@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link rel="stylesheet" href="/assets/css/style.css?v=9">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="no-nav">
@@ -64,7 +64,12 @@
                                     </button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg auth-cta">Login</button>
+                            <div class="auth-cta-row">
+                                <button type="submit" class="btn btn-primary btn-lg auth-cta">Login</button>
+                                <button type="submit" class="auth-cta-arrow" aria-label="Login">
+                                    <img src="/assets/images/right-arrow.png" alt="" class="auth-cta-arrow-img" loading="lazy">
+                                </button>
+                            </div>
                             <p class="auth-note">Don't have an account? <a href="#" class="switch-to" data-target="register-panel">Sign Up</a></p>
                         </form>
 
@@ -96,7 +101,12 @@
                                     <span class="password-strength-label" id="reg-password-strength-label"></span>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg auth-cta">Sign Up</button>
+                            <div class="auth-cta-row">
+                                <button type="submit" class="btn btn-primary btn-lg auth-cta">Sign Up</button>
+                                <button type="submit" class="auth-cta-arrow" aria-label="Sign Up">
+                                    <img src="/assets/images/right-arrow.png" alt="" class="auth-cta-arrow-img" loading="lazy">
+                                </button>
+                            </div>
                             <p class="auth-note">Already have an account? <a href="#" class="switch-to" data-target="login-panel">Log in</a></p>
                         </form>
                     </div>

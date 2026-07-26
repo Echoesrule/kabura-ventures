@@ -9,7 +9,7 @@
 :root {
     --hp-section-pad: 8rem 2rem;
     --hp-section-pad-tablet: 5rem 1.5rem;
-    --hp-section-pad-mobile: 3rem 1rem;
+    --hp-section-pad-mobile: 3.5rem 1.25rem;
     --hp-container: 1280px;
     --hp-glass-bg: rgba(255, 255, 255, 0.08);
     --hp-glass-border: rgba(255, 255, 255, 0.12);
@@ -235,9 +235,9 @@
     background: var(--soft-white);
 }
 
-#featured-experiences .hp-section-header {
-    margin-bottom: 3.5rem;
-}
+    #featured-experiences .hp-section-header {
+        margin-bottom: 2rem;
+    }
 
 .experiences-grid {
     display: grid;
@@ -1969,117 +1969,8 @@
 }
 
 
-/* ============================================================
-   19. RESPONSIVE — TABLET (max-width: 1024px)
-   ============================================================ */
-@media (max-width: 1024px) {
-    .hp-section {
-        padding: var(--hp-section-pad-tablet);
-    }
-
-    .hp-container {
-        padding: 0 1.5rem;
-    }
-
-    .hp-section-title {
-        font-size: clamp(2rem, 3.5vw, 3rem);
-    }
-
-}
 
 
-/* ============================================================
-   20. RESPONSIVE — MOBILE (max-width: 768px)
-   ============================================================ */
-@media (max-width: 768px) {
-    .hp-section {
-        padding: var(--hp-section-pad-mobile);
-    }
-
-    .hp-container {
-        padding: 0 1rem;
-    }
-
-    .hp-section-title {
-        font-size: clamp(1.6rem, 4vw, 2.2rem);
-    }
-
-    .hp-section-subtitle {
-        font-size: 0.95rem;
-    }
-
-    /* Hero */
-    #premium-hero {
-        min-height: 600px;
-    }
-
-    .hero-bottom-row {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 2rem 1.5rem 3rem;
-        gap: 1rem;
-    }
-
-    .hero-description {
-        font-size: 1rem;
-    }
-
-    .hero-scroll-indicator {
-        display: none;
-    }
-
-    /* Section padding for booking CTA */
-    #booking-cta {
-        padding: 5rem 1rem;
-    }
-
-    .booking-cta-content .hp-section-title {
-        font-size: clamp(1.8rem, 6vw, 2.5rem);
-    }
-}
-
-
-/* ============================================================
-   21. RESPONSIVE — SMALL MOBILE (max-width: 480px)
-   ============================================================ */
-@media (max-width: 480px) {
-    .hp-section {
-        padding: 2.5rem 1rem;
-    }
-
-    .hp-container {
-        padding: 0 0.75rem;
-    }
-
-    .hp-section-title {
-        font-size: clamp(1.4rem, 5vw, 1.8rem);
-    }
-
-    #premium-hero {
-        min-height: 550px;
-    }
-
-    .hero-bottom-row {
-        padding: 1.5rem 1rem 2.5rem;
-    }
-
-    .hero-description {
-        font-size: 0.9rem;
-    }
-
-    .hero-cta-white {
-        padding: 0.85rem 2rem;
-        font-size: 0.9rem;
-    }
-
-    .why-choose-number {
-        font-size: 2.2rem;
-    }
-
-    .blog-card:first-child .blog-card-title {
-        font-size: 1.1rem;
-    }
-}
 
 
 /* ============================================================
@@ -3283,14 +3174,7 @@
     margin-top: 0.5rem;
 }
 
-@media (max-width: 768px) {
-    .contact-layout {
-        grid-template-columns: 1fr;
-    }
-    .contact-form-row {
-        grid-template-columns: 1fr;
-    }
-}
+
 
 /* ============================================================
    MOBILE NAV BRAND
@@ -3315,6 +3199,630 @@
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.5);
 }
+
+
+/* ============================================================
+   19. RESPONSIVE — TABLET (max-width: 1024px)
+   ============================================================ */
+@media (max-width: 1024px) {
+    .hp-section {
+        padding: var(--hp-section-pad-tablet);
+    }
+
+    .hp-container {
+        padding: 0 1.5rem;
+    }
+
+    .hp-section-title {
+        font-size: clamp(2rem, 3.5vw, 3rem);
+    }
+
+    #featured-experiences .hp-section-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .venture-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .venture-layout--reversed .venture-text {
+        order: 1;
+    }
+
+    .venture-layout--reversed .venture-image {
+        order: 2;
+    }
+
+    .venture-layout--reversed .venture-btn-row {
+        order: 3;
+    }
+
+    .venture-text {
+        text-align: center;
+    }
+
+    .venture-btn-row {
+        justify-self: center;
+    }
+}
+
+
+/* ============================================================
+   20. RESPONSIVE — MOBILE (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+    .hp-section {
+        padding: var(--hp-section-pad-mobile);
+    }
+
+    .hp-container {
+        padding: 0 1.25rem;
+    }
+
+    .hp-section-title {
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+    }
+
+    .hp-section-subtitle {
+        font-size: 0.95rem;
+    }
+
+    /* Hero */
+    #premium-hero {
+        min-height: 600px;
+    }
+
+    .hero-explore h1 {
+        font-size: clamp(3.5rem, 17vw, 8rem);
+    }
+
+    #premium-hero .hero-content {
+        padding: 1.5rem;
+    }
+
+    .hero-kenya {
+        font-size: clamp(1.6rem, 5vw, 2.5rem);
+    }
+
+    .hero-description {
+        font-size: 0.95rem;
+        margin: 0.3rem 0 0;
+    }
+
+    .hero-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem 1.25rem 3.5rem;
+        gap: 1rem;
+    }
+
+    .intro-text {
+        max-width: 100%;
+    }
+
+    .intro-text h2 {
+        font-size: clamp(1.3rem, 5vw, 1.8rem);
+        margin: 0 0 0.75rem;
+    }
+
+    .intro-text p {
+        font-size: 0.85rem;
+        margin: 0 0 1rem;
+    }
+
+    .planbtn {
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .hero-cta-white {
+        padding: 0.8rem 1.8rem;
+        font-size: 0.85rem;
+    }
+
+    .planbtn-arrow {
+        width: 42px;
+        height: 42px;
+    }
+
+    .planbtn-arrow-img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .hero-scroll-indicator {
+        display: none;
+    }
+
+    /* Experiences Duo */
+    .experiences-duo {
+        gap: 1.25rem;
+    }
+
+    .exp-duo-card {
+        height: 300px;
+    }
+
+    .exp-duo-overlay {
+        padding: 1.25rem;
+    }
+
+    .exp-duo-name {
+        font-size: 1.4rem;
+    }
+
+    .exp-duo-location {
+        font-size: 0.75rem;
+    }
+
+    .exp-duo-desc {
+        font-size: 0.8rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .exp-duo-prev,
+    .exp-duo-next {
+        width: 36px;
+        height: 36px;
+    }
+
+    .exp-duo-nav-img {
+        width: 12px;
+        height: 12px;
+    }
+
+    /* Offer Carousel */
+    .offer-carousel-wrap {
+        padding: 0 1.25rem;
+    }
+
+    .offer-carousel {
+        gap: 1rem;
+        padding: 0.5rem 0 1.5rem;
+    }
+
+    .offer-card {
+        flex: 0 0 calc(100% - 2rem);
+        height: 220px;
+    }
+
+    .offer-card-overlay {
+        padding: 1.25rem;
+    }
+
+    .offer-card-title {
+        font-size: 1.4rem;
+    }
+
+    .offer-card-desc {
+        font-size: 0.78rem;
+        max-height: 48px;
+        margin: 0 0 30px 0;
+    }
+
+    .offer-card-chevron {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Venture Layout Sections */
+    .venture-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .venture-layout--reversed .venture-text {
+        order: 1;
+    }
+
+    .venture-layout--reversed .venture-image {
+        order: 2;
+    }
+
+    .venture-layout--reversed .venture-btn-row {
+        order: 3;
+    }
+
+    .venture-text {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .grey {
+        position: relative;
+        top: 0;
+        left: auto;
+        transform: none;
+        margin-bottom: 0.5rem;
+    }
+
+    .grey h2 {
+        font-size: clamp(1rem, 4vw, 1.4rem);
+    }
+
+    .venture-heading {
+        font-size: clamp(1.6rem, 6vw, 2.2rem);
+        margin: 0 0 0.75rem;
+    }
+
+    .venture-desc {
+        font-size: 0.9rem;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .venture-image img {
+        height: 320px;
+    }
+
+    .venture-btn-row {
+        margin-top: 1.5rem;
+        justify-self: center;
+        grid-column: 1;
+    }
+
+    /* About Section */
+    .about-hero {
+        height: 400px;
+    }
+
+    .about-hero-content {
+        padding: 2rem 2rem;
+    }
+
+    .about-hero-heading {
+        font-size: clamp(1.4rem, 5vw, 2rem);
+        margin: 0 0 0.75rem;
+    }
+
+    .about-hero-desc {
+        font-size: 0.85rem;
+        max-width: 100%;
+        margin: 0 0 1rem;
+    }
+
+    .about-values {
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .about-value-pill {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .about-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+        margin-top: 1rem;
+    }
+
+    .about-stats-animated {
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .about-stat-item {
+        padding: 12px;
+        flex: 1;
+    }
+
+    .about-stat-number {
+        font-size: 1.6rem;
+    }
+
+    .about-stat-label {
+        font-size: 0.65rem;
+    }
+
+    /* Fly With Us */
+    .fly-plane-trail {
+        display: none;
+    }
+
+    /* Testimonials */
+    .testimonials-wrap {
+        flex-direction: column;
+        padding: 0 1.25rem;
+    }
+
+    .testimonials-quote-col {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .testimonial-quote-mark {
+        width: 50px;
+    }
+
+    .testimonial-card {
+        flex: 0 0 calc(85vw - 2rem);
+        min-width: 260px;
+        padding: 1.5rem;
+    }
+
+    .testimonial-text {
+        font-size: 0.85rem;
+    }
+
+    .testimonial-name {
+        font-size: 1rem !important;
+    }
+
+    .testimonials-nav {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    /* Contact Section */
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .contact-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-form {
+        padding: 1.5rem;
+    }
+
+    /* Section padding for booking CTA */
+    #booking-cta {
+        padding: 4rem 1rem;
+    }
+
+    .booking-cta-content .hp-section-title {
+        font-size: clamp(1.8rem, 6vw, 2.5rem);
+    }
+}
+
+
+/* ============================================================
+   21. RESPONSIVE — SMALL MOBILE (max-width: 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+    .hp-section {
+        padding: 2.5rem 1rem;
+    }
+
+    .hp-container {
+        padding: 0 1rem;
+    }
+
+    .hp-section-title {
+        font-size: clamp(1.3rem, 5vw, 1.6rem);
+    }
+
+    .hp-section-subtitle {
+        font-size: 0.85rem;
+    }
+
+    #premium-hero {
+        min-height: 550px;
+    }
+
+    .hero-explore h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+    }
+
+    .hero-bottom-row {
+        padding: 1.25rem 0.75rem 2.5rem;
+    }
+
+    .intro-text h2 {
+        font-size: clamp(1.1rem, 5vw, 1.5rem);
+    }
+
+    .intro-text p {
+        font-size: 0.8rem;
+    }
+
+    .hero-description {
+        font-size: 0.85rem;
+    }
+
+    .hero-cta-white {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.8rem;
+    }
+
+    /* Experiences Duo */
+    .exp-duo-card {
+        height: 260px;
+    }
+
+    .exp-duo-overlay {
+        padding: 1rem;
+    }
+
+    .exp-duo-name {
+        font-size: 1.2rem;
+    }
+
+    .exp-duo-desc {
+        display: none;
+    }
+
+    /* Offer Carousel */
+    .offer-card {
+        height: 200px;
+    }
+
+    .offer-card-title {
+        font-size: 1.2rem;
+    }
+
+    .offer-card-desc {
+        display: none;
+    }
+
+    .offer-nav-row {
+        justify-content: center;
+    }
+
+    /* Venture Layout */
+    .venture-image img {
+        height: 260px;
+    }
+
+    .venture-btn-row {
+        margin-top: 1rem;
+    }
+
+    .venture-btn {
+        padding: 0.75rem 1.8rem;
+        font-size: 0.85rem;
+    }
+
+    .venture-btn-arrow-circle {
+        width: 42px;
+        height: 42px;
+    }
+
+    .venture-btn-arrow {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* About Section */
+    .about-hero {
+        height: 320px;
+    }
+
+    .about-hero-content {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .about-hero-heading {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+    }
+
+    .about-hero-desc {
+        font-size: 0.8rem;
+    }
+
+    .about-value-pill {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+        gap: 0.3rem;
+    }
+
+    .about-value-pill i {
+        font-size: 0.6rem;
+    }
+
+    .about-stats-animated {
+        gap: 0.5rem;
+    }
+
+    .about-stat-item {
+        padding: 8px;
+    }
+
+    .about-stat-number {
+        font-size: 1.3rem;
+    }
+
+    .about-stat-label {
+        font-size: 0.55rem;
+    }
+
+    .about-learn-more {
+        font-size: 0.8rem;
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+        flex: 0 0 calc(90vw - 2rem);
+        min-width: 240px;
+        padding: 1.25rem;
+    }
+
+    .testimonial-stars {
+        font-size: 0.75rem;
+    }
+
+    .testimonial-text {
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+
+    .testimonial-name {
+        font-size: 0.9rem !important;
+    }
+
+    .testimonial-from {
+        font-size: 0.7rem;
+    }
+
+    .testimonial-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.7rem;
+    }
+
+    /* Contact */
+    .contact-form {
+        padding: 1.25rem;
+    }
+
+    /* Why Choose */
+    .why-choose-number {
+        font-size: 2rem;
+    }
+
+    .why-choose-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Blog */
+    .blog-card:first-child .blog-card-title {
+        font-size: 1.1rem;
+    }
+
+    /* Booking CTA */
+    #booking-cta {
+        padding: 3rem 1rem;
+    }
+
+    .booking-cta-btn-primary,
+    .booking-cta-btn-secondary {
+        padding: 0.85rem 2rem;
+        font-size: 0.9rem;
+    }
+
+    /* Section CTA rows */
+    .hp-section-cta-row {
+        justify-content: center;
+    }
+
+    .hp-section-btn {
+        padding: 0.75rem 1.6rem;
+        font-size: 0.85rem;
+    }
+
+    .hp-section-btn-arrow {
+        width: 42px;
+        height: 42px;
+    }
+
+    .hp-section-btn-arrow-img {
+        width: 14px;
+        height: 14px;
+    }
+}
+
 
 /* ============================================================
    23. DARK MODE SUPPORT (prefers-color-scheme)

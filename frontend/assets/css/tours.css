@@ -87,3 +87,4 @@
 
         @media (max-width: 1024px) { .tours-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) { .tours-hero { min-height: 420px; padding: 110px 24px 40px; } .tours-hero h1 { font-size: 2.6rem; } .tours-grid { grid-template-columns: 1fr; } .tours-filters { flex-direction: column; align-items: stretch; } .tours-filters .filter-group { flex-wrap: wrap; } .tours-filters .filter-input { max-width: none; width: 100%; } }
+        @media (max-width: 480px) { .tours-hero { min-height: 380px; padding: 100px 16px 32px; } .tours-hero h1 { font-size: 2rem; } .tours-hero p { font-size: 0.9rem; } .tours-listing { padding: 2.5rem 1rem; } .tours-tab { padding: 0.4rem 1rem; font-size: 0.78rem; } .tour-card-body { padding: 1rem; } .tour-card-title { font-size: 0.95rem; } }

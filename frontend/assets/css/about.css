@@ -375,3 +375,44 @@
         max-width: 100%;
     }
 }
+
+@media (max-width: 480px) {
+    .about-hero-section {
+        height: 40vh;
+        min-height: 280px;
+    }
+    .about-hero-title {
+        font-size: 1.8rem;
+    }
+    .about-hero-sub {
+        font-size: 0.9rem;
+    }
+    .about-container {
+        padding: 0 1rem;
+    }
+    .about-story,
+    .about-values-section,
+    .about-stats-section,
+    .about-mission-section,
+    .about-cta-section {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .about-story-img img,
+    .about-mission-img img {
+        height: 220px;
+    }
+    .about-value-card {
+        padding: 1.5rem 1.25rem;
+    }
+    .about-stat-block {
+        padding: 2rem 0.75rem;
+    }
+    .about-stat-num {
+        font-size: 2.2rem;
+    }
+    .about-cta {
+        padding: 2.5rem 1.25rem;
+        min-height: auto;
+    }
+}
