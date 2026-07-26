@@ -287,10 +287,10 @@
                     </thead>
                     <tbody>
                         ${similarTours.map(t => `
-                            <tr class="${t.highlight ? 'cmp-highlight' : ''}">
+                            <tr class="${t.highlight ? 'cmp-highlight' : ''}${t.badge === 'Likely to Sell Out' ? ' cmp-sellout' : ''}">
                                 <td>
                                     <strong>${escapeHTML(t.name)}</strong>
-                                    ${t.badge ? `<br><span class="cmp-badge">${t.badge}</span>` : ''}
+                                    ${t.badge ? `<br><span class="cmp-badge${t.badge === 'Likely to Sell Out' ? ' cmp-badge--sellout' : ''}">${t.badge}</span>` : ''}
                                 </td>
                                 <td><span class="cmp-rating">${svgIcon('star',{size:14,color:'var(--accent)'})} ${t.rating.toFixed(1)}</span> <span style="color:var(--text-secondary);font-size:0.75rem;">(${t.reviews})</span></td>
                                 <td style="color:var(--text-secondary);">${t.duration}</td>
