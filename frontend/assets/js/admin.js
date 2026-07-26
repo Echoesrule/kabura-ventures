@@ -6,26 +6,43 @@
     try {
         var me = await api.getProfile();
         if (!me.user || me.user.role !== 'admin') {
-            document.querySelector('.admin-content').innerHTML = '<div class="admin-empty-state" style="padding:4rem;"><h3>Access Denied</h3><p>You need admin privileges to view this page.</p><a href="/" style="display:inline-block;margin-top:1rem;padding:0.7rem 1.5rem;background:var(--primary);color:#fff;border-radius:60px;text-decoration:none;font-family:var(--font-heading);">Go Home</a></div>';
+            document.querySelector('.admin-content').innerHTML =
+                '<div class="admin-empty-state" style="padding:4rem;">' +
+                '<h3>Access Denied</h3>' +
+                '<p>You need admin privileges to view this page.</p>' +
+                '<a href="/" class="admin-hero-btn" style="margin-top:1.25rem;">Go Home</a>' +
+                '</div>';
             return;
         }
-        document.getElementById('admin-user-name').textContent = me.user.name || 'Admin';
+        var adminName = me.user.name || 'Admin';
+        document.getElementById('admin-user-name').textContent = adminName;
+        var initials = adminName.split(/\s+/).map(function (p) { return p[0]; }).join('').slice(0, 2).toUpperCase();
+        document.getElementById('admin-user-initials').textContent = initials || 'A';
     } catch (e) {
         window.location.href = '/login.html';
         return;
     }
 
-    // Sidebar navigation
     var sidebarLinks = document.querySelectorAll('.admin-sidebar-link[data-section]');
     var sections = document.querySelectorAll('.admin-section');
     var sectionTitle = document.getElementById('section-title');
+    var heroTitle = document.getElementById('hero-title');
+    var heroDesc = document.getElementById('hero-desc');
     var sidebar = document.getElementById('admin-sidebar');
     var toggle = document.getElementById('sidebar-toggle');
+    var overlay = document.getElementById('sidebar-overlay');
+
+    function setSidebarOpen(open) {
+        sidebar.classList.toggle('open', open);
+        if (overlay) overlay.classList.toggle('is-open', open);
+    }
 
     sidebarLinks.forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
             var target = this.getAttribute('data-section');
+            var title = this.getAttribute('data-title') || this.querySelector('span').textContent;
+            var desc = this.getAttribute('data-desc') || '';
 
             sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
             this.classList.add('active');
@@ -34,33 +51,38 @@
             var section = document.getElementById('section-' + target);
             if (section) section.classList.add('active');
 
-            sectionTitle.textContent = this.querySelector('span').textContent;
+            sectionTitle.textContent = title;
+            if (heroTitle) heroTitle.textContent = title;
+            if (heroDesc && desc) heroDesc.textContent = desc;
 
-            sidebar.classList.remove('open');
+            setSidebarOpen(false);
         });
     });
 
-    // Mobile sidebar toggle
     toggle.addEventListener('click', function () {
-        sidebar.classList.toggle('open');
+        setSidebarOpen(!sidebar.classList.contains('open'));
     });
 
-    // Close sidebar on outside click
+    if (overlay) {
+        overlay.addEventListener('click', function () {
+            setSidebarOpen(false);
+        });
+    }
+
     document.addEventListener('click', function (e) {
-        if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle) {
-            sidebar.classList.remove('open');
+        if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) {
+            setSidebarOpen(false);
         }
     });
 
-    // Helper
     function escHtml(str) {
         var div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
+        div.appendChild(document.createTextNode(str == null ? '' : String(str)));
         return div.innerHTML;
     }
 
     function makeTable(headers, rows) {
-        var html = '<table class="admin-table"><thead><tr>';
+        var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
         headers.forEach(function (h) { html += '<th>' + h + '</th>'; });
         html += '</tr></thead><tbody>';
         if (rows.length === 0) {
@@ -72,7 +94,7 @@
                 html += '</tr>';
             });
         }
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         return html;
     }
 
@@ -83,7 +105,6 @@
         return '<span class="admin-badge ' + cls + '">' + escHtml(status || 'pending') + '</span>';
     }
 
-    // Load bookings
     var allBookings = [];
     try {
         var bookings = await api.request('/bookings');
@@ -100,8 +121,7 @@
             ];
         });
 
-        var dashHtml = makeTable(headers, rows);
-        document.getElementById('dashboard-bookings-list').innerHTML = dashHtml;
+        document.getElementById('dashboard-bookings-list').innerHTML = makeTable(headers, rows);
 
         var allRows = allBookings.map(function (b) {
             return [
@@ -118,7 +138,6 @@
         document.getElementById('bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
     }
 
-    // Load messages
     try {
         var msgs = await api.request('/messages');
         var allMsgs = msgs.messages || msgs || [];
@@ -156,7 +175,6 @@
         document.getElementById('messages-list').innerHTML = '<p class="admin-empty-state">Failed to load messages.</p>';
     }
 
-    // Load tours
     try {
         var tours = await api.request('/tours');
         var allTours = tours.tours || tours || [];
@@ -175,7 +193,6 @@
         document.getElementById('tours-list').innerHTML = '<p class="admin-empty-state">Failed to load tours.</p>';
     }
 
-    // Load users
     try {
         var users = await api.request('/users');
         var allUsers = users.users || users || [];

@@ -1,6 +1,6 @@
         body { background: #f6f7f3; }
 
-        .tours-hero { position: relative; min-height: 520px; display: flex; align-items: flex-end; overflow: hidden; padding: 130px max(5vw, 28px) 60px; background: #102117 url('/assets/images/camp2.jpg') center / cover no-repeat; }
+        .tours-hero { position: relative; min-height: 520px; display: flex; align-items: flex-end; overflow: hidden; padding: 130px max(5vw, 28px) 60px; background: #102117 url('/assets/images/elephant.jpg') center / cover no-repeat; }
         .tours-hero::before { position: absolute; inset: 0; content: ''; background: linear-gradient(90deg, rgba(5, 20, 11, .9) 0%, rgba(8, 24, 13, .58) 45%, rgba(5, 17, 9, .1) 100%), linear-gradient(0deg, rgba(4, 14, 8, .65) 0%, transparent 54%); z-index: 1; }
         .tours-hero-content { position: relative; z-index: 2; width: 100%; max-width: 1180px; margin: 0 auto; color: #fff; }
         .tours-hero-content > * { max-width: 610px; }

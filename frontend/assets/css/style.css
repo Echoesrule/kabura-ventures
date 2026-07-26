@@ -234,7 +234,7 @@ img {
 /* Announcement Bar */
 .announcement-bar {
     position: relative;
-    background: linear-gradient(90deg, #1a1410 0%, #2a1c16 50%, #1a1410 100%);
+    background:var(--dark-text);
     border-bottom: 1px solid rgba(201, 162, 39, 0.22);
     padding: 0.7rem 3.25rem;
     text-align: center;
@@ -453,7 +453,7 @@ img {
 .nav-links > li > .nav-dropdown-trigger {
     color: #fff;
     font-weight: 500;
-    font-size: 1.2rem;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.07);
