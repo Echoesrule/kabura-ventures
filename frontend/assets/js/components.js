@@ -41,11 +41,14 @@
     function initNavbarScroll() {
         var onScroll = function() {
             var navbar = document.querySelector('.navbar');
+            var bar = document.querySelector('.announcement-bar');
             if (!navbar) return;
             if (window.scrollY > 40) {
                 navbar.classList.add('scrolled');
+                if (bar) bar.style.display = 'none';
             } else {
                 navbar.classList.remove('scrolled');
+                if (bar) bar.style.display = '';
             }
         };
         window.addEventListener('scroll', onScroll, { passive: true });

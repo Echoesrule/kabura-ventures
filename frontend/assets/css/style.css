@@ -225,6 +225,46 @@ img {
     opacity: 0;
 }
 
+/* Announcement Bar */
+.announcement-bar {
+    background: rgba(150, 67, 58, 0.959);
+    border-bottom: 1px solid rgba(192, 57, 43, 0.1);
+    padding: 0.55rem 2rem;
+    text-align: center;
+    position: relative;
+    z-index: 1001;
+}
+.announcement-bar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #ebeaea;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s ease;
+}
+.announcement-bar a:hover { opacity: 0.75; }
+.announcement-bar-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #f55b5b;
+    flex-shrink: 0;
+}
+.announcement-bar-arrow-img {
+    width: 9px;
+    height: 9px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    transform: rotate(-45deg);
+}
+
 /* Navigation */
 .navbar {
     position: absolute;
