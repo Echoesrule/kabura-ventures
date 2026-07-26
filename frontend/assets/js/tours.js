@@ -190,8 +190,18 @@
                 if (isLikelyToSellOut) cardClasses += ' tour-card--sell-out';
 
                 var offerBadgeHtml = '';
+                var priceHtml = '';
                 if (isOffer) {
-                    offerBadgeHtml = '<span class="tour-card-offer-badge">Limited Offer</span>';
+                    var discountPct = 15 + (Math.abs(sellOutHash) % 11);
+                    var originalPrice = Math.round(tour.price / (1 - discountPct / 100));
+                    offerBadgeHtml = '<span class="tour-card-offer-badge">-' + discountPct + '%</span>';
+                    priceHtml = '<div class="tour-card-price tour-card-price--offer">'
+                        + '<span class="tour-card-price-old">' + window.formatPrice(originalPrice) + '</span>'
+                        + '<span class="tour-card-price-new">' + window.formatPrice(tour.price) + '</span>'
+                        + ' <small>/ person</small>'
+                        + '</div>';
+                } else {
+                    priceHtml = '<div class="tour-card-price">' + window.formatPrice(tour.price) + ' <small>/ person</small></div>';
                 }
                 var sellOutBadgeHtml = '';
                 if (isLikelyToSellOut) {
@@ -220,7 +230,7 @@
                             + (rating > 0 ? '<div class="tour-card-stars">' + starsHtml + ' <span>' + rating.toFixed(1) + ' (' + reviewCount + ')</span></div>' : '')
                         + '</div>'
                         + '<div class="tour-card-footer">'
-                            + '<div class="tour-card-price">' + window.formatPrice(tour.price) + ' <small>/ person</small></div>'
+                            + priceHtml
                             + '<div class="tour-card-btn-row">'
                                 + '<span class="tour-card-btn">Details</span>'
                                 + '<span class="tour-card-btn-arrow"><img src="/assets/images/right-arrow.png" alt="" class="tour-card-btn-arrow-img"></span>'

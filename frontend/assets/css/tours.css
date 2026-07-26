@@ -68,6 +68,10 @@
         .tour-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.75rem; border-top: 1px solid rgba(18,34,24,0.06); }
         .tour-card-price { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: var(--dark-text); }
         .tour-card-price small { font-size: 0.72rem; font-weight: 400; color: var(--text-secondary); }
+        .tour-card-price--offer { display: flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap; }
+        .tour-card-price--offer small { margin-left: 0; }
+        .tour-card-price-old { font-size: 0.82rem; font-weight: 500; color: var(--text-placeholder); text-decoration: line-through; font-family: var(--font-body); }
+        .tour-card-price-new { font-size: 1.15rem; font-weight: 700; color: #c0392b; font-family: var(--font-heading); }
         .tour-card-btn-row { display: flex; align-items: center; gap: 8px; }
         .tour-card-btn { display: inline-flex; align-items: center; padding: 8px 18px; border-radius: 60px; background: var(--dark-text); color: #fff; font-size: .72rem; font-weight: 800; text-decoration: none; white-space: nowrap; transition: background .2s ease, transform .2s ease; font-family: var(--font-body); }
         .tour-card-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
