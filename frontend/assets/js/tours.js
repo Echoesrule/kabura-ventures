@@ -184,7 +184,9 @@
                 var sellOutHash = 0;
                 for (var ci = 0; ci < (tour.id || '').length; ci++) { sellOutHash = ((sellOutHash << 5) - sellOutHash) + (tour.id || '').charCodeAt(ci); sellOutHash |= 0; }
                 var isLikelyToSellOut = Math.abs(sellOutHash) % 5 < 2;
-                var isOffer = Math.abs(sellOutHash) % 7 < 2;
+
+                var isOffer = !!(tour.original_price && Number(tour.original_price) > Number(tour.price));
+                var discountPct = tour.discount_pct || (isOffer ? Math.round((1 - tour.price / tour.original_price) * 100) : 0);
 
                 var cardClasses = 'tour-card';
                 if (isLikelyToSellOut) cardClasses += ' tour-card--sell-out';
@@ -192,11 +194,9 @@
                 var offerBadgeHtml = '';
                 var priceHtml = '';
                 if (isOffer) {
-                    var discountPct = 15 + (Math.abs(sellOutHash) % 11);
-                    var originalPrice = Math.round(tour.price / (1 - discountPct / 100));
                     offerBadgeHtml = '<span class="tour-card-offer-badge">-' + discountPct + '%</span>';
                     priceHtml = '<div class="tour-card-price tour-card-price--offer">'
-                        + '<span class="tour-card-price-old price-amount" data-kes="' + originalPrice + '">' + window.formatPrice(originalPrice) + '</span>'
+                        + '<span class="tour-card-price-old price-amount" data-kes="' + tour.original_price + '">' + window.formatPrice(tour.original_price) + '</span>'
                         + '<span class="tour-card-price-new price-amount" data-kes="' + tour.price + '">' + window.formatPrice(tour.price) + '</span>'
                         + ' <small>/ person</small>'
                         + '</div>';

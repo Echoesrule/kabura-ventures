@@ -27,6 +27,7 @@ from routes.destinations import destinations_bp
 from routes.offers import offers_bp
 from routes.testimonials import testimonials_bp
 from routes.page_content import page_content_bp
+from routes.users import users_bp
 from services.seed import seed_database
 
 load_dotenv()
@@ -62,6 +63,7 @@ def create_app():
     app.register_blueprint(offers_bp)
     app.register_blueprint(testimonials_bp)
     app.register_blueprint(page_content_bp)
+    app.register_blueprint(users_bp)
 
     @app.route('/')
     def index():
@@ -189,6 +191,13 @@ def create_app():
             # migrate: add wildlife column to tours if missing
             try:
                 db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS wildlife TEXT'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: add original_price and discount_pct to tours
+            try:
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS original_price NUMERIC(12,2)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS discount_pct INTEGER'))
                 db.session.commit()
             except Exception:
                 db.session.rollback()

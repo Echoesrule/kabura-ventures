@@ -246,6 +246,8 @@
             document.getElementById('tour-title').value = t.title || '';
             document.getElementById('tour-location').value = t.location || '';
             document.getElementById('tour-price').value = t.price || '';
+            document.getElementById('tour-original-price').value = t.original_price || '';
+            document.getElementById('tour-discount-pct').value = t.discount_pct || '';
             document.getElementById('tour-duration').value = t.duration_days || '';
             document.getElementById('tour-max-people').value = t.max_people || 20;
             document.getElementById('tour-activity').value = t.activity_type || '';
@@ -270,6 +272,8 @@
             formData.append('title', document.getElementById('tour-title').value);
             formData.append('location', document.getElementById('tour-location').value);
             formData.append('price', document.getElementById('tour-price').value);
+            formData.append('original_price', document.getElementById('tour-original-price').value);
+            formData.append('discount_pct', document.getElementById('tour-discount-pct').value);
             formData.append('duration_days', document.getElementById('tour-duration').value);
             formData.append('max_people', document.getElementById('tour-max-people').value || '20');
             formData.append('activity_type', document.getElementById('tour-activity').value);

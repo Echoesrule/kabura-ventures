@@ -118,6 +118,8 @@ def create_tour(current_user):
         wildlife=wildlife,
         latitude=float(data['latitude']) if data.get('latitude') else None,
         longitude=float(data['longitude']) if data.get('longitude') else None,
+        original_price=float(data['original_price']) if data.get('original_price') else None,
+        discount_pct=int(data['discount_pct']) if data.get('discount_pct') else None,
         available=True
     )
     db.session.add(tour)
@@ -185,6 +187,10 @@ def update_tour(current_user, tour_id):
         tour.featured = data['featured'] == 'true' or data['featured'] is True
     if 'available' in data:
         tour.available = data['available'] == 'true' or data['available'] is True
+    if 'original_price' in data:
+        tour.original_price = float(data['original_price']) if data['original_price'] else None
+    if 'discount_pct' in data:
+        tour.discount_pct = int(data['discount_pct']) if data['discount_pct'] else None
 
     if request.files:
         files = request.files.getlist('images')

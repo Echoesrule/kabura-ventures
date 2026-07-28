@@ -13,6 +13,8 @@ class Tour(db.Model):
     location = db.Column(db.String(255))
     activity_type = db.Column(db.String(100), default='safari')
     max_people = db.Column(db.Integer, default=20)
+    original_price = db.Column(db.Numeric(12, 2), nullable=True)
+    discount_pct = db.Column(db.Integer, nullable=True)
     featured = db.Column(db.Boolean, default=False)
     available = db.Column(db.Boolean, default=True)
     latitude = db.Column(db.Float, nullable=True)
@@ -38,6 +40,8 @@ class Tour(db.Model):
             'title': self.title,
             'description': self.description,
             'price': float(self.price) if self.price else 0,
+            'original_price': float(self.original_price) if self.original_price else None,
+            'discount_pct': self.discount_pct if self.discount_pct else None,
             'duration_days': self.duration_days,
             'location': self.location,
             'activity_type': self.activity_type,
@@ -65,6 +69,8 @@ class Tour(db.Model):
             'id': self.id,
             'title': self.title,
             'price': float(self.price) if self.price else 0,
+            'original_price': float(self.original_price) if self.original_price else None,
+            'discount_pct': self.discount_pct if self.discount_pct else None,
             'duration_days': self.duration_days,
             'location': self.location,
             'activity_type': self.activity_type,
