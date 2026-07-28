@@ -105,9 +105,10 @@
         return '<span class="admin-badge ' + cls + '">' + escHtml(status || 'pending') + '</span>';
     }
 
+    // ── Bookings ────────────────────────────────────────────
     var allBookings = [];
     try {
-        var bookings = await api.request('/bookings');
+        var bookings = await api.get('/bookings');
         allBookings = bookings.bookings || bookings || [];
         document.getElementById('stat-bookings').textContent = allBookings.length;
 
@@ -138,8 +139,9 @@
         document.getElementById('bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
     }
 
+    // ── Messages ────────────────────────────────────────────
     try {
-        var msgs = await api.request('/messages');
+        var msgs = await api.get('/messages');
         var allMsgs = msgs.messages || msgs || [];
         var unread = allMsgs.filter(function (m) { return !m.read && !m.admin_reply; });
         document.getElementById('stat-messages').textContent = unread.length;
@@ -175,17 +177,18 @@
         document.getElementById('messages-list').innerHTML = '<p class="admin-empty-state">Failed to load messages.</p>';
     }
 
+    // ── Tours ───────────────────────────────────────────────
     try {
-        var tours = await api.request('/tours');
+        var tours = await api.getTours({ per_page: 100 });
         var allTours = tours.tours || tours || [];
         document.getElementById('stat-tours').textContent = allTours.length;
 
         var tourRows = allTours.map(function (t) {
             return [
-                escHtml(t.name || t.title || '—'),
+                escHtml(t.title || '—'),
                 escHtml(t.location || '—'),
-                '$' + escHtml(String(t.price || '—')),
-                escHtml(t.duration || '—')
+                'KSh ' + escHtml(String(Number(t.price || 0).toLocaleString())),
+                escHtml(String(t.duration_days || '—')) + ' days'
             ];
         });
         document.getElementById('tours-list').innerHTML = makeTable(['Tour', 'Location', 'Price', 'Duration'], tourRows);
@@ -193,8 +196,27 @@
         document.getElementById('tours-list').innerHTML = '<p class="admin-empty-state">Failed to load tours.</p>';
     }
 
+    // ── Hotels ──────────────────────────────────────────────
     try {
-        var users = await api.request('/users');
+        var hotelsResult = await api.getHotels({ per_page: 100 });
+        var allHotels = hotelsResult.hotels || [];
+
+        var hotelRows = allHotels.map(function (h) {
+            return [
+                escHtml(h.name || '—'),
+                escHtml(h.location || '—'),
+                'KSh ' + escHtml(String(Number(h.price_per_night || 0).toLocaleString())),
+                '<span class="admin-badge ' + (h.available ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (h.available ? 'Active' : 'Inactive') + '</span>'
+            ];
+        });
+        document.getElementById('hotels-list').innerHTML = makeTable(['Hotel', 'Location', 'Price/Night', 'Status'], hotelRows);
+    } catch (e) {
+        document.getElementById('hotels-list').innerHTML = '<p class="admin-empty-state">Failed to load hotels.</p>';
+    }
+
+    // ── Users ───────────────────────────────────────────────
+    try {
+        var users = await api.get('/users');
         var allUsers = users.users || users || [];
         document.getElementById('stat-users').textContent = allUsers.length;
 
@@ -229,7 +251,7 @@
                 html += '<td>' + escHtml(s.location) + '</td>';
                 html += '<td>' + escHtml(s.description || '—') + '</td>';
                 html += '<td>' + escHtml(String(s.sort_order)) + '</td>';
-                html += '<td><button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;" onclick="deleteAuthSlide(\'' + s.id + '\')">Delete</button></td>';
+                html += '<td><button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteAuthSlide(\'' + s.id + '\')">Delete</button></td>';
                 html += '</tr>';
             });
             html += '</tbody></table></div>';
@@ -288,8 +310,8 @@
                 html += '<td>' + escHtml(String(d.sort_order)) + '</td>';
                 html += '<td><span class="admin-badge ' + (d.is_active ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (d.is_active ? 'Active' : 'Hidden') + '</span></td>';
                 html += '<td style="white-space:nowrap;">';
-                html += '<button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editLocation(\'' + d.id + '\')">Edit</button>';
-                html += '<button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;" onclick="deleteLocation(\'' + d.id + '\')">Delete</button>';
+                html += '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editLocation(\'' + d.id + '\')">Edit</button>';
+                html += '<button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteLocation(\'' + d.id + '\')">Delete</button>';
                 html += '</td></tr>';
             });
             html += '</tbody></table></div>';
@@ -373,8 +395,8 @@
                 html += '<td>' + escHtml(String(o.sort_order)) + '</td>';
                 html += '<td><span class="admin-badge ' + (o.is_active ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (o.is_active ? 'Active' : 'Hidden') + '</span></td>';
                 html += '<td style="white-space:nowrap;">';
-                html += '<button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editOffer(\'' + o.id + '\')">Edit</button>';
-                html += '<button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;" onclick="deleteOffer(\'' + o.id + '\')">Delete</button>';
+                html += '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editOffer(\'' + o.id + '\')">Edit</button>';
+                html += '<button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteOffer(\'' + o.id + '\')">Delete</button>';
                 html += '</td></tr>';
             });
             html += '</tbody></table></div>';
@@ -460,8 +482,8 @@
                 html += '<td>' + escHtml(String(t.sort_order)) + '</td>';
                 html += '<td><span class="admin-badge ' + (t.is_active ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (t.is_active ? 'Active' : 'Hidden') + '</span></td>';
                 html += '<td style="white-space:nowrap;">';
-                html += '<button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editTestimonial(\'' + t.id + '\')">Edit</button>';
-                html += '<button class="admin-hero-btn" style="padding:4px 10px;font-size:11px;" onclick="deleteTestimonial(\'' + t.id + '\')">Delete</button>';
+                html += '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editTestimonial(\'' + t.id + '\')">Edit</button>';
+                html += '<button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteTestimonial(\'' + t.id + '\')">Delete</button>';
                 html += '</td></tr>';
             });
             html += '</tbody></table></div>';
@@ -546,31 +568,32 @@
         var html = '';
         PAGE_SECTIONS.forEach(function (sec) {
             var data = sections[sec.key] || {};
-            html += '<div style="margin-bottom:2rem;padding:1.25rem;border:1px solid var(--border);border-radius:12px;background:var(--card-bg);">';
-            html += '<h3 style="margin-bottom:1rem;font-size:1rem;font-weight:600;">' + sec.label + '</h3>';
+            html += '<div class="admin-page-section-card">';
+            html += '<h3 class="admin-page-section-title">' + sec.label + '</h3>';
             html += '<form class="page-section-form" data-key="' + sec.key + '" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">';
             sec.fields.forEach(function (f) {
                 var val = data[f] || '';
                 var isNum = f.indexOf('number') !== -1;
                 var isLong = f === 'description';
+                var label = f.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
                 if (isNum) {
                     html += '<div style="flex:0;min-width:120px;">';
-                    html += '<label class="admin-label">' + f.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }) + '</label>';
+                    html += '<label class="admin-label">' + label + '</label>';
                     html += '<input type="number" name="' + f + '" value="' + escHtml(String(val)) + '" class="admin-input" style="width:120px;">';
                     html += '</div>';
                 } else if (isLong) {
                     html += '<div style="flex:3;min-width:300px;">';
-                    html += '<label class="admin-label">' + f.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }) + '</label>';
-                    html += '<textarea name="' + f + '" class="admin-input" rows="3" style="width:100%;resize:vertical;">' + escHtml(val) + '</textarea>';
+                    html += '<label class="admin-label">' + label + '</label>';
+                    html += '<textarea name="' + f + '" class="admin-input admin-textarea" rows="3">' + escHtml(val) + '</textarea>';
                     html += '</div>';
                 } else {
                     html += '<div style="flex:1;min-width:180px;">';
-                    html += '<label class="admin-label">' + f.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }) + '</label>';
+                    html += '<label class="admin-label">' + label + '</label>';
                     html += '<input type="text" name="' + f + '" value="' + escHtml(val) + '" class="admin-input">';
                     html += '</div>';
                 }
             });
-            html += '<div><button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;">Save</button></div>';
+            html += '<div><button type="submit" class="admin-btn admin-btn--primary">Save</button></div>';
             html += '</form></div>';
         });
         container.innerHTML = html;
