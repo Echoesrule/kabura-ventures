@@ -1243,6 +1243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var nextBtn = carousel.querySelector('.auth-carousel-next');
         var slides = [];
         var current = 0;
+        var img;
 
         function showSlide(index) {
             if (slides.length === 0) return;
@@ -1250,10 +1251,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (index >= slides.length) index = 0;
             current = index;
 
-            var imgs = track.querySelectorAll('.auth-slide-img');
-            imgs.forEach(function (img, i) {
-                img.classList.toggle('active', i === current);
-            });
+            if (img) {
+                img.src = slides[current].file_url;
+                img.alt = slides[current].location || 'Slide';
+                track.classList.remove('fade');
+                void track.offsetWidth;
+                track.classList.add('fade');
+            }
 
             if (locEl) locEl.textContent = slides[current].location || '';
             if (descEl) descEl.textContent = slides[current].description || '';
@@ -1272,14 +1276,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (slides.length === 0) return;
 
         track.innerHTML = '';
-        slides.forEach(function (s, i) {
-            var img = document.createElement('img');
-            img.src = s.file_url;
-            img.alt = s.location || 'Slide';
-            img.className = 'banner-img auth-hero-img auth-slide-img';
-            if (i === 0) img.classList.add('active');
-            track.appendChild(img);
-        });
+        img = document.createElement('img');
+        img.className = 'banner-img auth-hero-img';
+        img.src = slides[0].file_url;
+        img.alt = slides[0].location || 'Slide';
+        track.appendChild(img);
 
         showSlide(0);
     })();
