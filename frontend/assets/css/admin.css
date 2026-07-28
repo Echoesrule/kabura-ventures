@@ -22,7 +22,7 @@ body.admin-layout.no-nav #footer-placeholder {
     left: 0;
     width: 268px;
     height: 100vh;
-    background:  var(--soft-white);
+    background:  var(--dark-text);
     display: flex;
     flex-direction: column;
     z-index: 100;

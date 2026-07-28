@@ -75,8 +75,6 @@ def create_app():
     def serve_static(path):
         if path.startswith('assets/'):
             return send_from_directory(app.static_folder, path)
-        if path.endswith('admin.html'):
-            return jsonify({'error': 'Not found'}), 404
         try:
             return send_from_directory(app.static_folder, path)
         except:

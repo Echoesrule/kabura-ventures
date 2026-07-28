@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Kabura Ventures</title>
+    <title>Admin Dashboard - Kabura Adventures</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -17,1890 +17,396 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
-    <style>
-        .admin-page .navbar, .admin-page .footer { display: none !important; }
-        .admin-page #login-modal,
-        .admin-page #register-modal,
-        .admin-page #user-inbox-modal { display: none !important; }
-
-        .admin-layout { min-height: 100vh; display: flex; }
-
-        .admin-sidebar {
-            position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
-            width: 260px;
-            background: linear-gradient(180deg, #0a1a0e 0%, #1B5E20 40%, #1B5E20 100%);
-            color: #fff;
-            display: flex; flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-        }
-        .admin-sidebar .brand {
-            padding: 1.75rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-            margin-bottom: 0.75rem;
-        }
-        .admin-sidebar .brand h3 {
-            color: var(--accent);
-            font-weight: 700; font-size: 1.25rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .admin-sidebar .brand h3 i { font-size: 1.1rem; }
-        .admin-sidebar .brand p {
-            color: rgba(255,255,255,0.55);
-            font-size: 0.75rem; margin-top: 2px; letter-spacing: 0.3px;
-        }
-        .admin-sidebar .nav-item {
-            padding: 0.7rem 1.5rem;
-            cursor: pointer; font-size: 0.88rem;
-            display: flex; align-items: center; gap: 0.75rem;
-            color: rgba(255,255,255,0.7);
-            transition: all 0.25s ease;
-            border-left: 3px solid transparent;
-            margin: 1px 0;
-        }
-        .admin-sidebar .nav-item:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        .admin-sidebar .nav-item.active {
-            background: rgba(255,255,255,0.12);
-            color: var(--accent-light);
-            border-left-color: var(--accent);
-            font-weight: 600;
-        }
-        .admin-sidebar .nav-item i { width: 1.25rem; text-align: center; font-size: 1rem; }
-        .admin-sidebar .sidebar-footer {
-            margin-top: auto;
-            border-top: 1px solid rgba(255,255,255,0.12);
-            padding-top: 0.75rem;
-            padding-bottom: 1rem;
-        }
-        .admin-sidebar .sidebar-footer .nav-item { font-size: 0.83rem; }
-
-        .admin-content {
-            margin-left: 260px; flex: 1;
-            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.04) 0%, rgba(var(--sage-rgb),0.06) 100%);
-            min-height: 100vh; padding: 2rem;
-        }
-        .admin-content h2 {
-            font-family: var(--font-heading);
-            color: var(--primary-dark);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .admin-content h2 i { color: var(--primary); font-size: 1.3rem; }
-
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.25rem; margin-bottom: 2rem;
-        }
-        .stat-card {
-            background: #fff; border-radius: var(--radius-md);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-        .stat-card h3 {
-            font-size: 0.82rem; text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        .stat-card .stat-value {
-            font-size: 1.75rem; font-weight: 700;
-            color: var(--primary-dark);
-            font-family: var(--font-heading);
-        }
-        .stat-card .stat-icon {
-            float: right; font-size: 1.8rem;
-            color: var(--primary);
-            opacity: 0.2;
-        }
-
-        .card {
-            background: #fff; border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            border-top: 3px solid var(--primary);
-            transition: all 0.3s ease;
-        }
-        .card:hover { box-shadow: var(--shadow-md); }
-        .card h3 {
-            color: var(--primary-dark);
-            font-weight: 600; font-size: 1rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .card h3 i { color: var(--primary); }
-
-        .action-bar {
-            display: flex; justify-content: space-between;
-            align-items: center; flex-wrap: wrap; gap: 1rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.06), rgba(var(--sage-rgb),0.08));
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius-md);
-            border-left: 4px solid var(--primary);
-        }
-        .action-bar h2 { margin-bottom: 0; font-size: 1.2rem; }
-
-        .empty-state {
-            text-align: center; padding: 3rem 1rem;
-            color: var(--text-secondary);
-        }
-        .empty-state h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--accent); }
-
-        .table-container { overflow-x: auto; }
-        .table-container > div {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .table-container > div:last-child { border-bottom: none; }
-        .table-container > div:nth-child(even) { background: rgba(var(--primary-dark-rgb),0.03); }
-        .table-container > div:hover { background: rgba(var(--primary-dark-rgb),0.06); }
-
-        .admin-page .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.55);
-            display: none; align-items: center; justify-content: center;
-            z-index: 1000; padding: 1rem;
-            backdrop-filter: blur(4px);
-        }
-        .admin-page .modal-overlay.active { display: flex; }
-        .admin-page .modal {
-            background: #fff; border-radius: var(--radius-lg);
-            width: 100%; max-width: 520px;
-            max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            animation: modalIn 0.25s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .admin-page .modal-header {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(135deg, rgba(var(--sage-rgb),0.04), rgba(var(--sage-rgb),0.06));
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        }
-        .admin-page .modal-header h2 {
-            margin: 0; font-size: 1.1rem;
-            color: var(--primary-dark);
-        }
-        .admin-page .modal-close {
-            background: none; border: none; font-size: 1.5rem;
-            cursor: pointer; color: var(--text-secondary);
-            line-height: 1; padding: 0 0.25rem;
-            transition: color 0.2s;
-        }
-        .admin-page .modal-close:hover { color: #D32F2F; }
-        .admin-page .modal form { padding: 1.5rem; }
-
-        .admin-page .form-group { margin-bottom: 1rem; }
-        .admin-page .form-label {
-            display: block; font-size: 0.85rem; font-weight: 600;
-            color: var(--primary-dark); margin-bottom: 0.35rem;
-        }
-
-        .admin-page .block-editor {
-            border: 1.5px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background: #fff;
-            overflow: hidden;
-        }
-        .admin-page .block-editor:focus-within { border-color: var(--primary); }
-        .wysiwyg-toolbar {
-            display: flex; flex-wrap: wrap; gap: 4px;
-            padding: 0.5rem 0.75rem;
-            background: rgba(var(--sage-rgb),0.04);
-            border: 1px solid var(--border-color);
-            border-bottom: none;
-            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-            align-items: center;
-        }
-        .wysiwyg-toolbar .sep {
-            width: 1px; height: 22px;
-            background: var(--border-color); margin: 0 6px;
-        }
-        .wysiwyg-toolbar button {
-            padding: 0.3rem 0.6rem; font-size: 0.75rem;
-            background: #fff; border: 1px solid var(--border-color);
-            color: var(--dark-text); border-radius: 6px;
-            cursor: pointer; transition: all 0.15s;
-        }
-        .wysiwyg-toolbar button:hover {
-            background: var(--primary);
-            color: #fff; border-color: var(--primary);
-        }
-        .wysiwyg-content {
-            border: 1px solid var(--border-color);
-            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-            padding: 1rem;
-            min-height: 320px;
-            font-size: 0.92rem;
-            line-height: 1.7;
-            outline: none;
-            background: #fff;
-        }
-        .wysiwyg-content:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(var(--sage-rgb),0.1); }
-        .wysiwyg-content h1 { font-size: 1.75rem; margin: 1rem 0 0.5rem; font-weight: 700; }
-        .wysiwyg-content h2 { font-size: 1.5rem; margin: 0.9rem 0 0.4rem; font-weight: 700; }
-        .wysiwyg-content h3 { font-size: 1.3rem; margin: 0.8rem 0 0.35rem; font-weight: 600; }
-        .wysiwyg-content p { margin: 0 0 0.75rem; }
-        .wysiwyg-content ul, .wysiwyg-content ol { margin: 0 0 0.75rem 1.5rem; }
-        .wysiwyg-content li { margin-bottom: 0.25rem; }
-
-        .admin-page .blog-preview h1 { font-size: 2rem; margin: 1rem 0 0.5rem; color: var(--primary-dark); font-weight: 700; }
-        .admin-page .blog-preview h2 { font-size: 1.6rem; margin: 0.9rem 0 0.4rem; color: var(--primary-dark); font-weight: 700; }
-        .admin-page .blog-preview h3 { font-size: 1.35rem; margin: 0.8rem 0 0.35rem; color: var(--primary-dark); font-weight: 600; }
-        .admin-page .blog-preview h4 { font-size: 1.15rem; margin: 0.7rem 0 0.3rem; font-weight: 600; }
-        .admin-page .blog-preview h5 { font-size: 1rem; margin: 0.6rem 0 0.25rem; font-weight: 600; }
-        .admin-page .blog-preview h6 { font-size: 0.9rem; margin: 0.5rem 0 0.2rem; font-weight: 600; text-transform: uppercase; }
-        .admin-page .blog-preview p { margin: 0.5rem 0; }
-        .admin-page .blog-preview ul, .admin-page .blog-preview ol { margin: 0.5rem 0; padding-left: 1.5rem; }
-        .admin-page .blog-preview li { margin: 0.25rem 0; }
-        .admin-page .blog-preview img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
-        .admin-page .blog-preview blockquote {
-            border-left: 4px solid var(--primary);
-            padding: 0.5rem 1rem; margin: 1rem 0;
-            background: rgba(var(--sage-rgb),0.04); border-radius: 0 8px 8px 0;
-            color: var(--text-secondary);
-        }
-        .admin-page .blog-preview pre {
-            background: #102117; color: #fff;
-            padding: 1rem; border-radius: 8px;
-            overflow-x: auto; font-size: 0.85rem; margin: 1rem 0;
-        }
-        .admin-page .form-input,
-        .admin-page .form-select,
-        .admin-page .form-textarea {
-            width: 100%; padding: 0.65rem 0.85rem;
-            border: 1.5px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            font-family: var(--font-body); font-size: 0.9rem;
-            transition: border-color 0.2s; background: #fff;
-        }
-        .admin-page .form-input:focus,
-        .admin-page .form-select:focus,
-        .admin-page .form-textarea:focus {
-            outline: none; border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(var(--sage-rgb),0.12);
-        }
-        .admin-page .form-textarea { min-height: 100px; resize: vertical; }
-
-        .admin-page .btn {
-            padding: 0.6rem 1.25rem; border: none; border-radius: var(--radius-sm);
-            cursor: pointer; font-size: 0.88rem; font-weight: 600;
-            font-family: var(--font-heading);
-            transition: all 0.25s ease; display: inline-flex;
-            align-items: center; gap: 0.4rem;
-        }
-        .admin-page .btn-primary {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-dark));
-            color: #fff;
-        }
-        .admin-page .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-hover), var(--primary-dark));
-            box-shadow: 0 4px 12px rgba(var(--primary-dark-rgb),0.3);
-            transform: translateY(-1px);
-        }
-        .admin-page .btn-secondary {
-            background: rgba(var(--sage-rgb),0.08); color: var(--dark-text);
-        }
-        .admin-page .btn-secondary:hover { background: rgba(var(--sage-rgb),0.12); }
-        .admin-page .btn-gold {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            color: #fff;
-        }
-        .admin-page .btn-gold:hover {
-            box-shadow: 0 4px 12px rgba(var(--accent-rgb),0.3);
-            transform: translateY(-1px);
-        }
-        .admin-page .btn-danger {
-            background: linear-gradient(135deg, #D32F2F, #C62828);
-            color: #fff;
-        }
-        .admin-page .btn-danger:hover {
-            box-shadow: 0 4px 12px rgba(198,40,40,0.3);
-            transform: translateY(-1px);
-        }
-        .admin-page .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
-
-        .admin-page .grid { display: grid; gap: 1rem; }
-        .admin-page .grid-2 { grid-template-columns: 1fr 1fr; }
-
-        .admin-page .spinner {
-            width: 40px; height: 40px; margin: 2rem auto;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--primary-dark);
-            border-radius: 50%; animation: spin 0.7s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .admin-page .image-gallery {
-            display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;
-        }
-        .admin-page .image-gallery img {
-            width: 80px; height: 64px; object-fit: cover;
-            border-radius: var(--radius-sm); border: 2px solid var(--border-color);
-            transition: border-color 0.2s;
-        }
-        .admin-page .image-gallery img:hover { border-color: var(--primary); }
-
-        .admin-page .verification-loading-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 2000;
-        }
-
-        .admin-page .toast-container {
-            position: fixed; top: 1rem; right: 1rem; z-index: 3000;
-            display: flex; flex-direction: column; gap: 0.5rem;
-        }
-        .admin-page .toast {
-            padding: 0.85rem 1.25rem; border-radius: var(--radius-sm);
-            font-family: var(--font-body); font-size: 0.88rem;
-            color: #fff; box-shadow: var(--shadow-md);
-            animation: slideIn 0.3s ease;
-            max-width: 360px;
-        }
-        .admin-page .toast-success { background: var(--primary); }
-        .admin-page .toast-error { background: #D32F2F; }
-        .admin-page .toast-info { background: #1976D2; }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(100%); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @media (max-width: 768px) {
-            .admin-sidebar {
-                width: 240px;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .admin-sidebar.open { transform: translateX(0); }
-            .admin-content {
-                margin-left: 0;
-                padding: 1.25rem;
-            }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .admin-page .grid-2 { grid-template-columns: 1fr; }
-            .admin-page .modal { max-width: 100%; margin: 0.5rem; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .admin-content { padding: 1rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/style.css?v=11">
+    <link rel="stylesheet" href="/assets/css/admin.css?v=14">
 </head>
-<body class="admin-page">
-    <div id="admin-root" style="display:none">
-    <div class="admin-layout">
-        <!-- Sidebar -->
-        <div class="admin-sidebar" id="admin-sidebar">
-            <div class="brand">
-                <h3><i class="fas fa-leaf"></i> Kabura Admin</h3>
-                <p>Management Dashboard</p>
-            </div>
-            <div class="nav-item active" data-section="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</div>
-            <div class="nav-item" data-section="tours"><i class="fas fa-mountain"></i> Tours</div>
-            <div class="nav-item" data-section="hotels"><i class="fas fa-hotel"></i> Hotels</div>
-            <div class="nav-item" data-section="bookings"><i class="fas fa-clipboard-list"></i> Bookings</div>
-            <div class="nav-item" data-section="flights"><i class="fas fa-plane"></i> Flight Requests</div>
-            <div class="nav-item" data-section="messages"><i class="fas fa-envelope"></i> Messages</div>
-            <div class="nav-item" data-section="subscribers"><i class="fas fa-users"></i> Subscribers</div>
-            <div class="nav-item" data-section="blogs"><i class="fas fa-edit"></i> Blog</div>
-            <div class="nav-item" data-section="payments"><i class="fas fa-money-bill-wave"></i> Payments</div>
-            <div class="nav-item" data-section="destinations"><i class="fas fa-map-marker-alt"></i> Destinations</div>
-            <div class="nav-item" data-section="media"><i class="fas fa-video"></i> Media</div>
-            <div class="nav-item" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics & Revenue</div>
-            <div class="sidebar-footer">
-                <div class="nav-item" onclick="window.location.href='/'"><i class="fas fa-arrow-left"></i> Back to Site</div>
-                <div class="nav-item" onclick="api.logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+<body class="admin-layout no-nav">
+    <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
+
+    <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-header">
+            <img src="/assets/images/kabura-logo.png" alt="Kabura Adventures" class="admin-sidebar-logo">
+            <div class="admin-sidebar-brand-wrap">
+                <span class="admin-sidebar-brand">Kabura</span>
+                <span class="admin-sidebar-tagline">Admin Studio</span>
             </div>
         </div>
-
-        <!-- Main Content -->
-        <div class="admin-content" id="admin-content">
-
-            <!-- Dashboard -->
-            <div class="admin-section" id="section-dashboard">
-                <h2><i class="fas fa-chart-bar"></i> Dashboard Overview</h2>
-                <div class="stats-grid" id="dashboard-stats"></div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-calendar-check"></i> Recent Bookings</h3>
-                        <div id="recent-bookings"></div>
-                    </div>
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-envelope"></i> Recent Messages</h3>
-                        <div id="recent-messages"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tours Management -->
-            <div class="admin-section" id="section-tours" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-mountain"></i> Tours Management</h2>
-                    <button class="btn btn-primary" onclick="openTourForm()"><i class="fas fa-plus"></i> Add Tour</button>
-                </div>
-                <div id="admin-tours-list"></div>
-
-                <!-- Tour Form Modal -->
-                <div class="modal-overlay" id="tour-form-modal">
-                    <div class="modal" style="max-width:600px;">
-                        <div class="modal-header">
-                            <h2 id="tour-form-title">Add Tour</h2>
-                            <button class="modal-close" onclick="closeModal('tour-form-modal')">&times;</button>
-                        </div>
-                        <form id="tour-form" enctype="multipart/form-data">
-                            <input type="hidden" id="tour-form-id">
-                            <div class="form-group">
-                                <label class="form-label">Title</label>
-                                <input type="text" class="form-input" id="tf-title" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-textarea" id="tf-description" rows="4"></textarea>
-                            </div>
-                            <div class="grid grid-2">
-                                <div class="form-group">
-                                    <label class="form-label">Price (KSh)</label>
-                                    <input type="number" class="form-input" id="tf-price" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Duration (Days)</label>
-                                    <input type="number" class="form-input" id="tf-duration" required>
-                                </div>
-                            </div>
-                            <div class="grid grid-2">
-                                <div class="form-group">
-                                    <label class="form-label">Location</label>
-                                    <input type="text" class="form-input" id="tf-location">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Max People</label>
-                                    <input type="number" class="form-input" id="tf-max-people" value="20">
-                                </div>
-                            </div>
-                            <div class="grid grid-2">
-                                <div class="form-group">
-                                    <label class="form-label">Latitude</label>
-                                    <input type="number" step="any" class="form-input" id="tf-latitude" placeholder="-1.2921">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Longitude</label>
-                                    <input type="number" step="any" class="form-input" id="tf-longitude" placeholder="36.8219">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Wildlife You'll See (comma separated)</label>
-                                <input type="text" class="form-input" id="tf-wildlife" placeholder="Lions, Elephants, Giraffes, Zebras">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <input type="checkbox" id="tf-featured"> Featured Tour
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tour Images</label>
-                                <input type="file" class="form-input" id="tf-images" accept="image/*" multiple>
-                                <div class="image-gallery" id="tf-image-gallery" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;"></div>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Save Tour</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hotels Management -->
-            <div class="admin-section" id="section-hotels" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-hotel"></i> Hotels Management</h2>
-                    <button class="btn btn-primary" onclick="openHotelForm()"><i class="fas fa-plus"></i> Add Hotel</button>
-                </div>
-                <div id="admin-hotels-list"></div>
-
-                <div class="modal-overlay" id="hotel-form-modal">
-                    <div class="modal" style="max-width:600px;">
-                        <div class="modal-header">
-                            <h2 id="hotel-form-title">Add Hotel</h2>
-                            <button class="modal-close" onclick="closeModal('hotel-form-modal')">&times;</button>
-                        </div>
-                        <form id="hotel-form" enctype="multipart/form-data">
-                            <input type="hidden" id="hf-id">
-                            <div class="form-group">
-                                <label class="form-label">Name</label>
-                                <input type="text" class="form-input" id="hf-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-textarea" id="hf-description" rows="4"></textarea>
-                            </div>
-                            <div class="grid grid-2">
-                                <div class="form-group">
-                                    <label class="form-label">Price per Night (KSh)</label>
-                                    <input type="number" class="form-input" id="hf-price" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Rating (0-5)</label>
-                                    <input type="number" class="form-input" id="hf-rating" min="0" max="5" step="0.1" value="4">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Location</label>
-                                <input type="text" class="form-input" id="hf-location">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Amenities (comma separated)</label>
-                                <input type="text" class="form-input" id="hf-amenities" placeholder="Pool,Restaurant,Free WiFi">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Images</label>
-                                <input type="file" class="form-input" id="hf-images" accept="image/*" multiple>
-                                <div class="image-gallery" id="hf-image-gallery" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;"></div>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Save Hotel</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bookings Management -->
-            <div class="admin-section" id="section-bookings" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-clipboard-list"></i> All Bookings</h2>
-                    <div>
-                        <select class="form-select" id="bookings-filter" style="width:auto;">
-                            <option value="">All Statuses</option>
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="cancelled">Cancelled</option>
-                            <option value="completed">Completed</option>
-                            <option value="no_show">No Show</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="admin-bookings-list"></div>
-            </div>
-
-            <!-- Flight Requests -->
-            <div class="admin-section" id="section-flights" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-plane"></i> Flight Requests</h2>
-                    <select class="form-select" id="flights-filter" style="width:auto;">
-                        <option value="">All</option>
-                        <option value="pending">Pending</option>
-                        <option value="quoted">Quoted</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="booked">Booked</option>
-                    </select>
-                </div>
-                <div id="admin-flights-list"></div>
-
-                <div class="modal-overlay" id="flight-response-modal">
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h2>Respond to Flight Request</h2>
-                            <button class="modal-close" onclick="closeModal('flight-response-modal')">&times;</button>
-                        </div>
-                        <form id="flight-response-form">
-                            <input type="hidden" id="fr-id">
-                            <div class="form-group">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" id="fr-status">
-                                    <option value="quoted">Provide Quote</option>
-                                    <option value="approved">Approve</option>
-                                    <option value="rejected">Reject</option>
-                                    <option value="booked">Mark Booked</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Price Quote (KSh)</label>
-                                <input type="number" class="form-input" id="fr-price">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Admin Notes</label>
-                                <textarea class="form-textarea" id="fr-notes" rows="3"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Update Request</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Messages -->
-            <div class="admin-section" id="section-messages" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-envelope"></i> Contact Messages</h2>
-                    <select class="form-select" id="messages-filter" style="width:auto;">
-                        <option value="">All</option>
-                        <option value="false">Unread</option>
-                        <option value="true">Read</option>
-                    </select>
-                </div>
-                <div id="admin-messages-list"></div>
-
-                <div class="modal-overlay" id="message-reply-modal">
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h2>Reply to Message</h2>
-                            <button class="modal-close" onclick="closeModal('message-reply-modal')">&times;</button>
-                        </div>
-                        <div id="message-detail" style="margin-bottom:1rem;padding:1rem;background:#F5F5F5;border-radius:8px;"></div>
-                        <form id="message-reply-form">
-                            <input type="hidden" id="reply-message-id">
-                            <div class="form-group">
-                                <label class="form-label">Your Reply</label>
-                                <textarea class="form-textarea" id="reply-text" rows="4" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Send Reply</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subscribers -->
-            <div class="admin-section" id="section-subscribers" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-users"></i> Newsletter Subscribers</h2>
-                    <button class="btn btn-primary" onclick="loadSubscribers()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                </div>
-                <div id="admin-subscribers-list"></div>
-            </div>
-
-            <!-- Blog Management -->
-            <div class="admin-section" id="section-blogs" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-edit"></i> Blog Posts</h2>
-                    <button class="btn btn-primary" onclick="showBlogForm()"><i class="fas fa-plus"></i> New Post</button>
-                </div>
-                <div id="admin-blogs-list"></div>
-
-                <!-- Blog Form Modal -->
-                <div class="modal-overlay" id="blog-modal">
-                    <div class="modal" style="max-width:860px;">
-                        <div class="modal-header">
-                            <h2 id="blog-modal-title">New Blog Post</h2>
-                            <button class="modal-close" onclick="closeModal('blog-modal')">&times;</button>
-                        </div>
-                        <form id="blog-form">
-                            <input type="hidden" id="blog-id">
-                            <div class="form-group">
-                                <label class="form-label">Title</label>
-                                <input type="text" class="form-input" id="blog-title" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-input" id="blog-category" placeholder="e.g. safari-guides, destinations, trekking">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Excerpt</label>
-                                <textarea class="form-textarea" id="blog-excerpt" rows="2" maxlength="500"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Content</label>
-                                <div class="wysiwyg-editor">
-                                    <div class="wysiwyg-toolbar">
-                                        <button type="button" onclick="execCmd('formatBlock','<h1>')" title="Heading 1"><b>H1</b></button>
-                                        <button type="button" onclick="execCmd('formatBlock','<h2>')" title="Heading 2"><b>H2</b></button>
-                                        <button type="button" onclick="execCmd('formatBlock','<h3>')" title="Heading 3"><b>H3</b></button>
-                                        <button type="button" onclick="execCmd('formatBlock','<p>')" title="Paragraph">P</button>
-                                        <span class="sep"></span>
-                                        <button type="button" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
-                                        <button type="button" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
-                                        <span class="sep"></span>
-                                        <button type="button" onclick="execCmd('insertUnorderedList')" title="Bullet List">&#8226; List</button>
-                                        <button type="button" onclick="execCmd('insertOrderedList')" title="Numbered List">1. List</button>
-                                        <span class="sep"></span>
-                                        <button type="button" onclick="execLink()" title="Insert Link">&#128279; Link</button>
-                                    </div>
-                                    <div class="wysiwyg-content" id="blog-content" contenteditable="true"></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Image URL</label>
-                                <input type="url" class="form-input" id="blog-image" placeholder="https://...">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tags (comma-separated)</label>
-                                <input type="text" class="form-input" id="blog-tags" placeholder="safari, wildlife, kenya">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Author</label>
-                                <input type="text" class="form-input" id="blog-author" placeholder="Kabura Ventures">
-                            </div>
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" id="blog-published" checked>
-                                    Published
-                                </label>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Save Post</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payments -->
-            <div class="admin-section" id="section-payments" style="display:none;">
-                <h2><i class="fas fa-money-bill-wave"></i> Payment Records</h2>
-                <div id="admin-payments-list"></div>
-            </div>
-
-            <!-- Analytics & Revenue -->
-            <div class="admin-section" id="section-analytics" style="display:none;">
-                <h2><i class="fas fa-chart-line"></i> Analytics & Revenue</h2>
-
-                <div class="stats-grid" id="analytics-summary"></div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-coins"></i> Revenue by Method</h3>
-                        <div id="revenue-by-method-chart"></div>
-                    </div>
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-chart-pie"></i> Revenue by Type</h3>
-                        <div id="revenue-by-type-chart"></div>
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-chart-line"></i> Monthly Revenue Trend</h3>
-                        <div id="revenue-trend-chart"></div>
-                    </div>
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-calendar-alt"></i> Monthly Bookings</h3>
-                        <div id="bookings-trend-chart"></div>
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-chart-bar"></i> Bookings by Status</h3>
-                        <div id="bookings-status-chart"></div>
-                    </div>
-                    <div class="card" style="padding:1.5rem;">
-                        <h3 style="margin-bottom:1rem;"><i class="fas fa-tags"></i> Bookings by Type</h3>
-                        <div id="bookings-type-chart"></div>
-                    </div>
-                </div>
-
-                <div class="card" style="padding:1.5rem;">
-                    <h3 style="margin-bottom:1rem;"><i class="fas fa-star"></i> Popular Tours</h3>
-                    <div id="popular-tours"></div>
-                </div>
-            </div>
-
-            <!-- Destinations Management -->
-            <div class="admin-section" id="section-destinations" style="display:none;">
-                <div class="action-bar">
-                    <h2><i class="fas fa-map-marker-alt"></i> Destinations Management</h2>
-                    <button class="btn btn-primary" onclick="openDestForm()"><i class="fas fa-plus"></i> Add Destination</button>
-                </div>
-                <div id="admin-destinations-list"></div>
-
-                <!-- Destination Form Modal -->
-                <div class="modal-overlay" id="dest-form-modal">
-                    <div class="modal" style="max-width:500px;">
-                        <div class="modal-header">
-                            <h2 id="dest-form-title">Add Destination</h2>
-                            <button class="modal-close" onclick="closeModal('dest-form-modal')">&times;</button>
-                        </div>
-                        <form id="dest-form" enctype="multipart/form-data">
-                            <input type="hidden" id="dest-form-id">
-                            <div class="form-group">
-                                <label class="form-label">Name</label>
-                                <input type="text" class="form-input" id="df-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Image URL (or upload below)</label>
-                                <input type="text" class="form-input" id="df-image-url" placeholder="https://...">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Upload Image</label>
-                                <input type="file" class="form-input" id="df-image" accept="image/*">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Sort Order</label>
-                                <input type="number" class="form-input" id="df-sort" value="0" min="0">
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" class="btn btn-secondary" onclick="closeModal('dest-form-modal')">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Media Management -->
-            <div class="admin-section" id="section-media" style="display:none;">
-                <h2 style="margin-bottom:1.5rem;"><i class="fas fa-video"></i> Media Manager</h2>
-                
-                <!-- Media Tabs -->
-                <div class="tabs" style="margin-bottom:2rem;">
-                    <button class="tab active" data-tab="hero-videos">Hero Videos</button>
-                    <button class="tab" data-tab="login-photo">Login Photo</button>
-                </div>
-
-                <!-- Hero Videos Tab -->
-                <div id="tab-hero-videos" class="media-tab" style="display:block;">
-                    <div class="action-bar">
-                        <h3><i class="fas fa-photo-film"></i> Homepage Hero Media</h3>
-                        <form id="video-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;">
-                            <input type="file" class="form-input" id="video-file" accept="video/mp4,video/webm,video/ogg,image/jpeg,image/png,image/webp,image/gif" style="max-width:250px;" required>
-                            <button type="submit" class="btn btn-primary btn-sm">Upload</button>
-                        </form>
-                    </div>
-                    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Upload videos or images for the homepage hero. Max 3 recommended. Supported: mp4, webm, ogg, jpg, png, webp, gif.</p>
-                    <div id="admin-media-list"></div>
-                </div>
-
-                <!-- Login Photo Tab -->
-                <div id="tab-login-photo" class="media-tab" style="display:none;">
-                    <div class="action-bar">
-                        <h3><i class="fas fa-image"></i> Login & Register Page Photo</h3>
-                        <form id="login-photo-upload-form" enctype="multipart/form-data" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-                            <input type="file" class="form-input" id="login-photo-file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" style="max-width:250px;" required>
-                            <input type="text" class="form-input" id="login-photo-caption" placeholder="Caption (e.g. River Yala)" style="max-width:200px;">
-                            <button type="submit" class="btn btn-primary btn-sm">Upload Photo</button>
-                        </form>
-                    </div>
-                    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">This image appears on the login and signup pages. Supported: PNG, JPG, GIF, WebP. Recommended size: 520x600px or larger.</p>
-                    <div id="admin-login-photo-list"></div>
-                </div>
-            </div>
-
+        <nav class="admin-sidebar-nav">
+            <a href="#" class="admin-sidebar-link active" data-section="dashboard" data-title="Dashboard" data-desc="Overview of bookings, tours, and customer activity.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="bookings" data-title="Bookings" data-desc="Review and track every customer reservation.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                <span>Bookings</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="messages" data-title="Messages" data-desc="Respond to traveler inquiries and support requests.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span>Messages</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="tours" data-title="Tours" data-desc="Manage safari packages and experience listings.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                <span>Tours</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="users" data-title="Users" data-desc="View registered travelers and account roles.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>Users</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="auth-slides" data-title="Auth Slides" data-desc="Manage images shown on the login and sign up pages.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Auth Slides</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="locations" data-title="Thrilling Locations" data-desc="Manage the featured locations shown on the homepage.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Locations</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="offers" data-title="What We Offer" data-desc="Manage the service cards shown on the homepage.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                <span>Offers</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="testimonials" data-title="Testimonials" data-desc="Manage traveler reviews shown on the homepage.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Testimonials</span>
+            </a>
+            <a href="#" class="admin-sidebar-link" data-section="page-content" data-title="Page Content" data-desc="Edit homepage section headings, descriptions, and stats.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Page Content</span>
+            </a>
+        </nav>
+        <div class="admin-sidebar-footer">
+            <a href="/" class="admin-sidebar-link">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <span>Back to Site</span>
+            </a>
         </div>
-    </div>
-    </div>
+    </aside>
 
+    <button class="admin-sidebar-toggle" id="sidebar-toggle" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <main class="admin-main">
+        <section class="admin-hero">
+            <div class="admin-hero-inner">
+                <div class="admin-hero-copy">
+                    <span class="admin-hero-eyebrow">Kabura Adventures</span>
+                    <h1 id="hero-title">Dashboard</h1>
+                    <p id="hero-desc">Manage bookings, tours, and customer inquiries.</p>
+                </div>
+                <div class="admin-hero-actions">
+                    <a href="/" class="admin-hero-btn">View live site</a>
+                    <a href="/" class="admin-hero-btn-arrow" aria-label="View live site">
+                        <img src="/assets/images/right-arrow.png" alt="" loading="lazy">
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <header class="admin-topbar">
+            <div class="admin-topbar-left">
+                <h1 class="admin-topbar-title" id="section-title">Dashboard</h1>
+            </div>
+            <div class="admin-topbar-right">
+                <div class="admin-topbar-user">
+                    <span class="admin-topbar-avatar" id="admin-user-initials">A</span>
+                    <span id="admin-user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <section class="admin-section active" id="section-dashboard">
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--bookings">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                        </div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-bookings">—</span>
+                            <span class="admin-stat-label">Total Bookings</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--users">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-users">—</span>
+                            <span class="admin-stat-label">Registered Users</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--tours">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                        </div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-tours">—</span>
+                            <span class="admin-stat-label">Active Tours</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon--messages">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="stat-messages">—</span>
+                            <span class="admin-stat-label">Unread Messages</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-panels">
+                    <div class="admin-panel" id="panel-recent-bookings">
+                        <div class="admin-panel-header">
+                            <h2>Recent Bookings</h2>
+                            <span class="admin-panel-meta">Latest 10</span>
+                        </div>
+                        <div class="admin-panel-body" id="dashboard-bookings-list">
+                            <p class="admin-empty-state">Loading bookings...</p>
+                        </div>
+                    </div>
+                    <div class="admin-panel" id="panel-recent-messages">
+                        <div class="admin-panel-header">
+                            <h2>Recent Messages</h2>
+                            <span class="admin-panel-meta">Inbox</span>
+                        </div>
+                        <div class="admin-panel-body" id="dashboard-messages-list">
+                            <p class="admin-empty-state">Loading messages...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-bookings">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>All Bookings</h2>
+                        <span class="admin-panel-meta">Reservations</span>
+                    </div>
+                    <div class="admin-panel-body" id="bookings-list">
+                        <p class="admin-empty-state">Loading bookings...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-messages">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>All Messages</h2>
+                        <span class="admin-panel-meta">Support</span>
+                    </div>
+                    <div class="admin-panel-body" id="messages-list">
+                        <p class="admin-empty-state">Loading messages...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-tours">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Manage Tours</h2>
+                        <span class="admin-panel-meta">Catalog</span>
+                    </div>
+                    <div class="admin-panel-body" id="tours-list">
+                        <p class="admin-empty-state">Loading tours...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-users">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Manage Users</h2>
+                        <span class="admin-panel-meta">Accounts</span>
+                    </div>
+                    <div class="admin-panel-body" id="users-list">
+                        <p class="admin-empty-state">Loading users...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-auth-slides">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Login / Sign Up Carousel</h2>
+                        <span class="admin-panel-meta">Auth Slides</span>
+                    </div>
+                    <div class="admin-panel-body">
+                        <div id="auth-slides-upload" class="admin-upload-area" style="margin-bottom:1.5rem;">
+                            <form id="auth-slide-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                                <div style="flex:1;min-width:200px;">
+                                    <label class="admin-label">Image</label>
+                                    <input type="file" name="file" accept="image/*" required class="admin-input" id="auth-slide-file">
+                                </div>
+                                <div style="flex:1;min-width:160px;">
+                                    <label class="admin-label">Location</label>
+                                    <input type="text" name="location" placeholder="e.g. Mt. Kenya" required class="admin-input" id="auth-slide-location">
+                                </div>
+                                <div style="flex:2;min-width:200px;">
+                                    <label class="admin-label">Description</label>
+                                    <input type="text" name="description" placeholder="Brief description" class="admin-input" id="auth-slide-desc">
+                                </div>
+                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;">Upload Slide</button>
+                            </form>
+                        </div>
+                        <div id="auth-slides-list">
+                            <p class="admin-empty-state">Loading slides...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-locations">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Thrilling Locations</h2>
+                        <span class="admin-panel-meta">Homepage Featured Locations</span>
+                    </div>
+                    <div class="admin-panel-body">
+                        <div class="admin-upload-area" style="margin-bottom:1.5rem;">
+                            <form id="location-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                                <div style="flex:1;min-width:200px;">
+                                    <label class="admin-label">Name *</label>
+                                    <input type="text" name="name" placeholder="e.g. Maasai Mara" required class="admin-input" id="loc-name">
+                                </div>
+                                <div style="flex:1;min-width:160px;">
+                                    <label class="admin-label">Location Text</label>
+                                    <input type="text" name="location_text" placeholder="e.g. Narok County, Kenya" class="admin-input" id="loc-location-text">
+                                </div>
+                                <div style="flex:2;min-width:200px;">
+                                    <label class="admin-label">Description</label>
+                                    <input type="text" name="description" placeholder="Brief description of the location" class="admin-input" id="loc-desc">
+                                </div>
+                                <div style="flex:1;min-width:160px;">
+                                    <label class="admin-label">Image</label>
+                                    <input type="file" name="image" accept="image/*" class="admin-input" id="loc-image">
+                                </div>
+                                <div style="flex:1;min-width:120px;">
+                                    <label class="admin-label">Link URL</label>
+                                    <input type="text" name="link_url" placeholder="/destinations.html" class="admin-input" id="loc-link">
+                                </div>
+                                <div style="flex:0;min-width:80px;">
+                                    <label class="admin-label">Order</label>
+                                    <input type="number" name="sort_order" value="0" class="admin-input" id="loc-sort" style="width:80px;">
+                                </div>
+                                <input type="hidden" id="loc-edit-id" value="">
+                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;" id="loc-submit-btn">Add Location</button>
+                            </form>
+                        </div>
+                        <div id="locations-list">
+                            <p class="admin-empty-state">Loading locations...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-offers">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>What We Offer</h2>
+                        <span class="admin-panel-meta">Homepage Service Cards</span>
+                    </div>
+                    <div class="admin-panel-body">
+                        <div class="admin-upload-area" style="margin-bottom:1.5rem;">
+                            <form id="offer-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                                <div style="flex:1;min-width:200px;">
+                                    <label class="admin-label">Title *</label>
+                                    <input type="text" name="title" placeholder="e.g. Safari Adventures" required class="admin-input" id="off-title">
+                                </div>
+                                <div style="flex:2;min-width:200px;">
+                                    <label class="admin-label">Description</label>
+                                    <input type="text" name="description" placeholder="Brief description" class="admin-input" id="off-desc">
+                                </div>
+                                <div style="flex:1;min-width:160px;">
+                                    <label class="admin-label">Image</label>
+                                    <input type="file" name="image" accept="image/*" class="admin-input" id="off-image">
+                                </div>
+                                <div style="flex:1;min-width:120px;">
+                                    <label class="admin-label">Link URL</label>
+                                    <input type="text" name="link_url" placeholder="/safari.html" class="admin-input" id="off-link">
+                                </div>
+                                <div style="flex:0;min-width:80px;">
+                                    <label class="admin-label">Order</label>
+                                    <input type="number" name="sort_order" value="0" class="admin-input" id="off-sort" style="width:80px;">
+                                </div>
+                                <input type="hidden" id="off-edit-id" value="">
+                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;" id="off-submit-btn">Add Offer</button>
+                            </form>
+                        </div>
+                        <div id="offers-list">
+                            <p class="admin-empty-state">Loading offers...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-testimonials">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Testimonials</h2>
+                        <span class="admin-panel-meta">Homepage Reviews</span>
+                    </div>
+                    <div class="admin-panel-body">
+                        <div class="admin-upload-area" style="margin-bottom:1.5rem;">
+                            <form id="testimonial-form" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                                <div style="flex:1;min-width:200px;">
+                                    <label class="admin-label">Name *</label>
+                                    <input type="text" name="name" placeholder="e.g. Sarah & Liam" required class="admin-input" id="test-name">
+                                </div>
+                                <div style="flex:1;min-width:160px;">
+                                    <label class="admin-label">Location</label>
+                                    <input type="text" name="location" placeholder="e.g. New York, USA" class="admin-input" id="test-location">
+                                </div>
+                                <div style="flex:3;min-width:300px;">
+                                    <label class="admin-label">Testimonial Text *</label>
+                                    <input type="text" name="text" placeholder="What they said..." required class="admin-input" id="test-text">
+                                </div>
+                                <div style="flex:0;min-width:60px;">
+                                    <label class="admin-label">Rating</label>
+                                    <select name="rating" class="admin-input" id="test-rating" style="width:70px;">
+                                        <option value="5">5</option>
+                                        <option value="4">4</option>
+                                        <option value="3">3</option>
+                                        <option value="2">2</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                </div>
+                                <div style="flex:0;min-width:80px;">
+                                    <label class="admin-label">Order</label>
+                                    <input type="number" name="sort_order" value="0" class="admin-input" id="test-sort" style="width:80px;">
+                                </div>
+                                <input type="hidden" id="test-edit-id" value="">
+                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;" id="test-submit-btn">Add Testimonial</button>
+                            </form>
+                        </div>
+                        <div id="testimonials-list">
+                            <p class="admin-empty-state">Loading testimonials...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-page-content">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>Homepage Content</h2>
+                        <span class="admin-panel-meta">Section Text & Stats</span>
+                    </div>
+                    <div class="admin-panel-body">
+                        <div id="page-content-forms">
+                            <p class="admin-empty-state">Loading page content...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
     <script src="/assets/js/app.js"></script>
-    <script>
-        // Admin check on load — no HTML is visible until this passes
-        (async function init() {
-            const root = document.getElementById('admin-root');
-            const token = localStorage.getItem('token');
-            if (!token) {
-                root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:var(--font-body);"><p>You must be logged in as admin.</p></div>';
-                root.style.display = 'block'; return;
-            }
-            let lastErr;
-            for (let retry = 0; retry < 3; retry++) {
-                try {
-                    if (retry) await new Promise(r => setTimeout(r, 2000 * retry));
-                    const profile = await api.getProfile();
-                    if (profile.user.role !== 'admin') {
-                        root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:var(--font-body);"><p>Admin access required.</p></div>';
-                        root.style.display = 'block'; return;
-                    }
-                    root.style.display = 'block';
-                    loadDashboard();
-                    return;
-                } catch (e) { lastErr = e; }
-            }
-            root.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:var(--font-body);color:var(--dark-text);"><h2 style="font-family:var(--font-heading);">Could not verify admin session</h2><p style="color:var(--text-secondary);">' + (lastErr?.message || 'Please try logging in again.') + '</p><button onclick="window.location.href=\'/\'" style="margin-top:1rem;padding:0.75rem 2rem;background:var(--primary-dark);color:white;border:none;border-radius:8px;cursor:pointer;">Back to Home</button></div>';
-            root.style.display = 'block';
-        })();
-
-        // Sidebar navigation
-        document.querySelectorAll('.admin-sidebar .nav-item[data-section]').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.admin-sidebar .nav-item').forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
-                document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
-                document.getElementById(`section-${item.dataset.section}`).style.display = 'block';
-                loadSection(item.dataset.section);
-
-                // Close sidebar on mobile
-                document.getElementById('admin-sidebar').classList.remove('open');
-            });
-        });
-
-        function loadSection(section) {
-            switch(section) {
-                case 'dashboard': loadDashboard(); break;
-                case 'tours': loadAdminTours(); break;
-                case 'hotels': loadAdminHotels(); break;
-                case 'bookings': loadAdminBookings(); break;
-                case 'flights': loadAdminFlights(); break;
-                case 'messages': loadAdminMessages(); break;
-                case 'subscribers': loadSubscribers(); break;
-                case 'blogs': loadAdminBlogs(); break;
-                case 'payments': loadAdminPayments(); break;
-                case 'analytics': loadAnalytics(); break;
-                case 'media': loadAdminMedia(); break;
-                case 'destinations': loadAdminDestinations(); break;
-            }
-        }
-
-        // Dashboard
-        async function loadDashboard() {
-            try {
-                const [bookingsRes, flightsRes, messagesRes, toursRes] = await Promise.all([
-                    api.getAllBookings({ per_page: 5 }),
-                    api.getAllFlightRequests({ per_page: 5 }),
-                    api.getMessages({ is_read: 'false' }),
-                    api.getTours({ per_page: 1 })
-                ]);
-
-                document.getElementById('dashboard-stats').innerHTML = `
-                    <div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${bookingsRes.total}</div></div>
-                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent);">${bookingsRes.bookings.filter(b => b.status === 'pending').length}</div></div>
-                    <div class="stat-card"><h3>Flight Requests</h3><div class="stat-value">${flightsRes.total}</div></div>
-                    <div class="stat-card"><h3>Unread Messages</h3><div class="stat-value" style="color:#D32F2F;">${messagesRes.total}</div></div>
-                `;
-
-                document.getElementById('recent-bookings').innerHTML = bookingsRes.bookings.length === 0
-                    ? '<p style="color:var(--text-secondary);">No bookings yet</p>'
-                    : '<div class="table-container">' + bookingsRes.bookings.map(b => `
-                        <div style="padding:0.75rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
-                            <div><strong>${b.booking_type}</strong><br><small style="color:var(--text-secondary);">${b.travel_date}</small></div>
-                            <span class="badge ${b.status === 'pending' ? 'badge-warning' : b.status === 'confirmed' ? 'badge-success' : 'badge-secondary'}">${b.status}</span>
-                        </div>
-                    `).join('') + '</div>';
-
-                document.getElementById('recent-messages').innerHTML = messagesRes.messages.length === 0
-                    ? '<p style="color:var(--text-secondary);">No unread messages</p>'
-                    : messagesRes.messages.slice(0, 5).map(m => `
-                        <div style="padding:0.75rem;border-bottom:1px solid var(--border-color);">
-                            <strong>${m.name}</strong><br>
-                            <small style="color:var(--text-secondary);">${m.subject || 'No subject'}</small>
-                        </div>
-                    `).join('');
-            } catch (err) { console.error(err); }
-        }
-
-        // Analytics & Revenue
-        async function loadAnalytics() {
-            try {
-                const result = await api.getAnalytics();
-                const { revenue, bookings, platform, popular_tours } = result;
-
-                document.getElementById('analytics-summary').innerHTML = `
-                    <div class="stat-card"><h3>Total Revenue</h3><div class="stat-value" style="color:var(--primary);">KSh ${Number(revenue.total).toLocaleString()}</div></div>
-                    <div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${bookings.total}</div></div>
-                    <div class="stat-card"><h3>Pending Bookings</h3><div class="stat-value" style="color:var(--accent);">${bookings.pending}</div></div>
-                    <div class="stat-card"><h3>Total Users</h3><div class="stat-value">${platform.total_users}</div></div>
-                    <div class="stat-card"><h3>Tours</h3><div class="stat-value">${platform.total_tours}</div></div>
-                    <div class="stat-card"><h3>Hotels</h3><div class="stat-value">${platform.total_hotels}</div></div>
-                `;
-
-                function renderBarChart(containerId, items, labelKey, valueKey, colorFn) {
-                    const container = document.getElementById(containerId);
-                    if (!items.length) { container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
-                    const max = Math.max(...items.map(i => i[valueKey]));
-                    container.innerHTML = items.map(i => {
-                        const pct = max > 0 ? (i[valueKey] / max * 100) : 0;
-                        const color = colorFn ? colorFn(i) : 'var(--primary)';
-                        return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                            <span style="min-width:80px;font-size:0.85rem;text-transform:capitalize;">${i[labelKey]}</span>
-                            <div style="flex:1;height:28px;background:rgba(138,168,153,0.06);border-radius:6px;overflow:hidden;">
-                                <div style="height:100%;width:${pct}%;background:${color};border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;min-width:${pct > 15 ? 'auto' : '0'};">
-                                    ${pct > 15 ? (i[labelKey] === 'total' || i[labelKey] === 'amount' ? 'KSh ' + Number(i[valueKey]).toLocaleString() : i[valueKey]) : ''}
-                                </div>
-                            </div>
-                            <span style="min-width:60px;text-align:right;font-size:0.85rem;font-weight:600;">${i[labelKey] === 'total' || i[labelKey] === 'amount' ? 'KSh ' + Number(i[valueKey]).toLocaleString() : i[valueKey]}</span>
-                        </div>`;
-                    }).join('');
-                }
-
-                function renderSimpleBar(containerId, items, labelKey, valueKey, labelPrefix, valueSuffix) {
-                    const container = document.getElementById(containerId);
-                    if (!items.length) { container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
-                    const max = Math.max(...items.map(i => i[valueKey]));
-                    container.innerHTML = items.map(i => {
-                        const pct = max > 0 ? (i[valueKey] / max * 100) : 0;
-                        return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                            <span style="min-width:90px;font-size:0.85rem;">${labelPrefix || ''}${i[labelKey]}</span>
-                            <div style="flex:1;height:28px;background:rgba(138,168,153,0.06);border-radius:6px;overflow:hidden;">
-                                <div style="height:100%;width:${pct}%;background:var(--primary);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
-                                    ${pct > 12 ? i[valueKey] : ''}
-                                </div>
-                            </div>
-                            <span style="min-width:40px;text-align:right;font-size:0.85rem;font-weight:600;">${i[valueKey]}${valueSuffix || ''}</span>
-                        </div>`;
-                    }).join('');
-                }
-
-                renderBarChart('revenue-by-method-chart', revenue.by_method, 'method', 'total', (i) =>
-                    i.method === 'mpesa' ? '#535A55' : i.method === 'card' ? '#1565C0' : i.method === 'cash' ? '#D75A2B' : '#535A55');
-                renderBarChart('revenue-by-type-chart', revenue.by_type, 'type', 'total', (i) =>
-                    i.type === 'partial' ? '#D75A2B' : i.type === 'full' ? '#535A55' : i.type === 'refund' ? '#D32F2F' : '#535A55');
-                (function() {
-                    const c = document.getElementById('revenue-trend-chart');
-                    const items = revenue.monthly;
-                    if (!items.length) { c.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No data</p>'; return; }
-                    const max = Math.max(...items.map(i => i.total));
-                    c.innerHTML = items.map(i => {
-                        const pct = max > 0 ? (i.total / max * 100) : 0;
-                        return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                            <span style="min-width:80px;font-size:0.85rem;">${i.month}</span>
-                            <div style="flex:1;height:28px;background:rgba(138,168,153,0.06);border-radius:6px;overflow:hidden;">
-                                <div style="height:100%;width:${pct}%;background:var(--primary);border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:0.8rem;color:white;font-weight:600;">
-                                    ${pct > 12 ? 'KSh ' + Number(i.total).toLocaleString() : ''}
-                                </div>
-                            </div>
-                            <span style="min-width:110px;text-align:right;font-size:0.85rem;font-weight:600;">KSh ${Number(i.total).toLocaleString()}</span>
-                        </div>`;
-                    }).join('');
-                })();
-                renderSimpleBar('bookings-trend-chart', bookings.monthly, 'month', 'count', '', '');
-                renderSimpleBar('bookings-status-chart', bookings.by_status, 'status', 'count', '', '');
-                renderSimpleBar('bookings-type-chart', bookings.by_type, 'type', 'count', '', '');
-
-                document.getElementById('popular-tours').innerHTML = popular_tours.length === 0
-                    ? '<p style="color:var(--text-secondary);">No tour booking data yet</p>'
-                    : '<div class="table-container"><table><thead><tr><th>Tour</th><th>Bookings</th><th>Total People</th><th>Est. Revenue</th></tr></thead><tbody>' +
-                    popular_tours.map(t => `
-                        <tr>
-                            <td><strong>${t.title}</strong></td>
-                            <td>${t.bookings_count}</td>
-                            <td>${t.total_people}</td>
-                            <td><strong>KSh ${Number(t.estimated_revenue).toLocaleString()}</strong></td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) {
-                document.querySelector('#section-analytics .stats-grid').innerHTML = '<div class="empty-state"><h3>Failed to load analytics</h3></div>';
-            }
-        }
-
-        // Tours
-        async function loadAdminTours() {
-            const container = document.getElementById('admin-tours-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const result = await api.getTours({ per_page: 100 });
-                const tours = result.tours;
-                container.innerHTML = tours.length === 0
-                    ? '<div class="empty-state"><h3>No tours created yet</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Title</th><th>Price</th><th>Duration</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
-                    tours.map(t => `
-                        <tr>
-                            <td><strong>${t.title}</strong></td>
-                            <td>KSh ${Number(t.price).toLocaleString()}</td>
-                            <td>${t.duration_days} days</td>
-                            <td>${t.location || '-'}</td>
-                            <td><span class="badge ${t.available ? 'badge-success' : 'badge-danger'}">${t.available ? 'Active' : 'Inactive'}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')">Edit</button>
-                                <button class="btn btn-sm btn-secondary" onclick="editTour('${t.id}')" style="background:var(--accent);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteTour('${t.id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load tours</h3></div>'; }
-        }
-
-        function openTourForm(data = null) {
-            document.getElementById('tour-form-id').value = data ? data.id : '';
-            document.getElementById('tf-title').value = data ? data.title : '';
-            document.getElementById('tf-description').value = data ? data.description : '';
-            document.getElementById('tf-price').value = data ? data.price : '';
-            document.getElementById('tf-duration').value = data ? data.duration_days : '';
-            document.getElementById('tf-location').value = data ? data.location : '';
-            document.getElementById('tf-wildlife').value = data ? data.wildlife || '' : '';
-            document.getElementById('tf-latitude').value = data ? (data.latitude || '') : '';
-            document.getElementById('tf-longitude').value = data ? (data.longitude || '') : '';
-            document.getElementById('tf-max-people').value = data ? data.max_people : 20;
-            document.getElementById('tf-featured').checked = data ? data.featured : false;
-            document.getElementById('tour-form-title').textContent = data ? 'Edit Tour' : 'Add Tour';
-            renderImageGallery('tf-image-gallery', data ? data.images || [] : [], 'tour');
-            openModal('tour-form-modal');
-        }
-
-        function editTour(id) {
-            api.getTour(id).then(r => openTourForm(r.tour)).catch(e => showToast(e.message, 'error'));
-        }
-
-        async function deleteTour(id) {
-            if (!confirm('Are you sure you want to delete this tour?')) return;
-            try { await api.deleteTour(id); showToast('Tour deleted', 'success'); loadAdminTours(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('tour-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.textContent = 'Saving...';
-
-            const id = document.getElementById('tour-form-id').value;
-            const data = new FormData();
-            data.append('title', document.getElementById('tf-title').value);
-            data.append('description', document.getElementById('tf-description').value);
-            data.append('price', document.getElementById('tf-price').value);
-            data.append('duration_days', document.getElementById('tf-duration').value);
-            data.append('location', document.getElementById('tf-location').value);
-            data.append('wildlife', document.getElementById('tf-wildlife').value);
-            var lat = document.getElementById('tf-latitude').value;
-            var lng = document.getElementById('tf-longitude').value;
-            if (lat) data.append('latitude', lat);
-            if (lng) data.append('longitude', lng);
-            data.append('max_people', document.getElementById('tf-max-people').value);
-            data.append('featured', document.getElementById('tf-featured').checked ? 'true' : 'false');
-
-            const files = document.getElementById('tf-images').files;
-            for (let i = 0; i < files.length; i++) data.append('images', files[i]);
-
-            try {
-                if (id) { await api.updateTour(id, data); showToast('Tour updated!', 'success'); }
-                else { await api.createTour(data); showToast('Tour created!', 'success'); }
-                closeModal('tour-form-modal');
-                e.target.reset();
-                loadAdminTours();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Save Tour'; }
-        });
-
-        // Hotels
-        async function loadAdminHotels() {
-            const container = document.getElementById('admin-hotels-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const result = await api.getHotels({ per_page: 100 });
-                const hotels = result.hotels;
-                container.innerHTML = hotels.length === 0
-                    ? '<div class="empty-state"><h3>No hotels added yet</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Name</th><th>Location</th><th>Price/Night</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
-                    hotels.map(h => `
-                        <tr>
-                            <td><strong>${h.name}</strong></td>
-                            <td>${h.location || '-'}</td>
-                            <td>KSh ${Number(h.price_per_night).toLocaleString()}</td>
-                            <td>${'<i class="fas fa-star" style="color:var(--accent);"></i>'.repeat(Math.round(h.rating))}</td>
-                            <td><span class="badge ${h.available ? 'badge-success' : 'badge-danger'}">${h.available ? 'Active' : 'Inactive'}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')">Edit</button>
-                                <button class="btn btn-sm btn-secondary" onclick="editHotel('${h.id}')" style="background:var(--accent);color:white;border-color:transparent;"><i class="fas fa-camera"></i> Img</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteHotel('${h.id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load hotels</h3></div>'; }
-        }
-
-        function openHotelForm(data = null) {
-            document.getElementById('hf-id').value = data ? data.id : '';
-            document.getElementById('hf-name').value = data ? data.name : '';
-            document.getElementById('hf-description').value = data ? data.description : '';
-            document.getElementById('hf-price').value = data ? data.price_per_night : '';
-            document.getElementById('hf-rating').value = data ? data.rating : 4;
-            document.getElementById('hf-location').value = data ? data.location : '';
-            document.getElementById('hf-amenities').value = data ? (Array.isArray(data.amenities) ? data.amenities.join(', ') : data.amenities) : '';
-            document.getElementById('hotel-form-title').textContent = data ? 'Edit Hotel' : 'Add Hotel';
-            renderImageGallery('hf-image-gallery', data ? data.images || [] : [], 'hotel');
-            openModal('hotel-form-modal');
-        }
-
-        function editHotel(id) {
-            api.getHotel(id).then(r => openHotelForm(r.hotel)).catch(e => showToast(e.message, 'error'));
-        }
-
-        async function deleteHotel(id) {
-            if (!confirm('Delete this hotel?')) return;
-            try { await api.deleteHotel(id); showToast('Hotel deleted', 'success'); loadAdminHotels(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('hotel-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.textContent = 'Saving...';
-
-            const id = document.getElementById('hf-id').value;
-            const data = new FormData();
-            data.append('name', document.getElementById('hf-name').value);
-            data.append('description', document.getElementById('hf-description').value);
-            data.append('price_per_night', document.getElementById('hf-price').value);
-            data.append('rating', document.getElementById('hf-rating').value);
-            data.append('location', document.getElementById('hf-location').value);
-            data.append('amenities', document.getElementById('hf-amenities').value);
-
-            const files = document.getElementById('hf-images').files;
-            for (let i = 0; i < files.length; i++) data.append('images', files[i]);
-
-            try {
-                if (id) { await api.updateHotel(id, data); showToast('Hotel updated!', 'success'); }
-                else { await api.createHotel(data); showToast('Hotel created!', 'success'); }
-                closeModal('hotel-form-modal');
-                e.target.reset();
-                loadAdminHotels();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Save Hotel'; }
-        });
-
-        // Bookings
-        async function loadAdminBookings() {
-            const container = document.getElementById('admin-bookings-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            const filter = document.getElementById('bookings-filter').value;
-            try {
-                const params = { per_page: 100 };
-                if (filter) params.status = filter;
-                const result = await api.getAllBookings(params);
-                const bookings = result.bookings;
-                container.innerHTML = bookings.length === 0
-                    ? '<div class="empty-state"><h3>No bookings found</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Customer</th><th>Type</th><th>Details</th><th>Date</th><th>Status</th><th>Payment</th><th>Actions</th></tr></thead><tbody>' +
-                    bookings.map(b => `
-                        <tr>
-                            <td>${b.user ? b.user.name : 'Unknown'}</td>
-                            <td><span class="badge badge-info">${b.booking_type}</span></td>
-                            <td>${b.tour ? b.tour.title : b.hotel ? b.hotel.name : '-'}</td>
-                            <td>${b.travel_date}</td>
-                            <td>
-                                <select class="form-select" style="width:auto;padding:0.3rem 0.5rem;font-size:0.85rem;" onchange="updateBookingStatus('${b.id}', this.value)">
-                                    <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirm</option>
-                                    <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
-                                    <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Complete</option>
-                                    <option value="no_show" ${b.status === 'no_show' ? 'selected' : ''}>No Show</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-select" style="width:auto;padding:0.3rem 0.5rem;font-size:0.85rem;" onchange="updatePaymentStatus('${b.id}', this.value)">
-                                    <option value="unpaid" ${b.payment_status === 'unpaid' ? 'selected' : ''}>Unpaid</option>
-                                    <option value="partially_paid" ${b.payment_status === 'partially_paid' ? 'selected' : ''}>Partial</option>
-                                    <option value="fully_paid" ${b.payment_status === 'fully_paid' ? 'selected' : ''}>Full</option>
-                                    <option value="refunded" ${b.payment_status === 'refunded' ? 'selected' : ''}>Refunded</option>
-                                </select>
-                            </td>
-                            <td><button class="btn btn-sm btn-danger" onclick="deleteBooking('${b.id}')">Delete</button></td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load bookings</h3></div>'; }
-        }
-
-        async function updateBookingStatus(id, status) {
-            try { await api.updateBookingStatus(id, { status }); showToast('Booking status updated', 'success'); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        async function updatePaymentStatus(id, payment_status) {
-            try { await api.updateBookingStatus(id, { payment_status }); showToast('Payment status updated', 'success'); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        async function deleteBooking(id) {
-            if (!confirm('Delete this booking?')) return;
-            try { await api.updateBookingStatus(id, { status: 'cancelled' }); showToast('Booking cancelled', 'success'); loadAdminBookings(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('bookings-filter')?.addEventListener('change', loadAdminBookings);
-
-        // Flights
-        async function loadAdminFlights() {
-            const container = document.getElementById('admin-flights-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            const filter = document.getElementById('flights-filter').value;
-            try {
-                const params = { per_page: 100 };
-                if (filter) params.status = filter;
-                const result = await api.getAllFlightRequests(params);
-                const requests = result.flight_requests;
-                container.innerHTML = requests.length === 0
-                    ? '<div class="empty-state"><h3>No flight requests</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Customer</th><th>Route</th><th>Date</th><th>Passengers</th><th>Status</th><th>Quote</th><th>Actions</th></tr></thead><tbody>' +
-                    requests.map(r => `
-                        <tr>
-                            <td>${r.user ? r.user.name : 'Unknown'}</td>
-                            <td>${r.from_location} &rarr; ${r.to_location}</td>
-                            <td>${r.departure_date}</td>
-                            <td>${r.passengers}</td>
-                            <td><span class="badge ${r.status === 'pending' ? 'badge-warning' : r.status === 'quoted' ? 'badge-info' : r.status === 'approved' ? 'badge-success' : r.status === 'rejected' ? 'badge-danger' : 'badge-secondary'}">${r.status}</span></td>
-                            <td>${r.price_quote ? 'KSh ' + Number(r.price_quote).toLocaleString() : '-'}</td>
-                            <td><button class="btn btn-sm btn-primary" onclick="openFlightResponse('${r.id}')">Respond</button></td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load flights</h3></div>'; }
-        }
-
-        function openFlightResponse(id) {
-            document.getElementById('fr-id').value = id;
-            document.getElementById('fr-status').value = 'quoted';
-            document.getElementById('fr-price').value = '';
-            document.getElementById('fr-notes').value = '';
-            openModal('flight-response-modal');
-        }
-
-        document.getElementById('flight-response-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.textContent = 'Updating...';
-            try {
-                await api.updateFlightRequest(document.getElementById('fr-id').value, {
-                    status: document.getElementById('fr-status').value,
-                    price_quote: document.getElementById('fr-price').value || null,
-                    admin_notes: document.getElementById('fr-notes').value
-                });
-                showToast('Flight request updated!', 'success');
-                closeModal('flight-response-modal');
-                loadAdminFlights();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Update Request'; }
-        });
-
-        document.getElementById('flights-filter')?.addEventListener('change', loadAdminFlights);
-
-        // Messages
-        async function loadAdminMessages() {
-            const container = document.getElementById('admin-messages-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            const filter = document.getElementById('messages-filter').value;
-            try {
-                const params = { per_page: 100 };
-                if (filter !== '') params.is_read = filter;
-                const result = await api.getMessages(params);
-                const messages = result.messages;
-                container.innerHTML = messages.length === 0
-                    ? '<div class="empty-state"><h3>No messages</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
-                    messages.map(m => `
-                        <tr style="${!m.is_read ? 'font-weight:600;' : ''}">
-                            <td>${m.name}</td>
-                            <td>${m.email}</td>
-                            <td>${m.subject || '-'}</td>
-                            <td>${new Date(m.created_at).toLocaleDateString()}</td>
-                            <td><span class="badge ${m.is_read ? 'badge-secondary' : 'badge-warning'}">${m.is_read ? 'Read' : 'New'}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-secondary" onclick="openMessageReply('${m.id}')">View/Reply</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteAdminMessage('${m.id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load messages</h3></div>'; }
-        }
-
-        async function openMessageReply(id) {
-            try {
-                const result = await api.getMessages({ per_page: 1 });
-                const allResult = await api.getMessages({ per_page: 100 });
-                const msg = allResult.messages.find(m => m.id === id);
-                if (!msg) return;
-
-                document.getElementById('reply-message-id').value = id;
-                document.getElementById('message-detail').innerHTML = `
-                    <p><strong>From:</strong> ${msg.name} (${msg.email})</p>
-                    <p><strong>Subject:</strong> ${msg.subject || 'No subject'}</p>
-                    <p><strong>Message:</strong></p>
-                    <p style="background:white;padding:1rem;border-radius:8px;margin-top:0.5rem;">${msg.message}</p>
-                    ${msg.admin_reply ? `<p style="margin-top:1rem;"><strong>Your Reply:</strong></p><p style="background:#E8F5E9;padding:1rem;border-radius:8px;margin-top:0.5rem;">${msg.admin_reply}</p>` : ''}
-                `;
-                document.getElementById('reply-text').value = '';
-                openModal('message-reply-modal');
-
-                // Mark as read
-                await api.markMessageRead(id);
-            } catch (err) { showToast(err.message, 'error'); }
-        }
-
-        document.getElementById('message-reply-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.textContent = 'Sending...';
-            try {
-                await api.replyToMessage(document.getElementById('reply-message-id').value, {
-                    admin_reply: document.getElementById('reply-text').value
-                });
-                showToast('Reply sent!', 'success');
-                closeModal('message-reply-modal');
-                loadAdminMessages();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Send Reply'; }
-        });
-
-        async function deleteAdminMessage(id) {
-            if (!confirm('Delete this message?')) return;
-            try { await api.deleteMessage(id); showToast('Message deleted', 'success'); loadAdminMessages(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('messages-filter')?.addEventListener('change', loadAdminMessages);
-
-        async function loadSubscribers() {
-            const container = document.getElementById('admin-subscribers-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const result = await api.getSubscribers({ per_page: 100 });
-                const subscribers = result.subscribers || [];
-                container.innerHTML = subscribers.length === 0
-                    ? '<div class="empty-state"><h3>No subscribers yet</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Email</th><th>Subscribed On</th></tr></thead><tbody>' +
-                        subscribers.map(s => `
-                        <tr>
-                            <td>${s.email}</td>
-                            <td>${new Date(s.created_at).toLocaleDateString()}</td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) {
-                container.innerHTML = '<div class="empty-state"><h3>Failed to load subscribers</h3></div>';
-                showToast(err.message || 'Unable to load subscribers', 'error');
-            }
-        }
-
-        // Payments
-        async function loadAdminPayments() {
-            const container = document.getElementById('admin-payments-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const result = await api.getPayments();
-                const payments = result.payments;
-                container.innerHTML = payments.length === 0
-                    ? '<div class="empty-state"><h3>No payments recorded</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Type</th><th>Status</th><th>Ref</th><th>Date</th></tr></thead><tbody>' +
-                    payments.map(p => `
-                        <tr>
-                            <td>${p.user ? p.user.name : 'Unknown'}</td>
-                            <td><strong>KSh ${Number(p.amount).toLocaleString()}</strong></td>
-                            <td><span class="badge badge-info">${p.payment_method}</span></td>
-                            <td>${p.payment_type}</td>
-                            <td><span class="badge ${p.status === 'completed' ? 'badge-success' : p.status === 'pending' ? 'badge-warning' : 'badge-danger'}">${p.status}</span></td>
-                            <td>${p.transaction_ref || '-'}</td>
-                            <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load payments</h3></div>'; }
-        }
-
-        // === Media Tab Switching ===
-        (function() {
-            document.querySelectorAll('#section-media .tab[data-tab]').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.dataset.tab;
-                    document.querySelectorAll('#section-media .tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.media-tab').forEach(t => t.style.display = 'none');
-                    this.classList.add('active');
-                    document.getElementById(`tab-${tabName}`).style.display = 'block';
-                    if (tabName === 'hero-videos') loadAdminMedia();
-                    else if (tabName === 'login-photo') loadAdminLoginPhoto();
-                });
-            });
-        })();
-
-        // === Destinations Management ===
-        async function loadAdminDestinations() {
-            const container = document.getElementById('admin-destinations-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const result = await api.getDestinations();
-                const dests = result.destinations;
-                container.innerHTML = dests.length === 0
-                    ? '<div class="empty-state"><h3>No destinations created yet</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Image</th><th>Name</th><th>Sort Order</th><th>Actions</th></tr></thead><tbody>' +
-                    dests.map(d => `
-                        <tr>
-                            <td><img src="${d.image_url}" alt="${d.name}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;"></td>
-                            <td><strong>${d.name}</strong></td>
-                            <td>${d.sort_order}</td>
-                            <td>
-                                <button class="btn btn-sm btn-secondary" onclick="editDest('${d.id}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteDest('${d.id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load destinations</h3></div>'; }
-        }
-
-        function openDestForm(data = null) {
-            document.getElementById('dest-form-id').value = data ? data.id : '';
-            document.getElementById('df-name').value = data ? data.name : '';
-            document.getElementById('df-image-url').value = data ? data.image_url : '';
-            document.getElementById('df-sort').value = data ? data.sort_order : 0;
-            document.getElementById('df-image').value = '';
-            document.getElementById('dest-form-title').textContent = data ? 'Edit Destination' : 'Add Destination';
-            openModal('dest-form-modal');
-        }
-
-        function editDest(id) {
-            api.getDestinations().then(r => {
-                const d = r.destinations.find(x => x.id === id);
-                if (d) openDestForm(d);
-                else showToast('Destination not found', 'error');
-            }).catch(e => showToast(e.message, 'error'));
-        }
-
-        async function deleteDest(id) {
-            if (!confirm('Are you sure you want to delete this destination?')) return;
-            try { await api.deleteDestination(id); showToast('Destination deleted', 'success'); loadAdminDestinations(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('dest-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('dest-form-id').value;
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            try {
-                const data = new FormData();
-                data.append('name', document.getElementById('df-name').value.trim());
-                data.append('sort_order', parseInt(document.getElementById('df-sort').value) || 0);
-                const imageUrl = document.getElementById('df-image-url').value.trim();
-                if (imageUrl) data.append('image_url', imageUrl);
-                const fileInput = document.getElementById('df-image');
-                if (fileInput.files.length) data.append('image', fileInput.files[0]);
-                if (id) await api.updateDestination(id, data);
-                else await api.createDestination(data);
-                showToast(id ? 'Destination updated' : 'Destination created', 'success');
-                closeModal('dest-form-modal');
-                loadAdminDestinations();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; }
-        });
-
-        // === Media Management ===
-        async function loadAdminMedia() {
-            const container = document.getElementById('admin-media-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const result = await api.getHeroMedia();
-                const media = result.media;
-                container.innerHTML = media.length === 0
-                    ? '<div class="empty-state"><h3>No media uploaded</h3><p style="color:var(--text-secondary);">Upload videos or images above. They will appear in the homepage hero.</p></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Preview</th><th>Filename</th><th>Order</th><th>Active</th><th>Actions</th></tr></thead><tbody>' +
-                    media.map((m, i) => {
-                        const isVideo = /\.(mp4|webm|mov|ogg)/i.test(m.file_url);
-                        const preview = isVideo
-                            ? `<video src="${m.file_url}" style="width:100px;height:60px;object-fit:cover;border-radius:4px;" muted></video>`
-                            : `<img src="${m.file_url}" style="width:100px;height:60px;object-fit:cover;border-radius:4px;" alt="${m.filename}">`;
-                        return `<tr>
-                            <td>${preview}</td>
-                            <td><strong>${m.filename}</strong></td>
-                            <td>
-                                <button class="btn btn-sm btn-secondary" onclick="moveMedia('${m.id}', ${i - 1})" ${i === 0 ? 'disabled' : ''}>&uarr;</button>
-                                ${i + 1}
-                                <button class="btn btn-sm btn-secondary" onclick="moveMedia('${m.id}', ${i + 1})" ${i === media.length - 1 ? 'disabled' : ''}>&darr;</button>
-                            </td>
-                            <td><span class="badge ${m.is_active ? 'badge-success' : 'badge-danger'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-danger" onclick="deleteMedia('${m.id}')">Delete</button>
-                            </td>
-                        </tr>`;
-                    }).join('') + '</tbody></table></div>';
-            } catch (err) {
-                container.innerHTML = '<div class="empty-state"><h3>Failed to load media</h3></div>';
-            }
-        }
-
-        async function moveMedia(id, newOrder) {
-            try {
-                const result = await api.getHeroMedia();
-                const order = result.media.map(m => m.id);
-                const idx = order.indexOf(id);
-                if (idx < 0) return;
-                order.splice(idx, 1);
-                order.splice(Math.max(0, Math.min(newOrder, order.length)), 0, id);
-                await api.reorderHeroMedia({ order });
-                loadAdminMedia();
-            } catch (err) { showToast(err.message, 'error'); }
-        }
-
-        async function deleteMedia(id) {
-            if (!confirm('Delete this video?')) return;
-            try { await api.deleteHeroMedia(id); showToast('Video deleted', 'success'); loadAdminMedia(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('video-upload-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.textContent = 'Uploading...';
-            const formData = new FormData();
-            formData.append('file', document.getElementById('video-file').files[0]);
-            try {
-                await api.uploadHeroMedia(formData);
-                showToast('Media uploaded!', 'success');
-                e.target.reset();
-                loadAdminMedia();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Upload'; }
-        });
-
-        // === Login Photo Management ===
-        async function loadAdminLoginPhoto() {
-            const container = document.getElementById('admin-login-photo-list');
-            container.innerHTML = '<div class="spinner"></div>';
-            try {
-                const url = `${API_BASE}/media/hero-image`;
-                const result = await fetch(url, { 
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-                }).then(r => r.json());
-                const img = result.image;
-                container.innerHTML = img
-                    ? `<div style="display:flex;gap:2rem;align-items:flex-start;">
-                        <div style="flex-shrink:0;">
-                            <img src="${img.file_url}" style="width:280px;height:350px;object-fit:cover;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-                            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.5rem;text-align:center;">${img.filename}</p>
-                        </div>
-                        <div style="flex:1;">
-                            <h4 style="margin-bottom:0.5rem;">Current Login Photo</h4>
-                            <p style="color:var(--text-secondary);margin-bottom:1rem;">Appears on the login and signup pages.</p>
-                            ${img.caption ? `<p style="margin-bottom:1rem;"><strong>Caption:</strong> ${img.caption}</p>` : ''}
-                            <div style="display:flex;gap:0.5rem;">
-                                <button class="btn btn-danger btn-sm" onclick="deleteLoginPhoto('${img.id}')">Delete & Replace</button>
-                            </div>
-                            <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border-color);">
-                            <p style="color:var(--text-secondary);font-size:0.9rem;"><strong>Upload Time:</strong> ${new Date(img.created_at).toLocaleString()}</p>
-                        </div>
-                    </div>`
-                    : '<div class="empty-state"><h3>No login photo yet</h3><p style="color:var(--text-secondary);">Upload an image above to use it on the login and signup pages.</p></div>';
-            } catch (err) { 
-                container.innerHTML = '<div class="empty-state"><h3>Failed to load photo</h3></div>';
-                console.error(err);
-            }
-        }
-
-        async function deleteLoginPhoto(id) {
-            if (!confirm('Delete this photo? The login pages will revert to the default image.')) return;
-            try {
-                const url = `${API_BASE}/media/hero-image/${id}`;
-                const res = await fetch(url, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-                });
-                
-                if (!res.ok) {
-                    showToast('Failed to delete photo', 'error');
-                    return;
-                }
-                
-                showToast('Photo deleted', 'success');
-                loadAdminLoginPhoto();
-            } catch (err) { showToast('Failed to delete photo', 'error'); }
-        }
-
-        document.getElementById('login-photo-upload-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.textContent = 'Uploading...';
-
-            const fd = new FormData();
-            const fileInput = document.getElementById('login-photo-file');
-            if (!fileInput.files[0]) {
-                showToast('Please select a file', 'error');
-                btn.disabled = false;
-                btn.textContent = 'Upload Photo';
-                return;
-            }
-            fd.append('file', fileInput.files[0]);
-            const captionInput = document.getElementById('login-photo-caption');
-            if (captionInput && captionInput.value.trim()) {
-                fd.append('caption', captionInput.value.trim());
-            }
-
-            try {
-                const url = `${API_BASE}/media/hero-image`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-                    body: fd
-                });
-                
-                console.log('Upload response status:', res.status);
-                
-                if (!res.ok) {
-                    console.error('Upload failed with status:', res.status);
-                    try {
-                        const errorData = await res.json();
-                        console.error('Error details:', errorData);
-                    } catch (e) {
-                        const text = await res.text();
-                        console.error('Response body:', text.substring(0, 200));
-                    }
-                    showToast('Upload failed', 'error');
-                    btn.disabled = false;
-                    btn.textContent = 'Upload Photo';
-                    return;
-                }
-
-                const data = await res.json();
-                showToast('Photo uploaded successfully!', 'success');
-                e.target.reset();
-                loadAdminLoginPhoto();
-            } catch (err) { 
-                console.error('Upload error:', err);
-                showToast('Upload failed', 'error');
-            }
-            finally { btn.disabled = false; btn.textContent = 'Upload Photo'; }
-        });
-
-        // === Blog Management ===
-        async function loadAdminBlogs() {
-            const container = document.getElementById('admin-blogs-list');
-            try {
-                const result = await api.getAllBlogsAdmin({ per_page: 50 });
-                const blogs = result.blogs;
-                container.innerHTML = blogs.length === 0
-                    ? '<div class="empty-state"><h3>No blog posts yet</h3></div>'
-                    : '<div class="table-container"><table><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>' +
-                      blogs.map(b => `
-                        <tr>
-                            <td><strong>${b.title}</strong></td>
-                            <td><span class="badge badge-info">${b.category || 'general'}</span></td>
-                            <td><span class="badge ${b.published ? 'badge-success' : 'badge-secondary'}">${b.published ? 'Published' : 'Draft'}</span></td>
-                            <td>${b.published_at ? new Date(b.published_at).toLocaleDateString() : '-'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary" onclick="editBlog('${b.id}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteBlog('${b.id}')">Delete</button>
-                                <a href="/blog-detail.html?slug=${b.slug}" target="_blank" class="btn btn-sm btn-secondary">View</a>
-                            </td>
-                        </tr>
-                      `).join('') + '</tbody></table></div>';
-            } catch (err) { container.innerHTML = '<div class="empty-state"><h3>Failed to load blogs</h3></div>'; }
-        }
-
-        // === Blog Editor (WYSIWYG) ===
-        function execCmd(cmd, val) {
-            document.execCommand(cmd, false, val || null);
-            document.getElementById('blog-content').focus();
-        }
-        function execLink() {
-            const url = prompt('Enter URL:', 'https://');
-            if (url) execCmd('createLink', url);
-        }
-
-        function showBlogForm() {
-            document.getElementById('blog-modal-title').textContent = 'New Blog Post';
-            document.getElementById('blog-form').reset();
-            document.getElementById('blog-id').value = '';
-            document.getElementById('blog-published').checked = true;
-            document.getElementById('blog-content').innerHTML = '';
-            openModal('blog-modal');
-        }
-
-        async function editBlog(id) {
-            try {
-                const result = await api.getAllBlogsAdmin({ per_page: 50 });
-                const blogs = result.blogs;
-                const blog = blogs.find(b => b.id === id);
-                if (!blog) { showToast('Blog not found', 'error'); return; }
-                document.getElementById('blog-modal-title').textContent = 'Edit Blog Post';
-                document.getElementById('blog-id').value = blog.id;
-                document.getElementById('blog-title').value = blog.title;
-                document.getElementById('blog-category').value = blog.category || '';
-                document.getElementById('blog-excerpt').value = blog.excerpt || '';
-                document.getElementById('blog-content').innerHTML = blog.content || '';
-                document.getElementById('blog-image').value = blog.image_url || '';
-                document.getElementById('blog-tags').value = (blog.tags || []).join(', ');
-                document.getElementById('blog-author').value = blog.author || '';
-                document.getElementById('blog-published').checked = blog.published;
-                openModal('blog-modal');
-            } catch (err) { showToast(err.message, 'error'); }
-        }
-
-        async function deleteBlog(id) {
-            if (!confirm('Delete this blog post?')) return;
-            try { await api.deleteBlog(id); showToast('Blog deleted', 'success'); loadAdminBlogs(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        document.getElementById('blog-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.textContent = 'Saving...';
-            const id = document.getElementById('blog-id').value;
-            const data = {
-                title: document.getElementById('blog-title').value,
-                category: document.getElementById('blog-category').value,
-                excerpt: document.getElementById('blog-excerpt').value,
-                content: document.getElementById('blog-content').innerHTML,
-                image_url: document.getElementById('blog-image').value,
-                tags: document.getElementById('blog-tags').value,
-                author: document.getElementById('blog-author').value,
-                published: document.getElementById('blog-published').checked
-            };
-            try {
-                if (id) { await api.updateBlog(id, data); showToast('Blog updated!', 'success'); }
-                else { await api.createBlog(data); showToast('Blog created!', 'success'); }
-                closeModal('blog-modal');
-                loadAdminBlogs();
-            } catch (err) { showToast(err.message, 'error'); }
-            finally { btn.disabled = false; btn.textContent = 'Save Post'; }
-        });
-
-        // === Image Gallery Helpers ===
-        function renderImageGallery(containerId, images, type) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (!images || images.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-            container.innerHTML = images.map(img => {
-                const imageId = img.id;
-                const isPrimary = img.is_primary;
-                const deleteFn = type === 'tour' ? 'deleteTourImage' : 'deleteHotelImage';
-                const primaryFn = type === 'tour' ? 'setTourPrimaryImage' : 'setHotelPrimaryImage';
-                return `
-                    <div style="position:relative;width:100px;height:80px;border-radius:6px;overflow:hidden;border:2px solid ${isPrimary ? 'var(--primary)' : 'var(--border-color)'};flex-shrink:0;">
-                        <img src="${img.image_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
-                        ${isPrimary ? '<span style="position:absolute;top:2px;left:2px;background:var(--primary);color:white;font-size:0.6rem;padding:1px 5px;border-radius:3px;">PRIMARY</span>' : ''}
-                        <div style="position:absolute;bottom:0;left:0;right:0;display:flex;">
-                            ${!isPrimary ? `<button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:var(--primary);color:white;border:none;cursor:pointer;border-radius:0;" onclick="${primaryFn}('${imageId}')" title="Set as primary"><i class="fas fa-star"></i></button>` : ''}
-                            <button class="btn btn-sm" style="flex:1;padding:2px;font-size:0.6rem;background:#D32F2F;color:white;border:none;cursor:pointer;border-radius:0;" onclick="${deleteFn}('${imageId}', this)" title="Delete image"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function deleteTourImage(id, btn) {
-            if (!confirm('Delete this image?')) return;
-            try { await api.deleteTourImage(id); showToast('Image deleted', 'success'); btn.closest('div').remove(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        async function deleteHotelImage(id, btn) {
-            if (!confirm('Delete this image?')) return;
-            try { await api.deleteHotelImage(id); showToast('Image deleted', 'success'); btn.closest('div').remove(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        async function setTourPrimaryImage(id) {
-            try { await api.setTourPrimaryImage(id); showToast('Primary image updated', 'success'); loadAdminTours(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        async function setHotelPrimaryImage(id) {
-            try { await api.setHotelPrimaryImage(id); showToast('Primary image updated', 'success'); loadAdminHotels(); }
-            catch (e) { showToast(e.message, 'error'); }
-        }
-
-        // Hamburger for mobile admin
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('admin-sidebar');
-            const hamburger = document.createElement('button');
-            hamburger.className = 'hamburger';
-            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-            hamburger.style.cssText = 'position:fixed;top:1rem;left:1rem;z-index:200;background:var(--dark-text);color:white;padding:0.5rem 0.75rem;border-radius:8px;border:none;font-size:1.3rem;cursor:pointer;display:none;';
-            document.body.appendChild(hamburger);
-            hamburger.addEventListener('click', () => sidebar.classList.toggle('open'));
-
-            if (window.innerWidth <= 768) hamburger.style.display = 'block';
-            window.addEventListener('resize', () => {
-                hamburger.style.display = window.innerWidth <= 768 ? 'block' : 'none';
-                if (window.innerWidth > 768) sidebar.classList.remove('open');
-            });
-        });
-
-    </script>
+    <script src="/assets/js/admin.js"></script>
 </body>
 </html>
