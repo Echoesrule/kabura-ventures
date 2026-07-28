@@ -1243,7 +1243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var nextBtn = carousel.querySelector('.auth-carousel-next');
         var slides = [];
         var current = 0;
-        var img;
+        var img0, img1;
 
         function showSlide(index) {
             if (slides.length === 0) return;
@@ -1251,13 +1251,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (index >= slides.length) index = 0;
             current = index;
 
-            if (img) {
-                img.src = slides[current].file_url;
-                img.alt = slides[current].location || 'Slide';
-                track.classList.remove('fade');
-                void track.offsetWidth;
-                track.classList.add('fade');
-            }
+            var nextImg = (img0.classList.contains('active') || !img1.classList.contains('active')) ? img1 : img0;
+            nextImg.src = slides[current].file_url;
+            nextImg.alt = slides[current].location || 'Slide';
+            [img0, img1].forEach(function (i) { i.classList.remove('active'); });
+            nextImg.classList.add('active');
 
             if (locEl) locEl.textContent = slides[current].location || '';
             if (descEl) descEl.textContent = slides[current].description || '';
@@ -1276,13 +1274,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (slides.length === 0) return;
 
         track.innerHTML = '';
-        img = document.createElement('img');
-        img.className = 'banner-img auth-hero-img';
-        img.src = slides[0].file_url;
-        img.alt = slides[0].location || 'Slide';
-        track.appendChild(img);
+        img0 = document.createElement('img');
+        img0.className = 'banner-img auth-hero-img';
+        img1 = document.createElement('img');
+        img1.className = 'banner-img auth-hero-img';
 
-        showSlide(0);
+        img0.src = slides[0].file_url;
+        img0.alt = slides[0].location || 'Slide';
+        img0.classList.add('active');
+
+        track.appendChild(img0);
+        track.appendChild(img1);
+
+        if (locEl) locEl.textContent = slides[0].location || '';
+        if (descEl) descEl.textContent = slides[0].description || '';
     })();
 
 
