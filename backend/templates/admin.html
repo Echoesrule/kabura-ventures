@@ -208,6 +208,30 @@
                         <p class="admin-empty-state">Loading messages...</p>
                     </div>
                 </div>
+                <div id="reply-modal" style="display:none;margin-top:1rem;">
+                    <div class="admin-panel">
+                        <div class="admin-panel-header">
+                            <h2>Reply to Message</h2>
+                            <button class="admin-btn admin-btn--secondary" onclick="document.getElementById('reply-modal').style.display='none';">Close</button>
+                        </div>
+                        <div class="admin-panel-body">
+                            <div style="margin-bottom:0.75rem;">
+                                <label class="admin-label">To</label>
+                                <div id="reply-to-name" style="font-weight:600;color:var(--dark-text);"></div>
+                            </div>
+                            <div style="margin-bottom:0.75rem;">
+                                <label class="admin-label">Original Message</label>
+                                <div id="reply-original-msg" style="padding:0.75rem;background:rgba(0,0,0,0.03);border-radius:8px;font-size:0.85rem;color:var(--text-secondary);white-space:pre-wrap;"></div>
+                            </div>
+                            <div style="margin-bottom:1rem;">
+                                <label class="admin-label">Your Reply</label>
+                                <textarea id="reply-text" class="admin-input admin-textarea" rows="4" placeholder="Type your reply..."></textarea>
+                            </div>
+                            <input type="hidden" id="reply-msg-id" value="">
+                            <button class="admin-btn admin-btn--primary" id="reply-send-btn" onclick="sendAdminReply()">Send Reply</button>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="admin-section" id="section-tours">

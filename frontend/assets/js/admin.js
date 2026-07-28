@@ -173,42 +173,70 @@
     }
 
     // ── Messages ────────────────────────────────────────────
-    try {
-        var msgs = await api.get('/messages');
-        var allMsgs = msgs.messages || msgs || [];
-        var unread = allMsgs.filter(function (m) { return !m.is_read && !m.admin_reply; });
-        document.getElementById('stat-messages').textContent = unread.length;
-
-        var msgHeaders = ['From', 'Subject', 'Date', 'Status'];
-        var msgRows = allMsgs.slice(0, 10).map(function (m) {
-            var badge = m.admin_reply ? 'admin-badge--completed' : (m.read ? 'admin-badge--confirmed' : 'admin-badge--pending');
-            var statusText = m.admin_reply ? 'Replied' : (m.read ? 'Read' : 'New');
-            return [
-                escHtml(m.name || m.user_name || '—'),
-                escHtml(m.subject || '—'),
-                escHtml(m.date || m.created_at || '—'),
-                '<span class="admin-badge ' + badge + '">' + statusText + '</span>'
-            ];
-        });
-
-        document.getElementById('dashboard-messages-list').innerHTML = makeTable(msgHeaders, msgRows);
-
-        var allMsgRows = allMsgs.map(function (m) {
-            var badge = m.admin_reply ? 'admin-badge--completed' : (m.read ? 'admin-badge--confirmed' : 'admin-badge--pending');
-            var statusText = m.admin_reply ? 'Replied' : (m.read ? 'Read' : 'New');
-            return [
-                escHtml(m.name || m.user_name || '—'),
-                escHtml(m.email || '—'),
-                escHtml(m.subject || '—'),
-                escHtml(m.date || m.created_at || '—'),
-                '<span class="admin-badge ' + badge + '">' + statusText + '</span>'
-            ];
-        });
-        document.getElementById('messages-list').innerHTML = makeTable(['From', 'Email', 'Subject', 'Date', 'Status'], allMsgRows);
-    } catch (e) {
-        document.getElementById('dashboard-messages-list').innerHTML = '<p class="admin-empty-state">Failed to load messages.</p>';
-        document.getElementById('messages-list').innerHTML = '<p class="admin-empty-state">Failed to load messages.</p>';
+    var allMsgs = [];
+    function msgStatusBadge(m) {
+        var cls = m.admin_reply ? 'admin-badge--completed' : (m.is_read ? 'admin-badge--confirmed' : 'admin-badge--pending');
+        var text = m.admin_reply ? 'Replied' : (m.is_read ? 'Read' : 'New');
+        return '<span class="admin-badge ' + cls + '">' + text + '</span>';
     }
+    function renderMsgRows(msgs, limit) {
+        var items = limit ? msgs.slice(0, limit) : msgs;
+        return items.map(function (m) {
+            return [
+                escHtml(m.name || '—'),
+                escHtml(m.subject || '—'),
+                escHtml(m.date || m.created_at || '—'),
+                msgStatusBadge(m),
+                '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;" onclick="openReplyModal(\'' + m.id + '\',\'' + escHtml(m.name || '') + '\',\'' + escHtml((m.message || '').replace(/'/g, "\\'").substring(0, 200)) + '\')">Reply</button>'
+            ];
+        });
+    }
+    function renderMsgTable(container, msgs) {
+        container.innerHTML = makeTable(['From', 'Subject', 'Date', 'Status', 'Actions'], renderMsgRows(msgs));
+    }
+    async function loadMessages() {
+        try {
+            var msgs = await api.get('/messages');
+            allMsgs = msgs.messages || msgs || [];
+            var unread = allMsgs.filter(function (m) { return !m.is_read && !m.admin_reply; });
+            document.getElementById('stat-messages').textContent = unread.length;
+            renderMsgTable(document.getElementById('dashboard-messages-list'), allMsgs.slice(0, 10));
+            renderMsgTable(document.getElementById('messages-list'), allMsgs);
+        } catch (e) {
+            document.getElementById('dashboard-messages-list').innerHTML = '<p class="admin-empty-state">Failed to load messages.</p>';
+            document.getElementById('messages-list').innerHTML = '<p class="admin-empty-state">Failed to load messages.</p>';
+        }
+    }
+
+    window.openReplyModal = function (id, name, msgPreview) {
+        document.getElementById('reply-msg-id').value = id;
+        document.getElementById('reply-to-name').textContent = name || 'User';
+        document.getElementById('reply-original-msg').textContent = msgPreview || '';
+        document.getElementById('reply-text').value = '';
+        document.getElementById('reply-modal').style.display = '';
+        document.getElementById('reply-text').focus();
+    };
+
+    window.sendAdminReply = async function () {
+        var id = document.getElementById('reply-msg-id').value;
+        var text = document.getElementById('reply-text').value.trim();
+        if (!text) { alert('Please type a reply.'); return; }
+        var btn = document.getElementById('reply-send-btn');
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        try {
+            await api.replyToMessage(id, { admin_reply: text });
+            document.getElementById('reply-modal').style.display = 'none';
+            loadMessages();
+        } catch (e) {
+            alert('Failed to send reply: ' + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Send Reply';
+        }
+    };
+
+    loadMessages();
 
     // ── Tours ───────────────────────────────────────────────
     async function loadTours() {
