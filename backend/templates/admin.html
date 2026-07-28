@@ -206,9 +206,66 @@
             </section>
 
             <section class="admin-section" id="section-tours">
+                <div class="admin-panel" style="margin-bottom:1.5rem;">
+                    <div class="admin-panel-header">
+                        <h2>Add / Edit Tour</h2>
+                    </div>
+                    <div class="admin-panel-body">
+                        <form id="tour-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                            <input type="hidden" id="tour-edit-id" value="">
+                            <div style="flex:2;min-width:200px;">
+                                <label class="admin-label">Title *</label>
+                                <input type="text" id="tour-title" required class="admin-input" placeholder="Tour title">
+                            </div>
+                            <div style="flex:1;min-width:140px;">
+                                <label class="admin-label">Location</label>
+                                <input type="text" id="tour-location" class="admin-input" placeholder="e.g. Maasai Mara">
+                            </div>
+                            <div style="flex:1;min-width:120px;">
+                                <label class="admin-label">Price (KSh) *</label>
+                                <input type="number" id="tour-price" required class="admin-input" placeholder="0" min="0">
+                            </div>
+                            <div style="flex:1;min-width:100px;">
+                                <label class="admin-label">Duration (days) *</label>
+                                <input type="number" id="tour-duration" required class="admin-input" placeholder="1" min="1">
+                            </div>
+                            <div style="flex:1;min-width:100px;">
+                                <label class="admin-label">Max People</label>
+                                <input type="number" id="tour-max-people" class="admin-input" placeholder="20" min="1">
+                            </div>
+                            <div style="flex:1;min-width:120px;">
+                                <label class="admin-label">Activity Type</label>
+                                <input type="text" id="tour-activity" class="admin-input" placeholder="safari">
+                            </div>
+                            <div style="flex:1;min-width:120px;">
+                                <label class="admin-label">Wildlife</label>
+                                <input type="text" id="tour-wildlife" class="admin-input" placeholder="Lions, elephants...">
+                            </div>
+                            <div style="flex:3;min-width:300px;">
+                                <label class="admin-label">Description</label>
+                                <textarea id="tour-description" class="admin-input admin-textarea" rows="2" placeholder="Tour description"></textarea>
+                            </div>
+                            <div style="flex:1;min-width:120px;">
+                                <label class="admin-label">Featured</label>
+                                <select id="tour-featured" class="admin-input">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div style="flex:1;min-width:160px;">
+                                <label class="admin-label">Images</label>
+                                <input type="file" id="tour-images" class="admin-input" multiple accept="image/*">
+                            </div>
+                            <div style="display:flex;gap:0.5rem;">
+                                <button type="submit" id="tour-submit-btn" class="admin-btn admin-btn--primary">Add Tour</button>
+                                <button type="button" id="tour-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('tour-edit-id').value='';document.getElementById('tour-submit-btn').textContent='Add Tour';document.getElementById('tour-cancel-btn').style.display='none';document.getElementById('tour-form').reset();">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="admin-panel">
                     <div class="admin-panel-header">
-                        <h2>Manage Tours</h2>
+                        <h2>All Tours</h2>
                         <span class="admin-panel-meta">Catalog</span>
                     </div>
                     <div class="admin-panel-body" id="tours-list">
@@ -218,9 +275,51 @@
             </section>
 
             <section class="admin-section" id="section-hotels">
+                <div class="admin-panel" style="margin-bottom:1.5rem;">
+                    <div class="admin-panel-header">
+                        <h2>Add / Edit Hotel</h2>
+                    </div>
+                    <div class="admin-panel-body">
+                        <form id="hotel-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                            <input type="hidden" id="hotel-edit-id" value="">
+                            <div style="flex:2;min-width:200px;">
+                                <label class="admin-label">Name *</label>
+                                <input type="text" id="hotel-name" required class="admin-input" placeholder="Hotel name">
+                            </div>
+                            <div style="flex:1;min-width:140px;">
+                                <label class="admin-label">Location</label>
+                                <input type="text" id="hotel-location" class="admin-input" placeholder="e.g. Nairobi">
+                            </div>
+                            <div style="flex:1;min-width:120px;">
+                                <label class="admin-label">Price/Night (KSh) *</label>
+                                <input type="number" id="hotel-price" required class="admin-input" placeholder="0" min="0">
+                            </div>
+                            <div style="flex:1;min-width:100px;">
+                                <label class="admin-label">Rating (0-5)</label>
+                                <input type="number" id="hotel-rating" class="admin-input" placeholder="0" min="0" max="5" step="0.1">
+                            </div>
+                            <div style="flex:2;min-width:200px;">
+                                <label class="admin-label">Amenities</label>
+                                <input type="text" id="hotel-amenities" class="admin-input" placeholder="WiFi, Pool, Spa...">
+                            </div>
+                            <div style="flex:3;min-width:300px;">
+                                <label class="admin-label">Description</label>
+                                <textarea id="hotel-description" class="admin-input admin-textarea" rows="2" placeholder="Hotel description"></textarea>
+                            </div>
+                            <div style="flex:1;min-width:160px;">
+                                <label class="admin-label">Images</label>
+                                <input type="file" id="hotel-images" class="admin-input" multiple accept="image/*">
+                            </div>
+                            <div style="display:flex;gap:0.5rem;">
+                                <button type="submit" id="hotel-submit-btn" class="admin-btn admin-btn--primary">Add Hotel</button>
+                                <button type="button" id="hotel-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('hotel-edit-id').value='';document.getElementById('hotel-submit-btn').textContent='Add Hotel';document.getElementById('hotel-cancel-btn').style.display='none';document.getElementById('hotel-form').reset();">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="admin-panel">
                     <div class="admin-panel-header">
-                        <h2>Manage Hotels</h2>
+                        <h2>All Hotels</h2>
                         <span class="admin-panel-meta">Accommodations</span>
                     </div>
                     <div class="admin-panel-body" id="hotels-list">

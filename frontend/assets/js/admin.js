@@ -112,12 +112,28 @@
         allBookings = bookings.bookings || bookings || [];
         document.getElementById('stat-bookings').textContent = allBookings.length;
 
-        var headers = ['Customer', 'Tour', 'Date', 'Status'];
+        function bookingCustomer(b) {
+            if (b.guest_name) return b.guest_name;
+            if (b.user && b.user.name) return b.user.name;
+            return '—';
+        }
+        function bookingEmail(b) {
+            if (b.guest_email) return b.guest_email;
+            if (b.user && b.user.email) return b.user.email;
+            return '—';
+        }
+        function bookingItemName(b) {
+            if (b.booking_type === 'hotel' && b.hotel && b.hotel.name) return b.hotel.name;
+            if (b.tour && b.tour.title) return b.tour.title;
+            return '—';
+        }
+
+        var headers = ['Customer', 'Item', 'Date', 'Status'];
         var rows = allBookings.slice(0, 10).map(function (b) {
             return [
-                escHtml(b.name || b.user_name || '—'),
-                escHtml(b.tour_name || b.tour || '—'),
-                escHtml(b.date || b.travel_date || '—'),
+                escHtml(bookingCustomer(b)),
+                escHtml(bookingItemName(b)),
+                escHtml(b.travel_date || '—'),
                 statusBadge(b.status)
             ];
         });
@@ -126,14 +142,14 @@
 
         var allRows = allBookings.map(function (b) {
             return [
-                escHtml(b.name || b.user_name || '—'),
-                escHtml(b.email || b.user_email || '—'),
-                escHtml(b.tour_name || b.tour || '—'),
-                escHtml(b.date || b.travel_date || '—'),
+                escHtml(bookingCustomer(b)),
+                escHtml(bookingEmail(b)),
+                escHtml(bookingItemName(b)),
+                escHtml(b.travel_date || '—'),
                 statusBadge(b.status)
             ];
         });
-        document.getElementById('bookings-list').innerHTML = makeTable(['Customer', 'Email', 'Tour', 'Date', 'Status'], allRows);
+        document.getElementById('bookings-list').innerHTML = makeTable(['Customer', 'Email', 'Item', 'Date', 'Status'], allRows);
     } catch (e) {
         document.getElementById('dashboard-bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
         document.getElementById('bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
@@ -178,41 +194,207 @@
     }
 
     // ── Tours ───────────────────────────────────────────────
-    try {
-        var tours = await api.getTours({ per_page: 100 });
-        var allTours = tours.tours || tours || [];
-        document.getElementById('stat-tours').textContent = allTours.length;
+    async function loadTours() {
+        var container = document.getElementById('tours-list');
+        try {
+            var tours = await api.getTours({ per_page: 100 });
+            var allTours = tours.tours || tours || [];
+            document.getElementById('stat-tours').textContent = allTours.length;
 
-        var tourRows = allTours.map(function (t) {
-            return [
-                escHtml(t.title || '—'),
-                escHtml(t.location || '—'),
-                'KSh ' + escHtml(String(Number(t.price || 0).toLocaleString())),
-                escHtml(String(t.duration_days || '—')) + ' days'
-            ];
-        });
-        document.getElementById('tours-list').innerHTML = makeTable(['Tour', 'Location', 'Price', 'Duration'], tourRows);
-    } catch (e) {
-        document.getElementById('tours-list').innerHTML = '<p class="admin-empty-state">Failed to load tours.</p>';
+            if (allTours.length === 0) {
+                container.innerHTML = '<p class="admin-empty-state">No tours yet. Add one above.</p>';
+                return;
+            }
+            var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
+            html += '<th>Title</th><th>Location</th><th>Price</th><th>Duration</th><th>Featured</th><th>Actions</th>';
+            html += '</tr></thead><tbody>';
+            allTours.forEach(function (t) {
+                html += '<tr>';
+                html += '<td>' + escHtml(t.title || '—') + '</td>';
+                html += '<td>' + escHtml(t.location || '—') + '</td>';
+                html += '<td>KSh ' + escHtml(String(Number(t.price || 0).toLocaleString())) + '</td>';
+                html += '<td>' + escHtml(String(t.duration_days || '—')) + ' days</td>';
+                html += '<td><span class="admin-badge ' + (t.featured ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (t.featured ? 'Featured' : 'Normal') + '</span></td>';
+                html += '<td style="white-space:nowrap;">';
+                html += '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editTour(\'' + t.id + '\')">Edit</button>';
+                html += '<button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteTour(\'' + t.id + '\')">Delete</button>';
+                html += '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        } catch (e) {
+            container.innerHTML = '<p class="admin-empty-state">Failed to load tours.</p>';
+        }
     }
+
+    window.deleteTour = async function (id) {
+        if (!confirm('Delete this tour?')) return;
+        try {
+            await api.deleteTour(id);
+            loadTours();
+        } catch (e) {
+            alert('Failed to delete: ' + e.message);
+        }
+    };
+
+    window.editTour = async function (id) {
+        try {
+            var result = await api.getTours({ per_page: 100 });
+            var items = result.tours || [];
+            var t = items.find(function (x) { return x.id === id; });
+            if (!t) return alert('Tour not found');
+            document.getElementById('tour-title').value = t.title || '';
+            document.getElementById('tour-location').value = t.location || '';
+            document.getElementById('tour-price').value = t.price || '';
+            document.getElementById('tour-duration').value = t.duration_days || '';
+            document.getElementById('tour-max-people').value = t.max_people || 20;
+            document.getElementById('tour-activity').value = t.activity_type || '';
+            document.getElementById('tour-wildlife').value = t.wildlife || '';
+            document.getElementById('tour-description').value = t.description || '';
+            document.getElementById('tour-featured').value = String(t.featured || false);
+            document.getElementById('tour-edit-id').value = t.id;
+            document.getElementById('tour-submit-btn').textContent = 'Update Tour';
+            document.getElementById('tour-cancel-btn').style.display = '';
+            document.getElementById('tour-title').focus();
+        } catch (e) {
+            alert('Failed to load tour: ' + e.message);
+        }
+    };
+
+    var tourForm = document.getElementById('tour-form');
+    if (tourForm) {
+        tourForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var editId = document.getElementById('tour-edit-id').value;
+            var formData = new FormData();
+            formData.append('title', document.getElementById('tour-title').value);
+            formData.append('location', document.getElementById('tour-location').value);
+            formData.append('price', document.getElementById('tour-price').value);
+            formData.append('duration_days', document.getElementById('tour-duration').value);
+            formData.append('max_people', document.getElementById('tour-max-people').value || '20');
+            formData.append('activity_type', document.getElementById('tour-activity').value);
+            formData.append('wildlife', document.getElementById('tour-wildlife').value);
+            formData.append('description', document.getElementById('tour-description').value);
+            formData.append('featured', document.getElementById('tour-featured').value);
+            var files = document.getElementById('tour-images').files;
+            for (var i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
+            try {
+                if (editId) {
+                    await api.updateTour(editId, formData);
+                    document.getElementById('tour-edit-id').value = '';
+                    document.getElementById('tour-submit-btn').textContent = 'Add Tour';
+                    document.getElementById('tour-cancel-btn').style.display = 'none';
+                } else {
+                    await api.createTour(formData);
+                }
+                tourForm.reset();
+                loadTours();
+            } catch (err) {
+                alert('Failed: ' + err.message);
+            }
+        });
+    }
+    loadTours();
 
     // ── Hotels ──────────────────────────────────────────────
-    try {
-        var hotelsResult = await api.getHotels({ per_page: 100 });
-        var allHotels = hotelsResult.hotels || [];
+    async function loadHotels() {
+        var container = document.getElementById('hotels-list');
+        try {
+            var hotelsResult = await api.getHotels({ per_page: 100 });
+            var allHotels = hotelsResult.hotels || [];
 
-        var hotelRows = allHotels.map(function (h) {
-            return [
-                escHtml(h.name || '—'),
-                escHtml(h.location || '—'),
-                'KSh ' + escHtml(String(Number(h.price_per_night || 0).toLocaleString())),
-                '<span class="admin-badge ' + (h.available ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (h.available ? 'Active' : 'Inactive') + '</span>'
-            ];
-        });
-        document.getElementById('hotels-list').innerHTML = makeTable(['Hotel', 'Location', 'Price/Night', 'Status'], hotelRows);
-    } catch (e) {
-        document.getElementById('hotels-list').innerHTML = '<p class="admin-empty-state">Failed to load hotels.</p>';
+            if (allHotels.length === 0) {
+                container.innerHTML = '<p class="admin-empty-state">No hotels yet. Add one above.</p>';
+                return;
+            }
+            var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
+            html += '<th>Name</th><th>Location</th><th>Price/Night</th><th>Rating</th><th>Status</th><th>Actions</th>';
+            html += '</tr></thead><tbody>';
+            allHotels.forEach(function (h) {
+                html += '<tr>';
+                html += '<td>' + escHtml(h.name || '—') + '</td>';
+                html += '<td>' + escHtml(h.location || '—') + '</td>';
+                html += '<td>KSh ' + escHtml(String(Number(h.price_per_night || 0).toLocaleString())) + '</td>';
+                html += '<td>' + escHtml(String(h.rating || '0')) + ' / 5</td>';
+                html += '<td><span class="admin-badge ' + (h.available ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (h.available ? 'Active' : 'Inactive') + '</span></td>';
+                html += '<td style="white-space:nowrap;">';
+                html += '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editHotel(\'' + h.id + '\')">Edit</button>';
+                html += '<button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteHotel(\'' + h.id + '\')">Delete</button>';
+                html += '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        } catch (e) {
+            container.innerHTML = '<p class="admin-empty-state">Failed to load hotels.</p>';
+        }
     }
+
+    window.deleteHotel = async function (id) {
+        if (!confirm('Delete this hotel?')) return;
+        try {
+            await api.deleteHotel(id);
+            loadHotels();
+        } catch (e) {
+            alert('Failed to delete: ' + e.message);
+        }
+    };
+
+    window.editHotel = async function (id) {
+        try {
+            var result = await api.getHotels({ per_page: 100 });
+            var items = result.hotels || [];
+            var h = items.find(function (x) { return x.id === id; });
+            if (!h) return alert('Hotel not found');
+            document.getElementById('hotel-name').value = h.name || '';
+            document.getElementById('hotel-location').value = h.location || '';
+            document.getElementById('hotel-price').value = h.price_per_night || '';
+            document.getElementById('hotel-rating').value = h.rating || 0;
+            document.getElementById('hotel-amenities').value = h.amenities || '';
+            document.getElementById('hotel-description').value = h.description || '';
+            document.getElementById('hotel-edit-id').value = h.id;
+            document.getElementById('hotel-submit-btn').textContent = 'Update Hotel';
+            document.getElementById('hotel-cancel-btn').style.display = '';
+            document.getElementById('hotel-name').focus();
+        } catch (e) {
+            alert('Failed to load hotel: ' + e.message);
+        }
+    };
+
+    var hotelForm = document.getElementById('hotel-form');
+    if (hotelForm) {
+        hotelForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var editId = document.getElementById('hotel-edit-id').value;
+            var formData = new FormData();
+            formData.append('name', document.getElementById('hotel-name').value);
+            formData.append('location', document.getElementById('hotel-location').value);
+            formData.append('price_per_night', document.getElementById('hotel-price').value);
+            formData.append('rating', document.getElementById('hotel-rating').value || '0');
+            formData.append('amenities', document.getElementById('hotel-amenities').value);
+            formData.append('description', document.getElementById('hotel-description').value);
+            var files = document.getElementById('hotel-images').files;
+            for (var i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
+            try {
+                if (editId) {
+                    await api.updateHotel(editId, formData);
+                    document.getElementById('hotel-edit-id').value = '';
+                    document.getElementById('hotel-submit-btn').textContent = 'Add Hotel';
+                    document.getElementById('hotel-cancel-btn').style.display = 'none';
+                } else {
+                    await api.createHotel(formData);
+                }
+                hotelForm.reset();
+                loadHotels();
+            } catch (err) {
+                alert('Failed: ' + err.message);
+            }
+        });
+    }
+    loadHotels();
 
     // ── Users ───────────────────────────────────────────────
     try {
