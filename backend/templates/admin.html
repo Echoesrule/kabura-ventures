@@ -386,19 +386,23 @@
                     <div class="admin-panel-body">
                         <div id="auth-slides-upload" class="admin-upload-area" style="margin-bottom:1.5rem;">
                             <form id="auth-slide-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+                                <input type="hidden" id="auth-slide-edit-id" value="">
                                 <div style="flex:1;min-width:200px;">
                                     <label class="admin-label">Image</label>
-                                    <input type="file" name="file" accept="image/*" required class="admin-input" id="auth-slide-file">
+                                    <input type="file" name="file" accept="image/*" class="admin-input" id="auth-slide-file">
                                 </div>
                                 <div style="flex:1;min-width:160px;">
-                                    <label class="admin-label">Location</label>
+                                    <label class="admin-label">Location *</label>
                                     <input type="text" name="location" placeholder="e.g. Mt. Kenya" required class="admin-input" id="auth-slide-location">
                                 </div>
                                 <div style="flex:2;min-width:200px;">
                                     <label class="admin-label">Description</label>
                                     <input type="text" name="description" placeholder="Brief description" class="admin-input" id="auth-slide-desc">
                                 </div>
-                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;">Upload Slide</button>
+                                <div style="display:flex;gap:0.5rem;">
+                                    <button type="submit" id="auth-slide-submit-btn" class="admin-btn admin-btn--primary">Upload Slide</button>
+                                    <button type="button" id="auth-slide-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('auth-slide-edit-id').value='';document.getElementById('auth-slide-submit-btn').textContent='Upload Slide';document.getElementById('auth-slide-cancel-btn').style.display='none';document.getElementById('auth-slide-form').reset();">Cancel</button>
+                                </div>
                             </form>
                         </div>
                         <div id="auth-slides-list">

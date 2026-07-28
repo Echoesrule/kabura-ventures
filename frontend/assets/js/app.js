@@ -1239,26 +1239,32 @@ document.addEventListener('DOMContentLoaded', () => {
         var track = carousel.querySelector('.auth-carousel-track');
         var locEl = document.getElementById('auth-slide-location');
         var descEl = document.getElementById('auth-slide-desc');
+        var descToggle = document.querySelector('.auth-location .overlay-title');
         var prevBtn = carousel.querySelector('.auth-carousel-prev');
         var nextBtn = carousel.querySelector('.auth-carousel-next');
         var slides = [];
         var current = 0;
-        var img0, img1;
+        var transitioning = false;
 
         function showSlide(index) {
-            if (slides.length === 0) return;
+            if (transitioning || slides.length === 0) return;
             if (index < 0) index = slides.length - 1;
             if (index >= slides.length) index = 0;
-            current = index;
+            if (index === current && slides.length > 0) return;
+            transitioning = true;
 
-            var nextImg = (img0.classList.contains('active') || !img1.classList.contains('active')) ? img1 : img0;
-            nextImg.src = slides[current].file_url;
-            nextImg.alt = slides[current].location || 'Slide';
-            [img0, img1].forEach(function (i) { i.classList.remove('active'); });
-            nextImg.classList.add('active');
+            var imgs = track.querySelectorAll('.auth-hero-img');
+            imgs.forEach(function (img, i) {
+                img.classList.toggle('active', i === index);
+            });
+
+            current = index;
 
             if (locEl) locEl.textContent = slides[current].location || '';
             if (descEl) descEl.textContent = slides[current].description || '';
+            if (descToggle) descToggle.classList.remove('revealed');
+
+            setTimeout(function () { transitioning = false; }, 550);
         }
 
         if (prevBtn) prevBtn.addEventListener('click', function () { showSlide(current - 1); });
@@ -1274,20 +1280,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (slides.length === 0) return;
 
         track.innerHTML = '';
-        img0 = document.createElement('img');
-        img0.className = 'banner-img auth-hero-img';
-        img1 = document.createElement('img');
-        img1.className = 'banner-img auth-hero-img';
-
-        img0.src = slides[0].file_url;
-        img0.alt = slides[0].location || 'Slide';
-        img0.classList.add('active');
-
-        track.appendChild(img0);
-        track.appendChild(img1);
+        slides.forEach(function (s, i) {
+            var img = document.createElement('img');
+            img.src = s.file_url;
+            img.alt = s.location || 'Slide';
+            img.className = 'banner-img auth-hero-img';
+            if (i === 0) img.classList.add('active');
+            track.appendChild(img);
+        });
 
         if (locEl) locEl.textContent = slides[0].location || '';
         if (descEl) descEl.textContent = slides[0].description || '';
+
+        // toggle description on location click
+        if (descToggle) {
+            descToggle.addEventListener('click', function () {
+                this.classList.toggle('revealed');
+            });
+        }
     })();
 
 

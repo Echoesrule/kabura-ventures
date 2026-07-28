@@ -482,8 +482,10 @@
                 html += '<td>' + escHtml(s.location) + '</td>';
                 html += '<td>' + escHtml(s.description || '—') + '</td>';
                 html += '<td>' + escHtml(String(s.sort_order)) + '</td>';
-                html += '<td><button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteAuthSlide(\'' + s.id + '\')">Delete</button></td>';
-                html += '</tr>';
+                html += '<td style="white-space:nowrap;">';
+                html += '<button class="admin-btn admin-btn--primary" style="padding:4px 10px;font-size:11px;margin-right:4px;" onclick="editAuthSlide(\'' + s.id + '\',\'' + escHtml(s.location.replace(/'/g, "\\'")) + '\',\'' + escHtml((s.description || '').replace(/'/g, "\\'")) + '\')">Edit</button>';
+                html += '<button class="admin-btn admin-btn--danger" style="padding:4px 10px;font-size:11px;" onclick="deleteAuthSlide(\'' + s.id + '\')">Delete</button>';
+                html += '</td></tr>';
             });
             html += '</tbody></table></div>';
             container.innerHTML = html;
@@ -491,6 +493,16 @@
             container.innerHTML = '<p class="admin-empty-state">Failed to load slides.</p>';
         }
     }
+
+    window.editAuthSlide = function (id, location, description) {
+        document.getElementById('auth-slide-edit-id').value = id;
+        document.getElementById('auth-slide-location').value = location || '';
+        document.getElementById('auth-slide-desc').value = description || '';
+        document.getElementById('auth-slide-file').required = false;
+        document.getElementById('auth-slide-submit-btn').textContent = 'Update Slide';
+        document.getElementById('auth-slide-cancel-btn').style.display = '';
+        document.getElementById('auth-slide-location').focus();
+    };
 
     window.deleteAuthSlide = async function (id) {
         if (!confirm('Delete this slide?')) return;
@@ -506,13 +518,26 @@
     if (authSlideForm) {
         authSlideForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+            var editId = document.getElementById('auth-slide-edit-id').value;
             var formData = new FormData(authSlideForm);
             try {
-                await api.createAuthSlide(formData);
+                if (editId) {
+                    await api.updateAuthSlide(editId, formData);
+                    document.getElementById('auth-slide-edit-id').value = '';
+                    document.getElementById('auth-slide-submit-btn').textContent = 'Upload Slide';
+                    document.getElementById('auth-slide-cancel-btn').style.display = 'none';
+                    document.getElementById('auth-slide-file').required = true;
+                } else {
+                    if (!document.getElementById('auth-slide-file').files.length) {
+                        alert('Please select an image.');
+                        return;
+                    }
+                    await api.createAuthSlide(formData);
+                }
                 authSlideForm.reset();
                 loadAuthSlides();
             } catch (err) {
-                alert('Upload failed: ' + err.message);
+                alert('Failed: ' + err.message);
             }
         });
     }
