@@ -2,14 +2,13 @@ import uuid
 from datetime import datetime
 from . import db
 
-class Destination(db.Model):
-    __tablename__ = 'destinations'
+class OfferService(db.Model):
+    __tablename__ = 'offer_services'
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(255), nullable=False)
-    location_text = db.Column(db.String(255), nullable=True)
+    title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    image_url = db.Column(db.String(500), nullable=False)
+    image_url = db.Column(db.String(500), nullable=True)
     link_url = db.Column(db.String(500), nullable=True)
     sort_order = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
@@ -19,10 +18,9 @@ class Destination(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.name,
-            'location_text': self.location_text or '',
+            'title': self.title,
             'description': self.description or '',
-            'image_url': self.image_url,
+            'image_url': self.image_url or '',
             'link_url': self.link_url or '',
             'sort_order': self.sort_order,
             'is_active': self.is_active,

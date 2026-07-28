@@ -213,9 +213,7 @@ function renderGuestAuth() {
         + '</div>'
         + '<div class="nav-user-login-row">'
         + '<a href="/login.html" class="nav-user-login-btn">Log in</a>'
-        + '<a href="/login.html" class="nav-user-login-arrow" aria-label="Log in">'
-        + '<img src="/assets/images/right-arrow.png" alt="" class="nav-user-login-arrow-img" loading="lazy">'
-        + '</a>'
+     
         + '</div>'
         + '<a href="/signup.html" class="nav-user-signup-link">Sign Up</a>'
         + '<div class="nav-user-menu-divider"></div>'
@@ -678,9 +676,7 @@ function renderMobileMenu(container) {
             + '</div>'
             + '<div class="mobile-menu-login-row">'
             + '<a href="/login.html" class="mobile-menu-login-btn">Log in</a>'
-            + '<a href="/login.html" class="mobile-menu-login-arrow" aria-label="Log in">'
-            + '<img src="/assets/images/right-arrow.png" alt="" class="mobile-menu-login-arrow-img" loading="lazy">'
-            + '</a>'
+           
             + '</div>'
             + '<a href="/signup.html" class="mobile-menu-signup-link">Create an account</a>'
             + '<div class="mobile-menu-divider"></div>';
@@ -1084,21 +1080,50 @@ function escapeHTML(value) {
 }
 
 async function initCurrencySwitcher() {
-    const sel = document.getElementById('currency-switcher');
-    if (!sel) return;
+    const selector = document.getElementById('currency-selector');
+    const trigger = document.getElementById('currency-trigger');
+    const dropdown = document.getElementById('currency-dropdown');
+    const label = document.getElementById('currency-label');
+    if (!selector || !trigger || !dropdown) return;
+
     try {
         const result = await api.getCurrencies();
         (result.currencies || []).forEach(c => {
             currencyRates[c.currency_code] = c;
         });
-        sel.value = currentCurrency;
-        sel.addEventListener('change', () => {
-            currentCurrency = sel.value;
-            localStorage.setItem('preferred_currency', currentCurrency);
-            refreshCurrencyPrices();
+    } catch { /* ignore */ }
+
+    function setActiveCurrency(code) {
+        currentCurrency = code;
+        localStorage.setItem('preferred_currency', currentCurrency);
+        label.textContent = code;
+        dropdown.querySelectorAll('.currency-option').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.currency === code);
         });
         refreshCurrencyPrices();
-    } catch { /* ignore */ }
+    }
+
+    setActiveCurrency(currentCurrency);
+
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selector.classList.toggle('open');
+        trigger.setAttribute('aria-expanded', selector.classList.contains('open'));
+    });
+
+    dropdown.querySelectorAll('.currency-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setActiveCurrency(btn.dataset.currency);
+            selector.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    document.addEventListener('click', () => {
+        selector.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+    });
 }
 
 window.formatPrice = formatPrice;
@@ -1177,22 +1202,59 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuthPage();
     setupScrollReveal();
     // load hero image for auth pages
-    (async function loadAuthHero() {
+    // ── Auth Carousel (login/register page) ──────────────────
+    (async function initAuthCarousel() {
+        var carousel = document.getElementById('auth-carousel');
+        if (!carousel) return;
+
+        var track = carousel.querySelector('.auth-carousel-track');
+        var locEl = document.getElementById('auth-slide-location');
+        var descEl = document.getElementById('auth-slide-desc');
+        var prevBtn = carousel.querySelector('.auth-carousel-prev');
+        var nextBtn = carousel.querySelector('.auth-carousel-next');
+        var slides = [];
+        var current = 0;
+
+        function showSlide(index) {
+            if (slides.length === 0) return;
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+            current = index;
+
+            var imgs = track.querySelectorAll('.auth-slide-img');
+            imgs.forEach(function (img, i) {
+                img.classList.toggle('active', i === current);
+            });
+
+            if (locEl) locEl.textContent = slides[current].location || '';
+            if (descEl) descEl.textContent = slides[current].description || '';
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function () { showSlide(current - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { showSlide(current + 1); });
+
         try {
-            const url = `${API_BASE.replace('/api','')}/api/media/hero-image`;
-            const r = await fetch(url, { method: 'GET' });
-            if (!r.ok) return;
-            const data = await r.json();
-            if (data && data.image) {
-                const imgEl = document.getElementById('auth-hero-image');
-                if (imgEl && data.image.file_url) imgEl.src = data.image.file_url;
-                const capEl = document.getElementById('auth-hero-caption');
-                if (capEl && data.image.caption) capEl.textContent = data.image.caption;
-            }
-        } catch (err) {
-        // ignore
-            }
-        })();
+            var result = await api.getAuthSlides();
+            slides = result.slides || [];
+        } catch (e) {
+            // keep default kenya.jpg fallback
+            return;
+        }
+
+        if (slides.length === 0) return;
+
+        track.innerHTML = '';
+        slides.forEach(function (s, i) {
+            var img = document.createElement('img');
+            img.src = s.file_url;
+            img.alt = s.location || 'Slide';
+            img.className = 'banner-img auth-hero-img auth-slide-img';
+            if (i === 0) img.classList.add('active');
+            track.appendChild(img);
+        });
+
+        showSlide(0);
+    })();
 
 
     // WhatsApp floating bubble

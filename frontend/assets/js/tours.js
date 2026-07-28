@@ -196,12 +196,12 @@
                     var originalPrice = Math.round(tour.price / (1 - discountPct / 100));
                     offerBadgeHtml = '<span class="tour-card-offer-badge">-' + discountPct + '%</span>';
                     priceHtml = '<div class="tour-card-price tour-card-price--offer">'
-                        + '<span class="tour-card-price-old">' + window.formatPrice(originalPrice) + '</span>'
-                        + '<span class="tour-card-price-new">' + window.formatPrice(tour.price) + '</span>'
+                        + '<span class="tour-card-price-old price-amount" data-kes="' + originalPrice + '">' + window.formatPrice(originalPrice) + '</span>'
+                        + '<span class="tour-card-price-new price-amount" data-kes="' + tour.price + '">' + window.formatPrice(tour.price) + '</span>'
                         + ' <small>/ person</small>'
                         + '</div>';
                 } else {
-                    priceHtml = '<div class="tour-card-price">' + window.formatPrice(tour.price) + ' <small>/ person</small></div>';
+                    priceHtml = '<div class="tour-card-price"><span class="price-amount" data-kes="' + tour.price + '">' + window.formatPrice(tour.price) + '</span> <small>/ person</small></div>';
                 }
                 var sellOutBadgeHtml = '';
                 if (isLikelyToSellOut) {

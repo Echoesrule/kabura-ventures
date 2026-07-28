@@ -9,7 +9,7 @@ from middleware.auth import admin_required
 from services.storage import test_supabase_bucket
 from utils.helpers import allowed_file, sanitize_input
 from services.storage import save_image, delete_image
-from models.media import HeroImage
+from models.media import HeroImage, AuthSlide
 from flask import current_app
 
 media_bp = Blueprint('media', __name__, url_prefix='/api/media')
@@ -168,3 +168,115 @@ def delete_hero_image(current_user, image_id):
     db.session.delete(img)
     db.session.commit()
     return jsonify({'message': 'Hero image deleted'}), 200
+
+
+# ── Auth Slides (login/register page carousel) ──────────────────────
+
+@media_bp.route('/auth-slides', methods=['GET'])
+def get_auth_slides():
+    slides = AuthSlide.query.filter_by(is_active=True).order_by(AuthSlide.sort_order).all()
+    backend_url = current_app.config.get('BACKEND_URL') or request.url_root.rstrip('/')
+    items = []
+    for s in slides:
+        d = s.to_dict()
+        if d['file_url'] and not d['file_url'].startswith('http'):
+            d['file_url'] = f"{backend_url}{d['file_url']}"
+        items.append(d)
+    return jsonify({'slides': items}), 200
+
+
+@media_bp.route('/auth-slides', methods=['POST'])
+@admin_required
+def create_auth_slide(current_user):
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    file = request.files['file']
+    if not file.filename:
+        return jsonify({'error': 'No file selected'}), 400
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+
+    location = (request.form.get('location') or '').strip()
+    if not location:
+        return jsonify({'error': 'Location is required'}), 400
+
+    description = (request.form.get('description') or '').strip()
+
+    try:
+        file_url = save_image(file, 'auth-slides')
+    except Exception as exc:
+        return jsonify({'error': 'Upload failed', 'details': str(exc)}), 500
+
+    count = AuthSlide.query.count()
+    slide = AuthSlide(
+        filename=file.filename,
+        file_url=file_url,
+        location=location,
+        description=description,
+        sort_order=count
+    )
+    db.session.add(slide)
+    db.session.commit()
+    return jsonify({'message': 'Auth slide created', 'slide': slide.to_dict()}), 201
+
+
+@media_bp.route('/auth-slides/<slide_id>', methods=['PUT'])
+@admin_required
+def update_auth_slide(current_user, slide_id):
+    slide = AuthSlide.query.get(slide_id)
+    if not slide:
+        return jsonify({'error': 'Slide not found'}), 404
+
+    location = request.form.get('location')
+    description = request.form.get('description')
+    if location is not None:
+        slide.location = location.strip()
+    if description is not None:
+        slide.description = description.strip()
+
+    if 'file' in request.files and request.files['file'].filename:
+        file = request.files['file']
+        if allowed_file(file.filename):
+            try:
+                delete_image(slide.file_url)
+            except Exception:
+                pass
+            try:
+                slide.file_url = save_image(file, 'auth-slides')
+                slide.filename = file.filename
+            except Exception as exc:
+                return jsonify({'error': 'Upload failed', 'details': str(exc)}), 500
+
+    db.session.commit()
+    return jsonify({'message': 'Slide updated', 'slide': slide.to_dict()}), 200
+
+
+@media_bp.route('/auth-slides/<slide_id>', methods=['DELETE'])
+@admin_required
+def delete_auth_slide(current_user, slide_id):
+    slide = AuthSlide.query.get(slide_id)
+    if not slide:
+        return jsonify({'error': 'Slide not found'}), 404
+    try:
+        delete_image(slide.file_url)
+    except Exception:
+        pass
+    db.session.delete(slide)
+    db.session.commit()
+    return jsonify({'message': 'Slide deleted'}), 200
+
+
+@media_bp.route('/auth-slides/reorder', methods=['PUT'])
+@admin_required
+def reorder_auth_slides(current_user):
+    data = request.get_json()
+    if not data or 'order' not in data:
+        return jsonify({'error': 'order list required'}), 400
+
+    for i, slide_id in enumerate(data['order']):
+        slide = AuthSlide.query.get(slide_id)
+        if slide:
+            slide.sort_order = i
+    db.session.commit()
+    return jsonify({'message': 'Order updated'}), 200

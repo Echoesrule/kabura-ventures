@@ -101,7 +101,7 @@
             document.getElementById('hotel-description').textContent = h.description || 'No description available.';
 
             var infoHtml = '';
-            infoHtml += '<div class="hotel-info-card">' + svgIcon('bed') + '<h4>Price/night</h4><p>' + window.formatPrice(h.price_per_night) + '</p></div>';
+            infoHtml += '<div class="hotel-info-card">' + svgIcon('bed') + '<h4>Price/night</h4><p><span class="price-amount" data-kes="' + h.price_per_night + '">' + window.formatPrice(h.price_per_night) + '</span></p></div>';
             infoHtml += '<div class="hotel-info-card">' + svgIcon('star') + '<h4>Rating</h4><p>' + (h.avg_rating || h.rating || 0).toFixed(1) + '</p></div>';
             infoHtml += '<div class="hotel-info-card">' + svgIcon('comment') + '<h4>Reviews</h4><p>' + (h.reviews_count || 0) + '</p></div>';
             if (h.location) infoHtml += '<div class="hotel-info-card">' + svgIcon('map-pin') + '<h4>Location</h4><p>' + escapeHTML(h.location) + '</p></div>';
@@ -163,7 +163,7 @@
                             + '<span>' + svgIcon('wifi') + ' Free WiFi</span>'
                         + '</div>'
                         + '<div class="room-card-footer" style="margin-top:0.75rem;">'
-                            + '<div class="room-price">' + window.formatPrice(price) + ' <small>/night</small></div>'
+                            + '<div class="room-price"><span class="price-amount" data-kes="' + price + '">' + window.formatPrice(price) + '</span> <small>/night</small></div>'
                             + '<div class="hotel-btn-row">'
                                 + '<button class="hotel-book-btn" onclick="document.getElementById(\'sidebar-book-btn\').click()"><span>Book Now</span></button>'
                                 + '<button class="hotel-book-btn-arrow" onclick="document.getElementById(\'sidebar-book-btn\').click()" aria-label="Book Now">'
@@ -311,7 +311,7 @@
 
         function renderSidebar() {
             var h = currentHotel;
-            document.getElementById('sidebar-price').textContent = window.formatPrice(h.price_per_night);
+            document.getElementById('sidebar-price').innerHTML = '<span class="price-amount" data-kes="' + h.price_per_night + '">' + window.formatPrice(h.price_per_night) + '</span>';
 
             var badgesHtml = '';
             if ((h.avg_rating || h.rating || 0) >= 4.5) badgesHtml += '<span class="sidebar-badge sb-hot">Top Rated</span>';
@@ -355,7 +355,7 @@
                 var diff = Math.max(1, Math.round((new Date(checkout) - new Date(checkin)) / (1000*60*60*24)));
                 var total = currentHotel.price_per_night * diff;
                 var totalEl = document.getElementById('sidebar-total');
-                if (totalEl) totalEl.textContent = window.formatPrice(total);
+                if (totalEl) totalEl.innerHTML = '<span class="price-amount" data-kes="' + total + '">' + window.formatPrice(total) + '</span>';
             }
         }
 
@@ -385,7 +385,7 @@
 
         function renderMobileBar() {
             var h = currentHotel;
-            document.getElementById('mobile-bar-price').textContent = window.formatPrice(h.price_per_night);
+            document.getElementById('mobile-bar-price').innerHTML = '<span class="price-amount" data-kes="' + h.price_per_night + '">' + window.formatPrice(h.price_per_night) + '</span>';
         }
 
         function renderRelated() {
@@ -402,7 +402,7 @@
                             + '<h4>' + escapeHTML(h.name) + '</h4>'
                             + '<div class="related-location">' + svgIcon('map-pin',{size:14}) + ' ' + escapeHTML(h.location || 'Kenya') + '</div>'
                             + '<div class="related-meta">'
-                                + '<span class="related-price">' + window.formatPrice(h.price_per_night) + ' <small style="font-weight:400;font-size:0.7rem;color:var(--text-secondary);">/night</small></span>'
+                                + '<span class="related-price"><span class="price-amount" data-kes="' + h.price_per_night + '">' + window.formatPrice(h.price_per_night) + '</span> <small style="font-weight:400;font-size:0.7rem;color:var(--text-secondary);">/night</small></span>'
                                 + (rating > 0 ? '<span class="related-rating">' + svgIcon('star',{size:14,color:'var(--accent)'}) + ' ' + rating.toFixed(1) + '</span>' : '')
                             + '</div>'
                         + '</div>'

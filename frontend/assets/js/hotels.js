@@ -72,7 +72,7 @@
                             ${amenities.length ? '<div class="hotel-amenities">' + amenities.map(function(a) { return '<span>' + escapeHTML(a.trim()) + '</span>'; }).join('') + '</div>' : ''}
                         </div>
                         <div class="hotel-stay-bottom">
-                            <div class="hotel-stay-price"><small>From</small><strong>KSh ${Number(hotel.price_per_night || 0).toLocaleString()}</strong><span>/night</span></div>
+                            <div class="hotel-stay-price"><small>From</small><strong>${window.priceHTML(hotel.price_per_night || 0)}</strong><span>/night</span></div>
                             <div class="hotel-stay-action">
                                 <div class="hotel-btn-row">
                                     <a class="hotel-book-btn" href="/hotel-detail.html?id=${hotel.id}"><span>View stay</span></a>

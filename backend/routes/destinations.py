@@ -11,6 +11,12 @@ destinations_bp = Blueprint('destinations', __name__, url_prefix='/api/destinati
 
 @destinations_bp.route('', methods=['GET'])
 def get_destinations():
+    destinations = Destination.query.filter_by(is_active=True).order_by(Destination.sort_order.asc(), Destination.name.asc()).all()
+    return jsonify({'destinations': [d.to_dict() for d in destinations]}), 200
+
+@destinations_bp.route('/all', methods=['GET'])
+@admin_required
+def get_all_destinations(current_user):
     destinations = Destination.query.order_by(Destination.sort_order.asc(), Destination.name.asc()).all()
     return jsonify({'destinations': [d.to_dict() for d in destinations]}), 200
 
@@ -23,6 +29,9 @@ def create_destination(current_user):
         return jsonify({'error': f'Missing fields: {", ".join(missing)}'}), 400
 
     name = sanitize_input(data.get('name', ''), max_length=255)
+    location_text = sanitize_input(data.get('location_text', ''), max_length=255)
+    description = sanitize_input(data.get('description', ''), max_length=2000)
+    link_url = data.get('link_url', '')
     sort_order = data.get('sort_order', 0, type=int)
 
     image_url = data.get('image_url', '')
@@ -31,7 +40,13 @@ def create_destination(current_user):
         if file.filename and allowed_file(file.filename):
             image_url = save_image(file, 'destinations')
 
-    dest = Destination(name=name, image_url=image_url, sort_order=sort_order)
+    if not image_url:
+        image_url = ''
+
+    dest = Destination(
+        name=name, location_text=location_text, description=description,
+        image_url=image_url, link_url=link_url, sort_order=sort_order
+    )
     db.session.add(dest)
     db.session.commit()
 
@@ -48,8 +63,16 @@ def update_destination(current_user, dest_id):
 
     if 'name' in data:
         dest.name = sanitize_input(data['name'], max_length=255)
+    if 'location_text' in data:
+        dest.location_text = sanitize_input(data['location_text'], max_length=255)
+    if 'description' in data:
+        dest.description = sanitize_input(data['description'], max_length=2000)
+    if 'link_url' in data:
+        dest.link_url = data['link_url']
     if 'sort_order' in data:
         dest.sort_order = int(data['sort_order'])
+    if 'is_active' in data:
+        dest.is_active = data['is_active'] in (True, 'true', '1', 1)
     if 'image_url' in data and data['image_url']:
         dest.image_url = data['image_url']
 

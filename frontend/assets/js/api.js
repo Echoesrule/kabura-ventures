@@ -1,5 +1,7 @@
 // Kabura Ventures - API Client
-const API_BASE = 'https://kabura-adventures-api.onrender.com/api';
+const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? location.origin + '/api'
+    : 'https://kabura-adventures-api.onrender.com/api';
 window.API_BASE = API_BASE;
 
 class ApiClient {
@@ -107,9 +109,30 @@ class ApiClient {
 
     // Destinations
     async getDestinations() { return this.get('/destinations'); }
+    async getAllDestinationsAdmin() { return this.get('/destinations/all'); }
     async createDestination(data) { return this.post('/destinations', data); }
     async updateDestination(id, data) { return this.put(`/destinations/${id}`, data); }
     async deleteDestination(id) { return this.delete(`/destinations/${id}`); }
+
+    // Offers / What We Offer
+    async getOffers() { return this.get('/offers'); }
+    async getAllOffersAdmin() { return this.get('/offers/all'); }
+    async createOffer(data) { return this.post('/offers', data); }
+    async updateOffer(id, data) { return this.put(`/offers/${id}`, data); }
+    async deleteOffer(id) { return this.delete(`/offers/${id}`); }
+
+    // Testimonials
+    async getTestimonials() { return this.get('/testimonials'); }
+    async getAllTestimonialsAdmin() { return this.get('/testimonials/all'); }
+    async createTestimonial(data) { return this.post('/testimonials', data); }
+    async updateTestimonial(id, data) { return this.put(`/testimonials/${id}`, data); }
+    async deleteTestimonial(id) { return this.delete(`/testimonials/${id}`); }
+
+    // Page Content (homepage sections)
+    async getPageContent() { return this.get('/page-content'); }
+    async getSection(key) { return this.get(`/page-content/${key}`); }
+    async saveSection(data) { return this.post('/page-content', data); }
+    async deleteSection(key) { return this.delete(`/page-content/${key}`); }
 
     // Bookings
     async createBooking(data) { return this.post('/bookings', data); }
@@ -150,6 +173,13 @@ class ApiClient {
     async deleteHeroMedia(id) { return this.delete(`/media/hero/${id}`); }
     async reorderHeroMedia(data) { return this.put('/media/hero/reorder', data); }
     async deleteHotelImage(id) { return this.delete(`/hotels/images/${id}`); }
+
+    // Auth Slides (login/register carousel)
+    async getAuthSlides() { return this.get('/media/auth-slides'); }
+    async createAuthSlide(data) { return this.post('/media/auth-slides', data); }
+    async updateAuthSlide(id, data) { return this.put(`/media/auth-slides/${id}`, data); }
+    async deleteAuthSlide(id) { return this.delete(`/media/auth-slides/${id}`); }
+    async reorderAuthSlides(data) { return this.put('/media/auth-slides/reorder', data); }
     async setTourPrimaryImage(id) { return this.put(`/tours/images/${id}/primary`); }
     async setHotelPrimaryImage(id) { return this.put(`/hotels/images/${id}/primary`); }
     async getRelatedTours(id) { return this.get(`/tours/${id}/related`); }

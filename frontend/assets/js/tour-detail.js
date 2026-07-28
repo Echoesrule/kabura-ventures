@@ -273,7 +273,7 @@
                 { name: 'Private ' + tour.title, rating: (tour.average_rating || 4.7) + 0.1, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.15), duration: (tour.duration_days || 1) + 2 + ' days', price: Number(tour.price) * 2, badge: 'Likely to Sell Out' },
                 { name: tour.title + ' Small Group', rating: (tour.average_rating || 4.7) + 0.15, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.25), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.2 }
             ];
-            const formatPrice = (p) => 'KSh ' + Number(p).toLocaleString();
+            const formatPrice = (p) => window.priceHTML(p);
             container.innerHTML = `
                 <table class="compare-table">
                     <thead>
@@ -557,7 +557,7 @@
                                 <h4>${t.title}</h4>
                                 <div class="related-location">${svgIcon('map-pin')} ${t.location || 'Kenya'}</div>
                                 <div class="related-meta">
-                                    <span class="related-price">KSh ${Number(t.price).toLocaleString()}</span>
+                                    <span class="related-price">${window.priceHTML(t.price)}</span>
                                     <span class="related-duration">${t.duration_days || 0} days</span>
                                 </div>
                             </div>
@@ -573,8 +573,8 @@
             const tour = currentTour;
             const price = Number(tour.price);
 
-            document.getElementById('sidebar-price').textContent = `KSh ${price.toLocaleString()}`;
-            document.getElementById('mobile-bar-price').textContent = `KSh ${price.toLocaleString()}`;
+            document.getElementById('sidebar-price').innerHTML = window.priceHTML(price);
+            document.getElementById('mobile-bar-price').innerHTML = window.priceHTML(price);
 
             document.getElementById('sidebar-badges').innerHTML = `
                 <span class="sidebar-badge sb-hot">${svgIcon('fire')} Likely to Sell Out</span>
@@ -620,7 +620,7 @@
             const tour = currentTour;
             const people = parseInt(document.getElementById('sidebar-people').value) || 1;
             const total = Number(tour.price) * people;
-            document.getElementById('sidebar-total').textContent = `KSh ${total.toLocaleString()}`;
+            document.getElementById('sidebar-total').innerHTML = window.priceHTML(total);
         }
 
         function setupListeners() {

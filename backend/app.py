@@ -24,6 +24,9 @@ from routes.company import company_bp
 from routes.analytics import analytics_bp
 from routes.supabase_auth import supabase_auth_bp
 from routes.destinations import destinations_bp
+from routes.offers import offers_bp
+from routes.testimonials import testimonials_bp
+from routes.page_content import page_content_bp
 from services.seed import seed_database
 
 load_dotenv()
@@ -56,6 +59,9 @@ def create_app():
     app.register_blueprint(analytics_bp)
     app.register_blueprint(supabase_auth_bp)
     app.register_blueprint(destinations_bp)
+    app.register_blueprint(offers_bp)
+    app.register_blueprint(testimonials_bp)
+    app.register_blueprint(page_content_bp)
 
     @app.route('/')
     def index():
@@ -185,6 +191,73 @@ def create_app():
             # migrate: add wildlife column to tours if missing
             try:
                 db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS wildlife TEXT'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: add new columns to destinations
+            try:
+                db.session.execute(db.text('ALTER TABLE destinations ADD COLUMN IF NOT EXISTS location_text VARCHAR(255)'))
+                db.session.execute(db.text('ALTER TABLE destinations ADD COLUMN IF NOT EXISTS description TEXT'))
+                db.session.execute(db.text('ALTER TABLE destinations ADD COLUMN IF NOT EXISTS link_url VARCHAR(500)'))
+                db.session.execute(db.text('ALTER TABLE destinations ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: create offer_services table
+            try:
+                db.session.execute(db.text('''CREATE TABLE IF NOT EXISTS offer_services (
+                    id VARCHAR(36) PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    image_url VARCHAR(500),
+                    link_url VARCHAR(500),
+                    sort_order INTEGER DEFAULT 0,
+                    is_active BOOLEAN DEFAULT TRUE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )'''))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: create testimonials table
+            try:
+                db.session.execute(db.text('''CREATE TABLE IF NOT EXISTS testimonials (
+                    id VARCHAR(36) PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    location VARCHAR(255),
+                    text TEXT NOT NULL,
+                    rating INTEGER DEFAULT 5,
+                    initials VARCHAR(10),
+                    sort_order INTEGER DEFAULT 0,
+                    is_active BOOLEAN DEFAULT TRUE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )'''))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: create page_sections table
+            try:
+                db.session.execute(db.text('''CREATE TABLE IF NOT EXISTS page_sections (
+                    id VARCHAR(36) PRIMARY KEY,
+                    section_key VARCHAR(100) UNIQUE NOT NULL,
+                    title VARCHAR(255),
+                    subtitle VARCHAR(500),
+                    heading VARCHAR(500),
+                    description TEXT,
+                    grey_heading VARCHAR(255),
+                    image_url VARCHAR(500),
+                    cta_text VARCHAR(100),
+                    cta_url VARCHAR(500),
+                    stat1_number INTEGER,
+                    stat1_label VARCHAR(100),
+                    stat2_number INTEGER,
+                    stat2_label VARCHAR(100),
+                    stat3_number INTEGER,
+                    stat3_label VARCHAR(100),
+                    extra_json TEXT,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )'''))
                 db.session.commit()
             except Exception:
                 db.session.rollback()

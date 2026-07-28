@@ -42,3 +42,28 @@ class HeroImage(db.Model):
             'is_active': self.is_active,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+
+class AuthSlide(db.Model):
+    __tablename__ = 'auth_slides'
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    filename = db.Column(db.String(255), nullable=False)
+    file_url = db.Column(db.String(500), nullable=False)
+    location = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    sort_order = db.Column(db.Integer, default=0)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'filename': self.filename,
+            'file_url': self.file_url,
+            'location': self.location,
+            'description': self.description,
+            'sort_order': self.sort_order,
+            'is_active': self.is_active,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

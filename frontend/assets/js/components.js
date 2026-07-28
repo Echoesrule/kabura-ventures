@@ -9,6 +9,7 @@
                 initUserDropdown();
                 initAnnouncementBar();
                 if (typeof updateAuthUI === 'function') updateAuthUI();
+                if (typeof initCurrencySwitcher === 'function') initCurrencySwitcher();
             }
         }).catch(function() {});
     }

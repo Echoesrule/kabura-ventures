@@ -122,12 +122,26 @@
                 </button>
                 <div class="nav-user-menu" id="user-dropdown-menu"></div>
             </li>
-            <li class="currency-selector">
-                <select id="currency-switcher" aria-label="Select currency">
-                    <option value="KES">KSh</option>
-                    <option value="USD">$</option>
-                    <option value="EUR">&euro;</option>
-                </select>
+            <li class="currency-selector" id="currency-selector">
+                <button class="currency-trigger" id="currency-trigger" aria-label="Select currency" aria-expanded="false" aria-haspopup="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="currency-icon" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="currency-label" id="currency-label">KES</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="currency-chevron" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="currency-dropdown" id="currency-dropdown" role="menu">
+                    <button class="currency-option active" data-currency="KES" role="menuitem">
+                        <span class="currency-option-symbol">KSh</span>
+                        <span class="currency-option-code">Kenyan Shilling</span>
+                    </button>
+                    <button class="currency-option" data-currency="USD" role="menuitem">
+                        <span class="currency-option-symbol">$</span>
+                        <span class="currency-option-code">US Dollar</span>
+                    </button>
+                    <button class="currency-option" data-currency="EUR" role="menuitem">
+                        <span class="currency-option-symbol">&euro;</span>
+                        <span class="currency-option-code">Euro</span>
+                    </button>
+                </div>
             </li>
         </ul>
     </div>

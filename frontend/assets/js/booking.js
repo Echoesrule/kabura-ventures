@@ -111,7 +111,7 @@
                 + '</div>'
                 + '</div>'
                 + '<div class="summary-row"><span class="label">Type</span><span class="value" style="text-transform:capitalize;">' + selectedType + '</span></div>'
-                + '<div class="summary-row"><span class="label">Base price</span><span class="value">' + window.formatPrice(price) + ' ' + priceLabel + '</span></div>';
+                + '<div class="summary-row"><span class="label">Base price</span><span class="value"><span class="price-amount" data-kes="' + price + '">' + window.formatPrice(price) + '</span> ' + priceLabel + '</span></div>';
 
             updateSidebar();
         }
@@ -130,10 +130,10 @@
 
             var total = price * nights;
 
-            document.getElementById('sidebar-base-price').textContent = window.formatPrice(price);
+            document.getElementById('sidebar-base-price').innerHTML = '<span class="price-amount" data-kes="' + price + '">' + window.formatPrice(price) + '</span>';
             document.getElementById('sidebar-nights').textContent = nights;
             document.getElementById('sidebar-guests').textContent = guests;
-            document.getElementById('sidebar-total').textContent = window.formatPrice(total);
+            document.getElementById('sidebar-total').innerHTML = '<span class="price-amount" data-kes="' + total + '">' + window.formatPrice(total) + '</span>';
         }
 
         function setupPaymentSelection() {
@@ -283,7 +283,7 @@
                         + '<div class="booking-card-meta">'
                             + '<div><span class="ml">Dates</span><span class="mv">' + dateStr + '</span></div>'
                             + '<div><span class="ml">Guests</span><span class="mv">' + (b.people_count || 1) + '</span></div>'
-                            + (b.total_amount ? '<div><span class="ml">Total</span><span class="mv">' + window.formatPrice(b.total_amount) + '</span></div>' : '')
+                            + (b.total_amount ? '<div><span class="ml">Total</span><span class="mv price-amount" data-kes="' + b.total_amount + '">' + window.formatPrice(b.total_amount) + '</span></div>' : '')
                         + '</div>'
                         + '<div class="booking-card-bottom">'
                             + '<span class="booking-card-date">' + (b.created_at ? new Date(b.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '') + '</span>'
@@ -418,7 +418,7 @@
                 + '<hr class="receipt-divider">'
                 + '<div class="receipt-section"><h3>Payment Summary</h3>'
                 + '<div class="receipt-total-row"><span class="label">Payment Status</span><span class="receipt-badge" style="background:' + (statusColors[b.status] || '#6B7280') + '12;color:' + (statusColors[b.status] || '#6B7280') + ';border:1px solid ' + (statusColors[b.status] || '#6B7280') + '25;font-size:0.7rem;">' + (payLabels[b.payment_status] || b.payment_status) + '</span></div>'
-                + '<div class="receipt-total-row" style="margin-top:0.75rem;padding-top:0.75rem;border-top:2px solid #f0f0f0;"><span class="label" style="font-weight:600;">Total Amount</span><span class="amount">' + (b.total_amount ? window.formatPrice(b.total_amount) : '-') + '</span></div>'
+                + '<div class="receipt-total-row" style="margin-top:0.75rem;padding-top:0.75rem;border-top:2px solid #f0f0f0;"><span class="label" style="font-weight:600;">Total Amount</span><span class="amount">' + (b.total_amount ? '<span class="price-amount" data-kes="' + b.total_amount + '">' + window.formatPrice(b.total_amount) + '</span>' : '-') + '</span></div>'
                 + (b.special_requests ? '<div style="margin-top:1rem;padding:0.75rem 1rem;background:#f9fafb;border-radius:10px;font-size:0.8rem;color:#666;line-height:1.5;"><strong style="color:#172019;">Special Requests:</strong> ' + escapeHTML(b.special_requests) + '</div>' : '')
                 + '</div>'
                 + '</div>'

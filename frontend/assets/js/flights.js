@@ -84,7 +84,7 @@
                                         <td>${r.departure_date}</td>
                                         <td>${r.passengers}</td>
                                         <td><span class="badge ${r.status === 'pending' ? 'badge-warning' : r.status === 'quoted' ? 'badge-info' : r.status === 'approved' ? 'badge-success' : r.status === 'rejected' ? 'badge-danger' : 'badge-secondary'}">${r.status}</span></td>
-                                        <td>${r.price_quote ? 'KSh ' + Number(r.price_quote).toLocaleString() : '-'}</td>
+                                        <td>${r.price_quote ? window.priceHTML(r.price_quote) : '-'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>

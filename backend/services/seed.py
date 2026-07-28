@@ -7,6 +7,9 @@ from models.availability import TourAvailability
 from models.currency import ExchangeRate
 from models.blog import Blog, slugify
 from models.destination import Destination
+from models.offer_service import OfferService
+from models.testimonial import Testimonial
+from models.page_section import PageSection
 from models import db
 
 Q = '?auto=compress&cs=tinysrgb&w=800'
@@ -674,17 +677,127 @@ def seed_database():
     # Seed destinations
     if Destination.query.count() == 0:
         destinations_data = [
-            {'name': 'Nairobi', 'image_url': 'https://images.unsplash.com/photo-1590682698101-ec5a1a3b9de4?w=400&h=400&fit=crop', 'sort_order': 1},
-            {'name': 'Maasai Mara', 'image_url': 'https://images.unsplash.com/photo-1534177616072-ef7dc120449d?w=400&h=400&fit=crop', 'sort_order': 2},
-            {'name': 'Mombasa', 'image_url': 'https://images.unsplash.com/photo-1587568379519-0a7b348d1c4f?w=400&h=400&fit=crop', 'sort_order': 3},
-            {'name': 'Amboseli', 'image_url': 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&h=400&fit=crop', 'sort_order': 4},
-            {'name': 'Lake Nakuru', 'image_url': 'https://images.unsplash.com/photo-1598188306155-25e6eb3c32e3?w=400&h=400&fit=crop', 'sort_order': 5},
-            {'name': 'Tsavo', 'image_url': 'https://images.unsplash.com/photo-1601275107377-86c03c31b08a?w=400&h=400&fit=crop', 'sort_order': 6},
-            {'name': 'Diani Beach', 'image_url': 'https://images.unsplash.com/photo-1586728652020-2f28f465ff19?w=400&h=400&fit=crop', 'sort_order': 7},
-            {'name': 'Mount Kenya', 'image_url': 'https://images.unsplash.com/photo-1601032757337-1252e4b3d824?w=400&h=400&fit=crop', 'sort_order': 8},
+            {'name': 'Nairobi', 'location_text': 'Nairobi County, Kenya', 'description': 'Kenya\'s vibrant capital city where urban energy meets wildlife. Home to the famous Giraffe Centre, Nairobi National Park, and the David Sheldrick Elephant Orphanage.', 'image_url': 'https://images.unsplash.com/photo-1590682698101-ec5a1a3b9de4?w=400&h=400&fit=crop', 'sort_order': 1},
+            {'name': 'Maasai Mara', 'location_text': 'Narok County, Kenya', 'description': 'The crown jewel of African wildlife reserves. Every year between July and October, over two million wildebeest, zebras, and gazelles surge across its grasslands in the Great Migration.', 'image_url': 'https://images.unsplash.com/photo-1534177616072-ef7dc120449d?w=400&h=400&fit=crop', 'sort_order': 2},
+            {'name': 'Mombasa', 'location_text': 'Coast Province, Kenya', 'description': 'A historic port city on Kenya\'s southeast coast, blending Swahili, Arab, and European influences with pristine beaches and coral reefs.', 'image_url': 'https://images.unsplash.com/photo-1587568379519-0a7b348d1c4f?w=400&h=400&fit=crop', 'sort_order': 3},
+            {'name': 'Amboseli', 'location_text': 'Kajiado County, Kenya', 'description': 'Few places on Earth offer a more dramatic backdrop than Amboseli, where the snow-capped dome of Mount Kilimanjaro towers over vast elephant herds.', 'image_url': 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&h=400&fit=crop', 'sort_order': 4},
+            {'name': 'Lake Nakuru', 'location_text': 'Nakuru County, Kenya', 'description': 'A shimmering alkaline lake encircled by wooded grasslands. Its shores erupt in waves of pink as millions of lesser flamingos gather alongside great white pelicans.', 'image_url': 'https://images.unsplash.com/photo-1598188306155-25e6eb3c32e3?w=400&h=400&fit=crop', 'sort_order': 5},
+            {'name': 'Tsavo', 'location_text': 'Taita-Taveta County, Kenya', 'description': 'One of the world\'s largest wildlife sanctuaries, famous for its red-dusted elephants and dramatic lava landscapes.', 'image_url': 'https://images.unsplash.com/photo-1601275107377-86c03c31b08a?w=400&h=400&fit=crop', 'sort_order': 6},
+            {'name': 'Diani Beach', 'location_text': 'Kwale County, Kenya', 'description': 'A ribbon of powdery white sand stretching along Kenya\'s southern coastline, lapped by impossibly clear turquoise waters.', 'image_url': 'https://images.unsplash.com/photo-1586728652020-2f28f465ff19?w=400&h=400&fit=crop', 'sort_order': 7},
+            {'name': 'Mount Kenya', 'location_text': 'Central Kenya', 'description': 'Africa\'s second-highest peak and a UNESCO World Heritage Site, rising dramatically from equatorial forests to glacial cirques.', 'image_url': 'https://images.unsplash.com/photo-1601032757337-1252e4b3d824?w=400&h=400&fit=crop', 'sort_order': 8},
+            {'name': 'Samburu', 'location_text': 'Samburu County, Kenya', 'description': 'Kenya\'s hidden northern frontier where rugged red-earth landscapes meet the lifegiving Ewaso Nyiro River.', 'image_url': 'https://images.unsplash.com/photo-1534177616072-ef7dc120449d?w=400&h=400&fit=crop', 'sort_order': 9},
         ]
         for dd in destinations_data:
-            dest = Destination(name=dd['name'], image_url=dd['image_url'], sort_order=dd['sort_order'])
+            dest = Destination(
+                name=dd['name'], location_text=dd.get('location_text', ''),
+                description=dd.get('description', ''), image_url=dd['image_url'],
+                sort_order=dd['sort_order']
+            )
             db.session.add(dest)
+
+    # Seed offer services
+    if OfferService.query.count() == 0:
+        offers_data = [
+            {'title': 'Expert Tour Guides', 'description': 'Passionate local guides who bring Kenya\'s wildlife and culture to life.', 'link_url': '/safari.html', 'sort_order': 1},
+            {'title': 'Lively Hotels', 'description': 'Handpicked stays from luxury lodges to vibrant boutique hotels.', 'link_url': '/hotels.html', 'sort_order': 2},
+            {'title': 'Honeymoons', 'description': 'Romantic escapes designed for couples seeking unforgettable moments.', 'link_url': '/honeymoon.html', 'sort_order': 3},
+            {'title': 'Safari Adventures', 'description': 'Thrilling game drives across Kenya\'s most iconic wildlife reserves.', 'link_url': '/safari.html', 'sort_order': 4},
+            {'title': 'Cultural Experiences', 'description': 'Immerse yourself in Maasai traditions and authentic Kenyan heritage.', 'link_url': '/cultural.html', 'sort_order': 5},
+            {'title': 'Beach Retreats', 'description': 'Pristine coastal escapes along the Indian Ocean shoreline.', 'link_url': '/beach.html', 'sort_order': 6},
+            {'title': 'Mountain Treks', 'description': 'Conquer legendary peaks from Mount Kenya to the Aberdares.', 'link_url': '/trekking.html', 'sort_order': 7},
+            {'title': 'Group Tours', 'description': 'Unforgettable group adventures tailored for friends and families.', 'link_url': '/group.html', 'sort_order': 8},
+        ]
+        for od in offers_data:
+            offer = OfferService(
+                title=od['title'], description=od['description'],
+                link_url=od['link_url'], sort_order=od['sort_order']
+            )
+            db.session.add(offer)
+
+    # Seed testimonials
+    if Testimonial.query.count() == 0:
+        testimonials_data = [
+            {'name': 'Sarah & Liam', 'location': 'New York, USA', 'text': 'From the moment we landed in Nairobi, everything was taken care of. The Maasai Mara was breathtaking — we saw all of the Big Five in a single day. Our guide, James, was incredible.', 'initials': 'SL', 'sort_order': 1},
+            {'name': 'Amira & Pierre', 'location': 'Paris, France', 'text': 'We came for our honeymoon and it exceeded every expectation. The lodge in Amboseli had Kilimanjaro as a backdrop — pure magic. Kabura made everything seamless and personal.', 'initials': 'AP', 'sort_order': 2},
+            {'name': 'The Nakamura Family', 'location': 'Tokyo, Japan', 'text': 'Our family trip to Kenya was the adventure of a lifetime. The kids loved the giraffe centre and the balloon safari over the Mara was unreal. Can\'t wait to come back.', 'initials': 'KN', 'sort_order': 3},
+            {'name': 'Daniel Mwangi', 'location': 'London, UK', 'text': 'I\'ve travelled to 40+ countries and this was hands down the best experience. The cultural immersion, the wildlife, the attention to detail — Kabura operates on another level.', 'initials': 'DM', 'sort_order': 4},
+        ]
+        for td in testimonials_data:
+            testimonial = Testimonial(
+                name=td['name'], location=td['location'], text=td['text'],
+                initials=td['initials'], sort_order=td['sort_order']
+            )
+            db.session.add(testimonial)
+
+    # Seed page sections
+    if PageSection.query.count() == 0:
+        sections_data = [
+            {
+                'section_key': 'hero',
+                'title': 'KENYA',
+                'subtitle': 'The home of Wildlife',
+                'heading': 'Step Into The Heart Of Kenya',
+                'description': 'Explore the vast savannahs of kenya. Discover amaizing stuff. Meet interesting people. Welcome to Kenya. "Hakuna Matata"',
+                'cta_text': 'Plan our Kenya Tours',
+                'cta_url': '/tours.html',
+            },
+            {
+                'section_key': 'kabura_venture',
+                'grey_heading': 'Unleash Your Wild Spirit !!',
+                'heading': 'In Your Kabura Adventure',
+                'description': 'Every detail is handled — from the moment you land in Kenya to the last sunset over the savannah. Our team crafts each trip around your pace, your interests, and your sense of adventure. You just show up and live it.',
+                'cta_text': 'Book a Plan',
+                'cta_url': '/tours.html',
+            },
+            {
+                'section_key': 'enjoy_safari',
+                'grey_heading': 'Hakuna Matata !!',
+                'heading': 'Enjoy Every Safari',
+                'description': 'An unforgettable adventure awaits — from golden savannahs to vibrant cultures, every moment is crafted to leave you breathless. This is not just a trip, it\'s the story you\'ll tell forever.',
+                'cta_text': 'Explore All Events',
+                'cta_url': '/tours.html',
+            },
+            {
+                'section_key': 'about_us',
+                'heading': 'About Us',
+                'description': 'Kabura Adventures is more than a tour company — we\'re storytellers, explorers, and locals who live for the wild. Every safari, every trail, every sunset is designed to move you.',
+                'stat1_number': 500,
+                'stat1_label': 'Happy Travelers',
+                'stat2_number': 10,
+                'stat2_label': 'Years Experience',
+                'stat3_number': 200,
+                'stat3_label': 'Safaris Completed',
+            },
+            {
+                'section_key': 'fly_with_us',
+                'grey_heading': 'Soar Above The Skies !!',
+                'heading': 'Fly With Us',
+                'description': 'Get there in style — we handle domestic and regional flights across Kenya and East Africa. From Nairobi to the Masai Mara, Mombasa to Zanzibar, we\'ll get you to your adventure seamlessly.',
+                'cta_text': 'Book a Flight',
+                'cta_url': '/flights.html',
+            },
+            {
+                'section_key': 'testimonials',
+                'title': 'What Our Travelers Say',
+                'subtitle': 'Real stories from real adventurers who explored Kenya with us.',
+                'cta_text': 'See All Reviews',
+                'cta_url': '/tours.html',
+            },
+            {
+                'section_key': 'featured_locations',
+                'title': 'Discover Thrilling Locations',
+            },
+            {
+                'section_key': 'what_we_offer',
+                'title': 'What We Offer',
+                'subtitle': 'Everything you need for an unforgettable Kenyan adventure, curated with care.',
+            },
+        ]
+        for sd in sections_data:
+            section = PageSection(section_key=sd['section_key'])
+            for k, v in sd.items():
+                if k != 'section_key':
+                    setattr(section, k, v)
+            db.session.add(section)
 
     db.session.commit()
