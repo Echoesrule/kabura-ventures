@@ -1239,7 +1239,6 @@ document.addEventListener('DOMContentLoaded', () => {
         var track = carousel.querySelector('.auth-carousel-track');
         var locEl = document.getElementById('auth-slide-location');
         var descEl = document.getElementById('auth-slide-desc');
-        var descToggle = document.querySelector('.auth-location .overlay-title');
         var prevBtn = carousel.querySelector('.auth-carousel-prev');
         var nextBtn = carousel.querySelector('.auth-carousel-next');
         var slides = [];
@@ -1262,7 +1261,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (locEl) locEl.textContent = slides[current].location || '';
             if (descEl) descEl.textContent = slides[current].description || '';
-            if (descToggle) descToggle.classList.remove('revealed');
 
             setTimeout(function () { transitioning = false; }, 550);
         }
@@ -1291,13 +1289,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (locEl) locEl.textContent = slides[0].location || '';
         if (descEl) descEl.textContent = slides[0].description || '';
-
-        // toggle description on location click
-        if (descToggle) {
-            descToggle.addEventListener('click', function () {
-                this.classList.toggle('revealed');
-            });
-        }
     })();
 
 

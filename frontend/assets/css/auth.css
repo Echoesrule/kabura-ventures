@@ -513,41 +513,15 @@
     height: 100%;
     object-fit: cover;
     border-radius: var(--radius-lg);
+    animation: none;
     opacity: 0;
-    transform: scale(1.03);
     transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: scale(1.03);
 }
 
 .auth-carousel-track .auth-hero-img.active {
     opacity: 1;
     transform: scale(1);
-}
-
-/* description dropdown */
-.auth-location .overlay-title {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-.auth-location .overlay-title::after {
-    content: '\25BC';
-    font-size: 8px;
-    color: var(--text-secondary);
-    transition: transform 0.2s;
-}
-.auth-location .overlay-title.revealed::after {
-    transform: rotate(180deg);
-}
-.auth-location .overlay-desc {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease, opacity 0.35s ease;
-    opacity: 0;
-}
-.auth-location .overlay-title.revealed + .overlay-desc {
-    max-height: 200px;
-    opacity: 1;
 }
 
 .banner-wrapper::before {
