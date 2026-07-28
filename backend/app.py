@@ -77,6 +77,11 @@ def create_app():
     def serve_static(path):
         if path.startswith('assets/'):
             return send_from_directory(app.static_folder, path)
+        if '.' not in path:
+            try:
+                return send_from_directory(app.static_folder, path + '.html')
+            except:
+                pass
         try:
             return send_from_directory(app.static_folder, path)
         except:
