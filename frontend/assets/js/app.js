@@ -1266,7 +1266,6 @@ document.addEventListener('DOMContentLoaded', () => {
             var result = await api.getAuthSlides();
             slides = result.slides || [];
         } catch (e) {
-            // keep default kenya.jpg fallback
             return;
         }
 
