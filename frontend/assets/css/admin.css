@@ -660,6 +660,10 @@ body.admin-layout.no-nav #footer-placeholder {
     background: rgba(var(--sage-rgb), 0.2);
 }
 
+.admin-btn.active {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
 /* ── Form Inputs ────────────────────────────────────────────── */
 .admin-label {
     display: block;

@@ -107,49 +107,66 @@
 
     // ── Bookings ────────────────────────────────────────────
     var allBookings = [];
+    function bookingCustomer(b) {
+        return b.guest_name || b.user_name || '—';
+    }
+    function bookingEmail(b) {
+        return b.guest_email || b.user_email || '—';
+    }
+    function bookingItemName(b) {
+        if (b.booking_type === 'hotel') return b.hotel_name || '—';
+        if (b.booking_type === 'flight') return 'Flight';
+        return b.tour_name || '—';
+    }
+    function bookingTypeBadge(type) {
+        var cls = 'admin-badge--pending';
+        if (type === 'tour') cls = 'admin-badge--completed';
+        if (type === 'hotel') cls = 'admin-badge--confirmed';
+        return '<span class="admin-badge ' + cls + '">' + escHtml(type || '—') + '</span>';
+    }
+    function renderBookingRows(bookings, limit) {
+        var items = limit ? bookings.slice(0, limit) : bookings;
+        var rows = items.map(function (b, idx) {
+            return [
+                (idx < 3 ? '<span style="background:rgba(192,57,43,0.08);display:block;padding:2px 6px;border-radius:6px;">' : '') + escHtml(bookingCustomer(b)) + (idx < 3 ? '</span>' : ''),
+                bookingTypeBadge(b.booking_type),
+                escHtml(bookingItemName(b)),
+                escHtml(b.travel_date || '—'),
+                statusBadge(b.status)
+            ];
+        });
+        return rows;
+    }
+    function renderBookingsTable(container, bookings) {
+        container.innerHTML = makeTable(['Customer', 'Type', 'Item', 'Date', 'Status'], renderBookingRows(bookings));
+    }
+    async function loadBookings(filter) {
+        try {
+            var endpoint = '/bookings' + (filter ? '?booking_type=' + filter : '');
+            var bookings = await api.get(endpoint);
+            allBookings = bookings.bookings || bookings || [];
+            renderBookingsTable(document.getElementById('bookings-list'), allBookings);
+        } catch (e) {
+            document.getElementById('bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
+        }
+    }
+
     try {
-        var bookings = await api.get('/bookings');
-        allBookings = bookings.bookings || bookings || [];
+        var bookingsResult = await api.get('/bookings');
+        allBookings = bookingsResult.bookings || bookingsResult || [];
         document.getElementById('stat-bookings').textContent = allBookings.length;
+        renderBookingsTable(document.getElementById('dashboard-bookings-list'), allBookings.slice(0, 10));
+        renderBookingsTable(document.getElementById('bookings-list'), allBookings);
 
-        function bookingCustomer(b) {
-            if (b.guest_name) return b.guest_name;
-            if (b.user && b.user.name) return b.user.name;
-            return '—';
-        }
-        function bookingEmail(b) {
-            if (b.guest_email) return b.guest_email;
-            if (b.user && b.user.email) return b.user.email;
-            return '—';
-        }
-        function bookingItemName(b) {
-            if (b.booking_type === 'hotel' && b.hotel && b.hotel.name) return b.hotel.name;
-            if (b.tour && b.tour.title) return b.tour.title;
-            return '—';
-        }
-
-        var headers = ['Customer', 'Item', 'Date', 'Status'];
-        var rows = allBookings.slice(0, 10).map(function (b) {
-            return [
-                escHtml(bookingCustomer(b)),
-                escHtml(bookingItemName(b)),
-                escHtml(b.travel_date || '—'),
-                statusBadge(b.status)
-            ];
+        document.querySelectorAll('.booking-tab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.booking-tab').forEach(function (t) { t.classList.remove('active'); t.classList.remove('admin-btn--primary'); t.classList.add('admin-btn--secondary'); });
+                this.classList.add('active');
+                this.classList.add('admin-btn--primary');
+                this.classList.remove('admin-btn--secondary');
+                loadBookings(this.getAttribute('data-type'));
+            });
         });
-
-        document.getElementById('dashboard-bookings-list').innerHTML = makeTable(headers, rows);
-
-        var allRows = allBookings.map(function (b) {
-            return [
-                escHtml(bookingCustomer(b)),
-                escHtml(bookingEmail(b)),
-                escHtml(bookingItemName(b)),
-                escHtml(b.travel_date || '—'),
-                statusBadge(b.status)
-            ];
-        });
-        document.getElementById('bookings-list').innerHTML = makeTable(['Customer', 'Email', 'Item', 'Date', 'Status'], allRows);
     } catch (e) {
         document.getElementById('dashboard-bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
         document.getElementById('bookings-list').innerHTML = '<p class="admin-empty-state">Failed to load bookings.</p>';
@@ -159,7 +176,7 @@
     try {
         var msgs = await api.get('/messages');
         var allMsgs = msgs.messages || msgs || [];
-        var unread = allMsgs.filter(function (m) { return !m.read && !m.admin_reply; });
+        var unread = allMsgs.filter(function (m) { return !m.is_read && !m.admin_reply; });
         document.getElementById('stat-messages').textContent = unread.length;
 
         var msgHeaders = ['From', 'Subject', 'Date', 'Status'];

@@ -94,7 +94,7 @@ def get_booking(current_user, booking_id):
 @admin_required
 def get_all_bookings(current_user):
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 20, type=int)
+    per_page = min(request.args.get('per_page', 20, type=int), 100)
     status = request.args.get('status')
     booking_type = request.args.get('booking_type')
 
@@ -108,7 +108,7 @@ def get_all_bookings(current_user):
     bookings = query.paginate(page=page, per_page=per_page, error_out=False)
 
     return jsonify({
-        'bookings': [b.to_dict() for b in bookings.items],
+        'bookings': [b.to_admin_dict() for b in bookings.items],
         'total': bookings.total,
         'page': bookings.page,
         'per_page': bookings.per_page,

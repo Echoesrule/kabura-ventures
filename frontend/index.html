@@ -372,24 +372,24 @@
                         </div>
                     </div>
                 </div>
-                <form class="contact-form" id="contact-form">
+                <form class="contact-form" id="contact-form" onsubmit="return false;">
                     <div class="contact-form-row">
                         <div class="form-group">
                             <label class="form-label">Name</label>
-                            <input type="text" class="form-input" placeholder="Your name" required>
+                            <input type="text" name="name" class="form-input" placeholder="Your name" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-input" placeholder="you@example.com" required>
+                            <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Subject</label>
-                        <input type="text" class="form-input" placeholder="How can we help?">
+                        <input type="text" name="subject" class="form-input" placeholder="How can we help?">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Message</label>
-                        <textarea class="form-textarea" rows="5" placeholder="Tell us about your dream trip..." required></textarea>
+                        <textarea name="message" class="form-textarea" rows="5" placeholder="Tell us about your dream trip..." required></textarea>
                     </div>
                     <div class="contact-form-btn-row">
                         <button type="submit" class="hp-section-btn hp-section-btn--black">

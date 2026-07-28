@@ -333,6 +333,35 @@ document.addEventListener('submit', async (e) => {
             }
         }
     }
+
+    if (e.target.id === 'contact-form') {
+        e.preventDefault();
+        const form = e.target;
+        const btn = form.querySelector('button[type="submit"]');
+        const name = form.querySelector('[name="name"]').value.trim();
+        const email = form.querySelector('[name="email"]').value.trim();
+        const subject = form.querySelector('[name="subject"]').value.trim();
+        const message = form.querySelector('[name="message"]').value.trim();
+
+        if (!name || !email || !message) {
+            showToast('Please fill in name, email, and message.', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+
+        try {
+            await api.sendMessage({ name, email, subject, message });
+            showToast('Message sent! We\'ll get back to you soon.', 'success');
+            form.reset();
+        } catch (err) {
+            showToast(err.message || 'Failed to send message. Please try again.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Send Message';
+        }
+    }
 });
 
 // Email verification UI

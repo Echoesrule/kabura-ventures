@@ -53,3 +53,29 @@ class Booking(db.Model):
             'hotel': self.hotel.to_dict() if self.hotel else None,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+    def to_admin_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'tour_id': self.tour_id,
+            'hotel_id': self.hotel_id,
+            'booking_type': self.booking_type,
+            'travel_date': self.travel_date.isoformat() if self.travel_date else None,
+            'return_date': self.return_date.isoformat() if self.return_date else None,
+            'people_count': self.people_count,
+            'status': self.status,
+            'payment_status': self.payment_status,
+            'special_requests': self.special_requests,
+            'guest_name': self.guest_name,
+            'guest_email': self.guest_email,
+            'guest_phone': self.guest_phone,
+            'room_type': self.room_type,
+            'payment_method': self.payment_method,
+            'total_amount': self.total_amount,
+            'user_name': self.user.name if self.user else None,
+            'user_email': self.user.email if self.user else None,
+            'tour_name': self.tour.title if self.tour else None,
+            'hotel_name': self.hotel.name if self.hotel else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

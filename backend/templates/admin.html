@@ -185,7 +185,12 @@
                 <div class="admin-panel">
                     <div class="admin-panel-header">
                         <h2>All Bookings</h2>
-                        <span class="admin-panel-meta">Reservations</span>
+                        <div style="display:flex;gap:0.4rem;margin-left:auto;">
+                            <button class="admin-btn admin-btn--primary booking-tab active" data-type="">All</button>
+                            <button class="admin-btn admin-btn--secondary booking-tab" data-type="tour">Tours</button>
+                            <button class="admin-btn admin-btn--secondary booking-tab" data-type="hotel">Hotels</button>
+                            <button class="admin-btn admin-btn--secondary booking-tab" data-type="flight">Flights</button>
+                        </div>
                     </div>
                     <div class="admin-panel-body" id="bookings-list">
                         <p class="admin-empty-state">Loading bookings...</p>
