@@ -221,14 +221,21 @@ async function signOutSupabase() {
 
 // ─── Auth State Listener ──────────────────────────────────────────────────────
 
+// Module-level flag: once set, stays true for the page lifetime so subsequent
+// SIGNED_IN events (from token refresh / session restore) don't trigger login.
+let _isRecoveryFlow = false;
+
 /**
  * Set up a Supabase auth state listener.
  * Processes OAuth callbacks, email verification, and password reset flows.
  * Call once after initSupabaseClient() on auth pages.
+ * @param {boolean} isRecovery - true if the URL contained type=recovery before Supabase cleared it
  */
-function setupSupabaseAuthListener() {
+function setupSupabaseAuthListener(isRecovery = false) {
     const client = getSupabaseClient();
     if (!client) return;
+
+    if (isRecovery) _isRecoveryFlow = true;
 
     client.auth.onAuthStateChange(async (event, session) => {
         console.log('[supabase-client] Auth event:', event);
@@ -236,9 +243,7 @@ function setupSupabaseAuthListener() {
         switch (event) {
             case 'SIGNED_IN':
                 if (session) {
-                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                    const type = hashParams.get('type');
-                    if (type === 'recovery') {
+                    if (_isRecoveryFlow) {
                         showPasswordResetForm();
                         return;
                     }
@@ -331,6 +336,8 @@ async function handlePasswordResetSubmit() {
         showToast('Passwords do not match', 'error');
         return;
     }
+
+    _isRecoveryFlow = false;
 
     // Try app API reset first (reset token from URL param)
     const params = new URLSearchParams(window.location.search);
@@ -473,11 +480,23 @@ function checkAppResetToken() {
  * Call this on DOMContentLoaded.
  */
 async function initSupabaseAuthPage() {
+    // Capture recovery flag BEFORE initSupabaseClient() — Supabase consumes and clears the hash
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const isRecovery = hashParams.get('type') === 'recovery';
+
     if (checkAppResetToken()) {
         return;
     }
     const client = await initSupabaseClient();
     if (client) {
-        setupSupabaseAuthListener();
+        setupSupabaseAuthListener(isRecovery);
+        // SIGNED_IN may have fired during client init before listener was attached.
+        // Check session directly to catch recovery flows.
+        if (isRecovery) {
+            const { data: { session } } = await client.auth.getSession();
+            if (session) {
+                showPasswordResetForm();
+            }
+        }
     }
 }
