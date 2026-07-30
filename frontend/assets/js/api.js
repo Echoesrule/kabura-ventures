@@ -201,6 +201,11 @@ class ApiClient {
     }
     async createReview(data) { return this.post('/reviews', data); }
     async deleteReview(id) { return this.delete(`/reviews/${id}`); }
+    async likeReview(id) { return this.post(`/reviews/${id}/like`); }
+    async dislikeReview(id) { return this.post(`/reviews/${id}/dislike`); }
+    async replyToReview(id, reply) { return this.post(`/reviews/${id}/reply`, { reply }); }
+    async seedReviews(count = 50) { return this.post(`/reviews/seed?count=${count}`); }
+    async seedAll(users = 50, reviews = 50) { return this.post(`/reviews/seed-all?users=${users}&reviews=${reviews}`); }
 
     // Wishlist
     async getWishlist() { return this.get('/wishlist'); }

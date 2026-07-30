@@ -9,6 +9,8 @@
         let lightboxImages = [];
         let lightboxIndex = 0;
         let mapInstance = null;
+        let reviewsData = { reviews: [], total: 0, page: 1, pages: 1 };
+        let reviewsLoading = false;
 
         async function init() {
             if (!tourId) {
@@ -79,7 +81,7 @@
             `;
 
             const rating = tour.average_rating || 0;
-            const reviewCount = tour.reviews ? tour.reviews.length : 0;
+            const reviewCount = tour.reviews_count || 0;
             if (rating) {
                 const fullStars = Math.round(rating);
                 const starsHtml = svgIcon('star',{size:14}).repeat(fullStars) + svgIcon('star-outline',{size:14}).repeat(5 - fullStars);
@@ -279,11 +281,11 @@
             const tour = currentTour;
             const container = document.getElementById('compare-table');
             const similarTours = [
-                { name: tour.title, rating: tour.average_rating || 4.7, reviews: (tour.reviews || []).length || 3545, duration: tour.duration_days + (tour.duration_days === 1 ? ' day' : ' days'), price: Number(tour.price), badge: 'Current', highlight: true },
-                { name: tour.title + ' - Premium', rating: (tour.average_rating || 4.7) + 0.2, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.5), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.4, badge: 'Likely to Sell Out' },
-                { name: tour.title + ' - Express', rating: Math.max((tour.average_rating || 4.7) - 0.1, 0), reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.3), duration: (tour.duration_days || 1) + ' day', price: Number(tour.price) * 0.85 },
-                { name: 'Private ' + tour.title, rating: (tour.average_rating || 4.7) + 0.1, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.15), duration: (tour.duration_days || 1) + 2 + ' days', price: Number(tour.price) * 2, badge: 'Likely to Sell Out' },
-                { name: tour.title + ' Small Group', rating: (tour.average_rating || 4.7) + 0.15, reviews: Math.floor(((tour.reviews || []).length || 3545) * 0.25), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.2 }
+                { name: tour.title, rating: tour.average_rating || 4.7, reviews: (tour.reviews_count || 3545), duration: tour.duration_days + (tour.duration_days === 1 ? ' day' : ' days'), price: Number(tour.price), badge: 'Current', highlight: true },
+                { name: tour.title + ' - Premium', rating: (tour.average_rating || 4.7) + 0.2, reviews: Math.floor((tour.reviews_count || 3545) * 0.5), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.4, badge: 'Likely to Sell Out' },
+                { name: tour.title + ' - Express', rating: Math.max((tour.average_rating || 4.7) - 0.1, 0), reviews: Math.floor((tour.reviews_count || 3545) * 0.3), duration: (tour.duration_days || 1) + ' day', price: Number(tour.price) * 0.85 },
+                { name: 'Private ' + tour.title, rating: (tour.average_rating || 4.7) + 0.1, reviews: Math.floor((tour.reviews_count || 3545) * 0.15), duration: (tour.duration_days || 1) + 2 + ' days', price: Number(tour.price) * 2, badge: 'Likely to Sell Out' },
+                { name: tour.title + ' Small Group', rating: (tour.average_rating || 4.7) + 0.15, reviews: Math.floor((tour.reviews_count || 3545) * 0.25), duration: (tour.duration_days || 1) + 1 + ' days', price: Number(tour.price) * 1.2 }
             ];
             const formatPrice = (p) => window.priceHTML(p);
             container.innerHTML = `
@@ -474,16 +476,43 @@
             container.innerHTML = html;
         }
 
-        function renderReviews() {
+        async function renderReviews() {
             const tour = currentTour;
-            const reviews = tour.reviews || [];
             const layout = document.getElementById('reviews-layout');
+            const tourId = tour.id;
+            reviewsLoading = true;
+            reviewsData = { reviews: [], total: 0, page: 1, pages: 1 };
 
-            let avgRating = 0;
-            if (reviews.length > 0) {
-                avgRating = tour.average_rating || (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length);
+            await loadReviewsPage(tourId, 1);
+
+            layout.innerHTML = renderReviewsLayout(tour);
+            if (reviewsData.total > 0) renderStarDistribution();
+            setupReviewSearch();
+        }
+
+        async function loadReviewsPage(tourId, page) {
+            if (reviewsLoading && page > 1) return;
+            reviewsLoading = true;
+            try {
+                const res = await api.getReviews({ tour_id: tourId, page: page, per_page: 15 });
+                if (page === 1) {
+                    reviewsData = res;
+                } else {
+                    reviewsData.reviews = reviewsData.reviews.concat(res.reviews);
+                    reviewsData.page = res.page;
+                    reviewsData.pages = res.pages;
+                }
+            } catch (e) {
+                reviewsData = { reviews: [], total: 0, page: 1, pages: 1 };
+            } finally {
+                reviewsLoading = false;
             }
-            const count = reviews.length;
+        }
+
+        function renderReviewsLayout(tour) {
+            const reviews = reviewsData.reviews;
+            const total = reviewsData.total;
+            const avgRating = tour.avg_rating || 0;
 
             const leftHtml = '<div class="reviews-left">'
                 + '<div class="reviews-rating-display">'
@@ -501,19 +530,19 @@
                 + '</div>';
 
             let rightHtml = '<div class="reviews-right">'
-                + '<div class="reviews-right-header">' + count + ' Reviews</div>'
+                + '<div class="reviews-right-header">' + total + ' Reviews</div>'
                 + '<div class="reviews-search-wrap"><input type="text" class="reviews-search" id="reviews-search-input" placeholder="Search reviews..."></div>'
                 + '<div class="reviews-list" id="reviews-list">';
 
             if (reviews.length > 0) {
-                reviews.forEach(function(review, idx) {
-                    const name = review.user_name || review.user?.name || 'Anonymous';
+                reviews.forEach(function(review) {
+                    const name = review.user_name || 'Anonymous';
                     const initials = name.split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
                     const colors = ['#122218', '#2a4a3a', '#8aa899', '#0d1f12', '#333'];
                     const colorIdx = Math.abs(name.charCodeAt(0) || 0) % colors.length;
                     const date = review.created_at ? new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                     const stars = svgIcon('star',{size:14}).repeat(review.rating || 0) + svgIcon('star-outline',{size:14}).repeat(5 - (review.rating || 0));
-                    rightHtml += '<div class="review-card" data-comment="' + escapeHTML((review.comment || review.review || '').toLowerCase()) + '" data-name="' + escapeHTML(name.toLowerCase()) + '">'
+                    rightHtml += '<div class="review-card" data-comment="' + escapeHTML((review.comment || '').toLowerCase()) + '" data-name="' + escapeHTML(name.toLowerCase()) + '">'
                         + '<div class="review-card-header">'
                             + '<div class="review-card-user">'
                                 + '<div class="review-card-avatar" style="background:' + colors[colorIdx] + ';color:white;">' + escapeHTML(initials) + '</div>'
@@ -522,18 +551,64 @@
                             + '</div>'
                             + '<div class="review-card-stars">' + stars + '</div>'
                         + '</div>'
-                        + '<div class="review-card-comment">' + escapeHTML(review.comment || review.review || '') + '</div>'
+                        + '<div class="review-card-comment">' + escapeHTML(review.comment || '') + '</div>'
+                        + (review.admin_reply ? '<div class="review-admin-reply"><strong>Admin reply:</strong> ' + escapeHTML(review.admin_reply) + '</div>' : '')
+                        + '<div class="review-card-actions">'
+                            + '<button class="review-like-btn" data-id="' + review.id + '" onclick="handleLike(\'' + review.id + '\')">'
+                                + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>'
+                                + ' <span id="like-count-' + review.id + '">' + (review.likes || 0) + '</span>'
+                            + '</button>'
+                            + '<button class="review-dislike-btn" data-id="' + review.id + '" onclick="handleDislike(\'' + review.id + '\')">'
+                                + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>'
+                                + ' <span id="dislike-count-' + review.id + '">' + (review.dislikes || 0) + '</span>'
+                            + '</button>'
+                        + '</div>'
                         + '</div>';
                 });
             } else {
                 rightHtml += '<p style="color:var(--text-secondary);text-align:center;padding:2rem 0;">No reviews yet. Be the first to review this tour!</p>';
             }
-            rightHtml += '</div></div>';
+            rightHtml += '</div>';
 
-            layout.innerHTML = leftHtml + rightHtml;
+            if (reviewsData.page < reviewsData.pages) {
+                rightHtml += '<div style="text-align:center;padding:1rem 0;"><button class="btn btn-outline" id="show-more-reviews" onclick="loadMoreReviews()">Show More (' + (reviewsData.total - reviews.length) + ' more)</button></div>';
+            }
 
-            if (count > 0) renderStarDistribution();
+            rightHtml += '</div>';
 
+            return leftHtml + rightHtml;
+        }
+
+        window.handleLike = async function(reviewId) {
+            try {
+                const res = await api.likeReview(reviewId);
+                document.getElementById('like-count-' + reviewId).textContent = res.likes;
+            } catch (e) {
+                showToast('Failed to like review', 'error');
+            }
+        };
+
+        window.handleDislike = async function(reviewId) {
+            try {
+                const res = await api.dislikeReview(reviewId);
+                document.getElementById('dislike-count-' + reviewId).textContent = res.dislikes;
+            } catch (e) {
+                showToast('Failed to dislike review', 'error');
+            }
+        };
+
+        window.loadMoreReviews = async function() {
+            if (reviewsLoading) return;
+            const nextPage = reviewsData.page + 1;
+            const tourId = currentTour.id;
+            await loadReviewsPage(tourId, nextPage);
+            const layout = document.getElementById('reviews-layout');
+            layout.innerHTML = renderReviewsLayout(currentTour);
+            if (reviewsData.total > 0) renderStarDistribution();
+            setupReviewSearch();
+        };
+
+        function setupReviewSearch() {
             var searchInput = document.getElementById('reviews-search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
@@ -548,10 +623,10 @@
         }
 
         function renderStarDistribution() {
-            const reviews = currentTour.reviews || [];
+            const allReviews = reviewsData.reviews || [];
             const starCounts = {5:0,4:0,3:0,2:0,1:0};
-            reviews.forEach(function(r) { const rt = Math.round(r.rating || 0); if (rt >= 1 && rt <= 5) starCounts[rt]++; });
-            const total = reviews.length || 1;
+            allReviews.forEach(function(r) { const rt = Math.round(r.rating || 0); if (rt >= 1 && rt <= 5) starCounts[rt]++; });
+            const total = allReviews.length || 1;
             var html = '';
             for (var i = 5; i >= 1; i--) {
                 var pct = (starCounts[i] / total) * 100;
@@ -896,14 +971,13 @@
                 btn.textContent = 'Submitting...';
 
                 try {
-                    await api.post(`/tours/${tourId}/reviews`, {
+                    await api.createReview({
+                        tour_id: tourId,
                         rating: parseInt(rating.value),
                         comment: comment
                     });
                     showToast('Review submitted!', 'success');
                     e.target.reset();
-                    const result = await api.getTour(tourId);
-                    currentTour = result.tour || result;
                     renderReviews();
                 } catch (err) {
                     showToast(err.message || 'Failed to submit review', 'error');

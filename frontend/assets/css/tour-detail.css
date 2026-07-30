@@ -172,6 +172,11 @@
         .review-card-date { font-size: 0.75rem; color: var(--text-secondary); }
         .review-card-stars { color: var(--primary); font-size: 0.85rem; letter-spacing: 1px; }
         .review-card-comment { color: var(--text-secondary); line-height: 1.55; font-size: 0.88rem; overflow-wrap: anywhere; word-break: break-word; }
+        .review-card-actions { display: flex; gap: 0.75rem; margin-top: 0.6rem; }
+        .review-like-btn, .review-dislike-btn { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.6rem; border: 1px solid rgba(18,34,24,0.1); border-radius: 8px; background: transparent; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+        .review-like-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(18,34,24,0.04); }
+        .review-dislike-btn:hover { border-color: #c0392b; color: #c0392b; background: rgba(192,57,43,0.04); }
+        .review-admin-reply { margin-top: 0.6rem; padding: 0.6rem 0.75rem; background: rgba(18,34,24,0.04); border-radius: 8px; font-size: 0.82rem; color: var(--dark-text); border-left: 3px solid var(--primary); }
 
         .review-form-full { max-width: 1200px; margin: 3rem auto 0; padding: 0 2rem; }
         .review-form-container { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }

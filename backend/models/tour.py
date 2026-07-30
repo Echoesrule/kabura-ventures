@@ -50,7 +50,6 @@ class Tour(db.Model):
 
     def to_dict(self):
         from .review import Review
-        reviews_q = Review.query.filter_by(tour_id=self.id).order_by(Review.created_at.desc()).limit(10).all()
         avg = db.session.query(db.func.avg(Review.rating)).filter(Review.tour_id == self.id).scalar() or 0
         count = Review.query.filter_by(tour_id=self.id).count()
         return {
@@ -84,7 +83,6 @@ class Tour(db.Model):
             'excluded': self.excluded,
             'wildlife': self.wildlife,
             'images': [img.to_dict() for img in self.images.all()],
-            'reviews': [r.to_dict() for r in reviews_q],
             'avg_rating': float(avg),
             'reviews_count': count,
             'created_at': self.created_at.isoformat() if self.created_at else None

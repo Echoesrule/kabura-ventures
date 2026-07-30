@@ -36,7 +36,6 @@ class Hotel(db.Model):
 
     def to_dict(self):
         from .review import Review
-        reviews_q = Review.query.filter_by(hotel_id=self.id).order_by(Review.created_at.desc()).limit(10).all()
         avg = db.session.query(db.func.avg(Review.rating)).filter(Review.hotel_id == self.id).scalar() or 0
         count = Review.query.filter_by(hotel_id=self.id).count()
         return {
@@ -57,7 +56,6 @@ class Hotel(db.Model):
             'latitude': self.latitude,
             'longitude': self.longitude,
             'images': [img.to_dict() for img in self.images.all()],
-            'reviews': [r.to_dict() for r in reviews_q],
             'avg_rating': float(avg),
             'reviews_count': count,
             'created_at': self.created_at.isoformat() if self.created_at else None

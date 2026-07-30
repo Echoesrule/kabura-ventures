@@ -55,6 +55,8 @@
             if (heroTitle) heroTitle.textContent = title;
             if (heroDesc && desc) heroDesc.textContent = desc;
 
+            if (target === 'reviews') window.loadReviews('tour');
+
             setSidebarOpen(false);
         });
     });
@@ -1687,4 +1689,141 @@
         }
     }
     loadPageContent();
+
+    /* ── Reviews Admin ──────────────────────────────────────── */
+    var currentReviewFilter = 'tour';
+
+    window.loadReviews = async function (filter) {
+        currentReviewFilter = filter || 'tour';
+        document.querySelectorAll('#review-filter-tour, #review-filter-hotel, #review-filter-all').forEach(function (b) {
+            b.className = 'admin-btn';
+        });
+        var activeBtn = document.getElementById('review-filter-' + filter);
+        if (activeBtn) activeBtn.className = 'admin-btn admin-btn--primary';
+
+        var container = document.getElementById('reviews-admin-list');
+        container.innerHTML = '<p class="admin-empty-state">Loading reviews...</p>';
+
+        try {
+            var params = { per_page: 100 };
+            if (filter === 'tour') params.tour_id = '*';
+            if (filter === 'hotel') params.hotel_id = '*';
+            var result = await api.getReviews(params);
+            var reviews = result.reviews || [];
+
+            if (!reviews.length) {
+                container.innerHTML = '<p class="admin-empty-state">No reviews found.</p>';
+                return;
+            }
+
+            var html = '<div class="reviews-admin-entries">';
+            reviews.forEach(function (r) {
+                var name = r.user_name || 'Anonymous';
+                var date = r.created_at ? new Date(r.created_at).toLocaleDateString() : '';
+                var type = r.tour_id ? 'Tour' : 'Hotel';
+                var itemId = r.tour_id || r.hotel_id;
+                var stars = svgIcon('star', { size: 12, color: '#122218' }).repeat(r.rating || 0);
+                var commentPreview = (r.comment || '').substring(0, 100);
+                html += '<div class="admin-review-card" style="background:var(--soft-white);border-radius:12px;padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border-light);">'
+                    + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;flex-wrap:wrap;">'
+                    + '<div><strong>' + escapeHTML(name) + '</strong> <span style="color:var(--text-secondary);font-size:0.82rem;">&middot; ' + date + ' &middot; ' + type + '</span></div>'
+                    + '<div>' + stars + ' <span style="font-size:0.78rem;color:var(--text-secondary);">' + (r.likes || 0) + ' likes / ' + (r.dislikes || 0) + ' dislikes</span></div>'
+                    + '</div>'
+                    + '<p style="margin:0.5rem 0;color:var(--text-secondary);font-size:0.88rem;">' + escapeHTML(r.comment || '') + '</p>';
+                if (r.admin_reply) {
+                    html += '<div style="margin-top:0.4rem;padding:0.5rem 0.75rem;background:rgba(18,34,24,0.04);border-radius:8px;font-size:0.82rem;border-left:3px solid var(--primary);"><strong>Reply:</strong> ' + escapeHTML(r.admin_reply) + '</div>';
+                }
+                html += '<div style="margin-top:0.5rem;"><button class="admin-btn admin-review-reply-btn" data-review-id="' + r.id + '" data-user-name="' + escapeHTML(name) + '" data-comment-preview="' + escapeHTML(commentPreview) + '">' + (r.admin_reply ? 'Edit Reply' : 'Reply') + '</button></div>'
+                    + '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            container.innerHTML = html;
+        } catch (e) {
+            container.innerHTML = '<p class="admin-empty-state">Failed to load reviews: ' + escapeHTML(e.message) + '</p>';
+        }
+    };
+
+    window.openReviewReplyModal = function (reviewId, userName, commentPreview) {
+        var existing = document.getElementById('review-reply-modal');
+        if (!existing) {
+            var modal = document.createElement('div');
+            modal.id = 'review-reply-modal';
+            modal.className = 'admin-modal';
+            modal.style.cssText = 'display:flex;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center;';
+            modal.innerHTML = '<div style="background:#fff;border-radius:16px;width:90%;max-width:520px;padding:2rem;">'
+                + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">'
+                + '<h3 style="margin:0;">Review Reply</h3>'
+                + '<button onclick="closeReviewReplyModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>'
+                + '</div>'
+                + '<div style="margin-bottom:0.75rem;padding:0.75rem;background:var(--soft-white);border-radius:8px;font-size:0.85rem;color:var(--text-secondary);" id="review-reply-preview"></div>'
+                + '<input type="hidden" id="review-reply-id">'
+                + '<label class="admin-label">Your Reply</label>'
+                + '<textarea class="admin-input" id="review-reply-text" rows="4" style="width:100%;margin-bottom:1rem;" placeholder="Write your reply..."></textarea>'
+                + '<div style="display:flex;gap:0.5rem;justify-content:flex-end;">'
+                + '<button class="admin-btn" onclick="closeReviewReplyModal()">Cancel</button>'
+                + '<button class="admin-btn admin-btn--primary" id="review-reply-send-btn" onclick="sendReviewReply()">Send Reply</button>'
+                + '</div>'
+                + '</div>';
+            document.body.appendChild(modal);
+        }
+        document.getElementById('review-reply-id').value = reviewId;
+        document.getElementById('review-reply-text').value = '';
+        document.getElementById('review-reply-preview').innerHTML = '<strong>' + escapeHTML(userName) + '</strong> wrote: ' + escapeHTML(commentPreview) + (commentPreview.length >= 100 ? '...' : '');
+        document.getElementById('review-reply-modal').style.display = 'flex';
+        document.getElementById('review-reply-text').focus();
+    };
+
+    window.closeReviewReplyModal = function () {
+        var modal = document.getElementById('review-reply-modal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    window.sendReviewReply = async function () {
+        var reviewId = document.getElementById('review-reply-id').value;
+        var reply = document.getElementById('review-reply-text').value.trim();
+        if (!reply) { alert('Please type a reply.'); return; }
+        var btn = document.getElementById('review-reply-send-btn');
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        try {
+            await api.replyToReview(reviewId, reply);
+            closeReviewReplyModal();
+            loadReviews(currentReviewFilter);
+            showToast('Reply sent!', 'success');
+        } catch (e) {
+            alert('Failed to send reply: ' + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Send Reply';
+        }
+    };
+
+    window.seedAll = async function () {
+        if (!confirm('This will create 50 users and ~50 reviews per tour. Continue?')) return;
+        var btn = document.getElementById('seed-reviews-btn');
+        btn.disabled = true;
+        btn.textContent = 'Seeding...';
+        try {
+            var result = await api.seedAll(50, 50);
+            showToast(result.message || 'Seeding complete!', 'success');
+            loadReviews(currentReviewFilter);
+        } catch (e) {
+            alert('Failed to seed: ' + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Seed 50 Users + Reviews';
+        }
+    };
+
+    // Delegated click handler for admin review reply buttons
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.admin-review-reply-btn');
+        if (btn) {
+            var reviewId = btn.getAttribute('data-review-id');
+            var userName = btn.getAttribute('data-user-name');
+            var commentPreview = btn.getAttribute('data-comment-preview');
+            openReviewReplyModal(reviewId, userName, commentPreview);
+        }
+    });
 })();

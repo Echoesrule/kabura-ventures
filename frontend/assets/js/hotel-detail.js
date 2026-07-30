@@ -8,6 +8,8 @@
         var lightboxImages = [];
         var lightboxIndex = 0;
         var mapInstance = null;
+        var reviewsData = { reviews: [], total: 0, page: 1, pages: 1 };
+        var reviewsLoading = false;
 
         async function init() {
             if (!hotelId) {
@@ -182,12 +184,42 @@
             }).join('');
         }
 
-        function renderReviews() {
+        async function renderReviews() {
             var h = currentHotel;
-            var reviews = h.reviews || [];
-            var rating = h.avg_rating || h.rating || 0;
-            var count = h.reviews_count || reviews.length;
             var layout = document.getElementById('reviews-layout');
+            reviewsLoading = true;
+            reviewsData = { reviews: [], total: 0, page: 1, pages: 1 };
+
+            await loadReviewsPage(hotelId, 1);
+
+            layout.innerHTML = renderReviewsLayout(h);
+            if (reviewsData.total > 0) renderStarDistribution();
+            setupReviewSearch();
+        }
+
+        async function loadReviewsPage(hotelId, page) {
+            if (reviewsLoading && page > 1) return;
+            reviewsLoading = true;
+            try {
+                var res = await api.getReviews({ hotel_id: hotelId, page: page, per_page: 15 });
+                if (page === 1) {
+                    reviewsData = res;
+                } else {
+                    reviewsData.reviews = reviewsData.reviews.concat(res.reviews);
+                    reviewsData.page = res.page;
+                    reviewsData.pages = res.pages;
+                }
+            } catch (e) {
+                reviewsData = { reviews: [], total: 0, page: 1, pages: 1 };
+            } finally {
+                reviewsLoading = false;
+            }
+        }
+
+        function renderReviewsLayout(h) {
+            var reviews = reviewsData.reviews;
+            var total = reviewsData.total;
+            var rating = h.avg_rating || h.rating || 0;
 
             var leftHtml = '<div class="reviews-left">'
                 + '<div class="reviews-rating-display">'
@@ -205,40 +237,85 @@
                 + '</div>';
 
             var rightHtml = '<div class="reviews-right">'
-                + '<div class="reviews-right-header">' + count + ' Reviews</div>'
+                + '<div class="reviews-right-header">' + total + ' Reviews</div>'
                 + '<div class="reviews-search-wrap"><input type="text" class="reviews-search" id="reviews-search-input" placeholder="Search reviews..."></div>'
                 + '<div class="reviews-list" id="reviews-list">';
 
             if (reviews.length > 0) {
                 reviews.forEach(function(r) {
-                    var name = r.user_name || r.user?.name || 'Anonymous';
-                    var initial = name.charAt(0).toUpperCase();
+                    var name = r.user_name || 'Anonymous';
+                    var initials = name.split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
                     var colors = ['#122218', '#2a4a3a', '#8aa899', '#0d1f12', '#333'];
                     var colorIdx = Math.abs(name.charCodeAt(0) || 0) % colors.length;
                     var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                     var userRating = r.rating || 0;
                     var stars = svgIcon('star',{size:14}).repeat(Math.round(userRating)) + svgIcon('star-outline',{size:14}).repeat(5 - Math.round(userRating));
-                    rightHtml += '<div class="review-card" data-comment="' + escapeHTML((r.comment || r.review || '').toLowerCase()) + '" data-name="' + escapeHTML(name.toLowerCase()) + '">'
+                    rightHtml += '<div class="review-card" data-comment="' + escapeHTML((r.comment || '').toLowerCase()) + '" data-name="' + escapeHTML(name.toLowerCase()) + '">'
                         + '<div class="review-card-header">'
                             + '<div class="review-card-user">'
-                                + '<div class="review-card-avatar" style="background:' + colors[colorIdx] + ';color:white;">' + initial + '</div>'
+                                + '<div class="review-card-avatar" style="background:' + colors[colorIdx] + ';color:white;">' + escapeHTML(initials) + '</div>'
                                 + '<div><div class="review-card-name">' + escapeHTML(name) + '</div>'
                                 + '<div class="review-card-date">' + date + '</div></div>'
                             + '</div>'
                             + '<div class="review-card-stars">' + stars + '</div>'
                         + '</div>'
-                        + '<p class="review-card-comment">' + escapeHTML(r.comment || r.review || '') + '</p>'
+                        + '<p class="review-card-comment">' + escapeHTML(r.comment || '') + '</p>'
+                        + (r.admin_reply ? '<div class="review-admin-reply"><strong>Admin reply:</strong> ' + escapeHTML(r.admin_reply) + '</div>' : '')
+                        + '<div class="review-card-actions">'
+                            + '<button class="review-like-btn" data-id="' + r.id + '" onclick="handleHotelLike(\'' + r.id + '\')">'
+                                + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>'
+                                + ' <span id="like-count-' + r.id + '">' + (r.likes || 0) + '</span>'
+                            + '</button>'
+                            + '<button class="review-dislike-btn" data-id="' + r.id + '" onclick="handleHotelDislike(\'' + r.id + '\')">'
+                                + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>'
+                                + ' <span id="dislike-count-' + r.id + '">' + (r.dislikes || 0) + '</span>'
+                            + '</button>'
+                        + '</div>'
                         + '</div>';
                 });
             } else {
                 rightHtml += '<p style="color:var(--text-secondary);text-align:center;padding:2rem 0;">No reviews yet. Be the first to review this hotel!</p>';
             }
-            rightHtml += '</div></div>';
+            rightHtml += '</div>';
 
-            layout.innerHTML = leftHtml + rightHtml;
+            if (reviewsData.page < reviewsData.pages) {
+                rightHtml += '<div style="text-align:center;padding:1rem 0;"><button class="btn btn-outline" id="show-more-reviews" onclick="loadMoreHotelReviews()">Show More (' + (reviewsData.total - reviews.length) + ' more)</button></div>';
+            }
 
-            if (count > 0) renderStarDistribution();
+            rightHtml += '</div>';
 
+            return leftHtml + rightHtml;
+        }
+
+        window.handleHotelLike = async function(reviewId) {
+            try {
+                var res = await api.likeReview(reviewId);
+                document.getElementById('like-count-' + reviewId).textContent = res.likes;
+            } catch (e) {
+                showToast('Failed to like review', 'error');
+            }
+        };
+
+        window.handleHotelDislike = async function(reviewId) {
+            try {
+                var res = await api.dislikeReview(reviewId);
+                document.getElementById('dislike-count-' + reviewId).textContent = res.dislikes;
+            } catch (e) {
+                showToast('Failed to dislike review', 'error');
+            }
+        };
+
+        window.loadMoreHotelReviews = async function() {
+            if (reviewsLoading) return;
+            var nextPage = reviewsData.page + 1;
+            await loadReviewsPage(hotelId, nextPage);
+            var layout = document.getElementById('reviews-layout');
+            layout.innerHTML = renderReviewsLayout(currentHotel);
+            if (reviewsData.total > 0) renderStarDistribution();
+            setupReviewSearch();
+        };
+
+        function setupReviewSearch() {
             var searchInput = document.getElementById('reviews-search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
@@ -253,9 +330,9 @@
         }
 
         function renderStarDistribution() {
-            var reviews = currentHotel.reviews || [];
+            var allReviews = reviewsData.reviews || [];
             var dist = {5:0,4:0,3:0,2:0,1:0};
-            reviews.forEach(function(r) {
+            allReviews.forEach(function(r) {
                 var s = Math.round(r.rating || 0);
                 if (s >= 1 && s <= 5) dist[s]++;
             });
@@ -306,10 +383,7 @@
                 showToast('Review submitted!', 'success');
                 document.getElementById('review-comment').value = '';
                 document.querySelectorAll('#review-stars input').forEach(function(i) { i.checked = false; });
-                var result = await api.getHotel(hotelId);
-                currentHotel = result.hotel || result;
                 renderReviews();
-                renderReviewFormSection();
             } catch (err) {
                 showToast(err.message, 'error');
             }

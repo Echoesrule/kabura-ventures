@@ -73,6 +73,10 @@
                 <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 <span>Testimonials</span>
             </a>
+            <a href="#" class="admin-sidebar-link" data-section="reviews" data-title="Reviews" data-desc="View and reply to user reviews on tours and hotels.">
+                <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                <span>Reviews</span>
+            </a>
             <a href="#" class="admin-sidebar-link" data-section="page-content" data-title="Page Content" data-desc="Edit homepage section headings, descriptions, and stats.">
                 <svg class="admin-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 <span>Page Content</span>
@@ -643,6 +647,27 @@
                         </div>
                         <div id="testimonials-list">
                             <p class="admin-empty-state">Loading testimonials...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" id="section-reviews">
+                <div class="admin-panel">
+                    <div class="admin-panel-header">
+                        <h2>User Reviews</h2>
+                        <span class="admin-panel-meta">View & Reply</span>
+                    </div>
+                    <div class="admin-panel-body">
+                        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+                            <button class="admin-btn admin-btn--primary" onclick="loadReviews('tour')" id="review-filter-tour">Tour Reviews</button>
+                            <button class="admin-btn" onclick="loadReviews('hotel')" id="review-filter-hotel">Hotel Reviews</button>
+                            <button class="admin-btn" onclick="loadReviews('all')" id="review-filter-all">All Reviews</button>
+                            <span style="flex:1;min-width:10px;"></span>
+                            <button class="admin-btn admin-btn--danger" onclick="seedAll()" id="seed-reviews-btn">Seed 50 Users + 50 Reviews/Tour</button>
+                        </div>
+                        <div id="reviews-admin-list">
+                            <p class="admin-empty-state">Loading reviews...</p>
                         </div>
                     </div>
                 </div>

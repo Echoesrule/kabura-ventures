@@ -409,6 +409,14 @@ def create_app():
                 db.session.commit()
             except Exception:
                 db.session.rollback()
+            # migrate: add likes, dislikes, admin_reply to reviews
+            try:
+                db.session.execute(db.text('ALTER TABLE reviews ADD COLUMN IF NOT EXISTS likes INTEGER DEFAULT 0'))
+                db.session.execute(db.text('ALTER TABLE reviews ADD COLUMN IF NOT EXISTS dislikes INTEGER DEFAULT 0'))
+                db.session.execute(db.text('ALTER TABLE reviews ADD COLUMN IF NOT EXISTS admin_reply TEXT'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
             # migrate: sync existing tour activity_types into activity_types table
             try:
                 from models.activity_type import ActivityType
