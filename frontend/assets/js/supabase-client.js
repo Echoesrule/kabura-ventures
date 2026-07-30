@@ -91,6 +91,7 @@ async function sendAppPasswordReset(email) {
         return true;
     } catch (err) {
         console.error('[supabase-client] App password reset error:', err);
+        showToast('App reset failed: ' + err.message + ' — trying Supabase...', 'warning');
         return false;
     }
 }
