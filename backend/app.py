@@ -431,7 +431,7 @@ def create_app():
             try:
                 from models.activity_type import ActivityType
                 if ActivityType.query.count() == 0:
-                    defaults = ['safari', 'trekking', 'beach', 'cultural', 'honeymoon', 'group', 'flying']
+                    defaults = ['safari', 'trekking', 'beach', 'cultural', 'honeymoon', 'group', 'flying', 'museums']
                     for name in defaults:
                         db.session.add(ActivityType(name=name))
                     db.session.commit()

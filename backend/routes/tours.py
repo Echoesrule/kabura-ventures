@@ -165,12 +165,15 @@ def create_tour(current_user):
         slug = f'{base_slug}-{counter}'
         counter += 1
 
+    activity_type = sanitize_input(data.get('activity_type', ''), max_length=100).lower() or None
+
     tour = Tour(
         slug=slug,
         title=title,
         description=description,
         price=float(data.get('price', 0)),
         duration_days=int(data.get('duration_days', 1)),
+        activity_type=activity_type,
         location=location,
         location_name=sanitize_input(data.get('location_name', ''), max_length=255) or None,
         formatted_address=sanitize_input(data.get('formatted_address', ''), max_length=500) or None,
@@ -288,6 +291,8 @@ def update_tour(current_user, tour_id):
         tour.original_price = float(data['original_price']) if data['original_price'] else None
     if 'discount_pct' in data:
         tour.discount_pct = int(data['discount_pct']) if data['discount_pct'] else None
+    if 'activity_type' in data:
+        tour.activity_type = sanitize_input(data['activity_type'], max_length=100).lower() or None
     if 'itinerary' in data:
         tour.itinerary = data['itinerary'] if data['itinerary'] else None
 
