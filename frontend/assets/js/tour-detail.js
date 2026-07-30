@@ -329,12 +329,18 @@
             try {
                 const parsed = JSON.parse(tour.itinerary);
                 if (Array.isArray(parsed) && parsed.length) {
-                    parsed.forEach(function(day) {
+                    parsed.forEach(function(day, idx) {
                         if (!day.description) return;
+                        const title = day.title || '';
+                        const dayNum = day.day || idx + 1;
                         html += `
                             <div class="itinerary-day">
                                 <div class="itinerary-day-header" onclick="toggleItinerary(this)">
-                                    <span class="day-label">Day ${day.day}</span>
+                                    <span class="day-number">${String(dayNum).padStart(2, '0')}</span>
+                                    <span class="day-info">
+                                        <span class="day-label">Day ${dayNum}${title ? ': ' + escapeHTML(title) : ''}</span>
+                                        <span class="day-subtitle">${escapeHTML(day.description.split('.')[0] + '.')}</span>
+                                    </span>
                                     <span class="day-arrow">${svgIcon('chevron-down')}</span>
                                 </div>
                                 <div class="itinerary-day-content">
@@ -368,7 +374,10 @@
                 html += `
                     <div class="itinerary-day">
                         <div class="itinerary-day-header" onclick="toggleItinerary(this)">
-                            <span class="day-label">Day ${escapeHTML(dayNum)}</span>
+                            <span class="day-number">${escapeHTML(dayNum.padStart(2, '0'))}</span>
+                            <span class="day-info">
+                                <span class="day-label">Day ${escapeHTML(dayNum)}</span>
+                            </span>
                             <span class="day-arrow">${svgIcon('chevron-down')}</span>
                         </div>
                         <div class="itinerary-day-content">

@@ -364,18 +364,22 @@
         var section = document.getElementById('tour-itinerary-section');
         if (days < 1) { section.style.display = 'none'; return; }
         section.style.display = 'block';
-        var existing = container.querySelectorAll('input, textarea');
-        var savedData = [];
-        existing.forEach(function(el) {
-            var match = el.id && el.id.match(/^tour-itinerary-day-(\d+)/);
-            if (match) savedData[match[1]] = el.value;
+        var savedTitles = [], savedDescs = [];
+        container.querySelectorAll('input, textarea').forEach(function(el) {
+            var match = el.id && el.id.match(/^tour-itinerary-day-(\d+)-(title|desc)$/);
+            if (match) {
+                if (match[2] === 'title') savedTitles[match[1]] = el.value;
+                else savedDescs[match[1]] = el.value;
+            }
         });
         var html = '';
         for (var i = 1; i <= days; i++) {
-            var val = savedData[i] || '';
-            html += '<div style="margin-bottom:0.75rem;padding:0.75rem;background:var(--soft-white);border-radius:8px;">'
-                + '<label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Day ' + i + '</label>'
-                + '<textarea id="tour-itinerary-day-' + i + '" class="admin-input admin-textarea" rows="2" placeholder="Activities for day ' + i + '" style="font-size:0.85rem;">' + val.replace(/</g, '&lt;') + '</textarea>'
+            var t = savedTitles[i] || '';
+            var d = savedDescs[i] || '';
+            html += '<div style="margin-bottom:0.75rem;padding:1rem;background:var(--soft-white);border-radius:8px;border:1px solid var(--border-light);">'
+                + '<label style="font-weight:600;font-size:0.78rem;color:var(--text-secondary);display:block;margin-bottom:0.3rem;">DAY ' + i + '</label>'
+                + '<input id="tour-itinerary-day-' + i + '-title" class="admin-input" style="font-size:0.85rem;margin-bottom:0.5rem;" placeholder="e.g. Arrival & Game Drive" value="' + t.replace(/</g, '&lt;').replace(/"/g, '&quot;') + '">'
+                + '<textarea id="tour-itinerary-day-' + i + '-desc" class="admin-input admin-textarea" rows="2" placeholder="Activities, meals, accommodation for day ' + i + '" style="font-size:0.85rem;">' + d.replace(/</g, '&lt;') + '</textarea>'
                 + '</div>';
         }
         container.innerHTML = html;
@@ -408,16 +412,17 @@
     var tourMeetingTimeout = null;
 
     function showTourPreview(result) {
-        document.getElementById('tour-location-name').value = result.display_name || '';
+        var shortName = (result.display_name || '').split(',')[0] || result.display_name || '';
+        document.getElementById('tour-location-name').value = shortName;
         document.getElementById('tour-formatted-address').value = result.display_name || '';
         document.getElementById('tour-county').value = result.county || '';
         document.getElementById('tour-country').value = result.country || '';
         document.getElementById('tour-place-id').value = result.place_id || '';
-        document.getElementById('tour-location').value = result.display_name || '';
+        document.getElementById('tour-location').value = shortName;
         document.getElementById('tour-lat').value = result.lat;
         document.getElementById('tour-lng').value = result.lon;
 
-        document.getElementById('tour-preview-name').textContent = result.display_name?.split(',')[0] || result.display_name || '';
+        document.getElementById('tour-preview-name').textContent = shortName;
         document.getElementById('tour-preview-address').textContent = result.display_name || '';
         document.getElementById('tour-preview-county').textContent = result.county ? 'County: ' + result.county : '';
         document.getElementById('tour-preview-country').textContent = result.country ? 'Country: ' + result.country : '';
@@ -444,14 +449,15 @@
             try {
                 var rev = await reverseGeocode(pos.lat, pos.lng);
                 if (rev && rev.display_name) {
-                    document.getElementById('tour-location-name').value = rev.display_name;
-                    document.getElementById('tour-formatted-address').value = rev.display_name;
+                    var short = (rev.display_name || '').split(',')[0] || rev.display_name || '';
+                    document.getElementById('tour-location-name').value = short;
+                    document.getElementById('tour-formatted-address').value = rev.display_name || '';
                     document.getElementById('tour-county').value = rev.county || '';
                     document.getElementById('tour-country').value = rev.country || '';
                     document.getElementById('tour-place-id').value = rev.place_id || '';
-                    document.getElementById('tour-location').value = rev.display_name;
-                    document.getElementById('tour-preview-name').textContent = rev.display_name?.split(',')[0] || rev.display_name;
-                    document.getElementById('tour-preview-address').textContent = rev.display_name;
+                    document.getElementById('tour-location').value = short;
+                    document.getElementById('tour-preview-name').textContent = short;
+                    document.getElementById('tour-preview-address').textContent = rev.display_name || '';
                     document.getElementById('tour-preview-county').textContent = rev.county ? 'County: ' + rev.county : '';
                     document.getElementById('tour-preview-country').textContent = rev.country ? 'Country: ' + rev.country : '';
                 }
@@ -537,13 +543,14 @@
 
     // ── Meeting Point Picker ─────────────────────────────────
     function showMeetingPreview(result) {
-        document.getElementById('tour-meeting-point-name').value = result.display_name || '';
+        var shortName = (result.display_name || '').split(',')[0] || result.display_name || '';
+        document.getElementById('tour-meeting-point-name').value = shortName;
         document.getElementById('tour-meeting-address').value = result.display_name || '';
         document.getElementById('tour-meeting-lat').value = result.lat;
         document.getElementById('tour-meeting-lng').value = result.lon;
         document.getElementById('tour-meeting-place-id').value = result.place_id || '';
 
-        document.getElementById('tour-meeting-preview-name').textContent = result.display_name?.split(',')[0] || result.display_name || '';
+        document.getElementById('tour-meeting-preview-name').textContent = shortName;
         document.getElementById('tour-meeting-preview-address').textContent = result.display_name || '';
         document.getElementById('tour-meeting-preview').style.display = 'block';
     }
@@ -665,8 +672,10 @@
                     var itineraryData = JSON.parse(t.itinerary);
                     if (Array.isArray(itineraryData)) {
                         itineraryData.forEach(function(day) {
-                            var el = document.getElementById('tour-itinerary-day-' + day.day);
-                            if (el) el.value = day.description || '';
+                            var titleEl = document.getElementById('tour-itinerary-day-' + day.day + '-title');
+                            var descEl = document.getElementById('tour-itinerary-day-' + day.day + '-desc');
+                            if (titleEl) titleEl.value = day.title || '';
+                            if (descEl) descEl.value = day.description || '';
                         });
                     }
                 } catch(e) {
@@ -718,9 +727,15 @@
             if (days > 0) {
                 var itinerary = [];
                 for (var i = 1; i <= days; i++) {
-                    var descEl = document.getElementById('tour-itinerary-day-' + i);
-                    if (descEl && descEl.value.trim()) {
-                        itinerary.push({ day: i, description: descEl.value.trim() });
+                    var titleEl = document.getElementById('tour-itinerary-day-' + i + '-title');
+                    var descEl = document.getElementById('tour-itinerary-day-' + i + '-desc');
+                    var desc = descEl ? descEl.value.trim() : '';
+                    if (desc) {
+                        itinerary.push({
+                            day: i,
+                            title: titleEl ? titleEl.value.trim() : '',
+                            description: desc
+                        });
                     }
                 }
                 if (itinerary.length) {
@@ -884,16 +899,17 @@
     var hotelSearchTimeout = null;
 
     function showHotelPreview(result) {
-        document.getElementById('hotel-location-name').value = result.display_name || '';
+        var shortName = (result.display_name || '').split(',')[0] || result.display_name || '';
+        document.getElementById('hotel-location-name').value = shortName;
         document.getElementById('hotel-formatted-address').value = result.display_name || '';
         document.getElementById('hotel-county').value = result.county || '';
         document.getElementById('hotel-country').value = result.country || '';
         document.getElementById('hotel-place-id').value = result.place_id || '';
-        document.getElementById('hotel-location').value = result.display_name || '';
+        document.getElementById('hotel-location').value = shortName;
         document.getElementById('hotel-lat').value = result.lat;
         document.getElementById('hotel-lng').value = result.lon;
 
-        document.getElementById('hotel-preview-name').textContent = result.display_name?.split(',')[0] || result.display_name || '';
+        document.getElementById('hotel-preview-name').textContent = shortName;
         document.getElementById('hotel-preview-address').textContent = result.display_name || '';
         document.getElementById('hotel-preview-county').textContent = result.county ? 'County: ' + result.county : '';
         document.getElementById('hotel-preview-country').textContent = result.country ? 'Country: ' + result.country : '';
@@ -920,14 +936,15 @@
             try {
                 var rev = await reverseGeocode(pos.lat, pos.lng);
                 if (rev && rev.display_name) {
-                    document.getElementById('hotel-location-name').value = rev.display_name;
-                    document.getElementById('hotel-formatted-address').value = rev.display_name;
+                    var short = (rev.display_name || '').split(',')[0] || rev.display_name || '';
+                    document.getElementById('hotel-location-name').value = short;
+                    document.getElementById('hotel-formatted-address').value = rev.display_name || '';
                     document.getElementById('hotel-county').value = rev.county || '';
                     document.getElementById('hotel-country').value = rev.country || '';
                     document.getElementById('hotel-place-id').value = rev.place_id || '';
-                    document.getElementById('hotel-location').value = rev.display_name;
-                    document.getElementById('hotel-preview-name').textContent = rev.display_name?.split(',')[0] || rev.display_name;
-                    document.getElementById('hotel-preview-address').textContent = rev.display_name;
+                    document.getElementById('hotel-location').value = short;
+                    document.getElementById('hotel-preview-name').textContent = short;
+                    document.getElementById('hotel-preview-address').textContent = rev.display_name || '';
                     document.getElementById('hotel-preview-county').textContent = rev.county ? 'County: ' + rev.county : '';
                     document.getElementById('hotel-preview-country').textContent = rev.country ? 'Country: ' + rev.country : '';
                 }
