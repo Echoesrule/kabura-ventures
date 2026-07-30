@@ -109,8 +109,9 @@ async function sendPasswordReset(email) {
     }
 
     try {
+        const siteUrl = (window.API_BASE || location.origin + '/api').replace('/api', '');
         const { error } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/login',
+            redirectTo: siteUrl + '/login',
         });
         if (error) throw error;
         return true;
