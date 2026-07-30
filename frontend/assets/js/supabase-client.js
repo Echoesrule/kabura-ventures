@@ -84,7 +84,7 @@ async function sendAppPasswordReset(email) {
         const res = await fetch(`${baseUrl}/auth/forgot-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email, redirect_to: location.origin }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to send reset email');

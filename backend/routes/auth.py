@@ -250,7 +250,8 @@ def forgot_password():
     token = serializer.dumps(user.id, salt='password-reset')
 
     frontend_url = (
-        os.environ.get('FRONTEND_URL')
+        data.get('redirect_to')
+        or os.environ.get('FRONTEND_URL')
         or request.headers.get('Origin')
         or request.url_root.rstrip('/')
     )
