@@ -139,7 +139,7 @@ document.addEventListener('click', (e) => {
 window.addEventListener('storage', (e) => {
     if (e.key === 'token' && e.newValue) {
         api.setToken(e.newValue);
-        if (window.location.pathname === '/' || window.location.pathname === '/login.html' || window.location.pathname === '/signup.html') {
+        if (window.location.pathname === '/' || window.location.pathname === '/login' || window.location.pathname === '/signup') {
             window.location.href = '/';
         }
     }
@@ -174,12 +174,12 @@ async function updateAuthUI() {
                     + '</div>'
                     + '<div class="nav-user-section-label">My Account</div>'
                     + adminMenuItem
-                    + '<a href="/booking.html" class="nav-user-menu-item">My Bookings</a>'
-                    + '<a href="/wishlist.html" class="nav-user-menu-item">Wishlists</a>'
+                    + '<a href="/booking" class="nav-user-menu-item">My Bookings</a>'
+                    + '<a href="/wishlist" class="nav-user-menu-item">Wishlists</a>'
                     + '<div class="nav-user-menu-divider"></div>'
                     + '<div class="nav-user-section-label">Support</div>'
-                    + '<a href="/help.html" class="nav-user-menu-item">Help Center</a>'
-                    + '<a href="/help.html#general" class="nav-user-menu-item">FAQs</a>'
+                    + '<a href="/help" class="nav-user-menu-item">Help Center</a>'
+                    + '<a href="/help#general" class="nav-user-menu-item">FAQs</a>'
                     + '<div class="nav-user-menu-divider"></div>'
                     + '<div class="nav-user-footer">'
                     + '<span class="nav-user-lang">English</span>'
@@ -212,14 +212,14 @@ function renderGuestAuth() {
         + '<button class="nav-user-role">Partner</button>'
         + '</div>'
         + '<div class="nav-user-login-row">'
-        + '<a href="/login.html" class="nav-user-login-btn">Log in</a>'
+        + '<a href="/login" class="nav-user-login-btn">Log in</a>'
      
         + '</div>'
-        + '<a href="/signup.html" class="nav-user-signup-link">Sign Up</a>'
+        + '<a href="/signup" class="nav-user-signup-link">Sign Up</a>'
         + '<div class="nav-user-menu-divider"></div>'
         + '<div class="nav-user-section-label">Support</div>'
-        + '<a href="/help.html" class="nav-user-menu-item">Help Center</a>'
-        + '<a href="/help.html#general" class="nav-user-menu-item">FAQs</a>'
+        + '<a href="/help" class="nav-user-menu-item">Help Center</a>'
+        + '<a href="/help#general" class="nav-user-menu-item">FAQs</a>'
         + '<div class="nav-user-menu-divider"></div>'
         + '<div class="nav-user-footer">'
         + '<span class="nav-user-lang">English</span>'
@@ -277,17 +277,17 @@ document.addEventListener('submit', async (e) => {
             const result = await api.register({ name, email, password, phone });
             if (result.requires_verification) {
                 const path = window.location.pathname || '';
-                if (path.endsWith('login.html') || path.endsWith('signup.html')) {
+                if (path.endsWith('login.html') || path.endsWith('signup.html') || path.endsWith('/login') || path.endsWith('/signup')) {
                     showEmailVerification(result.email);
                 } else {
                     showToast('Verification code sent! Check your email.', 'success');
-                    setTimeout(() => { window.location.href = '/signup.html'; }, 500);
+                    setTimeout(() => { window.location.href = '/signup'; }, 500);
                 }
             } else {
                 if (result.token) api.setToken(result.token);
                 showToast('Registration successful!', 'success');
                 const path = window.location.pathname || '';
-                if (path.endsWith('login.html') || path.endsWith('signup.html')) {
+                if (path.endsWith('login.html') || path.endsWith('signup.html') || path.endsWith('/login') || path.endsWith('/signup')) {
                     setTimeout(() => { window.location.href = '/'; }, 300);
                 } else {
                     closeAllModals();
@@ -688,8 +688,8 @@ function renderMobileMenu(container) {
             + '</div>'
             + '<div class="mobile-menu-section-label">My Account</div>'
             + (user.role === 'admin' ? '<a href="/admin" class="mobile-menu-item">Dashboard</a>' : '')
-            + '<a href="/booking.html" class="mobile-menu-item">My Bookings</a>'
-            + '<a href="/wishlist.html" class="mobile-menu-item">Wishlists</a>'
+            + '<a href="/booking" class="mobile-menu-item">My Bookings</a>'
+            + '<a href="/wishlist" class="mobile-menu-item">Wishlists</a>'
             + '<div class="mobile-menu-divider"></div>';
     } else {
         html += '<div class="mobile-menu-card-header">'
@@ -704,10 +704,10 @@ function renderMobileMenu(container) {
             + '<button class="mobile-menu-role">Partner</button>'
             + '</div>'
             + '<div class="mobile-menu-login-row">'
-            + '<a href="/login.html" class="mobile-menu-login-btn">Log in</a>'
+            + '<a href="/login" class="mobile-menu-login-btn">Log in</a>'
            
             + '</div>'
-            + '<a href="/signup.html" class="mobile-menu-signup-link">Create an account</a>'
+            + '<a href="/signup" class="mobile-menu-signup-link">Create an account</a>'
             + '<div class="mobile-menu-divider"></div>';
     }
 
@@ -759,8 +759,8 @@ function renderMobileMenu(container) {
     // Support
     html += '<div class="mobile-menu-divider"></div>'
         + '<div class="mobile-menu-section-label">Support</div>'
-        + '<a href="/help.html" class="mobile-menu-item">Help Center</a>'
-        + '<a href="/help.html#general" class="mobile-menu-item">FAQs</a>'
+        + '<a href="/help" class="mobile-menu-item">Help Center</a>'
+        + '<a href="/help#general" class="mobile-menu-item">FAQs</a>'
         + '<div class="mobile-menu-divider"></div>'
         + '<div class="mobile-menu-footer">'
         + '<span class="mobile-menu-lang">English</span>'
@@ -792,10 +792,10 @@ document.addEventListener('click', function(e) {
 
 // Setup navigation
 function setupNavigation() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const path = window.location.pathname.replace(/\.html$/, '');
     document.querySelectorAll('.nav-links a').forEach(link => {
         const href = link.getAttribute('href');
-        if (href === currentPage) {
+        if (href === path) {
             link.classList.add('active');
         }
     });

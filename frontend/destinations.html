@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css?v=11">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="/assets/css/destinations.css">
 </head>
 <body>
@@ -50,6 +51,16 @@
             <div class="dest-magazine-grid" id="destinations-grid">
                 <!-- Populated by destinations.js -->
             </div>
+        </div>
+    </section>
+
+    <section class="dest-map-section">
+        <div class="dest-container">
+            <div class="dest-expect-header" data-aos="fade-up">
+                <span class="dest-label">Explore on Map</span>
+                <h2>Find your destination</h2>
+            </div>
+            <div id="dest-map" style="width:100%;height:450px;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);"></div>
         </div>
     </section>
 
@@ -89,7 +100,7 @@
             <div class="dest-cta" data-aos="fade-up">
                 <h2>Can't decide? We'll help you choose.</h2>
                 <p>Tell us what kind of experience you're after and we'll craft the perfect itinerary.</p>
-                <a href="/tours.html" class="dest-cta-btn">Browse All Tours</a>
+                <a href="/tours" class="dest-cta-btn">Browse All Tours</a>
             </div>
         </div>
     </section>
@@ -97,6 +108,7 @@
     <div id="footer-placeholder"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/components.js"></script>

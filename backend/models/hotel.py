@@ -1,11 +1,19 @@
 import uuid
+import re
 from datetime import datetime
 from . import db
+
+def slugify(text):
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s-]', '', text)
+    text = re.sub(r'[-\s]+', '-', text)
+    return text[:200]
 
 class Hotel(db.Model):
     __tablename__ = 'hotels'
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    slug = db.Column(db.String(255), unique=True, nullable=False, index=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     location = db.Column(db.String(255))
@@ -28,6 +36,7 @@ class Hotel(db.Model):
         count = Review.query.filter_by(hotel_id=self.id).count()
         return {
             'id': self.id,
+            'slug': self.slug,
             'name': self.name,
             'description': self.description,
             'location': self.location,

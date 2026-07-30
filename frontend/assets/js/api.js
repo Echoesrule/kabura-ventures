@@ -184,6 +184,8 @@ class ApiClient {
     async setHotelPrimaryImage(id) { return this.put(`/hotels/images/${id}/primary`); }
     async getRelatedTours(id) { return this.get(`/tours/${id}/related`); }
     async getActivityTypes() { return this.get('/tours/activity-types'); }
+    async createActivityType(name) { return this.post('/tours/activity-types', { name: name }); }
+    async deleteActivityType(name) { return this.delete('/tours/activity-types/' + encodeURIComponent(name)); }
 
     async getSubscribers(params = {}) {
         const query = new URLSearchParams(params).toString();

@@ -26,14 +26,38 @@
     <div id="navbar-placeholder"></div>
 
     <div id="tour-loader" class="tour-loader">
-        <div class="spinner"></div>
-        <p style="color:var(--text-secondary);margin-top:1rem;">Loading tour details...</p>
+        <div class="tour-skeleton-hero">
+            <div class="tour-skeleton-hero-bg"></div>
+            <div class="tour-skeleton-hero-content">
+                <div class="tour-skeleton-line w-30"></div>
+                <div class="tour-skeleton-line w-80" style="height:34px;margin-top:0.75rem;"></div>
+                <div class="tour-skeleton-line w-50" style="margin-top:0.6rem;"></div>
+                <div class="tour-skeleton-line w-40" style="margin-top:0.6rem;"></div>
+            </div>
+        </div>
+        <div style="display:flex;gap:2.5rem;padding:2.5rem 4vw;max-width:1400px;margin:0 auto;">
+            <div style="flex:1;">
+                <div class="tour-skeleton-block" style="height:220px;margin-bottom:1.5rem;"></div>
+                <div class="tour-skeleton-line w-60" style="margin-bottom:0.6rem;"></div>
+                <div class="tour-skeleton-line w-80" style="margin-bottom:0.6rem;"></div>
+                <div class="tour-skeleton-line w-70" style="margin-bottom:0.6rem;"></div>
+                <div class="tour-skeleton-line w-45" style="margin-bottom:0.6rem;"></div>
+                <div class="tour-skeleton-line w-90" style="margin-bottom:2rem;"></div>
+                <div class="tour-skeleton-block" style="height:180px;margin-bottom:1.5rem;"></div>
+                <div class="tour-skeleton-line w-55" style="margin-bottom:0.6rem;"></div>
+                <div class="tour-skeleton-line w-75" style="margin-bottom:0.6rem;"></div>
+                <div class="tour-skeleton-line w-60"></div>
+            </div>
+            <aside style="width:340px;flex-shrink:0;">
+                <div class="tour-skeleton-block" style="height:320px;"></div>
+            </aside>
+        </div>
     </div>
 
     <div id="tour-error" class="tour-error" style="display:none;">
         <h2>Tour Not Found</h2>
         <p>We couldn't find the tour you're looking for. It may have been removed or the link is incorrect.</p>
-        <a href="/tours.html" class="btn btn-primary">Browse Tours</a>
+        <a href="/tours" class="btn btn-primary">Browse Tours</a>
     </div>
 
     <div id="tour-content" style="display:none;">
@@ -46,8 +70,8 @@
                 <div class="tour-hero-quick-info" id="tour-hero-quick-info"></div>
                 <div class="tour-hero-badges" id="tour-hero-badges"></div>
                 <div class="tour-hero-cta">
-                    <a href="/tours.html" class="tour-hero-btn"><span>See tours</span></a>
-                    <a href="/tours.html" class="tour-hero-arrow" aria-label="See tours">
+                    <a href="/tours" class="tour-hero-btn"><span>See tours</span></a>
+                    <a href="/tours" class="tour-hero-arrow" aria-label="See tours">
                         <img src="/assets/images/right-arrow.png" alt="" class="tour-hero-arrow-img" loading="lazy">
                     </a>
                 </div>

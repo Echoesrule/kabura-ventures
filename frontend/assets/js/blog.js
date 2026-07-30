@@ -26,7 +26,7 @@
         async function loadBlogs(reset = false) {
             const container = document.getElementById('blog-list');
             if (reset) {
-                container.innerHTML = '<div class="spinner"></div>';
+                container.innerHTML = '<div class="skeleton-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">' + Array(4).fill('<div class="skeleton-card"><div class="skeleton-img" style="height:200px;"></div><div class="skeleton-body"><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div><div class="skeleton-line w-50"></div></div></div>').join('') + '</div>';
                 currentPage = 1;
             }
 
@@ -52,7 +52,7 @@
                     const img = blog.image_url || '/assets/images/placeholder.svg';
                     const tags = Array.isArray(blog.tags) ? blog.tags.join(', ') : '';
                     card.innerHTML = `
-                        <a href="/blog-detail.html?slug=${blog.slug}" style="text-decoration:none;color:inherit;">
+                        <a href="/blog-detail?slug=${blog.slug}" style="text-decoration:none;color:inherit;">
                             <img src="${escapeHTML(img)}" alt="${escapeHTML(blog.title)}" loading="lazy" onerror="this.src='/assets/images/placeholder.svg'">
                             <div class="blog-card-body">
                                 <span class="blog-card-category">${escapeHTML(blog.category || 'Guide')}</span>

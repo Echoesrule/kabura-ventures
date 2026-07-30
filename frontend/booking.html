@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="/assets/css/style.css?v=11">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/assets/css/booking.css">
 </head>
 <body>
@@ -189,7 +190,55 @@
 
     <div id="footer-placeholder"></div>
 
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal" style="max-width:450px;">
+            <div class="modal-header">
+                <h2>Make Payment</h2>
+                <button class="modal-close" onclick="closeModal('payment-modal')">&times;</button>
+            </div>
+            <form id="payment-form" style="padding:0.25rem 0;">
+                <input type="hidden" id="pay-booking-id">
+                <div class="form-row">
+                    <label>Amount</label>
+                    <input type="text" class="form-input" id="pay-amount" readonly style="font-weight:700;font-size:1.1rem;color:var(--primary);">
+                </div>
+                <div class="form-row">
+                    <label>Payment Method</label>
+                    <div class="payment-options-grid" id="pay-modal-options">
+                        <label class="payment-option-card selected" data-value="mpesa">
+                            <input type="radio" name="pay-method-modal" value="mpesa" checked style="display:none;">
+                            <span class="pay-icon" style="color:#122218;"><i class="fas fa-mobile-screen-button"></i></span>
+                            <span class="pay-label">M-Pesa</span>
+                        </label>
+                        <label class="payment-option-card" data-value="paypal">
+                            <input type="radio" name="pay-method-modal" value="paypal" style="display:none;">
+                            <span class="pay-icon" style="color:#003087;"><i class="fab fa-paypal"></i></span>
+                            <span class="pay-label">PayPal</span>
+                        </label>
+                        <label class="payment-option-card" data-value="cash">
+                            <input type="radio" name="pay-method-modal" value="cash" style="display:none;">
+                            <span class="pay-icon" style="color:#122218;"><i class="fas fa-money-bill-wave"></i></span>
+                            <span class="pay-label">Cash on Arrival</span>
+                        </label>
+                        <label class="payment-option-card" data-value="bank_transfer">
+                            <input type="radio" name="pay-method-modal" value="bank_transfer" style="display:none;">
+                            <span class="pay-icon" style="color:#122218;"><i class="fas fa-university"></i></span>
+                            <span class="pay-label">Bank Transfer</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Transaction Reference (optional)</label>
+                    <input type="text" class="form-input" id="pay-ref" placeholder="M-Pesa confirmation code or reference">
+                </div>
+                <button type="submit" class="submit-btn" style="margin-top:0.25rem;">Submit Payment Request</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/components.js"></script>

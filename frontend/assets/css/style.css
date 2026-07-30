@@ -4571,7 +4571,7 @@ tr:hover {
 .skeleton-img {
     width: 100%;
     height: 200px;
-    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.06) 25%, rgba(var(--sage-rgb),0.12) 50%, rgba(var(--sage-rgb),0.06) 75%);
+    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.10) 25%, rgba(var(--sage-rgb),0.18) 50%, rgba(var(--sage-rgb),0.10) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.4s ease-in-out infinite;
 }
@@ -4584,14 +4584,32 @@ tr:hover {
 .skeleton-line {
     height: 12px;
     border-radius: 6px;
-    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.06) 25%, rgba(var(--sage-rgb),0.12) 50%, rgba(var(--sage-rgb),0.06) 75%);
+    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.10) 25%, rgba(var(--sage-rgb),0.18) 50%, rgba(var(--sage-rgb),0.10) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.4s ease-in-out infinite;
 }
-.skeleton-line.w-60 { width: 60%; }
+.skeleton-line.w-30 { width: 30%; }
 .skeleton-line.w-40 { width: 40%; }
-.skeleton-line.w-80 { width: 80%; }
 .skeleton-line.w-50 { width: 50%; }
+.skeleton-line.w-60 { width: 60%; }
+.skeleton-line.w-80 { width: 80%; }
+.skeleton-line.h-18 { height: 18px; }
+.skeleton-line.h-22 { height: 22px; }
+.skeleton-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(var(--sage-rgb),0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.skeleton-btn {
+    width: 80px;
+    height: 32px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.10) 25%, rgba(var(--sage-rgb),0.18) 50%, rgba(var(--sage-rgb),0.10) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
 
 @keyframes shimmer {
     0% { background-position: -200% 0; }

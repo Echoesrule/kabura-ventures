@@ -2,8 +2,9 @@ import os
 import uuid
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
-from models.tour import Tour, TourImage
+from models.tour import Tour, TourImage, slugify
 from models.review import Review
+from models.activity_type import ActivityType
 from models import db
 from middleware.auth import admin_required, token_required
 from services.storage import save_image, delete_image
@@ -57,9 +58,11 @@ def get_tours():
         'pages': tours.pages
     }), 200
 
-@tours_bp.route('/<tour_id>', methods=['GET'])
-def get_tour(tour_id):
-    tour = Tour.query.get(tour_id)
+@tours_bp.route('/<identifier>', methods=['GET'])
+def get_tour(identifier):
+    tour = Tour.query.filter_by(slug=identifier).first()
+    if not tour:
+        tour = Tour.query.get(identifier)
     if not tour:
         return jsonify({'error': 'Tour not found'}), 404
     return jsonify({'tour': tour.to_dict()}), 200
@@ -78,8 +81,36 @@ def get_related_tours(tour_id):
 
 @tours_bp.route('/activity-types', methods=['GET'])
 def get_activity_types():
-    types = db.session.query(Tour.activity_type).distinct().all()
-    return jsonify({'types': [t[0] for t in types if t[0]]}), 200
+    types = ActivityType.query.order_by(ActivityType.name).all()
+    return jsonify({'types': [t.name for t in types]}), 200
+
+@tours_bp.route('/activity-types', methods=['POST'])
+@admin_required
+def create_activity_type(current_user):
+    data = request.get_json() if request.is_json else request.form
+    name = data.get('name', '').strip().lower()
+    if not name:
+        return jsonify({'error': 'Type name is required'}), 400
+    existing = ActivityType.query.filter_by(name=name).first()
+    if existing:
+        return jsonify({'error': 'Type already exists'}), 409
+    t = ActivityType(name=name)
+    db.session.add(t)
+    db.session.commit()
+    return jsonify({'message': f'Activity type "{name}" created', 'type': t.to_dict()}), 201
+
+@tours_bp.route('/activity-types/<path:name>', methods=['DELETE'])
+@admin_required
+def delete_activity_type(current_user, name):
+    from urllib.parse import unquote
+    name = unquote(name).strip().lower()
+    t = ActivityType.query.filter_by(name=name).first()
+    if not t:
+        return jsonify({'error': 'Type not found'}), 404
+    Tour.query.filter(Tour.activity_type == name).update({'activity_type': None})
+    db.session.delete(t)
+    db.session.commit()
+    return jsonify({'message': f'Activity type "{name}" removed'}), 200
 
 @tours_bp.route('', methods=['POST'])
 @admin_required
@@ -107,7 +138,15 @@ def create_tour(current_user):
     if errors:
         return jsonify({'error': '. '.join(errors)}), 400
 
+    base_slug = slugify(title)
+    slug = base_slug
+    counter = 1
+    while Tour.query.filter_by(slug=slug).first():
+        slug = f'{base_slug}-{counter}'
+        counter += 1
+
     tour = Tour(
+        slug=slug,
         title=title,
         description=description,
         price=float(data.get('price', 0)),
@@ -120,6 +159,7 @@ def create_tour(current_user):
         longitude=float(data['longitude']) if data.get('longitude') else None,
         original_price=float(data['original_price']) if data.get('original_price') else None,
         discount_pct=int(data['discount_pct']) if data.get('discount_pct') else None,
+        itinerary=data.get('itinerary') if data.get('itinerary') else None,
         available=True
     )
     db.session.add(tour)
@@ -155,6 +195,13 @@ def update_tour(current_user, tour_id):
         tour.title = sanitize_input(data['title'], max_length=255)
         err = validate_length(tour.title, 255, 'Title')
         if err: errors.append(err)
+        base_slug = slugify(tour.title)
+        slug = base_slug
+        counter = 1
+        while Tour.query.filter(Tour.slug == slug, Tour.id != tour.id).first():
+            slug = f'{base_slug}-{counter}'
+            counter += 1
+        tour.slug = slug
     if 'description' in data:
         tour.description = sanitize_input(data['description'], max_length=5000)
         err = validate_length(tour.description, 5000, 'Description')
@@ -191,6 +238,8 @@ def update_tour(current_user, tour_id):
         tour.original_price = float(data['original_price']) if data['original_price'] else None
     if 'discount_pct' in data:
         tour.discount_pct = int(data['discount_pct']) if data['discount_pct'] else None
+    if 'itinerary' in data:
+        tour.itinerary = data['itinerary'] if data['itinerary'] else None
 
     if request.files:
         files = request.files.getlist('images')

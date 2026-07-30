@@ -7,6 +7,48 @@
         var selectedItem = null;
         var selectedType = '';
         var allBookings = [];
+
+        var todayStr = new Date().toISOString().split('T')[0];
+
+        function initDatePickers() {
+            var dateInput = document.getElementById('booking-date');
+            var returnInput = document.getElementById('booking-return');
+
+            dateInput.setAttribute('min', todayStr);
+            returnInput.setAttribute('min', todayStr);
+
+            if (typeof flatpickr !== 'undefined') {
+                var dateOpts = {
+                    minDate: todayStr,
+                    dateFormat: 'Y-m-d',
+                    disableMobile: true,
+                    onChange: function(selectedDates, dateStr) {
+                        dateInput.value = dateStr;
+                        returnPicker.set('minDate', dateStr || todayStr);
+                        updateSidebar();
+                    }
+                };
+                var returnOpts = {
+                    minDate: todayStr,
+                    dateFormat: 'Y-m-d',
+                    disableMobile: true,
+                    onChange: function(selectedDates, dateStr) {
+                        returnInput.value = dateStr;
+                        updateSidebar();
+                    }
+                };
+                var datePicker = flatpickr(dateInput, dateOpts);
+                var returnPicker = flatpickr(returnInput, returnOpts);
+            }
+
+            dateInput.addEventListener('change', function() {
+                var d = this.value;
+                returnInput.min = d || todayStr;
+                if (returnInput.value && returnInput.value < d) returnInput.value = '';
+                updateSidebar();
+            });
+            returnInput.addEventListener('change', updateSidebar);
+        }
         var bookingsFilter = 'all';
 
         function showNewBookingForm() {
@@ -34,6 +76,8 @@
         }
 
         async function initCheckout() {
+            initDatePickers();
+
             var nameInput = document.getElementById('booking-name');
             var emailInput = document.getElementById('booking-email');
             if (api.token) {
@@ -309,7 +353,7 @@
             btn.disabled = true;
             btn.textContent = 'Processing...';
             try {
-                var selectedMethod = document.querySelector('#payment-options .selected')?.dataset?.value || document.querySelector('input[name="pay-method"]:checked')?.value || 'mpesa';
+                var selectedMethod = document.querySelector('#pay-modal-options .selected')?.dataset?.value || 'mpesa';
                 await api.createPayment({
                     booking_id: document.getElementById('pay-booking-id').value,
                     amount: parseFloat(document.getElementById('pay-amount').value),

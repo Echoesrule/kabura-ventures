@@ -1,4 +1,9 @@
-        const tourId = new URLSearchParams(window.location.search).get('id');
+        let tourId = new URLSearchParams(window.location.search).get('id');
+        if (!tourId) {
+            const path = window.location.pathname.replace(/\/$/, '');
+            tourId = path.split('/').pop();
+            if (tourId === 'tour-detail' || tourId === '') tourId = null;
+        }
         let currentTour = null;
         currentUser = null;
         let lightboxImages = [];
@@ -68,8 +73,8 @@
 
             document.getElementById('breadcrumb').innerHTML = `
                 <a href="/">Home</a> <span>&rsaquo;</span>
-                <a href="/tours.html">Tours</a> <span>&rsaquo;</span>
-                <a href="/tours.html?location=${encodeURIComponent(tour.location || '')}">${escapeHTML(tour.location || 'Kenya')}</a> <span>&rsaquo;</span>
+                <a href="/tours">Tours</a> <span>&rsaquo;</span>
+                <a href="/tours?location=${encodeURIComponent(tour.location || '')}">${escapeHTML(tour.location || 'Kenya')}</a> <span>&rsaquo;</span>
                 <span style="color:#fff;">${escapeHTML(tour.title)}</span>
             `;
 
@@ -295,7 +300,7 @@
                                 <td><span class="cmp-rating">${svgIcon('star',{size:14,color:'var(--accent)'})} ${t.rating.toFixed(1)}</span> <span style="color:var(--text-secondary);font-size:0.75rem;">(${t.reviews})</span></td>
                                 <td style="color:var(--text-secondary);">${t.duration}</td>
                                 <td class="cmp-price">${formatPrice(t.price)}</td>
-                                <td><button class="btn btn-primary btn-sm cmp-btn" onclick="window.location.href='/booking.html?tour=${tour.id}'">View</button></td>
+                                <td><button class="btn btn-primary btn-sm cmp-btn" onclick="window.location.href='/booking?tour=${tour.id}'">View</button></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -312,6 +317,34 @@
                 return;
             }
 
+            let html = '';
+
+            try {
+                const parsed = JSON.parse(tour.itinerary);
+                if (Array.isArray(parsed) && parsed.length) {
+                    parsed.forEach(function(day) {
+                        if (!day.description) return;
+                        html += `
+                            <div class="itinerary-day">
+                                <div class="itinerary-day-header" onclick="toggleItinerary(this)">
+                                    <span class="day-label">Day ${day.day}</span>
+                                    <span class="day-arrow">${svgIcon('chevron-down')}</span>
+                                </div>
+                                <div class="itinerary-day-content">
+                                    <p>${escapeHTML(day.description)}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    if (html) {
+                        container.innerHTML = html;
+                        return;
+                    }
+                }
+            } catch (e) {
+                // not JSON, fall through to text parsing
+            }
+
             const dayRegex = /Day\s+(\d+)\s*[:.-]?\s*/gi;
             const parts = tour.itinerary.split(dayRegex);
 
@@ -320,7 +353,6 @@
                 return;
             }
 
-            let html = '';
             for (let i = 1; i < parts.length; i += 2) {
                 const dayNum = parts[i];
                 const dayContent = parts[i + 1] ? parts[i + 1].trim() : '';
@@ -551,7 +583,7 @@
                     const imgUrl = img ? img.image_url : '/assets/images/placeholder.svg';
 
                     return `
-                        <div class="related-card" onclick="window.location.href='/tour-detail.html?id=${t.id}'">
+                        <div class="related-card" onclick="window.location.href='/tours/${t.slug || t.id}'">
                             <img src="${imgUrl}" alt="${t.title}" loading="lazy" onerror="this.src='/assets/images/placeholder.svg'">
                             <div class="related-card-body">
                                 <h4>${t.title}</h4>
@@ -572,9 +604,27 @@
         function renderBooking() {
             const tour = currentTour;
             const price = Number(tour.price);
+            const hasOffer = tour.original_price && Number(tour.original_price) > price;
+            const discountPct = tour.discount_pct || (hasOffer ? Math.round((1 - price / Number(tour.original_price)) * 100) : 0);
 
-            document.getElementById('sidebar-price').innerHTML = window.priceHTML(price);
-            document.getElementById('mobile-bar-price').innerHTML = window.priceHTML(price);
+            if (hasOffer) {
+                document.getElementById('sidebar-price').innerHTML =
+                    '<div class="sidebar-offer-price">'
+                    + '<span class="price-old" style="font-size:0.85rem;font-weight:500;color:var(--text-placeholder);text-decoration:line-through;display:block;">' + window.formatPrice(tour.original_price) + '</span>'
+                    + '<span style="display:flex;align-items:baseline;gap:0.5rem;flex-wrap:wrap;">'
+                    + '<span class="price-new price-amount" data-kes="' + price + '" style="font-size:1.8rem;font-weight:700;color:#c0392b;">' + window.formatPrice(price) + '</span>'
+                    + '<span class="discount-badge" style="background:#c0392b;color:#fff;padding:0.2rem 0.6rem;border-radius:999px;font-size:0.68rem;font-weight:700;">-' + discountPct + '%</span>'
+                    + '</span>'
+                    + '</div>';
+                document.getElementById('mobile-bar-price').innerHTML =
+                    '<span style="display:flex;align-items:baseline;gap:0.4rem;">'
+                    + '<span class="price-new" style="font-weight:700;color:#c0392b;">' + window.formatPrice(price) + '</span>'
+                    + '<span class="discount-badge" style="background:#c0392b;color:#fff;padding:0.15rem 0.5rem;border-radius:999px;font-size:0.6rem;font-weight:700;">-' + discountPct + '%</span>'
+                    + '</span>';
+            } else {
+                document.getElementById('sidebar-price').innerHTML = window.priceHTML(price);
+                document.getElementById('mobile-bar-price').innerHTML = window.priceHTML(price);
+            }
 
             document.getElementById('sidebar-badges').innerHTML = `
                 <span class="sidebar-badge sb-hot">${svgIcon('fire')} Likely to Sell Out</span>
@@ -638,7 +688,7 @@
 
             const date = document.getElementById('sidebar-date').value;
             const people = document.getElementById('sidebar-people').value;
-            window.location.href = `/booking.html?tour=${tourId}&date=${date}&people=${people}`;
+            window.location.href = `/booking?tour=${currentTour.id}&date=${date}&people=${people}`;
         }
 
         function openLightbox(index) {
@@ -671,7 +721,7 @@
             document.getElementById('lightbox-counter').textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded',  () => {
             document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
             document.getElementById('lightbox-prev').addEventListener('click', prevLightbox);
             document.getElementById('lightbox-next').addEventListener('click', nextLightbox);

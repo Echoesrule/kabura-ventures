@@ -297,12 +297,26 @@
         .breadcrumb a:hover { color: #fff; }
         .breadcrumb span { color: rgba(255,255,255,0.5); font-size: 0.65rem; overflow-wrap: anywhere; word-break: break-word; max-width: 100%; }
 
-        .tour-loader { text-align: center; padding: 6rem 2rem; }
+        .tour-loader { background: var(--soft-white); }
         .tour-error { text-align: center; padding: 6rem 2rem; }
         .tour-error h2 { color: var(--error); margin-bottom: 0.75rem; }
         .tour-error p { color: var(--text-secondary); margin-bottom: 1.5rem; }
-        .spinner { width: 44px; height: 44px; border: 4px solid rgba(18,34,24,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 2rem auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Skeleton loader for tour detail */
+        .tour-skeleton-hero { position: relative; overflow: hidden; min-height: 420px; display:flex; align-items:flex-end; padding:3rem 4vw; }
+        .tour-skeleton-hero-bg { position:absolute; inset:0; background: linear-gradient(90deg, #e0e6df 25%, #eef2ee 50%, #e0e6df 75%); background-size:200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+        .tour-skeleton-hero-content { position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto; }
+        .tour-skeleton-line { height:14px; border-radius:8px; background: linear-gradient(90deg, rgba(var(--sage-rgb),0.08) 25%, rgba(var(--sage-rgb),0.16) 50%, rgba(var(--sage-rgb),0.08) 75%); background-size:200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+        .tour-skeleton-line.w-30 { width:30%; }
+        .tour-skeleton-line.w-40 { width:40%; }
+        .tour-skeleton-line.w-45 { width:45%; }
+        .tour-skeleton-line.w-50 { width:50%; }
+        .tour-skeleton-line.w-55 { width:55%; }
+        .tour-skeleton-line.w-60 { width:60%; }
+        .tour-skeleton-line.w-70 { width:70%; }
+        .tour-skeleton-line.w-75 { width:75%; }
+        .tour-skeleton-line.w-80 { width:80%; }
+        .tour-skeleton-line.w-90 { width:90%; }
+        .tour-skeleton-block { border-radius:var(--radius-lg); background: linear-gradient(90deg, rgba(var(--sage-rgb),0.08) 25%, rgba(var(--sage-rgb),0.16) 50%, rgba(var(--sage-rgb),0.08) 75%); background-size:200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
 
         @media (max-width: 1024px) {
             .tour-detail-layout { flex-direction: column; padding: 1.5rem 1rem; }

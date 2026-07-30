@@ -1,4 +1,9 @@
         var hotelId = new URLSearchParams(window.location.search).get('id');
+        if (!hotelId) {
+            var path = window.location.pathname.replace(/\/$/, '');
+            hotelId = path.split('/').pop();
+            if (hotelId === 'hotel-detail' || hotelId === '') hotelId = null;
+        }
         var currentHotel = null;
         var lightboxImages = [];
         var lightboxIndex = 0;
@@ -38,6 +43,7 @@
         renderReviews();
         renderSidebar();
         renderRelated();
+        renderMap();
         renderMobileBar();
         renderReviewFormSection();
         setupBooking();
@@ -48,7 +54,7 @@
             var hero = document.getElementById('hotel-hero');
             hero.style.backgroundImage = 'url(' + getPrimaryImage() + ')';
 
-            document.getElementById('breadcrumb').innerHTML = '<a href="/">Home</a> <span>&#8250;</span> <a href="/hotels.html">Hotels</a> <span>&#8250;</span> ' + escapeHTML(h.name);
+            document.getElementById('breadcrumb').innerHTML = '<a href="/">Home</a> <span>&#8250;</span> <a href="/hotels">Hotels</a> <span>&#8250;</span> ' + escapeHTML(h.name);
 
             document.getElementById('hotel-title').textContent = h.name;
 
@@ -376,7 +382,7 @@
                     showToast('Please select check-in and check-out dates', 'warning');
                     return;
                 }
-                window.location.href = '/booking.html?hotel=' + hotelId + '&checkin=' + checkin + '&checkout=' + checkout + '&guests=' + guests;
+                window.location.href = '/booking?hotel=' + currentHotel.id + '&checkin=' + checkin + '&checkout=' + checkout + '&guests=' + guests;
             });
             document.getElementById('mobile-book-btn').addEventListener('click', function() {
                 document.getElementById('sidebar-book-btn').click();
@@ -388,6 +394,35 @@
             document.getElementById('mobile-bar-price').innerHTML = '<span class="price-amount" data-kes="' + h.price_per_night + '">' + window.formatPrice(h.price_per_night) + '</span>';
         }
 
+        function renderMap() {
+            var h = currentHotel;
+
+            if (h.latitude == null || h.longitude == null) {
+                return;
+            }
+
+            var mapSection = document.getElementById('hotel-map-section');
+            mapSection.classList.add('visible');
+
+            setTimeout(function() {
+                if (mapInstance) {
+                    mapInstance.remove();
+                }
+
+                mapInstance = L.map('map').setView([h.latitude, h.longitude], 10);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                    maxZoom: 18
+                }).addTo(mapInstance);
+
+                L.marker([h.latitude, h.longitude])
+                    .addTo(mapInstance)
+                    .bindPopup('<b>' + escapeHTML(h.name) + '</b>')
+                    .openPopup();
+            }, 200);
+        }
+
         function renderRelated() {
             var container = document.getElementById('related-hotels');
             api.getHotels({ per_page: 5 }).then(function(result) {
@@ -396,7 +431,7 @@
                 container.innerHTML = hotels.map(function(h) {
                     var img = h.images && h.images.length > 0 ? (h.images.find(function(i) { return i.is_primary; }) || h.images[0]).image_url : '/assets/images/placeholder.svg';
                     var rating = h.avg_rating || h.rating || 0;
-                    return '<a href="/hotel-detail.html?id=' + h.id + '" class="related-card" style="text-decoration:none;color:inherit;">'
+                    return '<a href="/hotels/' + (h.slug || h.id) + '" class="related-card" style="text-decoration:none;color:inherit;">'
                         + '<img src="' + img + '" alt="' + escapeHTML(h.name) + '" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
                         + '<div class="related-card-body">'
                             + '<h4>' + escapeHTML(h.name) + '</h4>'

@@ -22,3 +22,4 @@ from .destination import Destination
 from .offer_service import OfferService
 from .testimonial import Testimonial
 from .page_section import PageSection
+from .activity_type import ActivityType

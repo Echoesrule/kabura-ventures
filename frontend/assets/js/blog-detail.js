@@ -24,7 +24,7 @@
                     </div>
                     <div class="content">${escapeHTML(blog.content)}</div>
                     <div class="blog-nav">
-                        <a href="/blog.html" class="btn btn-secondary">&larr; Back to Blog</a>
+                        <a href="/blog" class="btn btn-secondary">&larr; Back to Blog</a>
                     </div>
                 `;
             } catch (err) {

@@ -76,7 +76,20 @@
             var fullStars = Math.round(rating);
             var starsHtml = '<i class="fas fa-star"></i>'.repeat(fullStars) + '<i class="far fa-star"></i>'.repeat(5 - fullStars);
             var reviewCount = tour.reviews_count || 0;
-            return '<a href="/tour-detail.html?id=' + tour.id + '" class="category-tour-card">'
+            var isOffer = !!(tour.original_price && Number(tour.original_price) > Number(tour.price));
+            var discountPct = tour.discount_pct || (isOffer ? Math.round((1 - Number(tour.price) / Number(tour.original_price)) * 100) : 0);
+            var priceHtml;
+            if (isOffer) {
+                priceHtml = '<div class="category-tour-price category-tour-price--offer" style="display:flex;align-items:baseline;gap:0.4rem;flex-wrap:wrap;">'
+                    + '<span class="category-tour-price-old" style="font-size:0.82rem;font-weight:500;color:var(--text-placeholder);text-decoration:line-through;">' + formatPrice(tour.original_price) + '</span>'
+                    + '<span class="category-tour-price-new price-amount" data-kes="' + tour.price + '" style="font-size:1.15rem;font-weight:700;color:#c0392b;">' + formatPrice(tour.price) + '</span>'
+                    + '<span class="tour-card-offer-badge" style="font-size:0.65rem;font-weight:700;background:#c0392b;color:#fff;padding:0.15rem 0.5rem;border-radius:999px;">-' + discountPct + '%</span>'
+                    + '</div>';
+            } else {
+                priceHtml = '<span class="category-tour-price price-amount" data-kes="' + (tour.price || 0) + '">' + formatPrice(tour.price || 0) + '</span>';
+            }
+            return '<a href="/tours/' + (tour.slug || tour.id) + '" class="category-tour-card">'
+                + (isOffer ? '<span class="tour-card-offer-badge" style="position:absolute;top:0.75rem;left:50%;transform:translateX(-50%);padding:0.3rem 0.8rem;border-radius:999px;font-size:0.68rem;font-weight:700;background:#c0392b;color:#fff;text-transform:uppercase;letter-spacing:0.3px;z-index:2;">-' + discountPct + '%</span>' : '')
                 + '<img src="' + img + '" alt="' + (tour.title || '') + '" class="category-tour-img" loading="lazy">'
                 + '<div class="category-tour-body">'
                 + '<div class="category-tour-location"><i class="fas fa-map-marker-alt"></i> ' + (tour.location || 'Kenya') + '</div>'
@@ -84,7 +97,7 @@
                 + (rating > 0 ? '<div class="category-tour-stars">' + starsHtml + ' <span>' + rating.toFixed(1) + ' (' + reviewCount + ')</span></div>' : '')
                 + '<p class="category-tour-desc">' + (tour.description || '').substring(0, 120) + '...</p>'
                 + '<div class="category-tour-footer">'
-                + '<span class="category-tour-price price-amount" data-kes="' + (tour.price || 0) + '">' + formatPrice(tour.price || 0) + '</span>'
+                + priceHtml
                 + '<span class="category-tour-cta">View Details <i class="fas fa-arrow-right"></i></span>'
                 + '</div></div></a>';
         }).join('');

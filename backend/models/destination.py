@@ -13,6 +13,8 @@ class Destination(db.Model):
     link_url = db.Column(db.String(500), nullable=True)
     sort_order = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -26,5 +28,7 @@ class Destination(db.Model):
             'link_url': self.link_url or '',
             'sort_order': self.sort_order,
             'is_active': self.is_active,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }

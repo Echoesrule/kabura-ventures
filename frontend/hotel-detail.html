@@ -26,14 +26,38 @@
     <div id="navbar-placeholder"></div>
 
     <div id="hotel-loader" class="hotel-loader">
-        <div class="spinner"></div>
-        <p style="color:var(--text-secondary);margin-top:1rem;">Loading hotel details...</p>
+        <div class="hotel-skeleton-hero">
+            <div class="hotel-skeleton-hero-bg"></div>
+            <div class="hotel-skeleton-hero-content">
+                <div class="hotel-skeleton-line w-30"></div>
+                <div class="hotel-skeleton-line w-80" style="height:34px;margin-top:0.75rem;"></div>
+                <div class="hotel-skeleton-line w-50" style="margin-top:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-40" style="margin-top:0.6rem;"></div>
+            </div>
+        </div>
+        <div style="display:flex;gap:2.5rem;padding:2.5rem 4vw;max-width:1400px;margin:0 auto;">
+            <div style="flex:1;">
+                <div class="hotel-skeleton-block" style="height:220px;margin-bottom:1.5rem;"></div>
+                <div class="hotel-skeleton-line w-60" style="margin-bottom:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-80" style="margin-bottom:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-70" style="margin-bottom:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-45" style="margin-bottom:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-90" style="margin-bottom:2rem;"></div>
+                <div class="hotel-skeleton-block" style="height:180px;margin-bottom:1.5rem;"></div>
+                <div class="hotel-skeleton-line w-55" style="margin-bottom:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-75" style="margin-bottom:0.6rem;"></div>
+                <div class="hotel-skeleton-line w-60"></div>
+            </div>
+            <aside style="width:340px;flex-shrink:0;">
+                <div class="hotel-skeleton-block" style="height:320px;"></div>
+            </aside>
+        </div>
     </div>
 
     <div id="hotel-error" class="hotel-error" style="display:none;">
         <h2>Hotel Not Found</h2>
         <p>We couldn't find the hotel you're looking for. It may have been removed or the link is incorrect.</p>
-        <a href="/hotels.html" class="btn btn-primary">Browse Hotels</a>
+        <a href="/hotels" class="btn btn-primary">Browse Hotels</a>
     </div>
 
     <div id="hotel-content" style="display:none;">
@@ -46,8 +70,8 @@
                 <div class="hotel-hero-meta" id="hotel-hero-meta"></div>
                 <div class="hotel-hero-badges" id="hotel-hero-badges"></div>
                 <div class="hotel-hero-cta">
-                    <a href="/hotels.html" class="hotel-hero-btn"><span>See hotels</span></a>
-                    <a href="/hotels.html" class="hotel-hero-arrow" aria-label="See hotels">
+                    <a href="/hotels" class="hotel-hero-btn"><span>See hotels</span></a>
+                    <a href="/hotels" class="hotel-hero-arrow" aria-label="See hotels">
                         <img src="/assets/images/right-arrow.png" alt="" class="hotel-hero-arrow-img" loading="lazy">
                     </a>
                 </div>

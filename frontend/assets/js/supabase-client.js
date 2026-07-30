@@ -55,7 +55,7 @@ async function signInWithGoogle() {
     const client = getSupabaseClient();
     if (!client) {
         console.warn('[supabase-client] Not initialized, redirecting to login page');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return;
     }
 
@@ -63,7 +63,7 @@ async function signInWithGoogle() {
         const { error } = await client.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin + '/login.html',
+                redirectTo: window.location.origin + '/login',
             },
         });
         if (error) throw error;
@@ -87,7 +87,7 @@ async function sendPasswordReset(email) {
 
     try {
         const { error } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/login.html',
+            redirectTo: window.location.origin + '/login',
         });
         if (error) throw error;
         return true;

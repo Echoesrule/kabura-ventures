@@ -1,4 +1,4 @@
-/* destinations.js - Load and render destination cards */
+/* destinations.js - Load and render destination cards + map */
 (function () {
     const grid = document.getElementById('destinations-grid');
     if (!grid) return;
@@ -57,8 +57,59 @@
         image: '/assets/images/savannah.jpg'
     };
 
+    var destMap = null;
+
+    function renderMap(destinations) {
+        var mapEl = document.getElementById('dest-map');
+        if (!mapEl || typeof L === 'undefined') return;
+
+        var coords = destinations.filter(function (d) { return d.latitude != null && d.longitude != null; });
+        if (!coords.length) {
+            mapEl.style.display = 'none';
+            return;
+        }
+        mapEl.style.display = 'block';
+
+        if (destMap) destMap.remove();
+
+        var bounds = [];
+        coords.forEach(function (d) {
+            bounds.push([d.latitude, d.longitude]);
+        });
+
+        destMap = L.map(mapEl);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18, attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        }).addTo(destMap);
+
+        coords.forEach(function (d) {
+            var name = d.name || 'Destination';
+            var locText = d.location_text || '';
+            var popup = '<strong>' + name + '</strong>' + (locText ? '<br>' + locText : '');
+            var marker = L.marker([d.latitude, d.longitude]).addTo(destMap);
+            marker.bindPopup(popup);
+        });
+
+        if (bounds.length === 1) {
+            destMap.setView(bounds[0], 10);
+        } else {
+            destMap.fitBounds(bounds, { padding: [40, 40] });
+        }
+
+        setTimeout(function () { destMap.invalidateSize(); }, 300);
+    }
+
     async function loadDestinations() {
         let destinations = [];
+
+        grid.innerHTML = '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>' +
+            '<div class="dest-skeleton-card"><div class="dest-skeleton-img"></div></div>';
 
         try {
             const result = await api.getDestinations();
@@ -74,6 +125,7 @@
         destinations.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
 
         renderGrid(destinations);
+        renderMap(destinations);
     }
 
     function renderGrid(destinations) {
@@ -83,7 +135,7 @@
             const name = dest.name;
             const data = DEST_DATA[name] || { ...FALLBACK, desc: FALLBACK.desc };
             const img = dest.image_url || data.image || FALLBACK.image;
-            const tourUrl = `/tours.html?search=${encodeURIComponent(name)}`;
+            const tourUrl = `/tours?search=${encodeURIComponent(name)}`;
 
             const card = document.createElement('div');
             card.className = 'dest-card';

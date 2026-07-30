@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css?v=11">
     <link rel="stylesheet" href="/assets/css/admin.css?v=14">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body class="admin-layout no-nav">
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -242,6 +243,7 @@
                     <div class="admin-panel-body">
                         <form id="tour-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
                             <input type="hidden" id="tour-edit-id" value="">
+                            <div id="tour-form-msg" style="flex:0 0 100%;display:none;"></div>
                             <div style="flex:2;min-width:200px;">
                                 <label class="admin-label">Title *</label>
                                 <input type="text" id="tour-title" required class="admin-input" placeholder="Tour title">
@@ -260,7 +262,7 @@
                             </div>
                             <div style="flex:1;min-width:100px;">
                                 <label class="admin-label">Discount %</label>
-                                <input type="number" id="tour-discount-pct" class="admin-input" placeholder="0" min="0" max="90">
+                                <input type="number" id="tour-discount-pct" class="admin-input" placeholder="Auto-calculated" min="0" max="90" readonly style="background:#f0f0f0;cursor:not-allowed;">
                             </div>
                             <div style="flex:1;min-width:100px;">
                                 <label class="admin-label">Duration (days) *</label>
@@ -271,8 +273,13 @@
                                 <input type="number" id="tour-max-people" class="admin-input" placeholder="20" min="1">
                             </div>
                             <div style="flex:1;min-width:120px;">
-                                <label class="admin-label">Activity Type</label>
-                                <input type="text" id="tour-activity" class="admin-input" placeholder="safari">
+                                <label class="admin-label">Activity Type *</label>
+                                <div style="display:flex;gap:0.4rem;">
+                                    <select id="tour-activity" class="admin-input" required style="flex:1;">
+                                        <option value="">Select type</option>
+                                    </select>
+                                    <button type="button" class="admin-btn admin-btn--secondary" style="padding:4px 8px;font-size:11px;" onclick="openActivityTypesModal()" title="Manage activity types">✎</button>
+                                </div>
                             </div>
                             <div style="flex:1;min-width:120px;">
                                 <label class="admin-label">Wildlife</label>
@@ -293,11 +300,27 @@
                                 <label class="admin-label">Images</label>
                                 <input type="file" id="tour-images" class="admin-input" multiple accept="image/*">
                             </div>
-                            <div style="display:flex;gap:0.5rem;">
+                            <div style="display:flex;gap:0.5rem;align-items:flex-end;flex:0 0 100%;">
+                                <div style="flex:1;">
+                                    <label class="admin-label">Latitude</label>
+                                    <input type="number" step="any" id="tour-lat" class="admin-input" placeholder="-1.2921">
+                                </div>
+                                <div style="flex:1;">
+                                    <label class="admin-label">Longitude</label>
+                                    <input type="number" step="any" id="tour-lng" class="admin-input" placeholder="36.8219">
+                                </div>
+                                <button type="button" class="admin-hero-btn" style="height:40px;white-space:nowrap;flex-shrink:0;" id="tour-geocode-btn">Lookup</button>
+                            </div>
+                            <div id="tour-map-preview" style="width:100%;height:250px;border-radius:10px;margin-top:0.75rem;background:#e8ece4;display:none;"></div>
+                            <div style="display:flex;gap:0.5rem;flex:0 0 100%;">
                                 <button type="submit" id="tour-submit-btn" class="admin-btn admin-btn--primary">Add Tour</button>
-                                <button type="button" id="tour-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('tour-edit-id').value='';document.getElementById('tour-submit-btn').textContent='Add Tour';document.getElementById('tour-cancel-btn').style.display='none';document.getElementById('tour-form').reset();">Cancel</button>
+                                <button type="button" id="tour-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('tour-edit-id').value='';document.getElementById('tour-submit-btn').textContent='Add Tour';document.getElementById('tour-cancel-btn').style.display='none';document.getElementById('tour-form').reset();hideTourItinerary();destroyTourMap();">Cancel</button>
                             </div>
                         </form>
+                        <div id="tour-itinerary-section" style="margin-top:1.25rem;border-top:1px solid var(--border-light);padding-top:1rem;display:none;">
+                            <label class="admin-label" style="font-size:1rem;margin-bottom:0.75rem;">Day-by-Day Itinerary</label>
+                            <div id="tour-itinerary-days"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="admin-panel">
@@ -347,9 +370,21 @@
                                 <label class="admin-label">Images</label>
                                 <input type="file" id="hotel-images" class="admin-input" multiple accept="image/*">
                             </div>
+                            <div style="display:flex;gap:0.5rem;align-items:flex-end;flex:0 0 100%;">
+                                <div style="flex:1;">
+                                    <label class="admin-label">Latitude</label>
+                                    <input type="number" step="any" id="hotel-lat" class="admin-input" placeholder="-1.2921">
+                                </div>
+                                <div style="flex:1;">
+                                    <label class="admin-label">Longitude</label>
+                                    <input type="number" step="any" id="hotel-lng" class="admin-input" placeholder="36.8219">
+                                </div>
+                                <button type="button" class="admin-hero-btn" style="height:40px;white-space:nowrap;flex-shrink:0;" id="hotel-geocode-btn">Lookup</button>
+                            </div>
+                            <div id="hotel-map-preview" style="width:100%;height:250px;border-radius:10px;margin-top:0.75rem;background:#e8ece4;display:none;"></div>
                             <div style="display:flex;gap:0.5rem;">
                                 <button type="submit" id="hotel-submit-btn" class="admin-btn admin-btn--primary">Add Hotel</button>
-                                <button type="button" id="hotel-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('hotel-edit-id').value='';document.getElementById('hotel-submit-btn').textContent='Add Hotel';document.getElementById('hotel-cancel-btn').style.display='none';document.getElementById('hotel-form').reset();">Cancel</button>
+                                <button type="button" id="hotel-cancel-btn" class="admin-btn admin-btn--secondary" style="display:none;" onclick="document.getElementById('hotel-edit-id').value='';document.getElementById('hotel-submit-btn').textContent='Add Hotel';document.getElementById('hotel-cancel-btn').style.display='none';document.getElementById('hotel-form').reset();destroyHotelMap();">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -420,33 +455,47 @@
                     </div>
                     <div class="admin-panel-body">
                         <div class="admin-upload-area" style="margin-bottom:1.5rem;">
-                            <form id="location-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
-                                <div style="flex:1;min-width:200px;">
-                                    <label class="admin-label">Name *</label>
-                                    <input type="text" name="name" placeholder="e.g. Maasai Mara" required class="admin-input" id="loc-name">
+                            <form id="location-form" enctype="multipart/form-data">
+                                <div class="admin-form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                                    <div>
+                                        <label class="admin-label">Name *</label>
+                                        <input type="text" name="name" placeholder="e.g. Maasai Mara" required class="admin-input" id="loc-name">
+                                    </div>
+                                    <div>
+                                        <label class="admin-label">Location Text</label>
+                                        <input type="text" name="location_text" placeholder="e.g. Narok County, Kenya" class="admin-input" id="loc-location-text">
+                                    </div>
+                                    <div style="grid-column:span 2;">
+                                        <label class="admin-label">Description</label>
+                                        <input type="text" name="description" placeholder="Brief description of the location" class="admin-input" id="loc-desc">
+                                    </div>
+                                    <div>
+                                        <label class="admin-label">Image</label>
+                                        <input type="file" name="image" accept="image/*" class="admin-input" id="loc-image">
+                                    </div>
+                                    <div>
+                                        <label class="admin-label">Link URL</label>
+                                        <input type="text" name="link_url" placeholder="/destinations.html" class="admin-input" id="loc-link">
+                                    </div>
+                                    <div>
+                                        <label class="admin-label">Order</label>
+                                        <input type="number" name="sort_order" value="0" class="admin-input" id="loc-sort" style="width:80px;">
+                                    </div>
+                                    <div style="display:flex;gap:0.5rem;align-items:flex-end;">
+                                        <div style="flex:1;">
+                                            <label class="admin-label">Latitude</label>
+                                            <input type="number" step="any" name="latitude" class="admin-input" id="loc-lat" placeholder="-1.2921">
+                                        </div>
+                                        <div style="flex:1;">
+                                            <label class="admin-label">Longitude</label>
+                                            <input type="number" step="any" name="longitude" class="admin-input" id="loc-lng" placeholder="36.8219">
+                                        </div>
+                                        <button type="button" class="admin-hero-btn" style="height:40px;white-space:nowrap;flex-shrink:0;" id="loc-geocode-btn">Lookup</button>
+                                    </div>
                                 </div>
-                                <div style="flex:1;min-width:160px;">
-                                    <label class="admin-label">Location Text</label>
-                                    <input type="text" name="location_text" placeholder="e.g. Narok County, Kenya" class="admin-input" id="loc-location-text">
-                                </div>
-                                <div style="flex:2;min-width:200px;">
-                                    <label class="admin-label">Description</label>
-                                    <input type="text" name="description" placeholder="Brief description of the location" class="admin-input" id="loc-desc">
-                                </div>
-                                <div style="flex:1;min-width:160px;">
-                                    <label class="admin-label">Image</label>
-                                    <input type="file" name="image" accept="image/*" class="admin-input" id="loc-image">
-                                </div>
-                                <div style="flex:1;min-width:120px;">
-                                    <label class="admin-label">Link URL</label>
-                                    <input type="text" name="link_url" placeholder="/destinations.html" class="admin-input" id="loc-link">
-                                </div>
-                                <div style="flex:0;min-width:80px;">
-                                    <label class="admin-label">Order</label>
-                                    <input type="number" name="sort_order" value="0" class="admin-input" id="loc-sort" style="width:80px;">
-                                </div>
+                                <div id="loc-map-preview" style="width:100%;height:250px;border-radius:10px;margin-top:0.75rem;background:#e8ece4;display:none;"></div>
                                 <input type="hidden" id="loc-edit-id" value="">
-                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;" id="loc-submit-btn">Add Location</button>
+                                <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;margin-top:0.75rem;" id="loc-submit-btn">Add Location</button>
                             </form>
                         </div>
                         <div id="locations-list">
@@ -558,7 +607,23 @@
         </div>
     </main>
 
+    <!-- Activity Types Modal -->
+    <div id="activity-types-modal" class="admin-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:16px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;padding:2rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+                <h3 style="margin:0;">Activity Types</h3>
+                <button onclick="closeActivityTypesModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                <input type="text" id="new-activity-type" class="admin-input" placeholder="e.g. Safari" style="flex:1;">
+                <button class="admin-btn admin-btn--primary" onclick="addActivityType()">Add</button>
+            </div>
+            <div id="activity-types-list"></div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/assets/js/supabase-client.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/components.js"></script>

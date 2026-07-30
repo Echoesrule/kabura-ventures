@@ -31,7 +31,7 @@
 
         async function loadHotels() {
             const container = document.getElementById('hotels-list');
-            container.innerHTML = '<div class="spinner"></div>';
+            container.innerHTML = Array(6).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-40"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div><div class="skeleton-footer"><div class="skeleton-line w-30 h-22"></div><div class="skeleton-btn"></div></div></div>').join('');
 
             try {
                 const result = await api.getHotels({ per_page: 50 });
@@ -61,7 +61,7 @@
 
                 return `
                     <article class="hotel-stay-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 65}">
-                        <a href="/hotel-detail.html?id=${hotel.id}" class="hotel-stay-image" aria-label="View ${escapeHTML(hotel.name)}">
+                        <a href="/hotels/${hotel.slug || hotel.id}" class="hotel-stay-image" aria-label="View ${escapeHTML(hotel.name)}">
                             <img src="${imgUrl}" alt="${escapeHTML(hotel.name)}" loading="lazy" onerror="this.src='/assets/images/placeholder.svg'">
                             ${rating > 0 ? '<span class="hotel-rating">' + rating.toFixed(1) + '</span>' : ''}
                         </a>
@@ -75,8 +75,8 @@
                             <div class="hotel-stay-price"><small>From</small><strong>${window.priceHTML(hotel.price_per_night || 0)}</strong><span>/night</span></div>
                             <div class="hotel-stay-action">
                                 <div class="hotel-btn-row">
-                                    <a class="hotel-book-btn" href="/hotel-detail.html?id=${hotel.id}"><span>View stay</span></a>
-                                    <a class="hotel-book-btn-arrow" href="/hotel-detail.html?id=${hotel.id}" aria-label="View stay">
+                                    <a class="hotel-book-btn" href="/hotels/${hotel.slug || hotel.id}"><span>View stay</span></a>
+                                    <a class="hotel-book-btn-arrow" href="/hotels/${hotel.slug || hotel.id}" aria-label="View stay">
                                         <img src="/assets/images/right-arrow.png" alt="" class="hotel-book-btn-arrow-img">
                                     </a>
                                 </div>
@@ -94,7 +94,7 @@
         }
 
         function showHotelDetails(hotelId) {
-            window.location.href = '/hotel-detail.html?id=' + hotelId;
+            window.location.href = '/hotels/' + hotelId;
         }
 
         function inquireHotel(hotelId) {
@@ -104,7 +104,7 @@
                 openModal('login-modal');
                 return;
             }
-            window.location.href = `/booking.html?hotel=${hotelId}`;
+            window.location.href = `/booking?hotel=${hotelId}`;
         }
 
         document.querySelector('#destination-tabs .tab:first-child').addEventListener('click', function () {

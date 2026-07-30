@@ -1,7 +1,7 @@
 // Admin dashboard
 (async function () {
     var token = localStorage.getItem('token');
-    if (!token) { window.location.href = '/login.html'; return; }
+    if (!token) { window.location.href = '/login'; return; }
 
     try {
         var me = await api.getProfile();
@@ -19,7 +19,7 @@
         var initials = adminName.split(/\s+/).map(function (p) { return p[0]; }).join('').slice(0, 2).toUpperCase();
         document.getElementById('admin-user-initials').textContent = initials || 'A';
     } catch (e) {
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return;
     }
 
@@ -282,6 +282,101 @@
         }
     };
 
+    function calcDiscount() {
+        var price = parseFloat(document.getElementById('tour-price').value) || 0;
+        var orig = parseFloat(document.getElementById('tour-original-price').value) || 0;
+        if (orig > 0 && price > 0 && orig > price) {
+            var pct = Math.round((1 - price / orig) * 100);
+            document.getElementById('tour-discount-pct').value = Math.min(pct, 90);
+        } else {
+            document.getElementById('tour-discount-pct').value = '';
+        }
+    }
+    document.getElementById('tour-price').addEventListener('input', calcDiscount);
+    document.getElementById('tour-original-price').addEventListener('input', calcDiscount);
+
+    function buildTourItinerary() {
+        var days = parseInt(document.getElementById('tour-duration').value) || 0;
+        var container = document.getElementById('tour-itinerary-days');
+        var section = document.getElementById('tour-itinerary-section');
+        if (days < 1) { section.style.display = 'none'; return; }
+        section.style.display = 'block';
+        var existing = container.querySelectorAll('input, textarea');
+        var savedData = [];
+        existing.forEach(function(el) {
+            var match = el.id && el.id.match(/^tour-itinerary-day-(\d+)/);
+            if (match) savedData[match[1]] = el.value;
+        });
+        var html = '';
+        for (var i = 1; i <= days; i++) {
+            var val = savedData[i] || '';
+            html += '<div style="margin-bottom:0.75rem;padding:0.75rem;background:var(--soft-white);border-radius:8px;">'
+                + '<label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Day ' + i + '</label>'
+                + '<textarea id="tour-itinerary-day-' + i + '" class="admin-input admin-textarea" rows="2" placeholder="Activities for day ' + i + '" style="font-size:0.85rem;">' + val.replace(/</g, '&lt;') + '</textarea>'
+                + '</div>';
+        }
+        container.innerHTML = html;
+    }
+
+    function hideTourItinerary() {
+        document.getElementById('tour-itinerary-section').style.display = 'none';
+        document.getElementById('tour-itinerary-days').innerHTML = '';
+    }
+    document.getElementById('tour-duration').addEventListener('change', buildTourItinerary);
+
+    function showTourFormMsg(msg, isError) {
+        var el = document.getElementById('tour-form-msg');
+        if (!msg) { el.style.display = 'none'; return; }
+        el.style.display = 'block';
+        el.style.padding = '0.75rem 1rem';
+        el.style.borderRadius = '8px';
+        el.style.background = isError ? '#fef2f2' : '#ecfdf5';
+        el.style.color = isError ? '#b91c1c' : '#065f46';
+        el.style.fontSize = '0.9rem';
+        el.style.fontWeight = '500';
+        el.textContent = msg;
+    }
+
+    var tourMap = null;
+
+    function initTourMap(lat, lng) {
+        var container = document.getElementById('tour-map-preview');
+        container.style.display = 'block';
+        if (tourMap) tourMap.remove();
+        tourMap = L.map(container, { zoomControl: false }).setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18, attribution: '&copy; OpenStreetMap'
+        }).addTo(tourMap);
+        L.marker([lat, lng]).addTo(tourMap);
+        setTimeout(function () { tourMap.invalidateSize(); }, 200);
+    }
+
+    function destroyTourMap() {
+        if (tourMap) { tourMap.remove(); tourMap = null; }
+        document.getElementById('tour-map-preview').style.display = 'none';
+    }
+
+    async function lookupTourLocation() {
+        var location = document.getElementById('tour-location').value.trim();
+        var title = document.getElementById('tour-title').value.trim();
+        var query = location || title;
+        if (!query) { alert('Enter a location or title first.'); return; }
+        try {
+            var res = await api.get('/destinations/geocode?q=' + encodeURIComponent(query));
+            if (res.lat != null) {
+                document.getElementById('tour-lat').value = res.lat;
+                document.getElementById('tour-lng').value = res.lng;
+                initTourMap(res.lat, res.lng);
+            } else {
+                alert('Could not find that location.');
+            }
+        } catch (e) {
+            alert('Geocoding failed: ' + e.message);
+        }
+    }
+
+    document.getElementById('tour-geocode-btn')?.addEventListener('click', lookupTourLocation);
+
     window.editTour = async function (id) {
         try {
             var result = await api.getTours({ per_page: 100 });
@@ -303,6 +398,27 @@
             document.getElementById('tour-submit-btn').textContent = 'Update Tour';
             document.getElementById('tour-cancel-btn').style.display = '';
             document.getElementById('tour-title').focus();
+            showTourFormMsg('');
+            buildTourItinerary();
+            document.getElementById('tour-lat').value = t.latitude != null ? t.latitude : '';
+            document.getElementById('tour-lng').value = t.longitude != null ? t.longitude : '';
+            destroyTourMap();
+            if (t.latitude != null && t.longitude != null) {
+                initTourMap(t.latitude, t.longitude);
+            }
+            if (t.itinerary) {
+                try {
+                    var itineraryData = JSON.parse(t.itinerary);
+                    if (Array.isArray(itineraryData)) {
+                        itineraryData.forEach(function(day) {
+                            var el = document.getElementById('tour-itinerary-day-' + day.day);
+                            if (el) el.value = day.description || '';
+                        });
+                    }
+                } catch(e) {
+                    // old text format, ignore
+                }
+            }
         } catch (e) {
             alert('Failed to load tour: ' + e.message);
         }
@@ -313,6 +429,12 @@
         tourForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             var editId = document.getElementById('tour-edit-id').value;
+            var btn = document.getElementById('tour-submit-btn');
+            var origText = btn.textContent;
+            btn.textContent = editId ? 'Updating...' : 'Creating...';
+            btn.disabled = true;
+            showTourFormMsg('');
+
             var formData = new FormData();
             formData.append('title', document.getElementById('tour-title').value);
             formData.append('location', document.getElementById('tour-location').value);
@@ -325,6 +447,23 @@
             formData.append('wildlife', document.getElementById('tour-wildlife').value);
             formData.append('description', document.getElementById('tour-description').value);
             formData.append('featured', document.getElementById('tour-featured').value);
+            formData.append('latitude', document.getElementById('tour-lat').value || '');
+            formData.append('longitude', document.getElementById('tour-lng').value || '');
+
+            var days = parseInt(document.getElementById('tour-duration').value) || 0;
+            if (days > 0) {
+                var itinerary = [];
+                for (var i = 1; i <= days; i++) {
+                    var descEl = document.getElementById('tour-itinerary-day-' + i);
+                    if (descEl && descEl.value.trim()) {
+                        itinerary.push({ day: i, description: descEl.value.trim() });
+                    }
+                }
+                if (itinerary.length) {
+                    formData.append('itinerary', JSON.stringify(itinerary));
+                }
+            }
+
             var files = document.getElementById('tour-images').files;
             for (var i = 0; i < files.length; i++) {
                 formData.append('images', files[i]);
@@ -333,18 +472,101 @@
                 if (editId) {
                     await api.updateTour(editId, formData);
                     document.getElementById('tour-edit-id').value = '';
-                    document.getElementById('tour-submit-btn').textContent = 'Add Tour';
+                    btn.textContent = 'Add Tour';
                     document.getElementById('tour-cancel-btn').style.display = 'none';
                 } else {
                     await api.createTour(formData);
                 }
                 tourForm.reset();
+                hideTourItinerary();
+                destroyTourMap();
                 loadTours();
+                showTourFormMsg(editId ? 'Tour updated successfully!' : 'Tour created successfully!');
+                setTimeout(function() { showTourFormMsg(''); }, 4000);
             } catch (err) {
-                alert('Failed: ' + err.message);
+                showTourFormMsg('Failed: ' + err.message, true);
+            } finally {
+                btn.textContent = origText;
+                btn.disabled = false;
             }
         });
     }
+
+    async function loadActivityTypesDropdown() {
+        var select = document.getElementById('tour-activity');
+        try {
+            var result = await api.getActivityTypes();
+            var types = result.types || [];
+            select.innerHTML = '<option value="">Select type</option>';
+            types.forEach(function(t) {
+                var opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            select.innerHTML = '<option value="">Select type</option>';
+        }
+    }
+
+    window.openActivityTypesModal = async function() {
+        document.getElementById('activity-types-modal').style.display = 'flex';
+        loadActivityTypesList();
+    };
+    window.closeActivityTypesModal = function() {
+        document.getElementById('activity-types-modal').style.display = 'none';
+    };
+
+    async function loadActivityTypesList() {
+        var container = document.getElementById('activity-types-list');
+        try {
+            var result = await api.getActivityTypes();
+            var types = result.types || [];
+            if (types.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);font-size:0.9rem;">No activity types yet. Add one above.</p>';
+                return;
+            }
+            container.innerHTML = types.map(function(t) {
+                return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;border-bottom:1px solid #eee;">'
+                    + '<span style="font-weight:500;">' + escHtml(t.charAt(0).toUpperCase() + t.slice(1)) + '</span>'
+                    + '<button class="admin-btn admin-btn--danger" style="padding:2px 8px;font-size:11px;" onclick="deleteActivityType(\'' + escHtml(t) + '\')">Delete</button>'
+                    + '</div>';
+            }).join('');
+        } catch (e) {
+            container.innerHTML = '<p style="color:var(--error);">Failed to load types.</p>';
+        }
+    }
+
+    window.addActivityType = async function() {
+        var input = document.getElementById('new-activity-type');
+        var name = input.value.trim().toLowerCase();
+        if (!name) return;
+        input.disabled = true;
+        try {
+            await api.createActivityType(name);
+            input.value = '';
+            loadActivityTypesList();
+            loadActivityTypesDropdown();
+        } catch (e) {
+            alert('Failed to add type: ' + e.message);
+        } finally {
+            input.disabled = false;
+            input.focus();
+        }
+    };
+
+    window.deleteActivityType = async function(name) {
+        if (!confirm('Delete "' + name + '" activity type?')) return;
+        try {
+            await api.deleteActivityType(name);
+            loadActivityTypesList();
+            loadActivityTypesDropdown();
+        } catch (e) {
+            alert('Failed to delete: ' + e.message);
+        }
+    };
+
+    loadActivityTypesDropdown();
     loadTours();
 
     // ── Hotels ──────────────────────────────────────────────
@@ -390,6 +612,46 @@
         }
     };
 
+    var hotelMap = null;
+
+    function initHotelMap(lat, lng) {
+        var container = document.getElementById('hotel-map-preview');
+        container.style.display = 'block';
+        if (hotelMap) hotelMap.remove();
+        hotelMap = L.map(container, { zoomControl: false }).setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18, attribution: '&copy; OpenStreetMap'
+        }).addTo(hotelMap);
+        L.marker([lat, lng]).addTo(hotelMap);
+        setTimeout(function () { hotelMap.invalidateSize(); }, 200);
+    }
+
+    function destroyHotelMap() {
+        if (hotelMap) { hotelMap.remove(); hotelMap = null; }
+        document.getElementById('hotel-map-preview').style.display = 'none';
+    }
+
+    async function lookupHotelLocation() {
+        var location = document.getElementById('hotel-location').value.trim();
+        var name = document.getElementById('hotel-name').value.trim();
+        var query = location || name;
+        if (!query) { alert('Enter a location or name first.'); return; }
+        try {
+            var res = await api.get('/destinations/geocode?q=' + encodeURIComponent(query));
+            if (res.lat != null) {
+                document.getElementById('hotel-lat').value = res.lat;
+                document.getElementById('hotel-lng').value = res.lng;
+                initHotelMap(res.lat, res.lng);
+            } else {
+                alert('Could not find that location.');
+            }
+        } catch (e) {
+            alert('Geocoding failed: ' + e.message);
+        }
+    }
+
+    document.getElementById('hotel-geocode-btn')?.addEventListener('click', lookupHotelLocation);
+
     window.editHotel = async function (id) {
         try {
             var result = await api.getHotels({ per_page: 100 });
@@ -406,6 +668,12 @@
             document.getElementById('hotel-submit-btn').textContent = 'Update Hotel';
             document.getElementById('hotel-cancel-btn').style.display = '';
             document.getElementById('hotel-name').focus();
+            document.getElementById('hotel-lat').value = h.latitude != null ? h.latitude : '';
+            document.getElementById('hotel-lng').value = h.longitude != null ? h.longitude : '';
+            destroyHotelMap();
+            if (h.latitude != null && h.longitude != null) {
+                initHotelMap(h.latitude, h.longitude);
+            }
         } catch (e) {
             alert('Failed to load hotel: ' + e.message);
         }
@@ -423,6 +691,8 @@
             formData.append('rating', document.getElementById('hotel-rating').value || '0');
             formData.append('amenities', document.getElementById('hotel-amenities').value);
             formData.append('description', document.getElementById('hotel-description').value);
+            formData.append('latitude', document.getElementById('hotel-lat').value || '');
+            formData.append('longitude', document.getElementById('hotel-lng').value || '');
             var files = document.getElementById('hotel-images').files;
             for (var i = 0; i < files.length; i++) {
                 formData.append('images', files[i]);
@@ -437,6 +707,7 @@
                     await api.createHotel(formData);
                 }
                 hotelForm.reset();
+                destroyHotelMap();
                 loadHotels();
             } catch (err) {
                 alert('Failed: ' + err.message);
@@ -545,6 +816,46 @@
     loadAuthSlides();
 
     // ── Locations (Thrilling Locations) ───────────────────────────
+    var locMap = null;
+
+    function initLocMap(lat, lng) {
+        var container = document.getElementById('loc-map-preview');
+        container.style.display = 'block';
+        if (locMap) locMap.remove();
+        locMap = L.map(container, { zoomControl: false }).setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18, attribution: '&copy; OpenStreetMap'
+        }).addTo(locMap);
+        L.marker([lat, lng]).addTo(locMap);
+        setTimeout(function () { locMap.invalidateSize(); }, 200);
+    }
+
+    function destroyLocMap() {
+        if (locMap) { locMap.remove(); locMap = null; }
+        document.getElementById('loc-map-preview').style.display = 'none';
+    }
+
+    async function lookupLocation() {
+        var name = document.getElementById('loc-name').value.trim();
+        var locText = document.getElementById('loc-location-text').value.trim();
+        var query = locText || name;
+        if (!query) { alert('Enter a name or location text first.'); return; }
+        try {
+            var res = await api.get('/destinations/geocode?q=' + encodeURIComponent(query));
+            if (res.lat != null) {
+                document.getElementById('loc-lat').value = res.lat;
+                document.getElementById('loc-lng').value = res.lng;
+                initLocMap(res.lat, res.lng);
+            } else {
+                alert('Could not find that location.');
+            }
+        } catch (e) {
+            alert('Geocoding failed: ' + e.message);
+        }
+    }
+
+    document.getElementById('loc-geocode-btn')?.addEventListener('click', lookupLocation);
+
     async function loadLocations() {
         var container = document.getElementById('locations-list');
         try {
@@ -555,14 +866,16 @@
                 return;
             }
             var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
-            html += '<th>Image</th><th>Name</th><th>Location</th><th>Description</th><th>Order</th><th>Status</th><th>Actions</th>';
+            html += '<th>Image</th><th>Name</th><th>Location</th><th>Lat</th><th>Lng</th><th>Order</th><th>Status</th><th>Actions</th>';
             html += '</tr></thead><tbody>';
             items.forEach(function (d) {
+                var hasCoords = d.latitude != null && d.longitude != null;
                 html += '<tr>';
                 html += '<td><img src="' + escHtml(d.image_url) + '" style="width:80px;height:50px;object-fit:cover;border-radius:6px;"></td>';
                 html += '<td>' + escHtml(d.name) + '</td>';
                 html += '<td>' + escHtml(d.location_text || '—') + '</td>';
-                html += '<td>' + escHtml((d.description || '—').substring(0, 80)) + '</td>';
+                html += '<td>' + (hasCoords ? d.latitude.toFixed(4) : '—') + '</td>';
+                html += '<td>' + (hasCoords ? d.longitude.toFixed(4) : '—') + '</td>';
                 html += '<td>' + escHtml(String(d.sort_order)) + '</td>';
                 html += '<td><span class="admin-badge ' + (d.is_active ? 'admin-badge--completed' : 'admin-badge--pending') + '">' + (d.is_active ? 'Active' : 'Hidden') + '</span></td>';
                 html += '<td style="white-space:nowrap;">';
@@ -598,9 +911,15 @@
             document.getElementById('loc-desc').value = item.description || '';
             document.getElementById('loc-link').value = item.link_url || '';
             document.getElementById('loc-sort').value = item.sort_order || 0;
+            document.getElementById('loc-lat').value = item.latitude != null ? item.latitude : '';
+            document.getElementById('loc-lng').value = item.longitude != null ? item.longitude : '';
             document.getElementById('loc-edit-id').value = item.id;
             document.getElementById('loc-submit-btn').textContent = 'Update Location';
             document.getElementById('loc-name').focus();
+            destroyLocMap();
+            if (item.latitude != null && item.longitude != null) {
+                initLocMap(item.latitude, item.longitude);
+            }
         } catch (e) {
             alert('Failed to load location: ' + e.message);
         }
@@ -621,6 +940,7 @@
                     await api.createDestination(formData);
                 }
                 locationForm.reset();
+                destroyLocMap();
                 loadLocations();
             } catch (err) {
                 alert('Failed: ' + err.message);

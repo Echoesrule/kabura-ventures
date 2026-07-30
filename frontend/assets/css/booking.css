@@ -180,6 +180,22 @@ body { background: #f6f7f3; }
     .booking-card-name { font-size: 0.85rem; }
 }
 
+.flatpickr-calendar { border: 1px solid rgba(18,34,24,0.1); border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); font-family: var(--font-body); }
+.flatpickr-months { background: #122218; border-radius: 14px 14px 0 0; padding: 0.5rem 0; }
+.flatpickr-current-month .flatpickr-monthDropdown-months { font-family: var(--font-heading); font-weight: 600; }
+.flatpickr-months .flatpickr-month, .flatpickr-current-month .flatpickr-monthDropdown-months, .flatpickr-current-month input.cur-year { color: #fff; }
+.flatpickr-months .flatpickr-prev-month, .flatpickr-months .flatpickr-next-month { fill: rgba(255,255,255,0.7); color: rgba(255,255,255,0.7); }
+.flatpickr-months .flatpickr-prev-month:hover, .flatpickr-months .flatpickr-next-month:hover { fill: #fff; color: #fff; }
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.week.selected { background: #122218; border-color: #122218; }
+.flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover { background: #1e3d2e; border-color: #1e3d2e; }
+.flatpickr-day.today { border-color: #122218; }
+.flatpickr-day.today:hover, .flatpickr-day.today:focus { border-color: #122218; background: rgba(18,34,24,0.08); }
+.flatpickr-day.inRange { background: rgba(18,34,24,0.08); border-color: transparent; box-shadow: -5px 0 0 rgba(18,34,24,0.08), 5px 0 0 rgba(18,34,24,0.08); }
+.flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover { color: #ccc; cursor: not-allowed; }
+.flatpickr-weekday { color: #122218; font-weight: 700; }
+.flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover { color: #d4d4d4; background: transparent; border-color: transparent; cursor: not-allowed; }
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay { color: #ddd; }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeScaleIn {
     0% { transform: scale(0); opacity: 0; }

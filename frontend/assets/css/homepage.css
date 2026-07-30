@@ -2433,6 +2433,24 @@
     display: none;
 }
 
+/* Skeleton loader for offer cards */
+.offer-skeleton-card {
+    flex: 0 0 calc((100% - 3rem) / 3);
+    height: 260px;
+    border-radius: var(--hp-card-radius, 20px);
+    overflow: hidden;
+    scroll-snap-align: start;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid rgba(var(--sage-rgb),0.06);
+}
+.offer-skeleton-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.10) 25%, rgba(var(--sage-rgb),0.18) 50%, rgba(var(--sage-rgb),0.10) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
 .offer-card {
     position: relative;
     flex: 0 0 calc((100% - 3rem) / 3);

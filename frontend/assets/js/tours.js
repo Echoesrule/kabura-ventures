@@ -124,7 +124,8 @@
 
         async function loadTours() {
             const container = document.getElementById('tours-list');
-            container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;"><div class="spinner"></div></div>';
+            container.classList.add('skeleton-grid');
+            container.innerHTML = Array(6).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w-60"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-40"></div><div class="skeleton-line w-50"></div></div></div>').join('');
             document.getElementById('filter-badges').innerHTML = '';
             document.getElementById('results-count').textContent = '';
 
@@ -160,6 +161,7 @@
 
         function renderTours(tours) {
             const container = document.getElementById('tours-list');
+            container.classList.remove('skeleton-grid');
 
             if (tours.length === 0) {
                 container.innerHTML = '<div class="tours-empty"><h3>No tours match your filters</h3><p>Try adjusting your search criteria.</p><button class="btn btn-primary" onclick="resetFilters()" style="margin-top:1rem;">Reset Filters</button></div>';
@@ -208,7 +210,7 @@
                     sellOutBadgeHtml = '<span class="tour-card-sellout-badge">Likely to Sell Out</span>';
                 }
 
-                return '<a href="/tour-detail.html?id=' + tour.id + '" class="' + cardClasses + '">'
+                return '<a href="/tours/' + (tour.slug || tour.id) + '" class="' + cardClasses + '">'
                     + '<div class="tour-card-img-wrap">'
                         + '<img src="' + imgUrl + '" alt="' + escapeHTML(tour.title) + '" class="tour-card-img" loading="lazy" onerror="this.src=\'/assets/images/placeholder.svg\'">'
                         + (category ? '<span class="tour-card-badge">' + category + '</span>' : '')
@@ -367,7 +369,7 @@
         document.getElementById('clear-filters').addEventListener('click', resetFilters);
 
         function showTourDetails(tourId) {
-            window.location.href = '/tour-detail.html?id=' + tourId;
+            window.location.href = '/tours/' + tourId;
         }
 
         function bookTour(tourId) {
@@ -377,23 +379,25 @@
                 openModal('login-modal');
                 return;
             }
-            window.location.href = '/booking.html?tour=' + tourId;
+            window.location.href = '/booking?tour=' + tourId;
         }
 
         setFiltersFromParams();
-        loadActivityTypes().then(function () {
-            setFiltersFromParams();
-            return loadTours();
-        }).then(function () {
-            var idParam = urlParams.get('id');
-            if (idParam) {
-                var check = setInterval(function () {
-                    if (currentTours.find(function (t) { return t.id === idParam; })) {
-                        clearInterval(check);
-                        setTimeout(function () { showTourDetails(idParam); }, 300);
+        loadActivityTypes()
+            .catch(function (err) { console.error('Activity types load failed:', err); })
+            .finally(function () {
+                setFiltersFromParams();
+                loadTours().then(function () {
+                    var idParam = urlParams.get('id');
+                    if (idParam) {
+                        var check = setInterval(function () {
+                            if (currentTours.find(function (t) { return t.id === idParam; })) {
+                                clearInterval(check);
+                                setTimeout(function () { showTourDetails(idParam); }, 300);
+                            }
+                        }, 200);
+                        setTimeout(function () { clearInterval(check); }, 10000);
                     }
-                }, 200);
-                setTimeout(function () { clearInterval(check); }, 10000);
-            }
-        });
-        if (api.token) loadWishlist();
+                });
+                if (api.token) loadWishlist();
+            });

@@ -288,6 +288,12 @@
             }
 
             // Load what we offer
+            var carousel = document.getElementById('offer-carousel');
+            if (carousel) {
+                carousel.innerHTML = '<div class="offer-skeleton-card"><div class="offer-skeleton-img"></div></div>'
+                    + '<div class="offer-skeleton-card"><div class="offer-skeleton-img"></div></div>'
+                    + '<div class="offer-skeleton-card"><div class="offer-skeleton-img"></div></div>';
+            }
             try {
                 const offResult = await api.getOffers();
                 const offers = offResult.offers || [];

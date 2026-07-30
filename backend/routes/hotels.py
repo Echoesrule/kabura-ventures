@@ -1,7 +1,7 @@
 import os
 import uuid
 from flask import Blueprint, request, jsonify, current_app
-from models.hotel import Hotel, HotelImage
+from models.hotel import Hotel, HotelImage, slugify
 from models import db
 from middleware.auth import admin_required
 from services.storage import save_image, delete_image
@@ -30,9 +30,11 @@ def get_hotels():
         'pages': hotels.pages
     }), 200
 
-@hotels_bp.route('/<hotel_id>', methods=['GET'])
-def get_hotel(hotel_id):
-    hotel = Hotel.query.get(hotel_id)
+@hotels_bp.route('/<identifier>', methods=['GET'])
+def get_hotel(identifier):
+    hotel = Hotel.query.filter_by(slug=identifier).first()
+    if not hotel:
+        hotel = Hotel.query.get(identifier)
     if not hotel:
         return jsonify({'error': 'Hotel not found'}), 404
     return jsonify({'hotel': hotel.to_dict()}), 200
@@ -65,10 +67,20 @@ def create_hotel(current_user):
     if errors:
         return jsonify({'error': '. '.join(errors)}), 400
 
+    base_slug = slugify(name)
+    slug = base_slug
+    counter = 1
+    while Hotel.query.filter_by(slug=slug).first():
+        slug = f'{base_slug}-{counter}'
+        counter += 1
+
     hotel = Hotel(
+        slug=slug,
         name=name,
         description=description,
         location=location,
+        latitude=float(data['latitude']) if data.get('latitude') else None,
+        longitude=float(data['longitude']) if data.get('longitude') else None,
         price_per_night=float(data.get('price_per_night', 0)),
         rating=float(data.get('rating', 0)),
         amenities=amenities,
@@ -107,6 +119,13 @@ def update_hotel(current_user, hotel_id):
         hotel.name = sanitize_input(data['name'], max_length=255)
         err = validate_length(hotel.name, 255, 'Name')
         if err: errors.append(err)
+        base_slug = slugify(hotel.name)
+        slug = base_slug
+        counter = 1
+        while Hotel.query.filter(Hotel.slug == slug, Hotel.id != hotel.id).first():
+            slug = f'{base_slug}-{counter}'
+            counter += 1
+        hotel.slug = slug
     if 'description' in data:
         hotel.description = sanitize_input(data['description'], max_length=5000)
         err = validate_length(hotel.description, 5000, 'Description')
@@ -127,6 +146,10 @@ def update_hotel(current_user, hotel_id):
         hotel.amenities = sanitize_input(data['amenities'], max_length=2000)
         err = validate_length(hotel.amenities, 2000, 'Amenities')
         if err: errors.append(err)
+    if 'latitude' in data:
+        hotel.latitude = float(data['latitude']) if data['latitude'] else None
+    if 'longitude' in data:
+        hotel.longitude = float(data['longitude']) if data['longitude'] else None
     if errors:
         return jsonify({'error': '. '.join(errors)}), 400
     if 'available' in data:

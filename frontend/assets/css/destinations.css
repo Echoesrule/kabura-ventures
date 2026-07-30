@@ -276,8 +276,17 @@
 }
 
 /* CTA */
+.dest-map-section {
+    padding: 0 0 3rem;
+}
+.dest-map-section .dest-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 28px;
+}
+
 .dest-cta-section {
-    padding: 2rem 0 4rem;
+    padding: 0 0 4rem;
 }
 .dest-cta {
     text-align: center;
@@ -315,13 +324,33 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
 
+/* Skeleton loader for destination cards */
+.dest-skeleton-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid rgba(var(--sage-rgb),0.06);
+}
+.dest-skeleton-card:first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+}
+.dest-skeleton-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(var(--sage-rgb),0.10) 25%, rgba(var(--sage-rgb),0.18) 50%, rgba(var(--sage-rgb),0.10) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .dest-magazine-grid {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: 280px;
     }
-    .dest-magazine-grid .dest-card:first-child {
+    .dest-magazine-grid .dest-card:first-child,
+    .dest-magazine-grid .dest-skeleton-card:first-child {
         grid-column: 1 / 3;
         grid-row: 1 / 2;
     }
@@ -339,7 +368,8 @@
         grid-template-columns: 1fr;
         grid-auto-rows: 240px;
     }
-    .dest-magazine-grid .dest-card:first-child {
+    .dest-magazine-grid .dest-card:first-child,
+    .dest-magazine-grid .dest-skeleton-card:first-child {
         grid-column: auto;
         grid-row: auto;
     }
