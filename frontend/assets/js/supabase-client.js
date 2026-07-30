@@ -76,49 +76,45 @@ async function signInWithGoogle() {
 // ─── Password Reset ───────────────────────────────────────────────────────────
 
 /**
- * Send a password reset email via the app's own API (works without Supabase).
+ * Derive the site base URL from API_BASE (always points to the frontend origin).
  */
-async function sendAppPasswordReset(email) {
+function getSiteUrl() {
     const baseUrl = window.API_BASE || (location.origin + '/api');
+    return baseUrl.replace(/\/api\/?$/, '');
+}
+
+/**
+ * Send a password reset email via Supabase Auth (or app fallback).
+ */
+async function sendPasswordReset(email) {
+    const client = getSupabaseClient();
+    if (client) {
+        try {
+            const { error } = await client.auth.resetPasswordForEmail(email, {
+                redirectTo: getSiteUrl() + '/login',
+            });
+            if (error) throw error;
+            return true;
+        } catch (err) {
+            console.error('[supabase-client] Supabase password reset error:', err);
+            showToast('Failed to send reset email: ' + err.message, 'error');
+            return false;
+        }
+    }
+
+    // Fallback: app API (SMTP-based) when Supabase isn't configured
     try {
-        const res = await fetch(`${baseUrl}/auth/forgot-password`, {
+        const res = await fetch(`${getSiteUrl()}/api/auth/forgot-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, redirect_to: location.origin }),
+            body: JSON.stringify({ email, redirect_to: getSiteUrl() }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to send reset email');
         return true;
     } catch (err) {
         console.error('[supabase-client] App password reset error:', err);
-        showToast('App reset failed: ' + err.message + ' — trying Supabase...', 'warning');
-        return false;
-    }
-}
-
-/**
- * Send a password reset email — tries app API first, falls back to Supabase.
- */
-async function sendPasswordReset(email) {
-    const appOk = await sendAppPasswordReset(email);
-    if (appOk) return true;
-
-    const client = getSupabaseClient();
-    if (!client) {
         showToast('Authentication service unavailable', 'error');
-        return false;
-    }
-
-    try {
-        const siteUrl = (window.API_BASE || location.origin + '/api').replace('/api', '');
-        const { error } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: siteUrl + '/login',
-        });
-        if (error) throw error;
-        return true;
-    } catch (err) {
-        console.error('[supabase-client] Supabase password reset error:', err);
-        showToast('Failed to send reset email. Check the email address.', 'error');
         return false;
     }
 }
