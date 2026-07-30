@@ -358,28 +358,74 @@
     document.getElementById('tour-price').addEventListener('input', calcDiscount);
     document.getElementById('tour-original-price').addEventListener('input', calcDiscount);
 
+    var itineraryCounter = {};
+
+    function makeActivityHTML(day, idx, data) {
+        data = data || {};
+        var title = (data.title || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var startTime = (data.start_time || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var activity = (data.activity || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        var desc = (data.description || '').replace(/</g, '&lt;');
+        return '<div class="itinerary-activity" id="act-' + day + '-' + idx + '" style="background:rgba(255,255,255,0.7);border:1px solid var(--border-light);border-radius:10px;padding:0.85rem;margin-bottom:0.6rem;">'
+            + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">'
+            + '<span style="font-size:0.72rem;font-weight:700;color:var(--text-placeholder);text-transform:uppercase;letter-spacing:0.05em;">Activity ' + (idx + 1) + '</span>'
+            + (idx > 0 ? '<button type="button" onclick="removeActivity(' + day + ',' + idx + ')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.78rem;padding:0;line-height:1;">Remove</button>' : '')
+            + '</div>'
+            + '<label class="admin-label" style="font-size:0.72rem;margin-bottom:0.2rem;">Title</label>'
+            + '<input id="act-' + day + '-' + idx + '-title" class="admin-input" style="font-size:0.82rem;margin-bottom:0.4rem;" placeholder="e.g. History & Culture" value="' + title + '">'
+            + '<div style="display:flex;gap:0.5rem;margin-bottom:0.4rem;">'
+            + '<div style="flex:1;"><label class="admin-label" style="font-size:0.72rem;margin-bottom:0.2rem;">Start Time</label><input id="act-' + day + '-' + idx + '-time" class="admin-input" style="font-size:0.82rem;" type="time" value="' + startTime + '"></div>'
+            + '<div style="flex:1;"><label class="admin-label" style="font-size:0.72rem;margin-bottom:0.2rem;">Activity</label><input id="act-' + day + '-' + idx + '-activity" class="admin-input" style="font-size:0.82rem;" placeholder="e.g. Hotel Pickup" value="' + activity + '"></div>'
+            + '</div>'
+            + '<label class="admin-label" style="font-size:0.72rem;margin-bottom:0.2rem;">Description</label>'
+            + '<textarea id="act-' + day + '-' + idx + '-desc" class="admin-input admin-textarea" rows="2" style="font-size:0.82rem;">' + desc + '</textarea>'
+            + '</div>';
+    }
+
+    function addActivity(day) {
+        if (!itineraryCounter[day]) itineraryCounter[day] = 0;
+        itineraryCounter[day]++;
+        var idx = itineraryCounter[day];
+        var container = document.getElementById('day-activities-' + day);
+        var div = document.createElement('div');
+        div.innerHTML = makeActivityHTML(day, idx, {});
+        container.insertBefore(div.firstElementChild, container.lastElementChild);
+    }
+
+    window.removeActivity = function (day, idx) {
+        var el = document.getElementById('act-' + day + '-' + idx);
+        if (el) el.remove();
+    };
+
     function buildTourItinerary() {
         var days = parseInt(document.getElementById('tour-duration').value) || 0;
         var container = document.getElementById('tour-itinerary-days');
         var section = document.getElementById('tour-itinerary-section');
         if (days < 1) { section.style.display = 'none'; return; }
         section.style.display = 'block';
-        var savedTitles = [], savedDescs = [];
+        itineraryCounter = {};
+        var savedData = {};
         container.querySelectorAll('input, textarea').forEach(function(el) {
-            var match = el.id && el.id.match(/^tour-itinerary-day-(\d+)-(title|desc)$/);
+            var match = el.id && el.id.match(/^act-(\d+)-(\d+)-(title|time|activity|desc)$/);
             if (match) {
-                if (match[2] === 'title') savedTitles[match[1]] = el.value;
-                else savedDescs[match[1]] = el.value;
+                if (!savedData[match[1]]) savedData[match[1]] = {};
+                if (!savedData[match[1]][match[2]]) savedData[match[1]][match[2]] = {};
+                savedData[match[1]][match[2]][match[3]] = el.value;
             }
         });
         var html = '';
-        for (var i = 1; i <= days; i++) {
-            var t = savedTitles[i] || '';
-            var d = savedDescs[i] || '';
-            html += '<div style="margin-bottom:0.75rem;padding:1rem;background:var(--soft-white);border-radius:8px;border:1px solid var(--border-light);">'
-                + '<label style="font-weight:600;font-size:0.78rem;color:var(--text-secondary);display:block;margin-bottom:0.3rem;">DAY ' + i + '</label>'
-                + '<input id="tour-itinerary-day-' + i + '-title" class="admin-input" style="font-size:0.85rem;margin-bottom:0.5rem;" placeholder="e.g. Arrival & Game Drive" value="' + t.replace(/</g, '&lt;').replace(/"/g, '&quot;') + '">'
-                + '<textarea id="tour-itinerary-day-' + i + '-desc" class="admin-input admin-textarea" rows="2" placeholder="Activities, meals, accommodation for day ' + i + '" style="font-size:0.85rem;">' + d.replace(/</g, '&lt;') + '</textarea>'
+        for (var d = 1; d <= days; d++) {
+            var dayActs = savedData[d] || { 0: {} };
+            var maxIdx = Object.keys(dayActs).reduce(function(a, b) { return Math.max(a, parseInt(b)); }, 0);
+            itineraryCounter[d] = maxIdx;
+            html += '<div class="itinerary-day-card" style="margin-bottom:1rem;padding:1.25rem;background:var(--soft-white);border-radius:12px;border:1px solid var(--border-light);">'
+                + '<label style="font-weight:700;font-size:0.8rem;color:var(--dark-text);display:block;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">DAY ' + d + '</label>'
+                + '<div id="day-activities-' + d + '">';
+            Object.keys(dayActs).forEach(function(idx) {
+                html += makeActivityHTML(d, parseInt(idx), dayActs[idx]);
+            });
+            html += '</div>'
+                + '<button type="button" onclick="addActivity(' + d + ')" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;border-radius:8px;background:rgba(18,34,24,0.06);border:1px dashed rgba(18,34,24,0.15);color:var(--dark-text);font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;margin-top:0.25rem;" onmouseover="this.style.background=\'rgba(18,34,24,0.1)\'" onmouseout="this.style.background=\'rgba(18,34,24,0.06)\'">+ Add Activity</button>'
                 + '</div>';
         }
         container.innerHTML = html;
@@ -670,13 +716,31 @@
             if (t.itinerary) {
                 try {
                     var itineraryData = JSON.parse(t.itinerary);
-                    if (Array.isArray(itineraryData)) {
-                        itineraryData.forEach(function(day) {
-                            var titleEl = document.getElementById('tour-itinerary-day-' + day.day + '-title');
-                            var descEl = document.getElementById('tour-itinerary-day-' + day.day + '-desc');
-                            if (titleEl) titleEl.value = day.title || '';
-                            if (descEl) descEl.value = day.description || '';
-                        });
+                    if (Array.isArray(itineraryData) && itineraryData.length) {
+                        if (itineraryData[0].activities) {
+                            itineraryData.forEach(function(day) {
+                                if (!day.activities) return;
+                                day.activities.forEach(function(act, idx) {
+                                    if (idx > 0) addActivity(day.day);
+                                    var titleEl = document.getElementById('act-' + day.day + '-' + idx + '-title');
+                                    if (titleEl) titleEl.value = act.title || '';
+                                    var timeEl = document.getElementById('act-' + day.day + '-' + idx + '-time');
+                                    if (timeEl) timeEl.value = act.start_time || '';
+                                    var activityEl = document.getElementById('act-' + day.day + '-' + idx + '-activity');
+                                    if (activityEl) activityEl.value = act.activity || '';
+                                    var descEl = document.getElementById('act-' + day.day + '-' + idx + '-desc');
+                                    if (descEl) descEl.value = act.description || '';
+                                });
+                            });
+                        } else {
+                            itineraryData.forEach(function(day) {
+                                if (!day.description) return;
+                                var firstTitle = document.getElementById('act-' + day.day + '-0-title');
+                                var firstDesc = document.getElementById('act-' + day.day + '-0-desc');
+                                if (firstTitle) firstTitle.value = day.title || '';
+                                if (firstDesc) firstDesc.value = day.description || '';
+                            });
+                        }
                     }
                 } catch(e) {
                     // old text format, ignore
@@ -726,16 +790,39 @@
             var days = parseInt(document.getElementById('tour-duration').value) || 0;
             if (days > 0) {
                 var itinerary = [];
-                for (var i = 1; i <= days; i++) {
-                    var titleEl = document.getElementById('tour-itinerary-day-' + i + '-title');
-                    var descEl = document.getElementById('tour-itinerary-day-' + i + '-desc');
-                    var desc = descEl ? descEl.value.trim() : '';
-                    if (desc) {
-                        itinerary.push({
-                            day: i,
-                            title: titleEl ? titleEl.value.trim() : '',
-                            description: desc
-                        });
+                for (var d = 1; d <= days; d++) {
+                    var activities = [];
+                    var actEls = document.querySelectorAll('[id^="act-' + d + '-"][id$="-title"]');
+                    var re = new RegExp('^act-' + d + '-(\\d+)-title$');
+                    for (var a = 0; a < actEls.length; a++) {
+                        var titleEl = actEls[a];
+                        var match = titleEl.id.match(re);
+                        if (!match) continue;
+                        var idx = match[1];
+                        var timeEl = document.getElementById('act-' + d + '-' + idx + '-time');
+                        var activityEl = document.getElementById('act-' + d + '-' + idx + '-activity');
+                        var descEl = document.getElementById('act-' + d + '-' + idx + '-desc');
+                        var desc = descEl ? descEl.value.trim() : '';
+                        if (desc) {
+                            activities.push({
+                                title: titleEl.value.trim(),
+                                start_time: timeEl ? timeEl.value : '',
+                                activity: activityEl ? activityEl.value.trim() : '',
+                                description: desc
+                            });
+                        }
+                    }
+                    if (activities.length) {
+                        itinerary.push({ day: d, activities: activities });
+                    }
+                }
+                if (itinerary.length) {
+                    formData.append('itinerary', JSON.stringify(itinerary));
+                }
+            }
+                    });
+                    if (activities.length) {
+                        itinerary.push({ day: d, activities: activities });
                     }
                 }
                 if (itinerary.length) {

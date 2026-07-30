@@ -325,30 +325,67 @@
             }
 
             let html = '';
+            const dayData = [];
 
             try {
                 const parsed = JSON.parse(tour.itinerary);
                 if (Array.isArray(parsed) && parsed.length) {
-                    parsed.forEach(function(day, idx) {
-                        if (!day.description) return;
-                        const title = day.title || '';
-                        const dayNum = day.day || idx + 1;
-                        html += `
-                            <div class="itinerary-day">
-                                <div class="itinerary-day-header" onclick="toggleItinerary(this)">
-                                    <span class="day-number">${String(dayNum).padStart(2, '0')}</span>
-                                    <span class="day-info">
-                                        <span class="day-label">Day ${dayNum}${title ? ': ' + escapeHTML(title) : ''}</span>
-                                        <span class="day-subtitle">${escapeHTML(day.description.split('.')[0] + '.')}</span>
-                                    </span>
-                                    <span class="day-arrow">${svgIcon('chevron-down')}</span>
+                    if (parsed[0].activities) {
+                        parsed.forEach(function(day, idx) {
+                            const dayNum = day.day || idx + 1;
+                            const acts = day.activities || [];
+                            const firstAct = acts[0] || {};
+                            const subtitle = firstAct.description ? firstAct.description.split('.')[0] + '.' : '';
+                            dayData.push({ dayNum, acts, hasActivities: true });
+                            html += `
+                                <div class="itinerary-day">
+                                    <div class="itinerary-day-header" onclick="toggleItinerary(this)">
+                                        <span class="day-number">${String(dayNum).padStart(2, '0')}</span>
+                                        <span class="day-info">
+                                            <span class="day-label">Day ${dayNum}${firstAct.title ? ': ' + escapeHTML(firstAct.title) : ''}</span>
+                                            ${subtitle ? `<span class="day-subtitle">${escapeHTML(subtitle)}</span>` : ''}
+                                        </span>
+                                        <span class="day-arrow">${svgIcon('chevron-down')}</span>
+                                    </div>
+                                    <div class="itinerary-day-content">
+                                        ${acts.map(function(act, ai) {
+                                            return `
+                                                <div class="itinerary-activity-item${ai > 0 ? ' itinerary-activity-item--border' : ''}">
+                                                    <div class="ia-header">
+                                                        ${act.start_time ? `<span class="ia-time">${escapeHTML(act.start_time)}</span>` : ''}
+                                                        ${act.activity ? `<span class="ia-badge">${escapeHTML(act.activity)}</span>` : ''}
+                                                    </div>
+                                                    ${act.title ? `<div class="ia-title">${escapeHTML(act.title)}</div>` : ''}
+                                                    ${act.description ? `<p class="ia-desc">${escapeHTML(act.description)}</p>` : ''}
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
                                 </div>
-                                <div class="itinerary-day-content">
-                                    <p>${escapeHTML(day.description)}</p>
+                            `;
+                        });
+                    } else {
+                        parsed.forEach(function(day, idx) {
+                            if (!day.description) return;
+                            const title = day.title || '';
+                            const dayNum = day.day || idx + 1;
+                            html += `
+                                <div class="itinerary-day">
+                                    <div class="itinerary-day-header" onclick="toggleItinerary(this)">
+                                        <span class="day-number">${String(dayNum).padStart(2, '0')}</span>
+                                        <span class="day-info">
+                                            <span class="day-label">Day ${dayNum}${title ? ': ' + escapeHTML(title) : ''}</span>
+                                            <span class="day-subtitle">${escapeHTML(day.description.split('.')[0] + '.')}</span>
+                                        </span>
+                                        <span class="day-arrow">${svgIcon('chevron-down')}</span>
+                                    </div>
+                                    <div class="itinerary-day-content">
+                                        <p>${escapeHTML(day.description)}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    }
                     if (html) {
                         container.innerHTML = html;
                         return;

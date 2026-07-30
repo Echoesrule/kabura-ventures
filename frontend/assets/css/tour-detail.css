@@ -121,6 +121,13 @@
         .itinerary-day-content { padding: 0 1.25rem; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; }
         .itinerary-day.open .itinerary-day-content { max-height: 5000px; padding: 1rem 1.25rem; }
         .itinerary-day-content p { margin-bottom: 0; overflow-wrap: anywhere; word-break: break-word; }
+        .itinerary-activity-item { padding: 0.5rem 0; }
+        .itinerary-activity-item--border { border-top: 1px solid rgba(18,34,24,0.06); margin-top: 0.25rem; }
+        .ia-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; flex-wrap: wrap; }
+        .ia-time { font-size: 0.78rem; font-weight: 700; color: var(--primary); font-family: var(--font-body); letter-spacing: 0.02em; }
+        .ia-badge { font-size: 0.68rem; font-weight: 600; color: #fff; background: var(--accent); padding: 0.15rem 0.5rem; border-radius: 20px; letter-spacing: 0.03em; }
+        .ia-title { font-size: 0.9rem; font-weight: 700; color: var(--dark-text); font-family: var(--font-heading); margin-bottom: 0.15rem; }
+        .ia-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
 
         .inclusions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; width: 100%; max-width: 100%; }
         .inclusions-col { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.8); border-radius: 14px; padding: 1.5rem; min-width: 0; max-width: 100%; }
