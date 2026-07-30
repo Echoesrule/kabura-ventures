@@ -17,6 +17,11 @@ class Hotel(db.Model):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     location = db.Column(db.String(255))
+    location_name = db.Column(db.String(255))
+    formatted_address = db.Column(db.String(500))
+    county = db.Column(db.String(100))
+    country = db.Column(db.String(100))
+    place_id = db.Column(db.String(255))
     price_per_night = db.Column(db.Numeric(12, 2), nullable=False)
     rating = db.Column(db.Numeric(2, 1), default=0.0)
     amenities = db.Column(db.Text)
@@ -40,6 +45,11 @@ class Hotel(db.Model):
             'name': self.name,
             'description': self.description,
             'location': self.location,
+            'location_name': self.location_name,
+            'formatted_address': self.formatted_address,
+            'county': self.county,
+            'country': self.country,
+            'place_id': self.place_id,
             'price_per_night': float(self.price_per_night) if self.price_per_night else 0,
             'rating': float(self.rating) if self.rating else 0,
             'amenities': self.amenities.split(',') if self.amenities else [],

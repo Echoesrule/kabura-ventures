@@ -215,19 +215,26 @@
         function renderMeetingPoint() {
             const tour = currentTour;
             const container = document.getElementById('meeting-point');
+            const hasMeetingPoint = tour.meeting_point_name || tour.meeting_address;
+            const meetingPointName = tour.meeting_point_name || tour.location || 'Nairobi, Kenya';
+            const meetingAddress = tour.meeting_address || '';
+            const destinationName = tour.location_name || tour.location || 'Nairobi, Kenya';
             container.innerHTML = `
                 <div class="mp-item">
                     <div class="mp-icon">${svgIcon('map-pin')}</div>
                     <div>
                         <div class="mp-label">Meeting point</div>
-                        <div class="mp-value">${escapeHTML(tour.location || 'Nairobi, Kenya')}</div>
+                        <div class="mp-value">${escapeHTML(meetingPointName)}</div>
+                        ${meetingAddress ? `<div class="mp-value" style="font-size:0.8rem;color:var(--text-secondary);">${escapeHTML(meetingAddress)}</div>` : ''}
+                        ${hasMeetingPoint && tour.meeting_latitude ? `<div class="mp-value" style="margin-top:0.4rem;"><a href="https://www.google.com/maps/dir/?api=1&destination=${tour.meeting_latitude},${tour.meeting_longitude}" target="_blank" rel="noopener">${svgIcon('navigation')} Get directions</a></div>` : ''}
                     </div>
                 </div>
                 <div class="mp-item">
                     <div class="mp-icon">${svgIcon('flag-checkered')}</div>
                     <div>
                         <div class="mp-label">End point</div>
-                        <div class="mp-value">${escapeHTML(tour.location || 'Nairobi, Kenya')}</div>
+                        <div class="mp-value">${escapeHTML(destinationName)}</div>
+                        ${tour.formatted_address ? `<div class="mp-value" style="font-size:0.8rem;color:var(--text-secondary);">${escapeHTML(tour.formatted_address)}</div>` : ''}
                     </div>
                 </div>
                 <div class="mp-item">
@@ -550,17 +557,106 @@
                     mapInstance.remove();
                 }
 
-                mapInstance = L.map('map').setView([tour.latitude, tour.longitude], 10);
+                const hasMeeting = tour.meeting_latitude != null && tour.meeting_longitude != null;
+
+                let centerLat = tour.latitude;
+                let centerLng = tour.longitude;
+                let zoom = 10;
+
+                if (hasMeeting) {
+                    centerLat = (parseFloat(tour.latitude) + parseFloat(tour.meeting_latitude)) / 2;
+                    centerLng = (parseFloat(tour.longitude) + parseFloat(tour.meeting_longitude)) / 2;
+                    const latDiff = Math.abs(tour.latitude - tour.meeting_latitude);
+                    const lngDiff = Math.abs(tour.longitude - tour.meeting_longitude);
+                    const maxDiff = Math.max(latDiff, lngDiff);
+                    if (maxDiff < 0.05) zoom = 14;
+                    else if (maxDiff < 0.2) zoom = 12;
+                    else zoom = 10;
+                }
+
+                mapInstance = L.map('map').setView([centerLat, centerLng], zoom);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                     maxZoom: 18
                 }).addTo(mapInstance);
 
-                L.marker([tour.latitude, tour.longitude])
+                const destPopup = `
+                    <div style="font-family:var(--font-body);font-size:0.85rem;">
+                        <b style="font-size:0.95rem;">${escapeHTML(tour.title)}</b>
+                        ${tour.location_name ? `<br><span style="color:var(--text-secondary);">${escapeHTML(tour.location_name)}</span>` : ''}
+                        ${tour.formatted_address ? `<br><span style="color:var(--text-secondary);font-size:0.78rem;">${escapeHTML(tour.formatted_address)}</span>` : ''}
+                        ${tour.county || tour.country ? `<br><span style="color:var(--text-placeholder);font-size:0.75rem;">${[tour.county, tour.country].filter(Boolean).join(', ')}</span>` : ''}
+                    </div>
+                `;
+
+                const destIcon = L.divIcon({
+                    html: `<div style="background:#122218;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);font-size:14px;">${svgIcon('map-pin')}</div>`,
+                    className: '',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                });
+
+                L.marker([tour.latitude, tour.longitude], { icon: destIcon })
                     .addTo(mapInstance)
-                    .bindPopup(`<b>${tour.title}</b>`)
+                    .bindPopup(destPopup)
                     .openPopup();
+
+                if (hasMeeting) {
+                    const meetingPopup = `
+                        <div style="font-family:var(--font-body);font-size:0.85rem;">
+                            <b style="font-size:0.95rem;">${escapeHTML(tour.meeting_point_name || 'Meeting Point')}</b>
+                            ${tour.meeting_address ? `<br><span style="color:var(--text-secondary);">${escapeHTML(tour.meeting_address)}</span>` : ''}
+                        </div>
+                    `;
+
+                    const meetingIcon = L.divIcon({
+                        html: `<div style="background:#c0392b;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);font-size:14px;">📍</div>`,
+                        className: '',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    });
+
+                    L.marker([tour.meeting_latitude, tour.meeting_longitude], { icon: meetingIcon })
+                        .addTo(mapInstance)
+                        .bindPopup(meetingPopup);
+
+                    L.polyline([
+                        [tour.latitude, tour.longitude],
+                        [tour.meeting_latitude, tour.meeting_longitude]
+                    ], {
+                        color: '#122218',
+                        weight: 2,
+                        opacity: 0.4,
+                        dashArray: '6, 8'
+                    }).addTo(mapInstance);
+                }
+
+                const locationInfo = document.getElementById('tour-location-info');
+                if (!locationInfo) {
+                    const mapContainer = document.getElementById('map');
+                    const infoDiv = document.createElement('div');
+                    infoDiv.id = 'tour-location-info';
+                    infoDiv.style.cssText = 'margin-top:0.75rem;padding:1rem;background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.8);border-radius:14px;';
+                    const hasCoords = tour.county || tour.country || tour.formatted_address;
+                    infoDiv.innerHTML = `
+                        <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+                            <div style="font-size:1.2rem;line-height:1;">📍</div>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-weight:600;font-size:0.95rem;color:var(--dark-text);">${escapeHTML(tour.location_name || tour.title)}</div>
+                                ${tour.formatted_address ? `<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.15rem;">${escapeHTML(tour.formatted_address)}</div>` : ''}
+                                ${tour.county || tour.country ? `<div style="font-size:0.78rem;color:var(--text-placeholder);margin-top:0.15rem;">${[tour.county, tour.country].filter(Boolean).join(', ')}</div>` : ''}
+                                <div style="display:flex;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;">
+                                    ${hasMeeting ? `<a href="https://www.google.com/maps/dir/?api=1&origin=${tour.meeting_latitude},${tour.meeting_longitude}&destination=${tour.latitude},${tour.longitude}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;border-radius:8px;background:#122218;color:#fff;font-size:0.78rem;font-weight:600;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">${svgIcon('navigation',{size:14})} Get Directions</a>` : ''}
+                                    <a href="https://www.google.com/maps/search/?api=1&query=${tour.latitude},${tour.longitude}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;border-radius:8px;background:rgba(18,34,36,0.08);color:var(--dark-text);font-size:0.78rem;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(18,34,36,0.14)'" onmouseout="this.style.background='rgba(18,34,36,0.08)'">${svgIcon('external-link',{size:14})} Open in Google Maps</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    if (hasCoords || hasMeeting) {
+                        mapContainer.parentNode.insertBefore(infoDiv, mapContainer.nextSibling);
+                    }
+                }
             }, 200);
         }
 

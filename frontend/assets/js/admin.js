@@ -337,45 +337,212 @@
         el.textContent = msg;
     }
 
-    var tourMap = null;
+    // ── Tour Location Picker ─────────────────────────────────
+    var tourLocMap = null;
+    var tourLocMarker = null;
+    var tourGeocache = {};
+    var tourSearchTimeout = null;
+    var tourMeetingTimeout = null;
 
-    function initTourMap(lat, lng) {
-        var container = document.getElementById('tour-map-preview');
-        container.style.display = 'block';
-        if (tourMap) tourMap.remove();
-        tourMap = L.map(container, { zoomControl: false }).setView([lat, lng], 13);
+    function showTourPreview(result) {
+        document.getElementById('tour-location-name').value = result.display_name || '';
+        document.getElementById('tour-formatted-address').value = result.display_name || '';
+        document.getElementById('tour-county').value = result.county || '';
+        document.getElementById('tour-country').value = result.country || '';
+        document.getElementById('tour-place-id').value = result.place_id || '';
+        document.getElementById('tour-location').value = result.display_name || '';
+        document.getElementById('tour-lat').value = result.lat;
+        document.getElementById('tour-lng').value = result.lon;
+
+        document.getElementById('tour-preview-name').textContent = result.display_name?.split(',')[0] || result.display_name || '';
+        document.getElementById('tour-preview-address').textContent = result.display_name || '';
+        document.getElementById('tour-preview-county').textContent = result.county ? 'County: ' + result.county : '';
+        document.getElementById('tour-preview-country').textContent = result.country ? 'Country: ' + result.country : '';
+        document.getElementById('tour-preview-lat').textContent = result.lat;
+        document.getElementById('tour-preview-lng').textContent = result.lon;
+
+        var preview = document.getElementById('tour-location-preview');
+        preview.style.display = 'block';
+
+        var mapContainer = document.getElementById('tour-loc-map');
+        if (tourLocMap) tourLocMap.remove();
+        tourLocMap = L.map(mapContainer, { zoomControl: true }).setView([result.lat, result.lon], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18, attribution: '&copy; OpenStreetMap'
-        }).addTo(tourMap);
-        L.marker([lat, lng]).addTo(tourMap);
-        setTimeout(function () { tourMap.invalidateSize(); }, 200);
+        }).addTo(tourLocMap);
+        tourLocMarker = L.marker([result.lat, result.lon], { draggable: true }).addTo(tourLocMap);
+        tourLocMarker.bindPopup('<b>' + escHtml(document.getElementById('tour-title').value || 'Tour') + '</b>');
+        tourLocMarker.on('dragend', async function () {
+            var pos = tourLocMarker.getLatLng();
+            document.getElementById('tour-lat').value = pos.lat;
+            document.getElementById('tour-lng').value = pos.lng;
+            document.getElementById('tour-preview-lat').textContent = pos.lat.toFixed(6);
+            document.getElementById('tour-preview-lng').textContent = pos.lng.toFixed(6);
+            try {
+                var rev = await api.get('/destinations/geocode/reverse?lat=' + pos.lat + '&lon=' + pos.lng);
+                if (rev.display_name) {
+                    document.getElementById('tour-location-name').value = rev.display_name;
+                    document.getElementById('tour-formatted-address').value = rev.display_name;
+                    document.getElementById('tour-county').value = rev.county || '';
+                    document.getElementById('tour-country').value = rev.country || '';
+                    document.getElementById('tour-place-id').value = rev.place_id || '';
+                    document.getElementById('tour-location').value = rev.display_name;
+                    document.getElementById('tour-preview-name').textContent = rev.display_name?.split(',')[0] || rev.display_name;
+                    document.getElementById('tour-preview-address').textContent = rev.display_name;
+                    document.getElementById('tour-preview-county').textContent = rev.county ? 'County: ' + rev.county : '';
+                    document.getElementById('tour-preview-country').textContent = rev.country ? 'Country: ' + rev.country : '';
+                }
+            } catch (e) {}
+        });
+        setTimeout(function () { tourLocMap.invalidateSize(); }, 300);
     }
 
-    function destroyTourMap() {
-        if (tourMap) { tourMap.remove(); tourMap = null; }
-        document.getElementById('tour-map-preview').style.display = 'none';
+    function clearTourLocation() {
+        document.getElementById('tour-location-search').value = '';
+        document.getElementById('tour-location').value = '';
+        document.getElementById('tour-location-name').value = '';
+        document.getElementById('tour-formatted-address').value = '';
+        document.getElementById('tour-county').value = '';
+        document.getElementById('tour-country').value = '';
+        document.getElementById('tour-place-id').value = '';
+        document.getElementById('tour-lat').value = '';
+        document.getElementById('tour-lng').value = '';
+        document.getElementById('tour-location-preview').style.display = 'none';
+        if (tourLocMap) { tourLocMap.remove(); tourLocMap = null; tourLocMarker = null; }
     }
 
-    async function lookupTourLocation() {
-        var location = document.getElementById('tour-location').value.trim();
-        var title = document.getElementById('tour-title').value.trim();
-        var query = location || title;
-        if (!query) { alert('Enter a location or title first.'); return; }
-        try {
-            var res = await api.get('/destinations/geocode?q=' + encodeURIComponent(query));
-            if (res.lat != null) {
-                document.getElementById('tour-lat').value = res.lat;
-                document.getElementById('tour-lng').value = res.lng;
-                initTourMap(res.lat, res.lng);
-            } else {
-                alert('Could not find that location.');
-            }
-        } catch (e) {
-            alert('Geocoding failed: ' + e.message);
+    document.getElementById('tour-location-clear')?.addEventListener('click', clearTourLocation);
+
+    var tourSearchInput = document.getElementById('tour-location-search');
+    var tourSuggestions = document.getElementById('tour-location-suggestions');
+
+    tourSearchInput?.addEventListener('input', function () {
+        var q = this.value.trim();
+        if (q.length < 3) { tourSuggestions.style.display = 'none'; return; }
+        clearTimeout(tourSearchTimeout);
+        if (tourGeocache[q]) {
+            showTourSuggestions(tourGeocache[q]);
+            return;
         }
+        tourSearchTimeout = setTimeout(async function () {
+            tourSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
+            tourSuggestions.style.display = 'block';
+            try {
+                var res = await api.get('/destinations/geocode/autocomplete?q=' + encodeURIComponent(q));
+                var results = res.results || [];
+                tourGeocache[q] = results;
+                showTourSuggestions(results);
+            } catch (e) {
+                tourSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--error);font-size:0.82rem;">Search failed.</div>';
+            }
+        }, 300);
+    });
+
+    function showTourSuggestions(results) {
+        if (results.length === 0) {
+            tourSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">No results found.</div>';
+            return;
+        }
+        tourSuggestions.innerHTML = results.map(function (r) {
+            var icon = '📍';
+            if (r.type === 'city' || r.type === 'town') icon = '🏙️';
+            else if (r.type === 'country') icon = '🌍';
+            else if (r.category === 'natural') icon = '🏔️';
+            return '<div class="location-suggestion" data-result=\'' + JSON.stringify(r).replace(/'/g, '&#39;') + '\' style="padding:0.6rem 0.75rem;cursor:pointer;display:flex;align-items:flex-start;gap:0.5rem;border-bottom:1px solid #f0f0f0;transition:background 0.15s;" onmouseover="this.style.background=\'#f5f7f5\'" onmouseout="this.style.background=\'\'">'
+                + '<span style="font-size:1rem;line-height:1.3;">' + icon + '</span>'
+                + '<div style="flex:1;min-width:0;">'
+                + '<div style="font-size:0.85rem;font-weight:600;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(r.display_name?.split(',')[0] || '') + '</div>'
+                + '<div style="font-size:0.75rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(r.display_name || '') + '</div>'
+                + (r.county || r.country ? '<div style="font-size:0.7rem;color:var(--text-placeholder);margin-top:0.15rem;">' + [r.county, r.country].filter(Boolean).join(', ') + '</div>' : '')
+                + '</div>'
+                + '</div>';
+        }).join('');
+        tourSuggestions.querySelectorAll('.location-suggestion').forEach(function (el) {
+            el.addEventListener('click', function () {
+                var result = JSON.parse(this.getAttribute('data-result'));
+                tourSuggestions.style.display = 'none';
+                tourSearchInput.value = result.display_name?.split(',')[0] || result.display_name || '';
+                showTourPreview(result);
+            });
+        });
     }
 
-    document.getElementById('tour-geocode-btn')?.addEventListener('click', lookupTourLocation);
+    document.addEventListener('click', function (e) {
+        if (tourSuggestions && !e.target.closest('#tour-location-search') && !e.target.closest('#tour-location-suggestions')) {
+            tourSuggestions.style.display = 'none';
+        }
+    });
+
+    // ── Meeting Point Picker ─────────────────────────────────
+    function showMeetingPreview(result) {
+        document.getElementById('tour-meeting-point-name').value = result.display_name || '';
+        document.getElementById('tour-meeting-address').value = result.display_name || '';
+        document.getElementById('tour-meeting-lat').value = result.lat;
+        document.getElementById('tour-meeting-lng').value = result.lon;
+        document.getElementById('tour-meeting-place-id').value = result.place_id || '';
+
+        document.getElementById('tour-meeting-preview-name').textContent = result.display_name?.split(',')[0] || result.display_name || '';
+        document.getElementById('tour-meeting-preview-address').textContent = result.display_name || '';
+        document.getElementById('tour-meeting-preview').style.display = 'block';
+    }
+
+    function clearMeetingPoint() {
+        document.getElementById('tour-meeting-search').value = '';
+        document.getElementById('tour-meeting-point-name').value = '';
+        document.getElementById('tour-meeting-address').value = '';
+        document.getElementById('tour-meeting-lat').value = '';
+        document.getElementById('tour-meeting-lng').value = '';
+        document.getElementById('tour-meeting-place-id').value = '';
+        document.getElementById('tour-meeting-preview').style.display = 'none';
+    }
+
+    document.getElementById('tour-meeting-clear')?.addEventListener('click', clearMeetingPoint);
+
+    var meetingSearchInput = document.getElementById('tour-meeting-search');
+    var meetingSuggestions = document.getElementById('tour-meeting-suggestions');
+
+    meetingSearchInput?.addEventListener('input', function () {
+        var q = this.value.trim();
+        if (q.length < 3) { meetingSuggestions.style.display = 'none'; return; }
+        clearTimeout(tourMeetingTimeout);
+        tourMeetingTimeout = setTimeout(async function () {
+            meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
+            meetingSuggestions.style.display = 'block';
+            try {
+                var res = await api.get('/destinations/geocode/autocomplete?q=' + encodeURIComponent(q));
+                var results = res.results || [];
+                if (results.length === 0) {
+                    meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">No results found.</div>';
+                    return;
+                }
+                meetingSuggestions.innerHTML = results.map(function (r) {
+                    return '<div class="meeting-suggestion" data-result=\'' + JSON.stringify(r).replace(/'/g, '&#39;') + '\' style="padding:0.55rem 0.75rem;cursor:pointer;display:flex;align-items:flex-start;gap:0.5rem;border-bottom:1px solid #f0f0f0;transition:background 0.15s;" onmouseover="this.style.background=\'#f5f7f5\'" onmouseout="this.style.background=\'\'">'
+                        + '<span style="font-size:0.9rem;line-height:1.3;">📍</span>'
+                        + '<div style="flex:1;min-width:0;">'
+                        + '<div style="font-size:0.82rem;font-weight:600;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(r.display_name?.split(',')[0] || '') + '</div>'
+                        + '<div style="font-size:0.72rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(r.display_name || '') + '</div>'
+                        + '</div>'
+                        + '</div>';
+                }).join('');
+                meetingSuggestions.querySelectorAll('.meeting-suggestion').forEach(function (el) {
+                    el.addEventListener('click', function () {
+                        var result = JSON.parse(this.getAttribute('data-result'));
+                        meetingSuggestions.style.display = 'none';
+                        meetingSearchInput.value = result.display_name?.split(',')[0] || result.display_name || '';
+                        showMeetingPreview(result);
+                    });
+                });
+            } catch (e) {
+                meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--error);font-size:0.82rem;">Search failed.</div>';
+            }
+        }, 300);
+    });
+
+    document.addEventListener('click', function (e) {
+        if (meetingSuggestions && !e.target.closest('#tour-meeting-search') && !e.target.closest('#tour-meeting-suggestions')) {
+            meetingSuggestions.style.display = 'none';
+        }
+    });
 
     window.editTour = async function (id) {
         try {
@@ -384,7 +551,6 @@
             var t = items.find(function (x) { return x.id === id; });
             if (!t) return alert('Tour not found');
             document.getElementById('tour-title').value = t.title || '';
-            document.getElementById('tour-location').value = t.location || '';
             document.getElementById('tour-price').value = t.price || '';
             document.getElementById('tour-original-price').value = t.original_price || '';
             document.getElementById('tour-discount-pct').value = t.discount_pct || '';
@@ -400,11 +566,38 @@
             document.getElementById('tour-title').focus();
             showTourFormMsg('');
             buildTourItinerary();
-            document.getElementById('tour-lat').value = t.latitude != null ? t.latitude : '';
-            document.getElementById('tour-lng').value = t.longitude != null ? t.longitude : '';
-            destroyTourMap();
+            clearTourLocation();
+            clearMeetingPoint();
             if (t.latitude != null && t.longitude != null) {
-                initTourMap(t.latitude, t.longitude);
+                var fakeResult = {
+                    lat: t.latitude,
+                    lon: t.longitude,
+                    display_name: t.formatted_address || t.location_name || t.location || '',
+                    county: t.county || '',
+                    country: t.country || '',
+                    place_id: t.place_id || ''
+                };
+                if (fakeResult.display_name) {
+                    document.getElementById('tour-location-search').value = fakeResult.display_name.split(',')[0] || fakeResult.display_name;
+                    showTourPreview(fakeResult);
+                } else {
+                    document.getElementById('tour-location-search').value = t.location || '';
+                    document.getElementById('tour-location').value = t.location || '';
+                    document.getElementById('tour-lat').value = t.latitude;
+                    document.getElementById('tour-lng').value = t.longitude;
+                }
+            } else if (t.location) {
+                document.getElementById('tour-location-search').value = t.location;
+                document.getElementById('tour-location').value = t.location;
+            }
+            if (t.meeting_latitude != null && t.meeting_longitude != null) {
+                showMeetingPreview({
+                    lat: t.meeting_latitude,
+                    lon: t.meeting_longitude,
+                    display_name: t.meeting_point_name || t.meeting_address || '',
+                    place_id: t.meeting_place_id || ''
+                });
+                document.getElementById('tour-meeting-search').value = t.meeting_point_name || t.meeting_address || '';
             }
             if (t.itinerary) {
                 try {
@@ -438,6 +631,16 @@
             var formData = new FormData();
             formData.append('title', document.getElementById('tour-title').value);
             formData.append('location', document.getElementById('tour-location').value);
+            formData.append('location_name', document.getElementById('tour-location-name').value);
+            formData.append('formatted_address', document.getElementById('tour-formatted-address').value);
+            formData.append('county', document.getElementById('tour-county').value);
+            formData.append('country', document.getElementById('tour-country').value);
+            formData.append('place_id', document.getElementById('tour-place-id').value);
+            formData.append('meeting_point_name', document.getElementById('tour-meeting-point-name').value);
+            formData.append('meeting_address', document.getElementById('tour-meeting-address').value);
+            formData.append('meeting_latitude', document.getElementById('tour-meeting-lat').value);
+            formData.append('meeting_longitude', document.getElementById('tour-meeting-lng').value);
+            formData.append('meeting_place_id', document.getElementById('tour-meeting-place-id').value);
             formData.append('price', document.getElementById('tour-price').value);
             formData.append('original_price', document.getElementById('tour-original-price').value);
             formData.append('discount_pct', document.getElementById('tour-discount-pct').value);
@@ -479,7 +682,8 @@
                 }
                 tourForm.reset();
                 hideTourItinerary();
-                destroyTourMap();
+                clearTourLocation();
+                clearMeetingPoint();
                 loadTours();
                 showTourFormMsg(editId ? 'Tour updated successfully!' : 'Tour created successfully!');
                 setTimeout(function() { showTourFormMsg(''); }, 4000);
@@ -612,45 +816,140 @@
         }
     };
 
-    var hotelMap = null;
+    // ── Hotel Location Picker ─────────────────────────────────
+    var hotelLocMap = null;
+    var hotelLocMarker = null;
+    var hotelGeocache = {};
+    var hotelSearchTimeout = null;
 
-    function initHotelMap(lat, lng) {
-        var container = document.getElementById('hotel-map-preview');
-        container.style.display = 'block';
-        if (hotelMap) hotelMap.remove();
-        hotelMap = L.map(container, { zoomControl: false }).setView([lat, lng], 13);
+    function showHotelPreview(result) {
+        document.getElementById('hotel-location-name').value = result.display_name || '';
+        document.getElementById('hotel-formatted-address').value = result.display_name || '';
+        document.getElementById('hotel-county').value = result.county || '';
+        document.getElementById('hotel-country').value = result.country || '';
+        document.getElementById('hotel-place-id').value = result.place_id || '';
+        document.getElementById('hotel-location').value = result.display_name || '';
+        document.getElementById('hotel-lat').value = result.lat;
+        document.getElementById('hotel-lng').value = result.lon;
+
+        document.getElementById('hotel-preview-name').textContent = result.display_name?.split(',')[0] || result.display_name || '';
+        document.getElementById('hotel-preview-address').textContent = result.display_name || '';
+        document.getElementById('hotel-preview-county').textContent = result.county ? 'County: ' + result.county : '';
+        document.getElementById('hotel-preview-country').textContent = result.country ? 'Country: ' + result.country : '';
+        document.getElementById('hotel-preview-lat').textContent = result.lat;
+        document.getElementById('hotel-preview-lng').textContent = result.lon;
+
+        var preview = document.getElementById('hotel-location-preview');
+        preview.style.display = 'block';
+
+        var mapContainer = document.getElementById('hotel-loc-map');
+        if (hotelLocMap) hotelLocMap.remove();
+        hotelLocMap = L.map(mapContainer, { zoomControl: true }).setView([result.lat, result.lon], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18, attribution: '&copy; OpenStreetMap'
-        }).addTo(hotelMap);
-        L.marker([lat, lng]).addTo(hotelMap);
-        setTimeout(function () { hotelMap.invalidateSize(); }, 200);
+        }).addTo(hotelLocMap);
+        hotelLocMarker = L.marker([result.lat, result.lon], { draggable: true }).addTo(hotelLocMap);
+        hotelLocMarker.bindPopup('<b>' + escHtml(document.getElementById('hotel-name').value || 'Hotel') + '</b>');
+        hotelLocMarker.on('dragend', async function () {
+            var pos = hotelLocMarker.getLatLng();
+            document.getElementById('hotel-lat').value = pos.lat;
+            document.getElementById('hotel-lng').value = pos.lng;
+            document.getElementById('hotel-preview-lat').textContent = pos.lat.toFixed(6);
+            document.getElementById('hotel-preview-lng').textContent = pos.lng.toFixed(6);
+            try {
+                var rev = await api.get('/destinations/geocode/reverse?lat=' + pos.lat + '&lon=' + pos.lng);
+                if (rev.display_name) {
+                    document.getElementById('hotel-location-name').value = rev.display_name;
+                    document.getElementById('hotel-formatted-address').value = rev.display_name;
+                    document.getElementById('hotel-county').value = rev.county || '';
+                    document.getElementById('hotel-country').value = rev.country || '';
+                    document.getElementById('hotel-place-id').value = rev.place_id || '';
+                    document.getElementById('hotel-location').value = rev.display_name;
+                    document.getElementById('hotel-preview-name').textContent = rev.display_name?.split(',')[0] || rev.display_name;
+                    document.getElementById('hotel-preview-address').textContent = rev.display_name;
+                    document.getElementById('hotel-preview-county').textContent = rev.county ? 'County: ' + rev.county : '';
+                    document.getElementById('hotel-preview-country').textContent = rev.country ? 'Country: ' + rev.country : '';
+                }
+            } catch (e) {}
+        });
+        setTimeout(function () { hotelLocMap.invalidateSize(); }, 300);
     }
 
-    function destroyHotelMap() {
-        if (hotelMap) { hotelMap.remove(); hotelMap = null; }
-        document.getElementById('hotel-map-preview').style.display = 'none';
+    function clearHotelLocation() {
+        document.getElementById('hotel-location-search').value = '';
+        document.getElementById('hotel-location').value = '';
+        document.getElementById('hotel-location-name').value = '';
+        document.getElementById('hotel-formatted-address').value = '';
+        document.getElementById('hotel-county').value = '';
+        document.getElementById('hotel-country').value = '';
+        document.getElementById('hotel-place-id').value = '';
+        document.getElementById('hotel-lat').value = '';
+        document.getElementById('hotel-lng').value = '';
+        document.getElementById('hotel-location-preview').style.display = 'none';
+        if (hotelLocMap) { hotelLocMap.remove(); hotelLocMap = null; hotelLocMarker = null; }
     }
 
-    async function lookupHotelLocation() {
-        var location = document.getElementById('hotel-location').value.trim();
-        var name = document.getElementById('hotel-name').value.trim();
-        var query = location || name;
-        if (!query) { alert('Enter a location or name first.'); return; }
-        try {
-            var res = await api.get('/destinations/geocode?q=' + encodeURIComponent(query));
-            if (res.lat != null) {
-                document.getElementById('hotel-lat').value = res.lat;
-                document.getElementById('hotel-lng').value = res.lng;
-                initHotelMap(res.lat, res.lng);
-            } else {
-                alert('Could not find that location.');
-            }
-        } catch (e) {
-            alert('Geocoding failed: ' + e.message);
+    document.getElementById('hotel-location-clear')?.addEventListener('click', clearHotelLocation);
+
+    var hotelSearchInput = document.getElementById('hotel-location-search');
+    var hotelSuggestions = document.getElementById('hotel-location-suggestions');
+
+    hotelSearchInput?.addEventListener('input', function () {
+        var q = this.value.trim();
+        if (q.length < 3) { hotelSuggestions.style.display = 'none'; return; }
+        clearTimeout(hotelSearchTimeout);
+        if (hotelGeocache[q]) {
+            showHotelSuggestions(hotelGeocache[q]);
+            return;
         }
+        hotelSearchTimeout = setTimeout(async function () {
+            hotelSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
+            hotelSuggestions.style.display = 'block';
+            try {
+                var res = await api.get('/destinations/geocode/autocomplete?q=' + encodeURIComponent(q));
+                var results = res.results || [];
+                hotelGeocache[q] = results;
+                showHotelSuggestions(results);
+            } catch (e) {
+                hotelSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--error);font-size:0.82rem;">Search failed.</div>';
+            }
+        }, 300);
+    });
+
+    function showHotelSuggestions(results) {
+        if (results.length === 0) {
+            hotelSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">No results found.</div>';
+            return;
+        }
+        hotelSuggestions.innerHTML = results.map(function (r) {
+            var icon = '📍';
+            if (r.type === 'city' || r.type === 'town') icon = '🏙️';
+            else if (r.type === 'country') icon = '🌍';
+            else if (r.category === 'natural') icon = '🏔️';
+            return '<div class="location-suggestion" data-result=\'' + JSON.stringify(r).replace(/'/g, '&#39;') + '\' style="padding:0.6rem 0.75rem;cursor:pointer;display:flex;align-items:flex-start;gap:0.5rem;border-bottom:1px solid #f0f0f0;transition:background 0.15s;" onmouseover="this.style.background=\'#f5f7f5\'" onmouseout="this.style.background=\'\'">'
+                + '<span style="font-size:1rem;line-height:1.3;">' + icon + '</span>'
+                + '<div style="flex:1;min-width:0;">'
+                + '<div style="font-size:0.85rem;font-weight:600;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(r.display_name?.split(',')[0] || '') + '</div>'
+                + '<div style="font-size:0.75rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(r.display_name || '') + '</div>'
+                + (r.county || r.country ? '<div style="font-size:0.7rem;color:var(--text-placeholder);margin-top:0.15rem;">' + [r.county, r.country].filter(Boolean).join(', ') + '</div>' : '')
+                + '</div>'
+                + '</div>';
+        }).join('');
+        hotelSuggestions.querySelectorAll('.location-suggestion').forEach(function (el) {
+            el.addEventListener('click', function () {
+                var result = JSON.parse(this.getAttribute('data-result'));
+                hotelSuggestions.style.display = 'none';
+                hotelSearchInput.value = result.display_name?.split(',')[0] || result.display_name || '';
+                showHotelPreview(result);
+            });
+        });
     }
 
-    document.getElementById('hotel-geocode-btn')?.addEventListener('click', lookupHotelLocation);
+    document.addEventListener('click', function (e) {
+        if (hotelSuggestions && !e.target.closest('#hotel-location-search') && !e.target.closest('#hotel-location-suggestions')) {
+            hotelSuggestions.style.display = 'none';
+        }
+    });
 
     window.editHotel = async function (id) {
         try {
@@ -668,11 +967,28 @@
             document.getElementById('hotel-submit-btn').textContent = 'Update Hotel';
             document.getElementById('hotel-cancel-btn').style.display = '';
             document.getElementById('hotel-name').focus();
-            document.getElementById('hotel-lat').value = h.latitude != null ? h.latitude : '';
-            document.getElementById('hotel-lng').value = h.longitude != null ? h.longitude : '';
-            destroyHotelMap();
+            clearHotelLocation();
             if (h.latitude != null && h.longitude != null) {
-                initHotelMap(h.latitude, h.longitude);
+                var fakeResult = {
+                    lat: h.latitude,
+                    lon: h.longitude,
+                    display_name: h.formatted_address || h.location_name || h.location || '',
+                    county: h.county || '',
+                    country: h.country || '',
+                    place_id: h.place_id || ''
+                };
+                if (fakeResult.display_name) {
+                    document.getElementById('hotel-location-search').value = fakeResult.display_name.split(',')[0] || fakeResult.display_name;
+                    showHotelPreview(fakeResult);
+                } else {
+                    document.getElementById('hotel-location-search').value = h.location || '';
+                    document.getElementById('hotel-location').value = h.location || '';
+                    document.getElementById('hotel-lat').value = h.latitude;
+                    document.getElementById('hotel-lng').value = h.longitude;
+                }
+            } else if (h.location) {
+                document.getElementById('hotel-location-search').value = h.location;
+                document.getElementById('hotel-location').value = h.location;
             }
         } catch (e) {
             alert('Failed to load hotel: ' + e.message);
@@ -687,6 +1003,11 @@
             var formData = new FormData();
             formData.append('name', document.getElementById('hotel-name').value);
             formData.append('location', document.getElementById('hotel-location').value);
+            formData.append('location_name', document.getElementById('hotel-location-name').value);
+            formData.append('formatted_address', document.getElementById('hotel-formatted-address').value);
+            formData.append('county', document.getElementById('hotel-county').value);
+            formData.append('country', document.getElementById('hotel-country').value);
+            formData.append('place_id', document.getElementById('hotel-place-id').value);
             formData.append('price_per_night', document.getElementById('hotel-price').value);
             formData.append('rating', document.getElementById('hotel-rating').value || '0');
             formData.append('amenities', document.getElementById('hotel-amenities').value);
@@ -707,7 +1028,7 @@
                     await api.createHotel(formData);
                 }
                 hotelForm.reset();
-                destroyHotelMap();
+                clearHotelLocation();
                 loadHotels();
             } catch (err) {
                 alert('Failed: ' + err.message);

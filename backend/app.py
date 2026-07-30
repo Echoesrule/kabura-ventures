@@ -101,6 +101,7 @@ def create_app():
     app.add_url_rule('/honeymoon', 'honeymoon', lambda: page('honeymoon'))
     app.add_url_rule('/group', 'group', lambda: page('group'))
     app.add_url_rule('/services', 'services', lambda: page('services'))
+    app.add_url_rule('/maps', 'maps', lambda: page('maps'))
 
     @app.route('/admin')
     def admin_dashboard():
@@ -110,7 +111,7 @@ def create_app():
                     'tour-detail', 'hotel-detail',
                     'booking', 'destinations', 'flights', 'blog',
                     'blog-detail', 'contact', 'help', 'wishlist', 'safari', 'beach',
-                    'cultural', 'trekking', 'honeymoon', 'group', 'services'}
+                    'cultural', 'trekking', 'honeymoon', 'group', 'services', 'maps'}
 
     @app.route('/api/health')
     def health():
@@ -297,6 +298,31 @@ def create_app():
                         db.text("UPDATE hotels SET slug = :s WHERE id = :id"),
                         {'s': slug, 'id': row[0]}
                     )
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: add new location fields to tours
+            try:
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS location_name VARCHAR(255)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS formatted_address VARCHAR(500)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS county VARCHAR(100)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS country VARCHAR(100)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS place_id VARCHAR(255)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS meeting_point_name VARCHAR(255)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS meeting_address VARCHAR(500)'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS meeting_latitude DOUBLE PRECISION'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS meeting_longitude DOUBLE PRECISION'))
+                db.session.execute(db.text('ALTER TABLE tours ADD COLUMN IF NOT EXISTS meeting_place_id VARCHAR(255)'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: add new location fields to hotels
+            try:
+                db.session.execute(db.text('ALTER TABLE hotels ADD COLUMN IF NOT EXISTS location_name VARCHAR(255)'))
+                db.session.execute(db.text('ALTER TABLE hotels ADD COLUMN IF NOT EXISTS formatted_address VARCHAR(500)'))
+                db.session.execute(db.text('ALTER TABLE hotels ADD COLUMN IF NOT EXISTS county VARCHAR(100)'))
+                db.session.execute(db.text('ALTER TABLE hotels ADD COLUMN IF NOT EXISTS country VARCHAR(100)'))
+                db.session.execute(db.text('ALTER TABLE hotels ADD COLUMN IF NOT EXISTS place_id VARCHAR(255)'))
                 db.session.commit()
             except Exception:
                 db.session.rollback()

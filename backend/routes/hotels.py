@@ -79,6 +79,11 @@ def create_hotel(current_user):
         name=name,
         description=description,
         location=location,
+        location_name=sanitize_input(data.get('location_name', ''), max_length=255),
+        formatted_address=sanitize_input(data.get('formatted_address', ''), max_length=500),
+        county=sanitize_input(data.get('county', ''), max_length=100),
+        country=sanitize_input(data.get('country', ''), max_length=100),
+        place_id=sanitize_input(data.get('place_id', ''), max_length=255),
         latitude=float(data['latitude']) if data.get('latitude') else None,
         longitude=float(data['longitude']) if data.get('longitude') else None,
         price_per_night=float(data.get('price_per_night', 0)),
@@ -146,6 +151,16 @@ def update_hotel(current_user, hotel_id):
         hotel.amenities = sanitize_input(data['amenities'], max_length=2000)
         err = validate_length(hotel.amenities, 2000, 'Amenities')
         if err: errors.append(err)
+    if 'location_name' in data:
+        hotel.location_name = sanitize_input(data['location_name'], max_length=255)
+    if 'formatted_address' in data:
+        hotel.formatted_address = sanitize_input(data['formatted_address'], max_length=500)
+    if 'county' in data:
+        hotel.county = sanitize_input(data['county'], max_length=100)
+    if 'country' in data:
+        hotel.country = sanitize_input(data['country'], max_length=100)
+    if 'place_id' in data:
+        hotel.place_id = sanitize_input(data['place_id'], max_length=255)
     if 'latitude' in data:
         hotel.latitude = float(data['latitude']) if data['latitude'] else None
     if 'longitude' in data:

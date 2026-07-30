@@ -1,7 +1,7 @@
 // Kabura Ventures - API Client
 const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? location.origin + '/api'
-    : 'https://kabura-adventures-api.onrender.com/api';
+    : 'https://kabura-ventures.onrender.com/api';
 window.API_BASE = API_BASE;
 
 class ApiClient {

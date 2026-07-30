@@ -19,6 +19,16 @@ class Tour(db.Model):
     price = db.Column(db.Numeric(12, 2), nullable=False)
     duration_days = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String(255))
+    location_name = db.Column(db.String(255))
+    formatted_address = db.Column(db.String(500))
+    county = db.Column(db.String(100))
+    country = db.Column(db.String(100))
+    place_id = db.Column(db.String(255))
+    meeting_point_name = db.Column(db.String(255))
+    meeting_address = db.Column(db.String(500))
+    meeting_latitude = db.Column(db.Float, nullable=True)
+    meeting_longitude = db.Column(db.Float, nullable=True)
+    meeting_place_id = db.Column(db.String(255))
     activity_type = db.Column(db.String(100), default='safari')
     max_people = db.Column(db.Integer, default=20)
     original_price = db.Column(db.Numeric(12, 2), nullable=True)
@@ -53,6 +63,16 @@ class Tour(db.Model):
             'discount_pct': self.discount_pct if self.discount_pct else None,
             'duration_days': self.duration_days,
             'location': self.location,
+            'location_name': self.location_name,
+            'formatted_address': self.formatted_address,
+            'county': self.county,
+            'country': self.country,
+            'place_id': self.place_id,
+            'meeting_point_name': self.meeting_point_name,
+            'meeting_address': self.meeting_address,
+            'meeting_latitude': self.meeting_latitude,
+            'meeting_longitude': self.meeting_longitude,
+            'meeting_place_id': self.meeting_place_id,
             'activity_type': self.activity_type,
             'max_people': self.max_people,
             'featured': self.featured,

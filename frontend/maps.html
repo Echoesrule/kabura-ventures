@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Maps - Kabura Adventures</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128x128.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256x256.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=11">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="/assets/css/maps.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <section class="maps-hero">
+        <div class="maps-hero-content">
+            <h1>Explore Our<br><em>Tours.</em></h1>
+            <p>Discover every corner of Kenya. Browse all our tour locations on the map and find your next adventure.</p>
+            <div class="maps-hero-meta">
+                <span>Interactive map</span>
+                <span>All destinations</span>
+                <span>Real-time markers</span>
+            </div>
+            <div class="maps-hero-cta">
+                <a href="#maps-section" class="maps-hero-btn"><span>View map</span></a>
+                <a href="#maps-section" class="maps-hero-arrow" aria-label="View map">
+                    <img src="/assets/images/right-arrow.png" alt="" class="maps-hero-arrow-img" loading="lazy">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="maps-section" id="maps-section">
+        <div class="maps-section-header">
+            <h2>All Tour Locations</h2>
+            <p>Find tours across Kenya by location. Click a marker to learn more.</p>
+        </div>
+
+        <div class="maps-filter-bar-wrap">
+            <div class="maps-filters">
+                <i class="fas fa-search maps-search-icon"></i>
+                <input type="text" class="maps-filter-input" id="map-search" placeholder="Search by tour name or location...">
+                <span class="maps-results-count" id="results-count"></span>
+            </div>
+        </div>
+
+        <div class="maps-loading" id="maps-loading">
+            <div class="maps-spinner"></div>
+            <p>Loading tour locations...</p>
+        </div>
+
+        <div class="maps-error" id="maps-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Could not load map data</h3>
+            <p id="maps-error-msg">Please try again later.</p>
+            <button class="maps-retry-btn" onclick="location.reload()">Retry</button>
+        </div>
+
+        <div id="map"></div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/assets/js/supabase-client.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/components.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/maps.js"></script>
+</body>
+</html>

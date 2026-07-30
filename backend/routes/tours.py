@@ -58,6 +58,26 @@ def get_tours():
         'pages': tours.pages
     }), 200
 
+@tours_bp.route('/locations', methods=['GET'])
+def get_tour_locations():
+    tours = Tour.query.filter(
+        Tour.latitude.isnot(None),
+        Tour.longitude.isnot(None),
+        Tour.available == True
+    ).all()
+    return jsonify({'tours': [{
+        'id': t.id,
+        'slug': t.slug,
+        'title': t.title,
+        'price': float(t.price) if t.price else 0,
+        'duration_days': t.duration_days,
+        'location': t.location,
+        'latitude': t.latitude,
+        'longitude': t.longitude,
+        'images': [img.to_dict() for img in t.images.all()],
+        'avg_rating': float(db.session.query(db.func.avg(Review.rating)).filter(Review.tour_id == t.id).scalar() or 0)
+    } for t in tours]}), 200
+
 @tours_bp.route('/<identifier>', methods=['GET'])
 def get_tour(identifier):
     tour = Tour.query.filter_by(slug=identifier).first()
@@ -152,6 +172,16 @@ def create_tour(current_user):
         price=float(data.get('price', 0)),
         duration_days=int(data.get('duration_days', 1)),
         location=location,
+        location_name=sanitize_input(data.get('location_name', ''), max_length=255) or None,
+        formatted_address=sanitize_input(data.get('formatted_address', ''), max_length=500) or None,
+        county=sanitize_input(data.get('county', ''), max_length=100) or None,
+        country=sanitize_input(data.get('country', ''), max_length=100) or None,
+        place_id=data.get('place_id') or None,
+        meeting_point_name=sanitize_input(data.get('meeting_point_name', ''), max_length=255) or None,
+        meeting_address=sanitize_input(data.get('meeting_address', ''), max_length=500) or None,
+        meeting_latitude=float(data['meeting_latitude']) if data.get('meeting_latitude') else None,
+        meeting_longitude=float(data['meeting_longitude']) if data.get('meeting_longitude') else None,
+        meeting_place_id=data.get('meeting_place_id') or None,
         max_people=int(data.get('max_people', 20)),
         featured=data.get('featured', 'false').lower() == 'true',
         wildlife=wildlife,
@@ -218,6 +248,26 @@ def update_tour(current_user, tour_id):
         tour.location = sanitize_input(data['location'], max_length=255)
         err = validate_length(tour.location, 255, 'Location')
         if err: errors.append(err)
+    if 'location_name' in data:
+        tour.location_name = sanitize_input(data['location_name'], max_length=255) or None
+    if 'formatted_address' in data:
+        tour.formatted_address = sanitize_input(data['formatted_address'], max_length=500) or None
+    if 'county' in data:
+        tour.county = sanitize_input(data['county'], max_length=100) or None
+    if 'country' in data:
+        tour.country = sanitize_input(data['country'], max_length=100) or None
+    if 'place_id' in data:
+        tour.place_id = data['place_id'] or None
+    if 'meeting_point_name' in data:
+        tour.meeting_point_name = sanitize_input(data['meeting_point_name'], max_length=255) or None
+    if 'meeting_address' in data:
+        tour.meeting_address = sanitize_input(data['meeting_address'], max_length=500) or None
+    if 'meeting_latitude' in data:
+        tour.meeting_latitude = float(data['meeting_latitude']) if data['meeting_latitude'] else None
+    if 'meeting_longitude' in data:
+        tour.meeting_longitude = float(data['meeting_longitude']) if data['meeting_longitude'] else None
+    if 'meeting_place_id' in data:
+        tour.meeting_place_id = data['meeting_place_id'] or None
     if 'max_people' in data:
         err = validate_number(data['max_people'], min_val=1, max_val=1000, field_name='Max people')
         if err: errors.append(err)
