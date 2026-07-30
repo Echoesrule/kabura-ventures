@@ -221,9 +221,13 @@ async function signOutSupabase() {
 
 // ─── Auth State Listener ──────────────────────────────────────────────────────
 
-// Module-level flag: once set, stays true for the page lifetime so subsequent
-// SIGNED_IN events (from token refresh / session restore) don't trigger login.
-let _isRecoveryFlow = false;
+// Module-level flags
+let _isRecoveryFlow = false;     // true when user arrived via recovery link
+let _sessionExchanged = false;   // true once we've exchanged a Supabase → Flask session
+
+// Paths where auto-exchange on SIGNED_IN is allowed (auth pages).
+// On all other pages we ignore SIGNED_IN to prevent infinite redirect loops.
+const _AUTH_PAGES = ['/login', '/signup', '/login.html', '/signup.html'];
 
 /**
  * Set up a Supabase auth state listener.
@@ -243,16 +247,31 @@ function setupSupabaseAuthListener(isRecovery = false) {
         switch (event) {
             case 'SIGNED_IN':
                 if (session) {
+                    // Recovery flow — show password reset form, never exchange
                     if (_isRecoveryFlow) {
                         showPasswordResetForm();
                         return;
                     }
+                    // Already exchanged this page load (duplicate event guard)
+                    if (_sessionExchanged) {
+                        return;
+                    }
+                    // Only auto-exchange on auth pages; ignore on homepage etc.
+                    const path = window.location.pathname;
+                    const isAuthPage = _AUTH_PAGES.some(p => path === p || path.endsWith(p));
+                    if (!isAuthPage) {
+                        return;
+                    }
+                    _sessionExchanged = true;
                     const result = await exchangeSupabaseSession();
                     if (result) {
                         showToast('Login successful!', 'success');
-                        setTimeout(() => {
-                            window.location.href = '/';
-                        }, 500);
+                        // Avoid redirect loop — only redirect if not already on /
+                        if (window.location.pathname !== '/') {
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 500);
+                        }
                     }
                 }
                 break;
