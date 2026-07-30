@@ -75,6 +75,61 @@
         }
     });
 
+    async function nominatimSearch(q) {
+        try {
+            var r = await fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&format=jsonv2&limit=6&addressdetails=1', {
+                headers: { 'User-Agent': 'KaburaAdventures/1.0' }
+            });
+            var data = await r.json();
+            if (!Array.isArray(data)) return [];
+            return data.map(function (item) {
+                var addr = item.address || {};
+                return {
+                    display_name: item.display_name || '',
+                    lat: parseFloat(item.lat),
+                    lon: parseFloat(item.lon),
+                    place_id: item.place_id,
+                    osm_type: item.osm_type,
+                    osm_id: item.osm_id,
+                    type: item.type,
+                    category: item.category,
+                    county: addr.county || addr.state_district || '',
+                    state: addr.state || '',
+                    country: addr.country || '',
+                    country_code: addr.country_code || '',
+                    city: addr.city || addr.town || addr.village || ''
+                };
+            });
+        } catch (e) {
+            return [];
+        }
+    }
+
+    async function nominatimReverse(lat, lon) {
+        try {
+            var r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=jsonv2&addressdetails=1', {
+                headers: { 'User-Agent': 'KaburaAdventures/1.0' }
+            });
+            var data = await r.json();
+            if (!data || data.error) return null;
+            var addr = data.address || {};
+            return {
+                display_name: data.display_name || '',
+                lat: parseFloat(data.lat),
+                lon: parseFloat(data.lon),
+                place_id: data.place_id,
+                osm_type: data.osm_type,
+                county: addr.county || addr.state_district || '',
+                state: addr.state || '',
+                country: addr.country || '',
+                country_code: addr.country_code || '',
+                city: addr.city || addr.town || addr.village || ''
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+
     function escHtml(str) {
         var div = document.createElement('div');
         div.appendChild(document.createTextNode(str == null ? '' : String(str)));
@@ -379,8 +434,8 @@
             document.getElementById('tour-preview-lat').textContent = pos.lat.toFixed(6);
             document.getElementById('tour-preview-lng').textContent = pos.lng.toFixed(6);
             try {
-                var rev = await api.get('/destinations/geocode/reverse?lat=' + pos.lat + '&lon=' + pos.lng);
-                if (rev.display_name) {
+                var rev = await nominatimReverse(pos.lat, pos.lng);
+                if (rev && rev.display_name) {
                     document.getElementById('tour-location-name').value = rev.display_name;
                     document.getElementById('tour-formatted-address').value = rev.display_name;
                     document.getElementById('tour-county').value = rev.county || '';
@@ -428,8 +483,7 @@
             tourSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
             tourSuggestions.style.display = 'block';
             try {
-                var res = await api.get('/destinations/geocode/autocomplete?q=' + encodeURIComponent(q));
-                var results = res.results || [];
+                var results = await nominatimSearch(q);
                 tourGeocache[q] = results;
                 showTourSuggestions(results);
             } catch (e) {
@@ -509,8 +563,7 @@
             meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
             meetingSuggestions.style.display = 'block';
             try {
-                var res = await api.get('/destinations/geocode/autocomplete?q=' + encodeURIComponent(q));
-                var results = res.results || [];
+                var results = await nominatimSearch(q);
                 if (results.length === 0) {
                     meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">No results found.</div>';
                     return;
@@ -857,8 +910,8 @@
             document.getElementById('hotel-preview-lat').textContent = pos.lat.toFixed(6);
             document.getElementById('hotel-preview-lng').textContent = pos.lng.toFixed(6);
             try {
-                var rev = await api.get('/destinations/geocode/reverse?lat=' + pos.lat + '&lon=' + pos.lng);
-                if (rev.display_name) {
+                var rev = await nominatimReverse(pos.lat, pos.lng);
+                if (rev && rev.display_name) {
                     document.getElementById('hotel-location-name').value = rev.display_name;
                     document.getElementById('hotel-formatted-address').value = rev.display_name;
                     document.getElementById('hotel-county').value = rev.county || '';
@@ -906,8 +959,7 @@
             hotelSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
             hotelSuggestions.style.display = 'block';
             try {
-                var res = await api.get('/destinations/geocode/autocomplete?q=' + encodeURIComponent(q));
-                var results = res.results || [];
+                var results = await nominatimSearch(q);
                 hotelGeocache[q] = results;
                 showHotelSuggestions(results);
             } catch (e) {
@@ -1162,11 +1214,11 @@
         var query = locText || name;
         if (!query) { alert('Enter a name or location text first.'); return; }
         try {
-            var res = await api.get('/destinations/geocode?q=' + encodeURIComponent(query));
-            if (res.lat != null) {
-                document.getElementById('loc-lat').value = res.lat;
-                document.getElementById('loc-lng').value = res.lng;
-                initLocMap(res.lat, res.lng);
+            var results = await nominatimSearch(query);
+            if (results.length > 0) {
+                document.getElementById('loc-lat').value = results[0].lat;
+                document.getElementById('loc-lng').value = results[0].lon;
+                initLocMap(results[0].lat, results[0].lon);
             } else {
                 alert('Could not find that location.');
             }
