@@ -821,15 +821,6 @@
                     formData.append('itinerary', JSON.stringify(itinerary));
                 }
             }
-                    });
-                    if (activities.length) {
-                        itinerary.push({ day: d, activities: activities });
-                    }
-                }
-                if (itinerary.length) {
-                    formData.append('itinerary', JSON.stringify(itinerary));
-                }
-            }
 
             var files = document.getElementById('tour-images').files;
             for (var i = 0; i < files.length; i++) {
