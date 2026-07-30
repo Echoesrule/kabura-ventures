@@ -75,11 +75,19 @@
         }
     });
 
-    async function nominatimSearch(q) {
+    function searchAbort() {
+        var c = new AbortController();
+        setTimeout(function () { c.abort(); }, 5000);
+        return c;
+    }
+
+    async function searchLocation(q) {
+        q = (q || '').trim();
+        if (q.length < 3) return [];
         try {
-            var r = await fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&format=jsonv2&limit=6&addressdetails=1', {
-                headers: { 'User-Agent': 'KaburaAdventures/1.0' }
-            });
+            var c = searchAbort();
+            var r = await fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&format=jsonv2&limit=6&addressdetails=1', { signal: c.signal });
+            if (!r.ok) return [];
             var data = await r.json();
             if (!Array.isArray(data)) return [];
             return data.map(function (item) {
@@ -105,11 +113,11 @@
         }
     }
 
-    async function nominatimReverse(lat, lon) {
+    async function reverseGeocode(lat, lon) {
         try {
-            var r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=jsonv2&addressdetails=1', {
-                headers: { 'User-Agent': 'KaburaAdventures/1.0' }
-            });
+            var c = searchAbort();
+            var r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=jsonv2&addressdetails=1', { signal: c.signal });
+            if (!r.ok) return null;
             var data = await r.json();
             if (!data || data.error) return null;
             var addr = data.address || {};
@@ -434,7 +442,7 @@
             document.getElementById('tour-preview-lat').textContent = pos.lat.toFixed(6);
             document.getElementById('tour-preview-lng').textContent = pos.lng.toFixed(6);
             try {
-                var rev = await nominatimReverse(pos.lat, pos.lng);
+                var rev = await reverseGeocode(pos.lat, pos.lng);
                 if (rev && rev.display_name) {
                     document.getElementById('tour-location-name').value = rev.display_name;
                     document.getElementById('tour-formatted-address').value = rev.display_name;
@@ -483,7 +491,7 @@
             tourSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
             tourSuggestions.style.display = 'block';
             try {
-                var results = await nominatimSearch(q);
+                var results = await searchLocation(q);
                 tourGeocache[q] = results;
                 showTourSuggestions(results);
             } catch (e) {
@@ -563,7 +571,7 @@
             meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
             meetingSuggestions.style.display = 'block';
             try {
-                var results = await nominatimSearch(q);
+                var results = await searchLocation(q);
                 if (results.length === 0) {
                     meetingSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">No results found.</div>';
                     return;
@@ -910,7 +918,7 @@
             document.getElementById('hotel-preview-lat').textContent = pos.lat.toFixed(6);
             document.getElementById('hotel-preview-lng').textContent = pos.lng.toFixed(6);
             try {
-                var rev = await nominatimReverse(pos.lat, pos.lng);
+                var rev = await reverseGeocode(pos.lat, pos.lng);
                 if (rev && rev.display_name) {
                     document.getElementById('hotel-location-name').value = rev.display_name;
                     document.getElementById('hotel-formatted-address').value = rev.display_name;
@@ -959,7 +967,7 @@
             hotelSuggestions.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-secondary);font-size:0.82rem;">Searching...</div>';
             hotelSuggestions.style.display = 'block';
             try {
-                var results = await nominatimSearch(q);
+                var results = await searchLocation(q);
                 hotelGeocache[q] = results;
                 showHotelSuggestions(results);
             } catch (e) {
@@ -1214,7 +1222,7 @@
         var query = locText || name;
         if (!query) { alert('Enter a name or location text first.'); return; }
         try {
-            var results = await nominatimSearch(query);
+            var results = await searchLocation(query);
             if (results.length > 0) {
                 document.getElementById('loc-lat').value = results[0].lat;
                 document.getElementById('loc-lng').value = results[0].lon;
