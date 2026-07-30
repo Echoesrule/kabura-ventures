@@ -76,9 +76,32 @@ async function signInWithGoogle() {
 // ─── Password Reset ───────────────────────────────────────────────────────────
 
 /**
- * Send a password reset email via Supabase.
+ * Send a password reset email via the app's own API (works without Supabase).
+ */
+async function sendAppPasswordReset(email) {
+    const baseUrl = window.API_BASE || (location.origin + '/api');
+    try {
+        const res = await fetch(`${baseUrl}/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to send reset email');
+        return true;
+    } catch (err) {
+        console.error('[supabase-client] App password reset error:', err);
+        return false;
+    }
+}
+
+/**
+ * Send a password reset email — tries app API first, falls back to Supabase.
  */
 async function sendPasswordReset(email) {
+    const appOk = await sendAppPasswordReset(email);
+    if (appOk) return true;
+
     const client = getSupabaseClient();
     if (!client) {
         showToast('Authentication service unavailable', 'error');
@@ -92,15 +115,36 @@ async function sendPasswordReset(email) {
         if (error) throw error;
         return true;
     } catch (err) {
-        console.error('[supabase-client] Password reset error:', err);
+        console.error('[supabase-client] Supabase password reset error:', err);
         showToast('Failed to send reset email. Check the email address.', 'error');
         return false;
     }
 }
 
 /**
+ * Complete a password reset using the app's own API (reset token from email link).
+ */
+async function completeAppPasswordReset(token, newPassword) {
+    const baseUrl = window.API_BASE || (location.origin + '/api');
+    try {
+        const res = await fetch(`${baseUrl}/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, password: newPassword }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to reset password');
+        return true;
+    } catch (err) {
+        console.error('[supabase-client] App password reset complete error:', err);
+        showToast(err.message, 'error');
+        return false;
+    }
+}
+
+/**
  * Update the password for the currently authenticated Supabase user.
- * Used after the password reset callback flow.
+ * Used after the Supabase password reset callback flow.
  */
 async function updateSupabasePassword(newPassword) {
     const client = getSupabaseClient();
@@ -290,6 +334,22 @@ async function handlePasswordResetSubmit() {
         return;
     }
 
+    // Try app API reset first (reset token from URL param)
+    const params = new URLSearchParams(window.location.search);
+    const resetToken = params.get('reset');
+    if (resetToken) {
+        const ok = await completeAppPasswordReset(resetToken, newPw);
+        if (!ok) return;
+        showToast('Password updated successfully! Please log in.', 'success');
+        const panels = document.querySelector('.auth-panels');
+        const resetDiv = document.getElementById('supabase-reset-password-form');
+        if (panels) panels.style.display = '';
+        if (resetDiv) resetDiv.style.display = 'none';
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    }
+
+    // Fallback: Supabase password reset flow
     const supabaseSuccess = await updateSupabasePassword(newPw);
     if (!supabaseSuccess) return;
 
@@ -399,10 +459,25 @@ async function handleForgotPasswordSubmit() {
 // ─── Initialization for Auth Pages ────────────────────────────────────────────
 
 /**
+ * Check URL for password reset token from the app's own reset email.
+ */
+function checkAppResetToken() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('reset')) {
+        showPasswordResetForm();
+        return true;
+    }
+    return false;
+}
+
+/**
  * Full initialization for login/signup pages.
  * Call this on DOMContentLoaded.
  */
 async function initSupabaseAuthPage() {
+    if (checkAppResetToken()) {
+        return;
+    }
     const client = await initSupabaseClient();
     if (client) {
         setupSupabaseAuthListener();

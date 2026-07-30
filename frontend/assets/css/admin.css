@@ -1,4 +1,25 @@
 
+/* ── Toast notification ──────────────────────────────────────── */
+.admin-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10000;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    max-width: 420px;
+    line-height: 1.4;
+}
+.admin-toast--show { transform: translateX(0); }
+.admin-toast--error { background: #fef2f2; color: #b91c1c; border-left: 4px solid #b91c1c; }
+.admin-toast--success { background: #ecfdf5; color: #065f46; border-left: 4px solid #065f46; }
+.admin-toast--info { background: #eff6ff; color: #1e40af; border-left: 4px solid #1e40af; }
+.admin-toast--warning { background: #fffbeb; color: #92400e; border-left: 4px solid #92400e; }
 
 body.admin-layout {
     display: flex;

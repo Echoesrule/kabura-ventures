@@ -2,6 +2,7 @@ from functools import wraps
 from datetime import datetime, timedelta
 import jwt
 from flask import request, jsonify, current_app
+from models.user import User
 
 def generate_token(user_id, role):
     payload = {
@@ -30,14 +31,19 @@ def token_required(f):
                 current_app.config['JWT_SECRET_KEY'],
                 algorithms=['HS256']
             )
-            current_user = {
-                'user_id': data['user_id'],
-                'role': data['role']
-            }
         except jwt.ExpiredSignatureError:
             return jsonify({'error': 'Token has expired'}), 401
         except jwt.InvalidTokenError:
             return jsonify({'error': 'Invalid token'}), 401
+
+        user = User.query.get(data['user_id'])
+        if not user:
+            return jsonify({'error': 'User not found'}), 401
+
+        current_user = {
+            'user_id': user.id,
+            'role': user.role,
+        }
 
         return f(current_user, *args, **kwargs)
     return decorated

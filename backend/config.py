@@ -38,6 +38,10 @@ class Config:
         'register': (5, 900),
         'login': (10, 300),
         'messages': (10, 60),
+        'subscribers': (5, 60),
+        'reviews': (5, 60),
+        'bookings': (3, 60),
+        'flight_requests': (5, 60),
     }
 
 
@@ -49,5 +53,5 @@ class Config:
     SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY')
     SUPABASE_STORAGE_BUCKET = os.environ.get('SUPABASE_STORAGE_BUCKET', 'kabura')
 
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}

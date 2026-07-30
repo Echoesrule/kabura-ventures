@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="/assets/css/style.css?v=11">
     <link rel="stylesheet" href="/assets/css/admin.css?v=14">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        .admin-layout { opacity: 0; transition: opacity 0.15s; }
+        .admin-layout.admin-visible { opacity: 1; }
+    </style>
 </head>
 <body class="admin-layout no-nav">
     <div class="admin-sidebar-overlay" id="sidebar-overlay"></div>
@@ -350,6 +354,7 @@
                             <div style="flex:1;min-width:160px;">
                                 <label class="admin-label">Images</label>
                                 <input type="file" id="tour-images" class="admin-input" multiple accept="image/*">
+                                <div id="tour-images-preview"></div>
                             </div>
                             <div style="display:flex;gap:0.5rem;flex:0 0 100%;">
                                 <button type="submit" id="tour-submit-btn" class="admin-btn admin-btn--primary">Add Tour</button>
@@ -408,6 +413,7 @@
                             <div style="flex:1;min-width:160px;">
                                 <label class="admin-label">Images</label>
                                 <input type="file" id="hotel-images" class="admin-input" multiple accept="image/*">
+                                <div id="hotel-images-preview"></div>
                             </div>
                             <div style="flex:0 0 100%;">
                                 <label class="admin-label">Hotel Location</label>
@@ -486,6 +492,7 @@
                                 <div style="flex:1;min-width:200px;">
                                     <label class="admin-label">Image</label>
                                     <input type="file" name="file" accept="image/*" class="admin-input" id="auth-slide-file">
+                                    <div id="auth-slide-preview"></div>
                                 </div>
                                 <div style="flex:1;min-width:160px;">
                                     <label class="admin-label">Location *</label>
@@ -533,6 +540,7 @@
                                     <div>
                                         <label class="admin-label">Image</label>
                                         <input type="file" name="image" accept="image/*" class="admin-input" id="loc-image">
+                                        <div id="loc-image-preview"></div>
                                     </div>
                                     <div>
                                         <label class="admin-label">Link URL</label>
@@ -586,6 +594,7 @@
                                 <div style="flex:1;min-width:160px;">
                                     <label class="admin-label">Image</label>
                                     <input type="file" name="image" accept="image/*" class="admin-input" id="off-image">
+                                    <div id="off-image-preview"></div>
                                 </div>
                                 <div style="flex:1;min-width:120px;">
                                     <label class="admin-label">Link URL</label>

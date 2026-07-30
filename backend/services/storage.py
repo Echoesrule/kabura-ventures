@@ -1,9 +1,11 @@
 import os
 import uuid
+from io import BytesIO
 from urllib.parse import urlparse
 from flask import current_app, request
 from supabase import create_client
 from werkzeug.utils import secure_filename
+from PIL import Image
 from utils.helpers import allowed_file
 
 
@@ -38,9 +40,24 @@ def _local_url(filename: str) -> str:
     return f"{host_url.rstrip('/')}/assets/images/{filename}"
 
 
+def _verify_image(content: bytes) -> tuple[bool, str]:
+    try:
+        img = Image.open(BytesIO(content))
+        img.verify()
+        return True, ''
+    except Exception:
+        return False, 'Corrupted or invalid image file'
+
 def save_image(file, folder: str = 'images') -> str | None:
     if not file or not hasattr(file, 'filename') or not allowed_file(file.filename):
         return None
+
+    file.stream.seek(0)
+    content = file.read()
+    valid, err = _verify_image(content)
+    if not valid:
+        raise ValueError(err)
+    file.stream = BytesIO(content)
 
     filename = _normalize_filename(file)
     if _use_supabase_storage():

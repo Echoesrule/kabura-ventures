@@ -2208,7 +2208,7 @@
     position: relative;
     border-radius: var(--hp-card-radius, 20px);
     overflow: hidden;
-    height: 380px;
+    height: 280px;
 }
 
 .exp-duo-slides {

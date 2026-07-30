@@ -34,24 +34,117 @@
         </div>
     </section>
 
+    <!-- ====== 4-Step Wizard ====== -->
     <div class="booking-body" id="checkout-section" style="display:none;">
-        <div class="booking-checkout-layout">
-        <div class="booking-checkout-main">
-            <div style="margin-bottom:1rem;">
-                <button class="back-btn" id="back-to-bookings-btn-top">Back to My Bookings</button>
+        <!-- Step Indicator -->
+        <div class="wizard-steps">
+            <div class="wizard-step-indicator active" data-step="1">
+                <div class="wizard-step-circle">1</div>
+                <div class="wizard-step-label">Tour Details</div>
             </div>
-            <div class="checkout-card" id="booking-summary-card">
-                <div class="checkout-card-title">Booking Summary</div>
-                <div id="booking-summary-content">
-                    <p style="color:#628465;">Select a tour or hotel to see the summary here.</p>
+            <div class="wizard-step-line"></div>
+            <div class="wizard-step-indicator" data-step="2">
+                <div class="wizard-step-circle">2</div>
+                <div class="wizard-step-label">Your Info</div>
+            </div>
+            <div class="wizard-step-line"></div>
+            <div class="wizard-step-indicator" data-step="3">
+                <div class="wizard-step-circle">3</div>
+                <div class="wizard-step-label">Payment</div>
+            </div>
+            <div class="wizard-step-line"></div>
+            <div class="wizard-step-indicator" data-step="4">
+                <div class="wizard-step-circle">4</div>
+                <div class="wizard-step-label">Review</div>
+            </div>
+        </div>
+
+        <!-- Wizard Panels -->
+        <div class="wizard-panels">
+
+            <!-- Step 1: Tour Details -->
+            <div class="wizard-panel active" id="wizard-step-1">
+                <div class="wizard-panel-header">
+                    <h2>Tour Details</h2>
+                    <p>Select your package, date, and number of travelers</p>
+                </div>
+                <div class="wizard-panel-body">
+                    <div style="margin-bottom:1.25rem;">
+                        <button class="back-btn" id="back-to-bookings-btn-top"><i class="fas fa-arrow-left"></i> Back to My Bookings</button>
+                    </div>
+
+                    <!-- Package selection -->
+                    <div class="form-row">
+                        <label>Package</label>
+                        <div id="package-selection-area">
+                            <div id="selected-package-display" style="display:none;">
+                                <div class="package-card" id="package-card">
+                                    <img id="package-img" src="/assets/images/placeholder.svg" alt="">
+                                    <div class="package-card-info">
+                                        <h3 id="package-title"></h3>
+                                        <div class="summary-location" id="package-location"></div>
+                                        <div class="package-price" id="package-price"></div>
+                                    </div>
+                                    <button class="package-change-btn" id="change-package-btn" type="button">Change</button>
+                                </div>
+                            </div>
+                            <div id="package-picker" style="display:none;">
+                                <div class="form-row">
+                                    <label>Search packages</label>
+                                    <div class="package-search-wrap">
+                                        <input type="text" class="form-input" id="package-search" placeholder="Type to search tours & hotels...">
+                                        <div class="package-search-results" id="package-search-results"></div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <label>Or select a type</label>
+                                    <div class="package-type-tabs">
+                                        <button class="package-type-tab active" data-type="tour">Tours</button>
+                                        <button class="package-type-tab" data-type="hotel">Hotels</button>
+                                    </div>
+                                </div>
+                                <div class="package-grid" id="package-grid"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="booking-type" value="">
+                        <input type="hidden" id="booking-item-id" value="">
+                    </div>
+
+                    <div class="grid grid-2" style="gap:1rem;">
+                        <div class="form-row">
+                            <label>Travel Date</label>
+                            <input type="date" class="form-input" id="booking-date" required>
+                        </div>
+                        <div class="form-row">
+                            <label>Return Date <span style="font-weight:400;color:var(--text-secondary);">(optional)</span></label>
+                            <input type="date" class="form-input" id="booking-return">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2" style="gap:1rem;">
+                        <div class="form-row">
+                            <label>Number of Travelers</label>
+                            <input type="number" class="form-input" id="booking-people" min="1" max="50" value="1" required>
+                        </div>
+                        <div class="form-row" id="booking-room-type-row" style="display:none;">
+                            <label>Room Type</label>
+                            <select class="form-select" id="booking-room-type">
+                                <option value="standard">Standard Room</option>
+                                <option value="deluxe">Deluxe Room</option>
+                                <option value="suite">Suite</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="checkout-card" id="booking-form-card">
-                <div class="checkout-card-title">Your Information</div>
-                <form id="booking-form">
-                    <input type="hidden" id="booking-type" value="">
-                    <input type="hidden" id="booking-item-id" value="">
+            <!-- Step 2: Traveler Information -->
+            <div class="wizard-panel" id="wizard-step-2">
+                <div class="wizard-panel-header">
+                    <h2>Your Information</h2>
+                    <p>We'll use these details for your booking confirmation</p>
+                </div>
+                <div class="wizard-panel-body">
                     <div class="form-row">
                         <label>Full Name</label>
                         <input type="text" class="form-input" id="booking-name" required placeholder="Enter your full name">
@@ -64,91 +157,144 @@
                         <label>Phone Number</label>
                         <input type="tel" class="form-input" id="booking-phone" placeholder="+254 7XX XXX XXX">
                     </div>
-                    <div class="grid grid-2" style="gap:1rem;">
-                        <div class="form-row">
-                            <label>Check-in / Travel Date</label>
-                            <input type="date" class="form-input" id="booking-date" required>
-                        </div>
-                        <div class="form-row">
-                            <label>Check-out / Return Date</label>
-                            <input type="date" class="form-input" id="booking-return">
-                        </div>
-                    </div>
                     <div class="form-row">
-                        <label>Number of Guests</label>
-                        <input type="number" class="form-input" id="booking-people" min="1" max="50" value="1" required>
-                    </div>
-                    <div class="form-row" id="booking-room-type-row" style="display:none;">
-                        <label>Room Type</label>
-                        <select class="form-select" id="booking-room-type">
-                            <option value="standard">Standard Room</option>
-                            <option value="deluxe">Deluxe Room</option>
-                            <option value="suite">Suite</option>
+                        <label>Nationality</label>
+                        <select class="form-select" id="booking-nationality">
+                            <option value="">Select your nationality</option>
+                            <option value="Kenyan">Kenyan</option>
+                            <option value="Ugandan">Ugandan</option>
+                            <option value="Tanzanian">Tanzanian</option>
+                            <option value="Rwandan">Rwandan</option>
+                            <option value="Ethiopian">Ethiopian</option>
+                            <option value="South African">South African</option>
+                            <option value="Nigerian">Nigerian</option>
+                            <option value="Ghanaian">Ghanaian</option>
+                            <option value="American">American</option>
+                            <option value="British">British</option>
+                            <option value="Canadian">Canadian</option>
+                            <option value="Australian">Australian</option>
+                            <option value="German">German</option>
+                            <option value="French">French</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Dutch">Dutch</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="form-row">
-                        <label>Special Requests</label>
+                        <label>Special Requests <span style="font-weight:400;color:var(--text-secondary);">(optional)</span></label>
                         <textarea class="form-textarea" id="booking-requests" placeholder="Any special requirements or preferences?" rows="3"></textarea>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="booking-checkout-sidebar">
-            <div class="checkout-card">
-                <div class="checkout-card-title">Payment Method</div>
-                <div class="payment-options-grid" id="payment-options">
-                    <label class="payment-option-card selected" data-value="mpesa">
-                        <input type="radio" name="pay-method" value="mpesa" checked style="display:none;">
-                        <span class="pay-icon" style="color:#122218;"><i class="fas fa-mobile-screen-button"></i></span>
-                        <span class="pay-label">M-Pesa</span>
-                    </label>
-                    <label class="payment-option-card" data-value="paypal">
-                        <input type="radio" name="pay-method" value="paypal" style="display:none;">
-                        <span class="pay-icon" style="color:#003087;"><i class="fab fa-paypal"></i></span>
-                        <span class="pay-label">PayPal</span>
-                    </label>
-                    <label class="payment-option-card" data-value="cash">
-                        <input type="radio" name="pay-method" value="cash" style="display:none;">
-                        <span class="pay-icon" style="color:#122218;"><i class="fas fa-money-bill-wave"></i></span>
-                        <span class="pay-label">Cash on Arrival</span>
-                    </label>
-                    <label class="payment-option-card" data-value="bank_transfer">
-                        <input type="radio" name="pay-method" value="bank_transfer" style="display:none;">
-                        <span class="pay-icon" style="color:#122218;"><i class="fas fa-university"></i></span>
-                        <span class="pay-label">Bank Transfer</span>
-                    </label>
                 </div>
+            </div>
 
-                <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(18,34,24,0.08);">
-                    <div class="summary-row"><span class="label">Accommodation</span><span class="value" id="sidebar-base-price">KSh 0</span></div>
-                    <div class="summary-row"><span class="label">Nights</span><span class="value" id="sidebar-nights">1</span></div>
-                    <div class="summary-row"><span class="label">Guests</span><span class="value" id="sidebar-guests">1</span></div>
-                    <div class="summary-total">
-                        <span>Total</span>
-                        <span class="total-amount" id="sidebar-total">KSh 0</span>
+            <!-- Step 3: Payment -->
+            <div class="wizard-panel" id="wizard-step-3">
+                <div class="wizard-panel-header">
+                    <h2>Payment</h2>
+                    <p>Choose how you'd like to pay</p>
+                </div>
+                <div class="wizard-panel-body">
+                    <div class="form-row">
+                        <label>Payment Type</label>
+                        <div class="payment-type-toggle">
+                            <button class="payment-type-btn active" data-value="full" id="pay-type-full">Full Payment</button>
+                            <button class="payment-type-btn" data-value="deposit" id="pay-type-deposit">Deposit (30%)</button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Payment Method</label>
+                        <div class="payment-options-grid" id="payment-options">
+                            <label class="payment-option-card selected" data-value="mpesa">
+                                <input type="radio" name="pay-method" value="mpesa" checked style="display:none;">
+                                <span class="pay-icon" style="color:#122218;"><i class="fas fa-mobile-screen-button"></i></span>
+                                <span class="pay-label">M-Pesa</span>
+                            </label>
+                            <label class="payment-option-card" data-value="paypal">
+                                <input type="radio" name="pay-method" value="paypal" style="display:none;">
+                                <span class="pay-icon" style="color:#003087;"><i class="fab fa-paypal"></i></span>
+                                <span class="pay-label">PayPal</span>
+                            </label>
+                            <label class="payment-option-card" data-value="cash">
+                                <input type="radio" name="pay-method" value="cash" style="display:none;">
+                                <span class="pay-icon" style="color:#122218;"><i class="fas fa-money-bill-wave"></i></span>
+                                <span class="pay-label">Cash on Arrival</span>
+                            </label>
+                            <label class="payment-option-card" data-value="bank_transfer">
+                                <input type="radio" name="pay-method" value="bank_transfer" style="display:none;">
+                                <span class="pay-icon" style="color:#122218;"><i class="fas fa-university"></i></span>
+                                <span class="pay-label">Bank Transfer</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Coupon Code <span style="font-weight:400;color:var(--text-secondary);">(optional)</span></label>
+                        <div class="coupon-row">
+                            <input type="text" class="form-input" id="booking-coupon" placeholder="Enter coupon code">
+                            <button type="button" class="coupon-apply-btn" id="apply-coupon-btn">Apply</button>
+                        </div>
+                        <div id="coupon-feedback" style="font-size:0.82rem;margin-top:0.3rem;"></div>
                     </div>
                 </div>
+            </div>
 
-                <div class="info-note">
-                    You will be contacted with payment instructions after submission.
+            <!-- Step 4: Review & Confirm -->
+            <div class="wizard-panel" id="wizard-step-4">
+                <div class="wizard-panel-header">
+                    <h2>Review & Confirm</h2>
+                    <p>Please review your booking details before confirming</p>
                 </div>
+                <div class="wizard-panel-body">
+                    <div class="review-section" id="review-package">
+                        <h3 class="review-section-title">Package</h3>
+                        <div id="review-package-content"></div>
+                    </div>
+                    <div class="review-section" id="review-dates">
+                        <h3 class="review-section-title">Dates & Travelers</h3>
+                        <div class="review-grid" id="review-dates-content"></div>
+                    </div>
+                    <div class="review-section" id="review-guest">
+                        <h3 class="review-section-title">Guest Information</h3>
+                        <div class="review-grid" id="review-guest-content"></div>
+                    </div>
+                    <div class="review-section" id="review-payment-info">
+                        <h3 class="review-section-title">Payment</h3>
+                        <div class="review-grid" id="review-payment-content"></div>
+                    </div>
+                    <div class="review-section" id="review-price">
+                        <h3 class="review-section-title">Price Summary</h3>
+                        <div id="review-price-content">
+                            <div class="review-price-row"><span>Base Price</span><span id="review-base-price"></span></div>
+                            <div class="review-price-row"><span>Travelers</span><span id="review-travelers"></span></div>
+                            <div class="review-price-row"><span>Nights</span><span id="review-nights"></span></div>
+                            <div class="review-price-divider"></div>
+                            <div class="review-price-row review-total-row"><span>Total</span><span id="review-total"></span></div>
+                            <div class="review-price-row" id="review-deposit-row" style="display:none;"><span>Deposit Due (30%)</span><span id="review-deposit"></span></div>
+                        </div>
+                    </div>
 
-                <button class="submit-btn" id="submit-booking-btn">Confirm Booking</button>
+                    <div class="policy-box" style="margin-bottom:1.25rem;margin-top:0;">
+                        Free cancellation up to 24 hours before check-in. Your information is secure and encrypted.
+                    </div>
 
-                <div style="margin-top:0.75rem;">
-                    <button class="back-btn" style="width:100%;justify-content:center;margin-bottom:0;" id="back-to-bookings-btn">Back to My Bookings</button>
-                </div>
-
-                <div class="policy-box">
-                    Free cancellation up to 24 hours before check-in.<br>
-                    Your information is secure and encrypted.
+                    <button class="submit-btn" id="submit-booking-btn"><i class="fas fa-check-circle"></i> Confirm Booking</button>
                 </div>
             </div>
+
         </div>
+
+        <!-- Navigation -->
+        <div class="wizard-nav">
+            <button class="back-btn" id="wizard-back"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="next-btn" id="wizard-next">Next <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
+    <!-- ====== Booking History ====== -->
     <div class="booking-history-section" id="history-section">
         <div class="booking-history-header">
             <h2>My Bookings</h2>
@@ -171,6 +317,7 @@
         <div id="bookings-list"></div>
     </div>
 
+    <!-- Submit Overlay -->
     <div id="submit-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
         <div style="background:rgba(255,255,255,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.8);border-radius:20px;padding:2.5rem 3rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);min-width:300px;">
             <div id="submit-loading-state">

@@ -21,6 +21,9 @@ class Booking(db.Model):
     guest_phone = db.Column(db.String(30))
     room_type = db.Column(db.String(30))
     payment_method = db.Column(db.String(30))
+    payment_type = db.Column(db.String(10), default='full')
+    coupon_code = db.Column(db.String(50))
+    nationality = db.Column(db.String(100))
     total_amount = db.Column(db.Float, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -47,6 +50,9 @@ class Booking(db.Model):
             'guest_phone': self.guest_phone,
             'room_type': self.room_type,
             'payment_method': self.payment_method,
+            'payment_type': self.payment_type,
+            'coupon_code': self.coupon_code,
+            'nationality': self.nationality,
             'total_amount': self.total_amount,
             'user': self.user.to_dict() if self.user else None,
             'tour': self.tour.to_dict() if self.tour else None,
@@ -72,6 +78,9 @@ class Booking(db.Model):
             'guest_phone': self.guest_phone,
             'room_type': self.room_type,
             'payment_method': self.payment_method,
+            'payment_type': self.payment_type,
+            'coupon_code': self.coupon_code,
+            'nationality': self.nationality,
             'total_amount': self.total_amount,
             'user_name': self.user.name if self.user else None,
             'user_email': self.user.email if self.user else None,

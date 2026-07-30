@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, send_from_directory, jsonify, request, redirect, abort
+import jwt
 import psycopg2
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -7,6 +8,22 @@ from config import Config
 from models import db, bcrypt
 from routes.auth import auth_bp
 from routes.tours import tours_bp
+from routes.admin_tours import admin_tours_bp
+from routes.admin_hotels import admin_hotels_bp
+from routes.admin_blogs import admin_blogs_bp
+from routes.admin_destinations import admin_destinations_bp
+from routes.admin_offers import admin_offers_bp
+from routes.admin_testimonials import admin_testimonials_bp
+from routes.admin_bookings import admin_bookings_bp
+from routes.admin_flights import admin_flights_bp
+from routes.admin_media import admin_media_bp
+from routes.admin_messages import admin_messages_bp
+from routes.admin_reviews import admin_reviews_bp
+from routes.admin_page_content import admin_page_content_bp
+from routes.admin_availability import admin_availability_bp
+from routes.admin_subscribers import admin_subscribers_bp
+from routes.admin_users import admin_users_bp
+from routes.admin_analytics import admin_analytics_bp
 from routes.bookings import bookings_bp
 from routes.flights import flights_bp
 from routes.hotels import hotels_bp
@@ -21,13 +38,11 @@ from routes.currencies import currencies_bp
 from routes.blogs import blogs_bp
 from routes.search import search_bp
 from routes.company import company_bp
-from routes.analytics import analytics_bp
 from routes.supabase_auth import supabase_auth_bp
 from routes.destinations import destinations_bp
 from routes.offers import offers_bp
 from routes.testimonials import testimonials_bp
 from routes.page_content import page_content_bp
-from routes.users import users_bp
 from services.seed import seed_database
 
 load_dotenv()
@@ -41,12 +56,43 @@ def create_app():
     app = Flask(__name__, static_folder='../frontend', template_folder='../frontend', static_url_path='')
     app.config.from_object(Config)
 
-    CORS(app)
+    trusted_origins = os.environ.get('TRUSTED_ORIGINS', '').split(',')
+    if trusted_origins and trusted_origins[0]:
+        CORS(app, origins=trusted_origins, supports_credentials=True)
+    else:
+        CORS(app, origins='*')
     db.init_app(app)
     bcrypt.init_app(app)
 
+    @app.after_request
+    def add_security_headers(response):
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '0'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+        if request.is_secure or request.headers.get('X-Forwarded-Proto', '') == 'https':
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        return response
+
     app.register_blueprint(auth_bp)
     app.register_blueprint(tours_bp)
+    app.register_blueprint(admin_tours_bp)
+    app.register_blueprint(admin_hotels_bp)
+    app.register_blueprint(admin_blogs_bp)
+    app.register_blueprint(admin_destinations_bp)
+    app.register_blueprint(admin_offers_bp)
+    app.register_blueprint(admin_testimonials_bp)
+    app.register_blueprint(admin_bookings_bp)
+    app.register_blueprint(admin_flights_bp)
+    app.register_blueprint(admin_media_bp)
+    app.register_blueprint(admin_messages_bp)
+    app.register_blueprint(admin_reviews_bp)
+    app.register_blueprint(admin_page_content_bp)
+    app.register_blueprint(admin_availability_bp)
+    app.register_blueprint(admin_subscribers_bp)
+    app.register_blueprint(admin_users_bp)
+    app.register_blueprint(admin_analytics_bp)
     app.register_blueprint(bookings_bp)
     app.register_blueprint(flights_bp)
     app.register_blueprint(hotels_bp)
@@ -61,13 +107,11 @@ def create_app():
     app.register_blueprint(blogs_bp)
     app.register_blueprint(search_bp)
     app.register_blueprint(company_bp)
-    app.register_blueprint(analytics_bp)
     app.register_blueprint(supabase_auth_bp)
     app.register_blueprint(destinations_bp)
     app.register_blueprint(offers_bp)
     app.register_blueprint(testimonials_bp)
     app.register_blueprint(page_content_bp)
-    app.register_blueprint(users_bp)
 
     # ── Page routes ────────────────────────────────────────────
     app.add_url_rule('/', 'home', lambda: page('index'))
@@ -105,6 +149,19 @@ def create_app():
 
     @app.route('/admin')
     def admin_dashboard():
+        token = None
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+        if not token:
+            token = request.args.get('token')
+        if token:
+            try:
+                data = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+                if data.get('role') != 'admin':
+                    return redirect('/login?error=unauthorized')
+            except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+                return redirect('/login?error=expired')
         return send_from_directory(os.path.join(app.root_path, 'templates'), 'admin.html')
 
     KNOWN_PAGES = {'about', 'login', 'signup', 'tours', 'hotels',
@@ -116,6 +173,10 @@ def create_app():
     @app.route('/api/health')
     def health():
         return jsonify({'status': 'healthy', 'message': 'Kabura Adventures API is running'})
+
+    @app.errorhandler(413)
+    def request_entity_too_large(e):
+        return jsonify({'error': 'File too large. Maximum size is 5MB.'}), 413
 
     @app.errorhandler(404)
     def not_found(e):
@@ -414,6 +475,14 @@ def create_app():
                 db.session.execute(db.text('ALTER TABLE reviews ADD COLUMN IF NOT EXISTS likes INTEGER DEFAULT 0'))
                 db.session.execute(db.text('ALTER TABLE reviews ADD COLUMN IF NOT EXISTS dislikes INTEGER DEFAULT 0'))
                 db.session.execute(db.text('ALTER TABLE reviews ADD COLUMN IF NOT EXISTS admin_reply TEXT'))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+            # migrate: add nationality, coupon_code, payment_type to bookings
+            try:
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS nationality VARCHAR(100)'))
+                db.session.execute(db.text('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)'))
+                db.session.execute(db.text("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS payment_type VARCHAR(10) DEFAULT 'full'"))
                 db.session.commit()
             except Exception:
                 db.session.rollback()

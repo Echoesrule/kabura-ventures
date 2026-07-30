@@ -44,7 +44,16 @@ class ApiClient {
 
         try {
             const response = await fetch(url, options);
-            const result = await response.json();
+            let result;
+            try {
+                result = await response.json();
+            } catch (parseError) {
+                const text = await response.text();
+                if (response.status === 413) {
+                    throw new Error('File too large. Maximum size is 5MB.');
+                }
+                throw new Error(text.slice(0, 200) || 'Request failed');
+            }
 
             if (!response.ok) {
                 throw new Error(result.error || 'Request failed');
@@ -102,99 +111,99 @@ class ApiClient {
     }
 
     async getTour(id) { return this.get(`/tours/${id}`); }
-    async createTour(data) { return this.post('/tours', data); }
-    async updateTour(id, data) { return this.put(`/tours/${id}`, data); }
-    async deleteTour(id) { return this.delete(`/tours/${id}`); }
-    async deleteTourImage(id) { return this.delete(`/tours/images/${id}`); }
+    async createTour(data) { return this.post('/admin/tours', data); }
+    async updateTour(id, data) { return this.put(`/admin/tours/${id}`, data); }
+    async deleteTour(id) { return this.delete(`/admin/tours/${id}`); }
+    async deleteTourImage(id) { return this.delete(`/admin/tours/images/${id}`); }
 
-    // Destinations
+    // Destinations — public (read-only) / admin (CRUD)
     async getDestinations() { return this.get('/destinations'); }
-    async getAllDestinationsAdmin() { return this.get('/destinations/all'); }
-    async createDestination(data) { return this.post('/destinations', data); }
-    async updateDestination(id, data) { return this.put(`/destinations/${id}`, data); }
-    async deleteDestination(id) { return this.delete(`/destinations/${id}`); }
+    async getAllDestinationsAdmin() { return this.get('/admin/destinations'); }
+    async createDestination(data) { return this.post('/admin/destinations', data); }
+    async updateDestination(id, data) { return this.put(`/admin/destinations/${id}`, data); }
+    async deleteDestination(id) { return this.delete(`/admin/destinations/${id}`); }
 
-    // Offers / What We Offer
+    // Offers / What We Offer — public (read-only) / admin (CRUD)
     async getOffers() { return this.get('/offers'); }
-    async getAllOffersAdmin() { return this.get('/offers/all'); }
-    async createOffer(data) { return this.post('/offers', data); }
-    async updateOffer(id, data) { return this.put(`/offers/${id}`, data); }
-    async deleteOffer(id) { return this.delete(`/offers/${id}`); }
+    async getAllOffersAdmin() { return this.get('/admin/offers'); }
+    async createOffer(data) { return this.post('/admin/offers', data); }
+    async updateOffer(id, data) { return this.put(`/admin/offers/${id}`, data); }
+    async deleteOffer(id) { return this.delete(`/admin/offers/${id}`); }
 
-    // Testimonials
+    // Testimonials — public (read-only) / admin (CRUD)
     async getTestimonials() { return this.get('/testimonials'); }
-    async getAllTestimonialsAdmin() { return this.get('/testimonials/all'); }
-    async createTestimonial(data) { return this.post('/testimonials', data); }
-    async updateTestimonial(id, data) { return this.put(`/testimonials/${id}`, data); }
-    async deleteTestimonial(id) { return this.delete(`/testimonials/${id}`); }
+    async getAllTestimonialsAdmin() { return this.get('/admin/testimonials'); }
+    async createTestimonial(data) { return this.post('/admin/testimonials', data); }
+    async updateTestimonial(id, data) { return this.put(`/admin/testimonials/${id}`, data); }
+    async deleteTestimonial(id) { return this.delete(`/admin/testimonials/${id}`); }
 
-    // Page Content (homepage sections)
+    // Page Content (homepage sections) — public read / admin write
     async getPageContent() { return this.get('/page-content'); }
     async getSection(key) { return this.get(`/page-content/${key}`); }
-    async saveSection(data) { return this.post('/page-content', data); }
-    async deleteSection(key) { return this.delete(`/page-content/${key}`); }
+    async saveSection(data) { return this.post('/admin/page-content', data); }
+    async deleteSection(key) { return this.delete(`/admin/page-content/${key}`); }
 
-    // Bookings
+    // Activity Types — public read
+    async getActivityTypes() { return this.get('/tours/activity-types'); }
+
+    // Bookings — user-facing / admin
     async createBooking(data) { return this.post('/bookings', data); }
     async getUserBookings() { return this.get('/bookings/user'); }
     async getBooking(id) { return this.get(`/bookings/${id}`); }
     async getAllBookings(params = {}) {
         const query = new URLSearchParams(params).toString();
-        return this.get(`/bookings${query ? '?' + query : ''}`);
+        return this.get(`/admin/bookings${query ? '?' + query : ''}`);
     }
-    async updateBookingStatus(id, data) { return this.put(`/bookings/${id}/status`, data); }
+    async updateBookingStatus(id, data) { return this.put(`/admin/bookings/${id}/status`, data); }
 
-    // Flights
+    // Flights — user-facing / admin
     async createFlightRequest(data) { return this.post('/flights/request', data); }
     async getUserFlightRequests() { return this.get('/flights/user'); }
     async getAllFlightRequests(params = {}) {
         const query = new URLSearchParams(params).toString();
-        return this.get(`/flights${query ? '?' + query : ''}`);
+        return this.get(`/admin/flights${query ? '?' + query : ''}`);
     }
-    async updateFlightRequest(id, data) { return this.put(`/flights/${id}`, data); }
+    async updateFlightRequest(id, data) { return this.put(`/admin/flights/${id}`, data); }
 
-    // Hotels
+    // Hotels — public (read-only) / admin (CRUD)
     async getHotels(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/hotels${query ? '?' + query : ''}`);
     }
     async getHotel(id) { return this.get(`/hotels/${id}`); }
-    async createHotel(data) { return this.post('/hotels', data); }
-    async updateHotel(id, data) { return this.put(`/hotels/${id}`, data); }
-    async deleteHotel(id) { return this.delete(`/hotels/${id}`); }
+    async createHotel(data) { return this.post('/admin/hotels', data); }
+    async updateHotel(id, data) { return this.put(`/admin/hotels/${id}`, data); }
+    async deleteHotel(id) { return this.delete(`/admin/hotels/${id}`); }
 
     // Payments
     async createPayment(data) { return this.post('/payments', data); }
     async getPayments() { return this.get('/payments'); }
 
-    // Media
+    // Media — public (read-only) / admin (CRUD)
     async getHeroMedia() { return this.get('/media/hero'); }
-    async uploadHeroMedia(data) { return this.post('/media/hero', data); }
-    async deleteHeroMedia(id) { return this.delete(`/media/hero/${id}`); }
-    async reorderHeroMedia(data) { return this.put('/media/hero/reorder', data); }
-    async deleteHotelImage(id) { return this.delete(`/hotels/images/${id}`); }
+    async uploadHeroMedia(data) { return this.post('/admin/media/hero', data); }
+    async deleteHeroMedia(id) { return this.delete(`/admin/media/hero/${id}`); }
+    async reorderHeroMedia(data) { return this.put('/admin/media/hero/reorder', data); }
+    async deleteHotelImage(id) { return this.delete(`/admin/hotels/images/${id}`); }
 
-    // Auth Slides (login/register carousel)
+    // Auth Slides (login/register carousel) — public read / admin CRUD
     async getAuthSlides() { return this.get('/media/auth-slides'); }
-    async createAuthSlide(data) { return this.post('/media/auth-slides', data); }
-    async updateAuthSlide(id, data) { return this.put(`/media/auth-slides/${id}`, data); }
-    async deleteAuthSlide(id) { return this.delete(`/media/auth-slides/${id}`); }
-    async reorderAuthSlides(data) { return this.put('/media/auth-slides/reorder', data); }
-    async setTourPrimaryImage(id) { return this.put(`/tours/images/${id}/primary`); }
-    async setHotelPrimaryImage(id) { return this.put(`/hotels/images/${id}/primary`); }
-    async getRelatedTours(id) { return this.get(`/tours/${id}/related`); }
-    async getActivityTypes() { return this.get('/tours/activity-types'); }
-    async createActivityType(name) { return this.post('/tours/activity-types', { name: name }); }
-    async deleteActivityType(name) { return this.delete('/tours/activity-types/' + encodeURIComponent(name)); }
+    async createAuthSlide(data) { return this.post('/admin/media/auth-slides', data); }
+    async updateAuthSlide(id, data) { return this.put(`/admin/media/auth-slides/${id}`, data); }
+    async deleteAuthSlide(id) { return this.delete(`/admin/media/auth-slides/${id}`); }
+    async reorderAuthSlides(data) { return this.put('/admin/media/auth-slides/reorder', data); }
+    async setTourPrimaryImage(id) { return this.put(`/admin/tours/images/${id}/primary`); }
+    async createActivityType(name) { return this.post('/admin/tours/activity-types', { name: name }); }
+    async deleteActivityType(name) { return this.delete('/admin/tours/activity-types/' + encodeURIComponent(name)); }
 
     async getSubscribers(params = {}) {
         const query = new URLSearchParams(params).toString();
-        return this.get(`/subscribers${query ? '?' + query : ''}`);
+        return this.get(`/admin/subscribers${query ? '?' + query : ''}`);
     }
 
     async subscribeNewsletter(data) { return this.post('/subscribers', data); }
 
-    // Reviews
+    // Reviews — public read+create / admin reply+seed
     async getReviews(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/reviews${query ? '?' + query : ''}`);
@@ -203,9 +212,9 @@ class ApiClient {
     async deleteReview(id) { return this.delete(`/reviews/${id}`); }
     async likeReview(id) { return this.post(`/reviews/${id}/like`); }
     async dislikeReview(id) { return this.post(`/reviews/${id}/dislike`); }
-    async replyToReview(id, reply) { return this.post(`/reviews/${id}/reply`, { reply }); }
-    async seedReviews(count = 50) { return this.post(`/reviews/seed?count=${count}`); }
-    async seedAll(users = 50, reviews = 50) { return this.post(`/reviews/seed-all?users=${users}&reviews=${reviews}`); }
+    async replyToReview(id, reply) { return this.post(`/admin/reviews/${id}/reply`, { reply }); }
+    async seedReviews(count = 50) { return this.post(`/admin/reviews/seed?count=${count}`); }
+    async seedAll(users = 50, reviews = 50) { return this.post(`/admin/reviews/seed-all?users=${users}&reviews=${reviews}`); }
 
     // Wishlist
     async getWishlist() { return this.get('/wishlist'); }
@@ -225,7 +234,7 @@ class ApiClient {
     // Currencies
     async getCurrencies() { return this.get('/currencies'); }
 
-    // Blogs
+    // Blogs — public read / admin CRUD
     async getBlogs(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/blogs${query ? '?' + query : ''}`);
@@ -234,33 +243,33 @@ class ApiClient {
     async getBlogCategories() { return this.get('/blogs/categories'); }
     async getAllBlogsAdmin(params = {}) {
         const query = new URLSearchParams(params).toString();
-        return this.get(`/blogs/admin/all${query ? '?' + query : ''}`);
+        return this.get(`/admin/blogs${query ? '?' + query : ''}`);
     }
-    async createBlog(data) { return this.post('/blogs', data); }
-    async updateBlog(id, data) { return this.put(`/blogs/${id}`, data); }
-    async deleteBlog(id) { return this.delete(`/blogs/${id}`); }
+    async createBlog(data) { return this.post('/admin/blogs', data); }
+    async updateBlog(id, data) { return this.put(`/admin/blogs/${id}`, data); }
+    async deleteBlog(id) { return this.delete(`/admin/blogs/${id}`); }
 
     // Search
     async searchAll(q) { return this.get(`/search?q=${encodeURIComponent(q)}`); }
 
-    // Messages
+    // Messages — public send / admin management
     async sendMessage(data) { return this.post('/messages', data); }
     async getMessages(params = {}) {
         const query = new URLSearchParams(params).toString();
-        return this.get(`/messages${query ? '?' + query : ''}`);
+        return this.get(`/admin/messages${query ? '?' + query : ''}`);
     }
     async getMyMessages(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/messages/me${query ? '?' + query : ''}`);
     }
     async clearMyMessages() { return this.delete('/messages/me'); }
-    async sendAdminMessage(data) { return this.post('/messages/send', data); }
-    async markMessageRead(id) { return this.put(`/messages/${id}/read`); }
-    async replyToMessage(id, data) { return this.put(`/messages/${id}/reply`, data); }
-    async deleteMessage(id) { return this.delete(`/messages/${id}`); }
+    async sendAdminMessage(data) { return this.post('/admin/messages/send', data); }
+    async markMessageRead(id) { return this.put(`/admin/messages/${id}/read`, data); }
+    async replyToMessage(id, data) { return this.put(`/admin/messages/${id}/reply`, data); }
+    async deleteMessage(id) { return this.delete(`/admin/messages/${id}`); }
 
     // Analytics
-    async getAnalytics() { return this.get('/analytics'); }
+    async getAnalytics() { return this.get('/admin/analytics'); }
 }
 
 const api = new ApiClient();

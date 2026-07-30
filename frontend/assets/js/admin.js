@@ -1,4 +1,115 @@
 // Admin dashboard
+
+var ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+var ALLOWED_IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+var MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+function validateImage(file) {
+    var ext = file.name.split('.').pop().toLowerCase();
+    if (ALLOWED_IMAGE_EXTS.indexOf(ext) === -1)
+        return { valid: false, msg: 'Only JPG, PNG, WEBP, GIF allowed' };
+    if (ALLOWED_IMAGE_TYPES.indexOf(file.type) === -1)
+        return { valid: false, msg: 'Invalid image type' };
+    if (file.size > MAX_IMAGE_SIZE)
+        return { valid: false, msg: 'File exceeds 5 MB' };
+    return { valid: true, msg: '' };
+}
+
+function setupImageUpload(inputId, previewId, opts) {
+    opts = opts || {};
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    var preview = document.getElementById(previewId);
+    if (!preview) return;
+
+    input.addEventListener('change', function () {
+        var files = input.files;
+        if (!files.length) { preview.innerHTML = ''; return; }
+
+        if (opts.multiple) {
+            var html = '<div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:0.5rem;">';
+            var valid = true;
+            for (var i = 0; i < files.length; i++) {
+                var f = files[i];
+                var check = validateImage(f);
+                if (!check.valid) {
+                    html += '<div style="border:1px solid #fca5a5;border-radius:8px;padding:0.5rem;background:#fef2f2;text-align:center;width:140px;">'
+                        + '<div style="font-size:1.5rem;margin-bottom:0.25rem;">&#10060;</div>'
+                        + '<div style="font-size:0.75rem;color:#b91c1c;word-break:break-all;">' + escHtml(f.name) + '</div>'
+                        + '<div style="font-size:0.7rem;color:#b91c1c;">' + check.msg + '</div></div>';
+                    valid = false;
+                } else {
+                    html += '<div class="admin-img-preview" data-file="' + i + '" style="border:1px solid #d1d5db;border-radius:8px;padding:0.5rem;background:#fff;text-align:center;width:140px;position:relative;">'
+                        + '<div class="admin-img-thumb" style="width:124px;height:80px;border-radius:4px;overflow:hidden;background:#f3f4f6;margin:0 auto 0.4rem;">'
+                        + '<img style="width:100%;height:100%;object-fit:cover;" src="' + URL.createObjectURL(f) + '"></div>'
+                        + '<div style="font-size:0.75rem;color:var(--dark-text);font-weight:600;word-break:break-all;">' + escHtml(f.name) + '</div>'
+                        + '<div style="font-size:0.65rem;color:#6b7280;">' + formatFileSize(f.size) + '</div>'
+                        + '<div style="font-size:0.65rem;color:#059669;font-weight:600;">&#10003; Ready</div></div>';
+                }
+            }
+            html += '</div>';
+            if (!valid && !opts.allowPartial) {
+                input.value = '';
+            }
+            preview.innerHTML = html;
+        } else {
+            var file = files[0];
+            var check = validateImage(file);
+            if (!check.valid) {
+                preview.innerHTML = '<div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;padding:0.5rem 0.75rem;border-radius:8px;background:#fef2f2;color:#b91c1c;font-size:0.85rem;">'
+                    + '<span style="font-size:1.1rem;">&#10060;</span>'
+                    + '<span>' + escHtml(file.name) + ' — ' + check.msg + '</span>'
+                    + '</div>';
+                input.value = '';
+                return;
+            }
+            var img = new Image();
+            var url = URL.createObjectURL(file);
+            img.onload = function () {
+                preview.innerHTML = '<div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;padding:0.5rem 0.75rem;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb;">'
+                    + '<div style="width:60px;height:45px;border-radius:4px;overflow:hidden;flex-shrink:0;background:#f3f4f6;">'
+                    + '<img style="width:100%;height:100%;object-fit:cover;" src="' + url + '"></div>'
+                    + '<div style="flex:1;min-width:0;">'
+                    + '<div style="font-size:0.85rem;font-weight:600;color:var(--dark-text);word-break:break-all;">' + escHtml(file.name) + '</div>'
+                    + '<div style="font-size:0.7rem;color:#6b7280;">' + img.naturalWidth + ' &times; ' + img.naturalHeight + ' &middot; ' + formatFileSize(file.size) + '</div>'
+                    + '</div>'
+                    + '<div style="font-size:0.8rem;color:#059669;font-weight:600;">&#10003; Ready</div>'
+                    + '</div>';
+                URL.revokeObjectURL(url);
+            };
+            img.onerror = function () {
+                preview.innerHTML = '<div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;padding:0.5rem 0.75rem;border-radius:8px;background:#fef2f2;color:#b91c1c;font-size:0.85rem;">'
+                    + '<span style="font-size:1.1rem;">&#10060;</span>'
+                    + '<span>Corrupted or unreadable image</span></div>';
+                input.value = '';
+            };
+            img.src = url;
+        }
+    });
+}
+
+function showToast(message, type) {
+    var existing = document.querySelector('.admin-toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'admin-toast admin-toast--' + (type || 'info');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(function () {
+        toast.classList.add('admin-toast--show');
+    });
+    setTimeout(function () {
+        toast.classList.remove('admin-toast--show');
+        setTimeout(function () { toast.remove(); }, 300);
+    }, 4000);
+}
+
 (async function () {
     var token = localStorage.getItem('token');
     if (!token) { window.location.href = '/login'; return; }
@@ -6,6 +117,7 @@
     try {
         var me = await api.getProfile();
         if (!me.user || me.user.role !== 'admin') {
+            document.body.classList.remove('admin-visible');
             document.querySelector('.admin-content').innerHTML =
                 '<div class="admin-empty-state" style="padding:4rem;">' +
                 '<h3>Access Denied</h3>' +
@@ -14,6 +126,7 @@
                 '</div>';
             return;
         }
+        document.body.classList.add('admin-visible');
         var adminName = me.user.name || 'Admin';
         document.getElementById('admin-user-name').textContent = adminName;
         var initials = adminName.split(/\s+/).map(function (p) { return p[0]; }).join('').slice(0, 2).toUpperCase();
@@ -207,7 +320,7 @@
     }
     async function loadBookings(filter) {
         try {
-            var endpoint = '/bookings' + (filter ? '?booking_type=' + filter : '');
+            var endpoint = '/admin/bookings' + (filter ? '?booking_type=' + filter : '');
             var bookings = await api.get(endpoint);
             allBookings = bookings.bookings || bookings || [];
             renderBookingsTable(document.getElementById('bookings-list'), allBookings);
@@ -217,7 +330,7 @@
     }
 
     try {
-        var bookingsResult = await api.get('/bookings');
+        var bookingsResult = await api.get('/admin/bookings');
         allBookings = bookingsResult.bookings || bookingsResult || [];
         document.getElementById('stat-bookings').textContent = allBookings.length;
         renderBookingsTable(document.getElementById('dashboard-bookings-list'), allBookings.slice(0, 10));
@@ -261,7 +374,7 @@
     }
     async function loadMessages() {
         try {
-            var msgs = await api.get('/messages');
+            var msgs = await api.get('/admin/messages');
             allMsgs = msgs.messages || msgs || [];
             var unread = allMsgs.filter(function (m) { return !m.is_read && !m.admin_reply; });
             document.getElementById('stat-messages').textContent = unread.length;
@@ -285,7 +398,7 @@
     window.sendAdminReply = async function () {
         var id = document.getElementById('reply-msg-id').value;
         var text = document.getElementById('reply-text').value.trim();
-        if (!text) { alert('Please type a reply.'); return; }
+        if (!text) { showToast('Please type a reply.', 'warning'); return; }
         var btn = document.getElementById('reply-send-btn');
         btn.disabled = true;
         btn.textContent = 'Sending...';
@@ -294,7 +407,7 @@
             document.getElementById('reply-modal').style.display = 'none';
             loadMessages();
         } catch (e) {
-            alert('Failed to send reply: ' + e.message);
+            showToast('Failed to send reply: ' + e.message, 'error');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Send Reply';
@@ -343,7 +456,7 @@
             await api.deleteTour(id);
             loadTours();
         } catch (e) {
-            alert('Failed to delete: ' + e.message);
+            showToast('Failed to delete: ' + e.message, 'error');
         }
     };
 
@@ -441,16 +554,8 @@
     document.getElementById('tour-duration').addEventListener('change', buildTourItinerary);
 
     function showTourFormMsg(msg, isError) {
-        var el = document.getElementById('tour-form-msg');
-        if (!msg) { el.style.display = 'none'; return; }
-        el.style.display = 'block';
-        el.style.padding = '0.75rem 1rem';
-        el.style.borderRadius = '8px';
-        el.style.background = isError ? '#fef2f2' : '#ecfdf5';
-        el.style.color = isError ? '#b91c1c' : '#065f46';
-        el.style.fontSize = '0.9rem';
-        el.style.fontWeight = '500';
-        el.textContent = msg;
+        if (!msg) return;
+        showToast(msg, isError ? 'error' : 'success');
     }
 
     // ── Tour Location Picker ─────────────────────────────────
@@ -666,7 +771,7 @@
             var result = await api.getTours({ per_page: 100 });
             var items = result.tours || [];
             var t = items.find(function (x) { return x.id === id; });
-            if (!t) return alert('Tour not found');
+            if (!t) return showToast('Tour not found', 'error');
             document.getElementById('tour-title').value = t.title || '';
             document.getElementById('tour-price').value = t.price || '';
             document.getElementById('tour-original-price').value = t.original_price || '';
@@ -750,7 +855,7 @@
                 }
             }
         } catch (e) {
-            alert('Failed to load tour: ' + e.message);
+            showToast('Failed to load tour: ' + e.message, 'error');
         }
     };
 
@@ -909,7 +1014,7 @@
             loadActivityTypesList();
             loadActivityTypesDropdown();
         } catch (e) {
-            alert('Failed to add type: ' + e.message);
+            showToast('Failed to add type: ' + e.message, 'error');
         } finally {
             input.disabled = false;
             input.focus();
@@ -923,7 +1028,7 @@
             loadActivityTypesList();
             loadActivityTypesDropdown();
         } catch (e) {
-            alert('Failed to delete: ' + e.message);
+            showToast('Failed to delete: ' + e.message, 'error');
         }
     };
 
@@ -969,7 +1074,7 @@
             await api.deleteHotel(id);
             loadHotels();
         } catch (e) {
-            alert('Failed to delete: ' + e.message);
+            showToast('Failed to delete: ' + e.message, 'error');
         }
     };
 
@@ -1114,7 +1219,7 @@
             var result = await api.getHotels({ per_page: 100 });
             var items = result.hotels || [];
             var h = items.find(function (x) { return x.id === id; });
-            if (!h) return alert('Hotel not found');
+            if (!h) return showToast('Hotel not found', 'error');
             document.getElementById('hotel-name').value = h.name || '';
             document.getElementById('hotel-location').value = h.location || '';
             document.getElementById('hotel-price').value = h.price_per_night || '';
@@ -1149,7 +1254,7 @@
                 document.getElementById('hotel-location').value = h.location;
             }
         } catch (e) {
-            alert('Failed to load hotel: ' + e.message);
+            showToast('Failed to load hotel: ' + e.message, 'error');
         }
     };
 
@@ -1189,7 +1294,7 @@
                 clearHotelLocation();
                 loadHotels();
             } catch (err) {
-                alert('Failed: ' + err.message);
+                showToast('Failed: ' + err.message);
             }
         });
     }
@@ -1197,7 +1302,7 @@
 
     // ── Users ───────────────────────────────────────────────
     try {
-        var users = await api.get('/users');
+        var users = await api.get('/admin/users');
         var allUsers = users.users || users || [];
         document.getElementById('stat-users').textContent = allUsers.length;
 
@@ -1260,7 +1365,7 @@
             await api.deleteAuthSlide(id);
             loadAuthSlides();
         } catch (e) {
-            alert('Failed to delete slide: ' + e.message);
+            showToast('Failed to delete slide: ' + e.message, 'error');
         }
     };
 
@@ -1279,7 +1384,7 @@
                     document.getElementById('auth-slide-file').required = true;
                 } else {
                     if (!document.getElementById('auth-slide-file').files.length) {
-                        alert('Please select an image.');
+                        showToast('Please select an image.', 'warning');
                         return;
                     }
                     await api.createAuthSlide(formData);
@@ -1287,7 +1392,7 @@
                 authSlideForm.reset();
                 loadAuthSlides();
             } catch (err) {
-                alert('Failed: ' + err.message);
+                showToast('Failed: ' + err.message);
             }
         });
     }
@@ -1318,7 +1423,7 @@
         var name = document.getElementById('loc-name').value.trim();
         var locText = document.getElementById('loc-location-text').value.trim();
         var query = locText || name;
-        if (!query) { alert('Enter a name or location text first.'); return; }
+        if (!query) { showToast('Enter a name or location text first.', 'warning'); return; }
         try {
             var results = await searchLocation(query);
             if (results.length > 0) {
@@ -1326,10 +1431,10 @@
                 document.getElementById('loc-lng').value = results[0].lon;
                 initLocMap(results[0].lat, results[0].lon);
             } else {
-                alert('Could not find that location.');
+                showToast('Could not find that location.', 'error');
             }
         } catch (e) {
-            alert('Geocoding failed: ' + e.message);
+            showToast('Geocoding failed: ' + e.message, 'error');
         }
     }
 
@@ -1375,7 +1480,7 @@
             await api.deleteDestination(id);
             loadLocations();
         } catch (e) {
-            alert('Failed to delete: ' + e.message);
+            showToast('Failed to delete: ' + e.message, 'error');
         }
     };
 
@@ -1384,7 +1489,7 @@
             var result = await api.getAllDestinationsAdmin();
             var items = result.destinations || [];
             var item = items.find(function (d) { return d.id === id; });
-            if (!item) return alert('Location not found');
+            if (!item) return showToast('Location not found', 'error');
             document.getElementById('loc-name').value = item.name || '';
             document.getElementById('loc-location-text').value = item.location_text || '';
             document.getElementById('loc-desc').value = item.description || '';
@@ -1400,7 +1505,7 @@
                 initLocMap(item.latitude, item.longitude);
             }
         } catch (e) {
-            alert('Failed to load location: ' + e.message);
+            showToast('Failed to load location: ' + e.message, 'error');
         }
     };
 
@@ -1422,7 +1527,7 @@
                 destroyLocMap();
                 loadLocations();
             } catch (err) {
-                alert('Failed: ' + err.message);
+                showToast('Failed: ' + err.message);
             }
         });
     }
@@ -1467,7 +1572,7 @@
             await api.deleteOffer(id);
             loadOffers();
         } catch (e) {
-            alert('Failed to delete: ' + e.message);
+            showToast('Failed to delete: ' + e.message, 'error');
         }
     };
 
@@ -1476,7 +1581,7 @@
             var result = await api.getAllOffersAdmin();
             var items = result.offers || [];
             var item = items.find(function (o) { return o.id === id; });
-            if (!item) return alert('Offer not found');
+            if (!item) return showToast('Offer not found', 'error');
             document.getElementById('off-title').value = item.title || '';
             document.getElementById('off-desc').value = item.description || '';
             document.getElementById('off-link').value = item.link_url || '';
@@ -1485,7 +1590,7 @@
             document.getElementById('off-submit-btn').textContent = 'Update Offer';
             document.getElementById('off-title').focus();
         } catch (e) {
-            alert('Failed to load offer: ' + e.message);
+            showToast('Failed to load offer: ' + e.message, 'error');
         }
     };
 
@@ -1506,7 +1611,7 @@
                 offerForm.reset();
                 loadOffers();
             } catch (err) {
-                alert('Failed: ' + err.message);
+                showToast('Failed: ' + err.message);
             }
         });
     }
@@ -1554,7 +1659,7 @@
             await api.deleteTestimonial(id);
             loadTestimonialsAdmin();
         } catch (e) {
-            alert('Failed to delete: ' + e.message);
+            showToast('Failed to delete: ' + e.message, 'error');
         }
     };
 
@@ -1563,7 +1668,7 @@
             var result = await api.getAllTestimonialsAdmin();
             var items = result.testimonials || [];
             var item = items.find(function (t) { return t.id === id; });
-            if (!item) return alert('Testimonial not found');
+            if (!item) return showToast('Testimonial not found', 'error');
             document.getElementById('test-name').value = item.name || '';
             document.getElementById('test-location').value = item.location || '';
             document.getElementById('test-text').value = item.text || '';
@@ -1573,7 +1678,7 @@
             document.getElementById('test-submit-btn').textContent = 'Update Testimonial';
             document.getElementById('test-name').focus();
         } catch (e) {
-            alert('Failed to load testimonial: ' + e.message);
+            showToast('Failed to load testimonial: ' + e.message, 'error');
         }
     };
 
@@ -1600,7 +1705,7 @@
                 testimonialForm.reset();
                 loadTestimonialsAdmin();
             } catch (err) {
-                alert('Failed: ' + err.message);
+                showToast('Failed: ' + err.message);
             }
         });
     }
@@ -1674,7 +1779,7 @@
                     btn.textContent = 'Saved!';
                     setTimeout(function () { btn.textContent = 'Save'; }, 1500);
                 } catch (err) {
-                    alert('Failed to save: ' + err.message);
+                    showToast('Failed to save: ' + err.message, 'error');
                 }
             });
         });
@@ -1782,7 +1887,7 @@
     window.sendReviewReply = async function () {
         var reviewId = document.getElementById('review-reply-id').value;
         var reply = document.getElementById('review-reply-text').value.trim();
-        if (!reply) { alert('Please type a reply.'); return; }
+        if (!reply) { showToast('Please type a reply.', 'warning'); return; }
         var btn = document.getElementById('review-reply-send-btn');
         btn.disabled = true;
         btn.textContent = 'Sending...';
@@ -1792,7 +1897,7 @@
             loadReviews(currentReviewFilter);
             showToast('Reply sent!', 'success');
         } catch (e) {
-            alert('Failed to send reply: ' + e.message);
+            showToast('Failed to send reply: ' + e.message, 'error');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Send Reply';
@@ -1809,7 +1914,7 @@
             showToast(result.message || 'Seeding complete!', 'success');
             loadReviews(currentReviewFilter);
         } catch (e) {
-            alert('Failed to seed: ' + e.message);
+            showToast('Failed to seed: ' + e.message, 'error');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Seed 50 Users + Reviews';
@@ -1826,4 +1931,11 @@
             openReviewReplyModal(reviewId, userName, commentPreview);
         }
     });
+
+    // ── Image upload preview + validation ─────────────────────
+    setupImageUpload('tour-images', 'tour-images-preview', { multiple: true });
+    setupImageUpload('hotel-images', 'hotel-images-preview', { multiple: true });
+    setupImageUpload('auth-slide-file', 'auth-slide-preview');
+    setupImageUpload('loc-image', 'loc-image-preview');
+    setupImageUpload('off-image', 'off-image-preview');
 })();

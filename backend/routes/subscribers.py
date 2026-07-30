@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from models.subscriber import Subscriber
 from models import db
-from middleware.auth import admin_required
+from middleware.rate_limit import rate_limit
 from utils.helpers import validate_required_fields, validate_email, sanitize_input
 
 subscribers_bp = Blueprint('subscribers', __name__, url_prefix='/api/subscribers')
 
 @subscribers_bp.route('', methods=['POST'])
+@rate_limit(config_key='subscribers', key_prefix='subscribers')
 def subscribe():
     data = request.get_json()
     if not data:
@@ -29,9 +30,3 @@ def subscribe():
     db.session.commit()
 
     return jsonify({'message': 'Subscribed successfully', 'subscriber': subscriber.to_dict()}), 201
-
-@subscribers_bp.route('', methods=['GET'])
-@admin_required
-def get_subscribers(current_user):
-    subscribers = Subscriber.query.order_by(Subscriber.created_at.desc()).all()
-    return jsonify({'subscribers': [s.to_dict() for s in subscribers]}), 200

@@ -483,17 +483,56 @@
                     mapInstance.remove();
                 }
 
-                mapInstance = L.map('map').setView([h.latitude, h.longitude], 10);
+                mapInstance = L.map('map').setView([h.latitude, h.longitude], 14);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                     maxZoom: 18
                 }).addTo(mapInstance);
 
-                L.marker([h.latitude, h.longitude])
+                var destPopup = ''
+                    + '<div style="font-family:var(--font-body);font-size:0.85rem;">'
+                        + '<b style="font-size:0.95rem;">' + escapeHTML(h.name) + '</b>'
+                        + (h.location_name ? '<br><span style="color:var(--text-secondary);">' + escapeHTML(h.location_name) + '</span>' : '')
+                        + (h.formatted_address ? '<br><span style="color:var(--text-secondary);font-size:0.78rem;">' + escapeHTML(h.formatted_address) + '</span>' : '')
+                        + (h.county || h.country ? '<br><span style="color:var(--text-placeholder);font-size:0.75rem;">' + [h.county, h.country].filter(Boolean).join(', ') + '</span>' : '')
+                    + '</div>';
+
+                var destIcon = L.divIcon({
+                    html: '<div style="background:#122218;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);font-size:14px;">' + svgIcon('map-pin') + '</div>',
+                    className: '',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                });
+
+                L.marker([h.latitude, h.longitude], { icon: destIcon })
                     .addTo(mapInstance)
-                    .bindPopup('<b>' + escapeHTML(h.name) + '</b>')
+                    .bindPopup(destPopup)
                     .openPopup();
+
+                var existingInfo = document.getElementById('hotel-location-info');
+                if (!existingInfo) {
+                    var mapContainer = document.getElementById('map');
+                    var infoDiv = document.createElement('div');
+                    infoDiv.id = 'hotel-location-info';
+                    infoDiv.style.cssText = 'margin-top:0.75rem;padding:1rem;background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.8);border-radius:14px;';
+                    var hasCoords = h.county || h.country || h.formatted_address;
+                    infoDiv.innerHTML = ''
+                        + '<div style="display:flex;align-items:flex-start;gap:0.75rem;">'
+                            + '<div style="font-size:1.2rem;line-height:1;">📍</div>'
+                            + '<div style="flex:1;min-width:0;">'
+                                + '<div style="font-weight:600;font-size:0.95rem;color:var(--dark-text);">' + escapeHTML(h.location_name || h.name) + '</div>'
+                                + (h.formatted_address ? '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.15rem;">' + escapeHTML(h.formatted_address) + '</div>' : '')
+                                + (h.county || h.country ? '<div style="font-size:0.78rem;color:var(--text-placeholder);margin-top:0.15rem;">' + [h.county, h.country].filter(Boolean).join(', ') + '</div>' : '')
+                                + '<div style="display:flex;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;">'
+                                    + '<a href="https://www.google.com/maps/search/?api=1&query=' + h.latitude + ',' + h.longitude + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;border-radius:8px;background:rgba(18,34,36,0.08);color:var(--dark-text);font-size:0.78rem;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background=\'rgba(18,34,36,0.14)\'" onmouseout="this.style.background=\'rgba(18,34,36,0.08)\'">' + svgIcon('external-link',{size:14}) + ' Open in Google Maps</a>'
+                                + '</div>'
+                            + '</div>'
+                        + '</div>';
+                    if (hasCoords) {
+                        mapContainer.parentNode.insertBefore(infoDiv, mapContainer.nextSibling);
+                    }
+                }
             }, 200);
         }
 
