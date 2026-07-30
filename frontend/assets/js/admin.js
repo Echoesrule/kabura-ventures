@@ -389,9 +389,10 @@
         var container = document.getElementById('day-activities-' + day);
         var div = document.createElement('div');
         div.innerHTML = makeActivityHTML(day, idx, {});
-        container.insertBefore(div.firstElementChild, container.lastElementChild);
+        container.appendChild(div.firstElementChild);
     }
 
+    window.addActivity = addActivity;
     window.removeActivity = function (day, idx) {
         var el = document.getElementById('act-' + day + '-' + idx);
         if (el) el.remove();
