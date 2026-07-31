@@ -96,8 +96,17 @@ class ApiClient {
         return result;
     }
 
-    logout() {
+    async logout() {
         this.setToken(null);
+        // Also clear the persisted Supabase session, otherwise the SDK restores
+        // it on the next page load and the user gets silently signed back in.
+        try {
+            if (typeof signOutSupabase === 'function') {
+                await signOutSupabase();
+            }
+        } catch (err) {
+            console.error('[api] Supabase sign-out error:', err);
+        }
         window.location.href = '/';
     }
 

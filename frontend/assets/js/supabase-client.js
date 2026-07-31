@@ -206,16 +206,41 @@ async function exchangeSupabaseSession() {
 }
 
 /**
+ * Directly remove any persisted Supabase session from storage.
+ * Belt-and-suspenders: supabase-js stores its session under `sb-<ref>-auth-token`
+ * (and legacy keys). If the SDK's signOut() fails (network error) or the client
+ * was never initialized, this guarantees a stale session can't silently sign the
+ * user back in on a later page load.
+ */
+function clearSupabaseStorage() {
+    const keys = [];
+    const strip = (store) => {
+        for (let i = store.length - 1; i >= 0; i--) {
+            const key = store.key(i);
+            if (key && (key.startsWith('sb-') || key.startsWith('supabase.auth.'))) {
+                keys.push([store, key]);
+            }
+        }
+    };
+    strip(window.localStorage);
+    strip(window.sessionStorage);
+    keys.forEach(([store, key]) => store.removeItem(key));
+}
+
+/**
  * Sign out from Supabase (clears Supabase session).
  * Does NOT clear the Flask JWT — call api.logout() for that.
  */
 async function signOutSupabase() {
     const client = getSupabaseClient();
-    if (!client) return;
     try {
-        await client.auth.signOut();
+        if (client) {
+            await client.auth.signOut();
+        }
     } catch (err) {
         console.error('[supabase-client] Sign-out error:', err);
+    } finally {
+        clearSupabaseStorage();
     }
 }
 
@@ -224,6 +249,7 @@ async function signOutSupabase() {
 // Module-level flags
 let _isRecoveryFlow = false;     // true when user arrived via recovery link
 let _sessionExchanged = false;   // true once we've exchanged a Supabase → Flask session
+let _hasOAuthCallback = false;   // true when THIS page load carried OAuth/recovery tokens in the URL
 
 // Paths where auto-exchange on SIGNED_IN is allowed (auth pages).
 // On all other pages we ignore SIGNED_IN to prevent infinite redirect loops.
@@ -260,6 +286,13 @@ function setupSupabaseAuthListener(isRecovery = false) {
                     const path = window.location.pathname;
                     const isAuthPage = _AUTH_PAGES.some(p => path === p || path.endsWith(p));
                     if (!isAuthPage) {
+                        return;
+                    }
+                    // Only auto-exchange for a genuine OAuth callback on THIS page
+                    // load (URL contained access_token/code). A SIGNED_IN caused by
+                    // the SDK merely restoring a persisted session must not silently
+                    // sign the user back in (e.g. after they logged out).
+                    if (!_hasOAuthCallback) {
                         return;
                     }
                     _sessionExchanged = true;
@@ -504,6 +537,47 @@ async function handleForgotPasswordSubmit() {
 // ─── Initialization for Auth Pages ────────────────────────────────────────────
 
 /**
+ * Handle errors returned by Supabase in the URL hash.
+ * Supabase redirects failed auth links (e.g. expired/used OTPs) to the
+ * redirect URL with a hash like
+ *   #error=access_denied&error_code=otp_expired&error_description=...
+ * Previously this silently landed users on a plain login page. Now we show a
+ * clear message and surface the forgot-password form so they can request a
+ * fresh link immediately.
+ * @returns {boolean} true if a Supabase error was present and handled
+ */
+function handleSupabaseUrlError() {
+    const hash = window.location.hash;
+    if (!hash || hash.length < 2) return false;
+
+    const params = new URLSearchParams(hash.substring(1));
+    const error = params.get('error');
+    if (!error) return false;
+
+    const code = params.get('error_code') || 'unknown';
+    const description = params.get('error_description')
+        || 'Something went wrong with this link.';
+
+    console.warn('[supabase-client] Auth link error:', { error, code, description });
+
+    const message = code === 'otp_expired'
+        ? 'This password reset link has expired or was already used. Please request a new one below.'
+        : 'This link is invalid or has expired. Please request a new one below.';
+
+    // Strip the error from the URL so a refresh doesn't repeat the message.
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    // Defer so the login DOM is ready, then tell the user and open the
+    // forgot-password form so they can request a fresh link in one click.
+    setTimeout(() => {
+        showToast(message, 'error');
+        showForgotPasswordForm();
+    }, 100);
+
+    return true;
+}
+
+/**
  * Check URL for password reset token from the app's own reset email.
  */
 function checkAppResetToken() {
@@ -520,6 +594,13 @@ function checkAppResetToken() {
  * Call this on DOMContentLoaded.
  */
 async function initSupabaseAuthPage() {
+    // A Supabase error hash (e.g. #error_code=otp_expired) means the reset
+    // link was already used or expired. Surface it and let the user request
+    // a new link instead of silently showing a plain login page.
+    if (handleSupabaseUrlError()) {
+        return;
+    }
+
     // Capture the recovery flag BEFORE initSupabaseClient() — Supabase consumes
     // and clears the URL tokens during client init. Recovery tokens arrive via
     // the URL hash in the implicit flow (#access_token=...&type=recovery) or via
@@ -528,6 +609,13 @@ async function initSupabaseAuthPage() {
     const hashParams = new URLSearchParams(url.hash.substring(1));
     const isRecovery = hashParams.get('type') === 'recovery'
         || url.searchParams.get('type') === 'recovery';
+
+    // True when this page load is an actual OAuth/recovery callback (tokens in
+    // the URL). Used to distinguish callbacks from a plain session restore, so a
+    // persisted session can never silently sign the user back in after logout.
+    _hasOAuthCallback = hashParams.has('access_token')
+        || url.searchParams.has('code')
+        || url.searchParams.has('access_token');
 
     // Set the module-level flag synchronously, BEFORE any await. The SDK may
     // fire SIGNED_IN/PASSWORD_RECOVERY while createClient() initializes, and
