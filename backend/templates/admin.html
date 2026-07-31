@@ -254,15 +254,15 @@
                             <div id="tour-form-msg" style="flex:0 0 100%;display:none;"></div>
                             <div style="flex:2;min-width:200px;">
                                 <label class="admin-label">Title *</label>
-                                <input type="text" id="tour-title" required class="admin-input" placeholder="Tour title">
+                                <input type="text" id="tour-title" required class="admin-input" placeholder="Tour title" maxlength="255">
                             </div>
                             <div style="flex:1;min-width:120px;">
                                 <label class="admin-label">Price (KSh) *</label>
-                                <input type="number" id="tour-price" required class="admin-input" placeholder="0" min="0">
+                                <input type="number" id="tour-price" required class="admin-input" placeholder="0" min="0" max="100000000">
                             </div>
                             <div style="flex:1;min-width:120px;">
                                 <label class="admin-label">Original Price (KSh)</label>
-                                <input type="number" id="tour-original-price" class="admin-input" placeholder="Optional" min="0">
+                                <input type="number" id="tour-original-price" class="admin-input" placeholder="Optional" min="0" max="100000000">
                             </div>
                             <div style="flex:1;min-width:100px;">
                                 <label class="admin-label">Discount %</label>
@@ -270,11 +270,11 @@
                             </div>
                             <div style="flex:1;min-width:100px;">
                                 <label class="admin-label">Duration (days) *</label>
-                                <input type="number" id="tour-duration" required class="admin-input" placeholder="1" min="1">
+                                <input type="number" id="tour-duration" required class="admin-input" placeholder="1" min="1" max="30">
                             </div>
                             <div style="flex:1;min-width:100px;">
                                 <label class="admin-label">Max People</label>
-                                <input type="number" id="tour-max-people" class="admin-input" placeholder="20" min="1">
+                                <input type="number" id="tour-max-people" class="admin-input" placeholder="20" min="1" max="1000">
                             </div>
                             <div style="flex:1;min-width:120px;">
                                 <label class="admin-label">Activity Type *</label>
@@ -287,11 +287,11 @@
                             </div>
                             <div style="flex:1;min-width:120px;">
                                 <label class="admin-label">Wildlife</label>
-                                <input type="text" id="tour-wildlife" class="admin-input" placeholder="Lions, elephants...">
+                                <input type="text" id="tour-wildlife" class="admin-input" placeholder="Lions, elephants..." maxlength="1000">
                             </div>
                             <div style="flex:3;min-width:300px;">
                                 <label class="admin-label">Description</label>
-                                <textarea id="tour-description" class="admin-input admin-textarea" rows="2" placeholder="Tour description"></textarea>
+                                <textarea id="tour-description" class="admin-input admin-textarea" rows="2" placeholder="Tour description" maxlength="5000"></textarea>
                             </div>
                             <div style="flex:0 0 100%;">
                                 <label class="admin-label">Destination</label>
@@ -388,15 +388,15 @@
                             <input type="hidden" id="hotel-edit-id" value="">
                             <div style="flex:2;min-width:200px;">
                                 <label class="admin-label">Name *</label>
-                                <input type="text" id="hotel-name" required class="admin-input" placeholder="Hotel name">
+                                <input type="text" id="hotel-name" required class="admin-input" placeholder="Hotel name" maxlength="255">
                             </div>
                             <div style="flex:1;min-width:140px;">
                                 <label class="admin-label">Location</label>
-                                <input type="text" id="hotel-location" class="admin-input" placeholder="e.g. Nairobi">
+                                <input type="text" id="hotel-location" class="admin-input" placeholder="e.g. Nairobi" maxlength="255">
                             </div>
                             <div style="flex:1;min-width:120px;">
                                 <label class="admin-label">Price/Night (KSh) *</label>
-                                <input type="number" id="hotel-price" required class="admin-input" placeholder="0" min="0">
+                                <input type="number" id="hotel-price" required class="admin-input" placeholder="0" min="0" max="100000000">
                             </div>
                             <div style="flex:1;min-width:100px;">
                                 <label class="admin-label">Rating (0-5)</label>
@@ -404,11 +404,11 @@
                             </div>
                             <div style="flex:2;min-width:200px;">
                                 <label class="admin-label">Amenities</label>
-                                <input type="text" id="hotel-amenities" class="admin-input" placeholder="WiFi, Pool, Spa...">
+                                <input type="text" id="hotel-amenities" class="admin-input" placeholder="WiFi, Pool, Spa..." maxlength="2000">
                             </div>
                             <div style="flex:3;min-width:300px;">
                                 <label class="admin-label">Description</label>
-                                <textarea id="hotel-description" class="admin-input admin-textarea" rows="2" placeholder="Hotel description"></textarea>
+                                <textarea id="hotel-description" class="admin-input admin-textarea" rows="2" placeholder="Hotel description" maxlength="5000"></textarea>
                             </div>
                             <div style="flex:1;min-width:160px;">
                                 <label class="admin-label">Images</label>
@@ -527,15 +527,15 @@
                                 <div class="admin-form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
                                     <div>
                                         <label class="admin-label">Name *</label>
-                                        <input type="text" name="name" placeholder="e.g. Maasai Mara" required class="admin-input" id="loc-name">
+                                        <input type="text" name="name" placeholder="e.g. Maasai Mara" required class="admin-input" id="loc-name" maxlength="255">
                                     </div>
                                     <div>
                                         <label class="admin-label">Location Text</label>
-                                        <input type="text" name="location_text" placeholder="e.g. Narok County, Kenya" class="admin-input" id="loc-location-text">
+                                        <input type="text" name="location_text" placeholder="e.g. Narok County, Kenya" class="admin-input" id="loc-location-text" maxlength="255">
                                     </div>
                                     <div style="grid-column:span 2;">
                                         <label class="admin-label">Description</label>
-                                        <input type="text" name="description" placeholder="Brief description of the location" class="admin-input" id="loc-desc">
+                                        <input type="text" name="description" placeholder="Brief description of the location" class="admin-input" id="loc-desc" maxlength="1000">
                                     </div>
                                     <div>
                                         <label class="admin-label">Image</label>
@@ -544,20 +544,20 @@
                                     </div>
                                     <div>
                                         <label class="admin-label">Link URL</label>
-                                        <input type="text" name="link_url" placeholder="/destinations.html" class="admin-input" id="loc-link">
+                                        <input type="text" name="link_url" placeholder="/destinations.html" class="admin-input" id="loc-link" maxlength="500">
                                     </div>
                                     <div>
                                         <label class="admin-label">Order</label>
-                                        <input type="number" name="sort_order" value="0" class="admin-input" id="loc-sort" style="width:80px;">
+                                        <input type="number" name="sort_order" value="0" class="admin-input" id="loc-sort" style="width:80px;" min="0" max="99999">
                                     </div>
                                     <div style="display:flex;gap:0.5rem;align-items:flex-end;">
                                         <div style="flex:1;">
                                             <label class="admin-label">Latitude</label>
-                                            <input type="number" step="any" name="latitude" class="admin-input" id="loc-lat" placeholder="-1.2921">
+                                            <input type="number" step="any" name="latitude" class="admin-input" id="loc-lat" placeholder="-1.2921" min="-90" max="90">
                                         </div>
                                         <div style="flex:1;">
                                             <label class="admin-label">Longitude</label>
-                                            <input type="number" step="any" name="longitude" class="admin-input" id="loc-lng" placeholder="36.8219">
+                                            <input type="number" step="any" name="longitude" class="admin-input" id="loc-lng" placeholder="36.8219" min="-180" max="180">
                                         </div>
                                         <button type="button" class="admin-hero-btn" style="height:40px;white-space:nowrap;flex-shrink:0;" id="loc-geocode-btn">Lookup</button>
                                     </div>
@@ -585,11 +585,11 @@
                             <form id="offer-form" enctype="multipart/form-data" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
                                 <div style="flex:1;min-width:200px;">
                                     <label class="admin-label">Title *</label>
-                                    <input type="text" name="title" placeholder="e.g. Safari Adventures" required class="admin-input" id="off-title">
+                                    <input type="text" name="title" placeholder="e.g. Safari Adventures" required class="admin-input" id="off-title" maxlength="255">
                                 </div>
                                 <div style="flex:2;min-width:200px;">
                                     <label class="admin-label">Description</label>
-                                    <input type="text" name="description" placeholder="Brief description" class="admin-input" id="off-desc">
+                                    <input type="text" name="description" placeholder="Brief description" class="admin-input" id="off-desc" maxlength="1000">
                                 </div>
                                 <div style="flex:1;min-width:160px;">
                                     <label class="admin-label">Image</label>
@@ -598,11 +598,11 @@
                                 </div>
                                 <div style="flex:1;min-width:120px;">
                                     <label class="admin-label">Link URL</label>
-                                    <input type="text" name="link_url" placeholder="/safari.html" class="admin-input" id="off-link">
+                                    <input type="text" name="link_url" placeholder="/safari.html" class="admin-input" id="off-link" maxlength="500">
                                 </div>
                                 <div style="flex:0;min-width:80px;">
                                     <label class="admin-label">Order</label>
-                                    <input type="number" name="sort_order" value="0" class="admin-input" id="off-sort" style="width:80px;">
+                                    <input type="number" name="sort_order" value="0" class="admin-input" id="off-sort" style="width:80px;" min="0" max="99999">
                                 </div>
                                 <input type="hidden" id="off-edit-id" value="">
                                 <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;" id="off-submit-btn">Add Offer</button>
@@ -626,15 +626,15 @@
                             <form id="testimonial-form" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
                                 <div style="flex:1;min-width:200px;">
                                     <label class="admin-label">Name *</label>
-                                    <input type="text" name="name" placeholder="e.g. Sarah & Liam" required class="admin-input" id="test-name">
+                                    <input type="text" name="name" placeholder="e.g. Sarah & Liam" required class="admin-input" id="test-name" maxlength="100">
                                 </div>
                                 <div style="flex:1;min-width:160px;">
                                     <label class="admin-label">Location</label>
-                                    <input type="text" name="location" placeholder="e.g. New York, USA" class="admin-input" id="test-location">
+                                    <input type="text" name="location" placeholder="e.g. New York, USA" class="admin-input" id="test-location" maxlength="100">
                                 </div>
                                 <div style="flex:3;min-width:300px;">
                                     <label class="admin-label">Testimonial Text *</label>
-                                    <input type="text" name="text" placeholder="What they said..." required class="admin-input" id="test-text">
+                                    <input type="text" name="text" placeholder="What they said..." required class="admin-input" id="test-text" maxlength="2000">
                                 </div>
                                 <div style="flex:0;min-width:60px;">
                                     <label class="admin-label">Rating</label>
@@ -648,7 +648,7 @@
                                 </div>
                                 <div style="flex:0;min-width:80px;">
                                     <label class="admin-label">Order</label>
-                                    <input type="number" name="sort_order" value="0" class="admin-input" id="test-sort" style="width:80px;">
+                                    <input type="number" name="sort_order" value="0" class="admin-input" id="test-sort" style="width:80px;" min="0" max="99999">
                                 </div>
                                 <input type="hidden" id="test-edit-id" value="">
                                 <button type="submit" class="admin-hero-btn" style="height:40px;white-space:nowrap;" id="test-submit-btn">Add Testimonial</button>
@@ -706,7 +706,7 @@
                 <button onclick="closeActivityTypesModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
             </div>
             <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
-                <input type="text" id="new-activity-type" class="admin-input" placeholder="e.g. Safari" style="flex:1;">
+                <input type="text" id="new-activity-type" class="admin-input" placeholder="e.g. Safari" style="flex:1;" maxlength="100">
                 <button class="admin-btn admin-btn--primary" onclick="addActivityType()">Add</button>
             </div>
             <div id="activity-types-list"></div>

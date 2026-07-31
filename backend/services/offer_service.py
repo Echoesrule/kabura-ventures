@@ -1,7 +1,7 @@
 from models.offer_service import OfferService
 from models import db
 from services.storage import save_image, delete_image
-from utils.helpers import validate_required_fields, sanitize_input, allowed_file
+from utils.helpers import validate_required_fields, sanitize_input, allowed_file, clamp_number
 from services.base import ServiceError
 
 
@@ -18,7 +18,7 @@ def create_offer(data, files=None):
     title = sanitize_input(data.get('title', ''), max_length=255)
     description = sanitize_input(data.get('description', ''), max_length=1000)
     link_url = sanitize_input(data.get('link_url', ''), max_length=500)
-    sort_order = int(data.get('sort_order', 0))
+    sort_order = int(clamp_number(data.get('sort_order', 0), min_val=0, max_val=99999))
     image_url = sanitize_input(data.get('image_url', ''), max_length=500)
 
     if files and files.get('image') and files['image'].filename and allowed_file(files['image'].filename):
@@ -34,7 +34,7 @@ def update_offer(offer, data, files=None):
     if 'title' in data: offer.title = sanitize_input(data['title'], max_length=255)
     if 'description' in data: offer.description = sanitize_input(data['description'], max_length=1000)
     if 'link_url' in data: offer.link_url = sanitize_input(data['link_url'], max_length=500)
-    if 'sort_order' in data: offer.sort_order = int(data['sort_order'])
+    if 'sort_order' in data: offer.sort_order = int(clamp_number(data['sort_order'], min_val=0, max_val=99999))
     if 'is_active' in data: offer.is_active = data['is_active'] in (True, 'true', '1', 1)
     if 'image_url' in data and data['image_url']:
         offer.image_url = sanitize_input(data['image_url'], max_length=500)

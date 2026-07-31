@@ -84,6 +84,17 @@ def create_booking(current_user):
         traceback.print_exc()
         return jsonify({'error': f'Booking creation failed: {str(e)}'}), 500
 
+@bookings_bp.route('', methods=['GET'])
+@token_required
+def get_my_bookings(current_user):
+    try:
+        bookings = Booking.query.filter_by(user_id=current_user['user_id'])\
+            .order_by(Booking.created_at.desc()).all()
+        return jsonify({'bookings': [b.to_dict() for b in bookings]}), 200
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'error': f'Failed to load bookings: {str(e)}'}), 500
+
 @bookings_bp.route('/user', methods=['GET'])
 @token_required
 def get_user_bookings(current_user):
@@ -108,5 +119,28 @@ def get_booking(current_user, booking_id):
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': 'Failed to retrieve booking'}), 500
+
+CANCELLABLE_STATUSES = {'pending', 'confirmed'}
+
+@bookings_bp.route('/<booking_id>/cancel', methods=['PUT'])
+@token_required
+def cancel_booking(current_user, booking_id):
+    try:
+        booking = Booking.query.get(booking_id)
+        if not booking:
+            return jsonify({'error': 'Booking not found'}), 404
+        if booking.user_id != current_user['user_id'] and current_user['role'] != 'admin':
+            return jsonify({'error': 'Access denied'}), 403
+        if booking.status == 'cancelled':
+            return jsonify({'error': 'Booking is already cancelled'}), 400
+        if booking.status not in CANCELLABLE_STATUSES:
+            return jsonify({'error': f'Cannot cancel a booking with status: {booking.status}'}), 400
+        booking.status = 'cancelled'
+        db.session.commit()
+        return jsonify({'message': 'Booking cancelled successfully', 'booking': booking.to_dict()}), 200
+    except Exception as e:
+        db.session.rollback()
+        traceback.print_exc()
+        return jsonify({'error': f'Failed to cancel booking: {str(e)}'}), 500
 
 

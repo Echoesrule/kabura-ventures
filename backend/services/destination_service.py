@@ -1,7 +1,7 @@
 from models.destination import Destination
 from models import db
 from services.storage import save_image
-from utils.helpers import validate_required_fields, sanitize_input, allowed_file
+from utils.helpers import validate_required_fields, sanitize_input, allowed_file, clamp_number
 from services.base import ServiceError
 
 
@@ -21,9 +21,9 @@ def create_destination(data, files=None):
         location_text=sanitize_input(data.get('location_text', ''), max_length=255),
         description=sanitize_input(data.get('description', ''), max_length=1000),
         link_url=sanitize_input(data.get('link_url', ''), max_length=500),
-        latitude=float(data['latitude']) if data.get('latitude') else None,
-        longitude=float(data['longitude']) if data.get('longitude') else None,
-        sort_order=int(data.get('sort_order', 0)),
+        latitude=clamp_number(data.get('latitude'), min_val=-90, max_val=90) if data.get('latitude') else None,
+        longitude=clamp_number(data.get('longitude'), min_val=-180, max_val=180) if data.get('longitude') else None,
+        sort_order=int(clamp_number(data.get('sort_order', 0), min_val=0, max_val=99999)),
     )
     if files and files.get('image') and allowed_file(files['image'].filename):
         dest.image_url = save_image(files['image'], 'destinations')
@@ -37,9 +37,9 @@ def update_destination(dest, data, files=None):
     if 'location_text' in data: dest.location_text = sanitize_input(data['location_text'], max_length=255)
     if 'description' in data: dest.description = sanitize_input(data['description'], max_length=1000)
     if 'link_url' in data: dest.link_url = sanitize_input(data['link_url'], max_length=500)
-    if 'latitude' in data: dest.latitude = float(data['latitude']) if data['latitude'] else None
-    if 'longitude' in data: dest.longitude = float(data['longitude']) if data['longitude'] else None
-    if 'sort_order' in data: dest.sort_order = int(data['sort_order'])
+    if 'latitude' in data: dest.latitude = clamp_number(data['latitude'], min_val=-90, max_val=90) if data['latitude'] else None
+    if 'longitude' in data: dest.longitude = clamp_number(data['longitude'], min_val=-180, max_val=180) if data['longitude'] else None
+    if 'sort_order' in data: dest.sort_order = int(clamp_number(data['sort_order'], min_val=0, max_val=99999))
     if 'is_active' in data: dest.is_active = data['is_active'] in (True, 'true', '1', 1)
     if files and files.get('image') and allowed_file(files['image'].filename):
         dest.image_url = save_image(files['image'], 'destinations')

@@ -1,7 +1,7 @@
 from models.hotel import Hotel, HotelImage, slugify
 from models import db
 from services.storage import save_image, delete_image
-from utils.helpers import validate_required_fields, sanitize_input, validate_length, validate_number
+from utils.helpers import validate_required_fields, sanitize_input, validate_length, validate_number, clamp_number
 from services.base import ServiceError
 
 
@@ -23,7 +23,7 @@ def create_hotel(data, files=None):
     if desc_err: errors.append(desc_err)
     amen_err = validate_length(amenities, 2000, 'Amenities')
     if amen_err: errors.append(amen_err)
-    price_err = validate_number(data.get('price_per_night', 0), min_val=0, field_name='Price per night')
+    price_err = validate_number(data.get('price_per_night', 0), min_val=0, max_val=100000000, field_name='Price per night')
     if price_err: errors.append(price_err)
     rating_err = validate_number(data.get('rating', 0), min_val=0, max_val=5, field_name='Rating')
     if rating_err: errors.append(rating_err)
@@ -44,8 +44,8 @@ def create_hotel(data, files=None):
         county=sanitize_input(data.get('county', ''), max_length=100),
         country=sanitize_input(data.get('country', ''), max_length=100),
         place_id=sanitize_input(data.get('place_id', ''), max_length=255),
-        latitude=float(data['latitude']) if data.get('latitude') else None,
-        longitude=float(data['longitude']) if data.get('longitude') else None,
+        latitude=clamp_number(data.get('latitude'), min_val=-90, max_val=90) if data.get('latitude') else None,
+        longitude=clamp_number(data.get('longitude'), min_val=-180, max_val=180) if data.get('longitude') else None,
         price_per_night=float(data.get('price_per_night', 0)),
         rating=float(data.get('rating', 0)), amenities=amenities, available=True
     )
@@ -86,7 +86,7 @@ def update_hotel(hotel, data, files=None):
         err = validate_length(hotel.location, 255, 'Location')
         if err: errors.append(err)
     if 'price_per_night' in data:
-        err = validate_number(data['price_per_night'], min_val=0, field_name='Price per night')
+        err = validate_number(data['price_per_night'], min_val=0, max_val=100000000, field_name='Price per night')
         if err: errors.append(err)
         hotel.price_per_night = float(data['price_per_night'])
     if 'rating' in data:
@@ -101,9 +101,9 @@ def update_hotel(hotel, data, files=None):
         if field in data:
             setattr(hotel, field, sanitize_input(data[field], max_length=255))
     if 'latitude' in data:
-        hotel.latitude = float(data['latitude']) if data['latitude'] else None
+        hotel.latitude = clamp_number(data['latitude'], min_val=-90, max_val=90) if data['latitude'] else None
     if 'longitude' in data:
-        hotel.longitude = float(data['longitude']) if data['longitude'] else None
+        hotel.longitude = clamp_number(data['longitude'], min_val=-180, max_val=180) if data['longitude'] else None
     if errors:
         raise ServiceError('. '.join(errors))
     if 'available' in data:

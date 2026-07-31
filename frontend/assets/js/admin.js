@@ -473,7 +473,20 @@ function showToast(message, type) {
     document.getElementById('tour-price').addEventListener('input', calcDiscount);
     document.getElementById('tour-original-price').addEventListener('input', calcDiscount);
 
+    function clampFieldValue(id, min, max, label) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var num = parseFloat(el.value);
+        if (isNaN(num)) return;
+        var clamped = Math.min(Math.max(num, min), max);
+        if (num !== clamped) {
+            el.value = clamped;
+            showToast(label + ' limited to ' + clamped, 'warning');
+        }
+    }
+
     var itineraryCounter = {};
+    var itineraryCurrentDay = 1;
 
     function makeActivityHTML(day, idx, data) {
         data = data || {};
@@ -505,21 +518,93 @@ function showToast(message, type) {
         var div = document.createElement('div');
         div.innerHTML = makeActivityHTML(day, idx, {});
         container.appendChild(div.firstElementChild);
+        refreshItineraryNav();
     }
 
     window.addActivity = addActivity;
     window.removeActivity = function (day, idx) {
         var el = document.getElementById('act-' + day + '-' + idx);
         if (el) el.remove();
+        refreshItineraryNav();
     };
 
+    function addActivityButtonHTML(d) {
+        return '<button type="button" onclick="addActivity(' + d + ')" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;border-radius:8px;background:rgba(18,34,24,0.06);border:1px dashed rgba(18,34,24,0.15);color:var(--dark-text);font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;margin-top:0.25rem;" onmouseover="this.style.background=\'rgba(18,34,24,0.1)\'" onmouseout="this.style.background=\'rgba(18,34,24,0.06)\'">+ Add Activity</button>';
+    }
+
+    function itineraryNavHTML() {
+        return '<div id="itinerary-nav" style="display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;gap:0.75rem;flex-wrap:wrap;">'
+            + '<button type="button" id="itinerary-prev-btn">← Previous Day</button>'
+            + '<span id="itinerary-progress" style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;"></span>'
+            + '<button type="button" id="itinerary-next-btn">Next Day →</button>'
+            + '</div>';
+    }
+
+    function styleItineraryNavBtn(btn, isPrev) {
+        var base = 'display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1.1rem;border-radius:8px;font-size:0.8rem;font-weight:600;border:1px solid;cursor:pointer;transition:all 0.2s;';
+        if (btn.disabled) {
+            btn.style.cssText = base + 'background:#e6e9e3;border-color:#d4d8d0;color:#a6aea5;cursor:not-allowed;';
+        } else if (isPrev) {
+            btn.style.cssText = base + 'background:rgba(18,34,24,0.06);border-color:rgba(18,34,24,0.15);color:var(--dark-text);';
+        } else {
+            btn.style.cssText = base + 'background:var(--primary);border-color:var(--primary);color:#fff;';
+        }
+    }
+
+    function isItineraryDayFilled(day) {
+        var titles = document.querySelectorAll('#day-activities-' + day + ' input[id$="-title"]');
+        if (!titles.length) return false;
+        var descs = document.querySelectorAll('#day-activities-' + day + ' textarea[id$="-desc"]');
+        if (descs.length !== titles.length) return false;
+        for (var i = 0; i < titles.length; i++) {
+            if (!titles[i].value.trim() || !descs[i].value.trim()) return false;
+        }
+        return true;
+    }
+
+    function refreshItineraryNav() {
+        var days = Math.min(parseInt(document.getElementById('tour-duration').value) || 0, 30);
+        if (!itineraryCurrentDay) itineraryCurrentDay = 1;
+        var prev = document.getElementById('itinerary-prev-btn');
+        var next = document.getElementById('itinerary-next-btn');
+        var progress = document.getElementById('itinerary-progress');
+        if (prev) {
+            prev.disabled = itineraryCurrentDay <= 1;
+            styleItineraryNavBtn(prev, true);
+        }
+        if (next) {
+            next.disabled = !isItineraryDayFilled(itineraryCurrentDay) || itineraryCurrentDay >= days;
+            styleItineraryNavBtn(next, false);
+        }
+        if (progress) progress.textContent = 'Day ' + itineraryCurrentDay + ' of ' + days;
+    }
+
+    function showItineraryDay(day) {
+        var days = Math.min(parseInt(document.getElementById('tour-duration').value) || 0, 30);
+        if (day < 1 || day > days) return;
+        itineraryCurrentDay = day;
+        var cards = document.querySelectorAll('#tour-itinerary-days .itinerary-day-card');
+        cards.forEach(function (card) {
+            card.style.display = parseInt(card.getAttribute('data-day')) === day ? '' : 'none';
+        });
+        refreshItineraryNav();
+    }
+
+    function bindItineraryNav() {
+        var prev = document.getElementById('itinerary-prev-btn');
+        var next = document.getElementById('itinerary-next-btn');
+        if (prev) prev.addEventListener('click', function () { showItineraryDay(itineraryCurrentDay - 1); });
+        if (next) next.addEventListener('click', function () { showItineraryDay(itineraryCurrentDay + 1); });
+    }
+
     function buildTourItinerary() {
-        var days = parseInt(document.getElementById('tour-duration').value) || 0;
+        var days = Math.min(parseInt(document.getElementById('tour-duration').value) || 0, 30);
         var container = document.getElementById('tour-itinerary-days');
         var section = document.getElementById('tour-itinerary-section');
         if (days < 1) { section.style.display = 'none'; return; }
         section.style.display = 'block';
         itineraryCounter = {};
+        itineraryCurrentDay = 1;
         var savedData = {};
         container.querySelectorAll('input, textarea').forEach(function(el) {
             var match = el.id && el.id.match(/^act-(\d+)-(\d+)-(title|time|activity|desc)$/);
@@ -534,24 +619,35 @@ function showToast(message, type) {
             var dayActs = savedData[d] || { 0: {} };
             var maxIdx = Object.keys(dayActs).reduce(function(a, b) { return Math.max(a, parseInt(b)); }, 0);
             itineraryCounter[d] = maxIdx;
-            html += '<div class="itinerary-day-card" style="margin-bottom:1rem;padding:1.25rem;background:var(--soft-white);border-radius:12px;border:1px solid var(--border-light);">'
-                + '<label style="font-weight:700;font-size:0.8rem;color:var(--dark-text);display:block;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">DAY ' + d + '</label>'
+            html += '<div class="itinerary-day-card" data-day="' + d + '" style="margin-bottom:1rem;padding:1.25rem;background:var(--soft-white);border-radius:12px;border:1px solid var(--border-light);' + (d === 1 ? '' : 'display:none;') + '">'
+                + '<label style="font-weight:700;font-size:0.8rem;color:var(--dark-text);display:block;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">DAY ' + d + ' of ' + days + '</label>'
                 + '<div id="day-activities-' + d + '">';
             Object.keys(dayActs).forEach(function(idx) {
                 html += makeActivityHTML(d, parseInt(idx), dayActs[idx]);
             });
             html += '</div>'
-                + '<button type="button" onclick="addActivity(' + d + ')" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;border-radius:8px;background:rgba(18,34,24,0.06);border:1px dashed rgba(18,34,24,0.15);color:var(--dark-text);font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;margin-top:0.25rem;" onmouseover="this.style.background=\'rgba(18,34,24,0.1)\'" onmouseout="this.style.background=\'rgba(18,34,24,0.06)\'">+ Add Activity</button>'
+                + addActivityButtonHTML(d)
                 + '</div>';
         }
+        html += itineraryNavHTML();
         container.innerHTML = html;
+        bindItineraryNav();
+        refreshItineraryNav();
     }
 
     function hideTourItinerary() {
         document.getElementById('tour-itinerary-section').style.display = 'none';
         document.getElementById('tour-itinerary-days').innerHTML = '';
     }
-    document.getElementById('tour-duration').addEventListener('change', buildTourItinerary);
+    document.getElementById('tour-duration').addEventListener('change', function () {
+        var el = document.getElementById('tour-duration');
+        var v = parseInt(el.value) || 1;
+        el.value = Math.min(Math.max(v, 1), 30);
+        buildTourItinerary();
+    });
+    document.getElementById('tour-itinerary-days').addEventListener('input', function () {
+        refreshItineraryNav();
+    });
 
     function showTourFormMsg(msg, isError) {
         if (!msg) return;
@@ -854,6 +950,7 @@ function showToast(message, type) {
                     // old text format, ignore
                 }
             }
+            refreshItineraryNav();
         } catch (e) {
             showToast('Failed to load tour: ' + e.message, 'error');
         }
@@ -869,6 +966,24 @@ function showToast(message, type) {
             btn.textContent = editId ? 'Updating...' : 'Creating...';
             btn.disabled = true;
             showTourFormMsg('');
+
+            clampFieldValue('tour-duration', 1, 30, 'Duration');
+            clampFieldValue('tour-price', 0, 100000000, 'Price');
+            clampFieldValue('tour-original-price', 0, 100000000, 'Original price');
+            clampFieldValue('tour-max-people', 1, 1000, 'Max people');
+
+            var totalDays = Math.min(parseInt(document.getElementById('tour-duration').value) || 0, 30);
+            var firstUnfilled = null;
+            for (var dd = 1; dd <= totalDays; dd++) {
+                if (!isItineraryDayFilled(dd)) { firstUnfilled = dd; break; }
+            }
+            if (firstUnfilled) {
+                showTourFormMsg('Please complete Day ' + firstUnfilled + ' of the itinerary before saving.', true);
+                showItineraryDay(firstUnfilled);
+                btn.textContent = origText;
+                btn.disabled = false;
+                return;
+            }
 
             var formData = new FormData();
             formData.append('title', document.getElementById('tour-title').value);
@@ -1263,6 +1378,10 @@ function showToast(message, type) {
         hotelForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             var editId = document.getElementById('hotel-edit-id').value;
+
+            clampFieldValue('hotel-price', 0, 100000000, 'Price per night');
+            clampFieldValue('hotel-rating', 0, 5, 'Rating');
+
             var formData = new FormData();
             formData.append('name', document.getElementById('hotel-name').value);
             formData.append('location', document.getElementById('hotel-location').value);

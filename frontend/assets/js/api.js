@@ -148,8 +148,9 @@ class ApiClient {
 
     // Bookings — user-facing / admin
     async createBooking(data) { return this.post('/bookings', data); }
-    async getUserBookings() { return this.get('/bookings/user'); }
+    async getUserBookings() { return this.get('/bookings'); }
     async getBooking(id) { return this.get(`/bookings/${id}`); }
+    async cancelBooking(id) { return this.put(`/bookings/${id}/cancel`); }
     async getAllBookings(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/admin/bookings${query ? '?' + query : ''}`);

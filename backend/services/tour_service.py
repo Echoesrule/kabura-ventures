@@ -22,10 +22,18 @@ def create_tour(data, files=None):
         if err: errors.append(err)
     desc_err = validate_length(description, 5000, 'Description')
     if desc_err: errors.append(desc_err)
-    dur_err = validate_number(data.get('duration_days', 1), min_val=1, max_val=365, field_name='Duration days')
+    dur_err = validate_number(data.get('duration_days', 1), min_val=1, max_val=30, field_name='Duration days')
     if dur_err: errors.append(dur_err)
-    price_err = validate_number(data.get('price', 0), min_val=0, field_name='Price')
+    price_err = validate_number(data.get('price', 0), min_val=0, max_val=100000000, field_name='Price')
     if price_err: errors.append(price_err)
+    if data.get('original_price'):
+        orig_err = validate_number(data['original_price'], min_val=0, max_val=100000000, field_name='Original price')
+        if orig_err: errors.append(orig_err)
+    if data.get('discount_pct'):
+        disc_err = validate_number(data['discount_pct'], min_val=0, max_val=90, field_name='Discount pct')
+        if disc_err: errors.append(disc_err)
+    max_people_err = validate_number(data.get('max_people', 20), min_val=1, max_val=1000, field_name='Max people')
+    if max_people_err: errors.append(max_people_err)
     if errors:
         raise ServiceError('. '.join(errors))
 
@@ -92,11 +100,11 @@ def update_tour(tour, data, files=None):
         err = validate_length(tour.description, 5000, 'Description')
         if err: errors.append(err)
     if 'price' in data:
-        err = validate_number(data['price'], min_val=0, field_name='Price')
+        err = validate_number(data['price'], min_val=0, max_val=100000000, field_name='Price')
         if err: errors.append(err)
         tour.price = float(data['price'])
     if 'duration_days' in data:
-        err = validate_number(data['duration_days'], min_val=1, max_val=365, field_name='Duration days')
+        err = validate_number(data['duration_days'], min_val=1, max_val=30, field_name='Duration days')
         if err: errors.append(err)
         tour.duration_days = int(data['duration_days'])
     if 'location' in data:
@@ -140,8 +148,14 @@ def update_tour(tour, data, files=None):
     if 'available' in data:
         tour.available = data['available'] == 'true' or data['available'] is True
     if 'original_price' in data:
+        if data['original_price']:
+            err = validate_number(data['original_price'], min_val=0, max_val=100000000, field_name='Original price')
+            if err: errors.append(err)
         tour.original_price = float(data['original_price']) if data['original_price'] else None
     if 'discount_pct' in data:
+        if data['discount_pct']:
+            err = validate_number(data['discount_pct'], min_val=0, max_val=90, field_name='Discount pct')
+            if err: errors.append(err)
         tour.discount_pct = int(data['discount_pct']) if data['discount_pct'] else None
     if 'activity_type' in data:
         tour.activity_type = sanitize_input(data['activity_type'], max_length=100).lower() or None

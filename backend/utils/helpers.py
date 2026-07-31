@@ -46,6 +46,17 @@ def validate_number(value, min_val=None, max_val=None, field_name='Value'):
         return f'{field_name} must be at most {max_val}'
     return None
 
+def clamp_number(value, default=0, min_val=None, max_val=None):
+    try:
+        num = float(value)
+    except (TypeError, ValueError):
+        num = default
+    if min_val is not None and num < min_val:
+        num = min_val
+    if max_val is not None and num > max_val:
+        num = max_val
+    return num
+
 def sanitize_filename(filename):
     if not isinstance(filename, str):
         return ''

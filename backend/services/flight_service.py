@@ -23,7 +23,7 @@ def respond_to_flight_request(flight_request, data):
             raise ServiceError(f'Invalid status. Must be one of: {", ".join(valid_statuses)}')
         flight_request.status = data['status']
     if 'price_quote' in data:
-        err = validate_number(data['price_quote'], min_val=0, field_name='Price quote')
+        err = validate_number(data['price_quote'], min_val=0, max_val=100000000, field_name='Price quote')
         if err:
             raise ServiceError(err)
         flight_request.price_quote = float(data['price_quote'])

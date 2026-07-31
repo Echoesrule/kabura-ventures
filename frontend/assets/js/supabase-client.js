@@ -276,6 +276,24 @@ function setupSupabaseAuthListener(isRecovery = false) {
                 }
                 break;
 
+            // Emitted by supabase-js when a password recovery link is processed.
+            // Handled separately because some SDK versions do NOT fire SIGNED_IN
+            // for recovery links, and the URL hash/query may already be consumed.
+            case 'PASSWORD_RECOVERY':
+                _isRecoveryFlow = true;
+                showPasswordResetForm();
+                break;
+
+            // Emitted when a persisted session is restored from storage on page load.
+            // A session left behind by a previous (unfinished) recovery must NOT
+            // auto-exchange — that would silently sign the user in. If a recovery
+            // is in progress, keep showing the reset form instead.
+            case 'INITIAL_SESSION':
+                if (_isRecoveryFlow) {
+                    showPasswordResetForm();
+                }
+                break;
+
             case 'TOKEN_REFRESHED':
                 break;
 
@@ -365,6 +383,9 @@ async function handlePasswordResetSubmit() {
         const ok = await completeAppPasswordReset(resetToken, newPw);
         if (!ok) return;
         showToast('Password updated successfully! Please log in.', 'success');
+        // Clear any leftover Supabase session so a stale recovery session can't
+        // auto-sign the user in on their next visit.
+        await signOutSupabase();
         const panels = document.querySelector('.auth-panels');
         const resetDiv = document.getElementById('supabase-reset-password-form');
         if (panels) panels.style.display = '';
@@ -499,9 +520,22 @@ function checkAppResetToken() {
  * Call this on DOMContentLoaded.
  */
 async function initSupabaseAuthPage() {
-    // Capture recovery flag BEFORE initSupabaseClient() — Supabase consumes and clears the hash
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const isRecovery = hashParams.get('type') === 'recovery';
+    // Capture the recovery flag BEFORE initSupabaseClient() — Supabase consumes
+    // and clears the URL tokens during client init. Recovery tokens arrive via
+    // the URL hash in the implicit flow (#access_token=...&type=recovery) or via
+    // the query string in the PKCE flow (?code=...&type=recovery), so check both.
+    const url = new URL(window.location.href);
+    const hashParams = new URLSearchParams(url.hash.substring(1));
+    const isRecovery = hashParams.get('type') === 'recovery'
+        || url.searchParams.get('type') === 'recovery';
+
+    // Set the module-level flag synchronously, BEFORE any await. The SDK may
+    // fire SIGNED_IN/PASSWORD_RECOVERY while createClient() initializes, and
+    // we must not treat those events as a normal login (which would exchange
+    // the session and auto-sign the user in instead of showing the reset form).
+    if (isRecovery) {
+        _isRecoveryFlow = true;
+    }
 
     if (checkAppResetToken()) {
         return;
@@ -510,11 +544,13 @@ async function initSupabaseAuthPage() {
     if (client) {
         setupSupabaseAuthListener(isRecovery);
         // SIGNED_IN may have fired during client init before listener was attached.
-        // Check session directly to catch recovery flows.
-        if (isRecovery) {
+        // Check the session directly to catch recovery flows.
+        if (_isRecoveryFlow) {
             const { data: { session } } = await client.auth.getSession();
             if (session) {
                 showPasswordResetForm();
+            } else {
+                showToast('Password reset link has expired. Please request a new one.', 'error');
             }
         }
     }
