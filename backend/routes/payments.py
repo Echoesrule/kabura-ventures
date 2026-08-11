@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.payment import Payment
 from models.booking import Booking
+from models.flight import FlightRequest
 from models import db
 from middleware.auth import token_required, admin_required
 from utils.helpers import validate_required_fields, sanitize_input, validate_length, validate_number
@@ -35,6 +36,25 @@ def create_payment(current_user):
     if tx_err: errors.append(tx_err)
     if errors:
         return jsonify({'error': '. '.join(errors)}), 400
+
+    is_admin = current_user['role'] == 'admin'
+
+    # Validate referenced resources belong to the current user (admins may
+    # reference any record). Prevents users from attaching payments to, or
+    # marking as paid, bookings/flight requests they do not own.
+    if data.get('booking_id'):
+        booking = Booking.query.get(data['booking_id'])
+        if not booking:
+            return jsonify({'error': 'Booking not found'}), 404
+        if not is_admin and booking.user_id != current_user['user_id']:
+            return jsonify({'error': 'Access denied'}), 403
+
+    if data.get('flight_request_id'):
+        flight_request = FlightRequest.query.get(data['flight_request_id'])
+        if not flight_request:
+            return jsonify({'error': 'Flight request not found'}), 404
+        if not is_admin and flight_request.user_id != current_user['user_id']:
+            return jsonify({'error': 'Access denied'}), 403
 
     payment = Payment(
         booking_id=data.get('booking_id'),

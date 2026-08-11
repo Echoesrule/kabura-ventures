@@ -75,7 +75,9 @@ def create_review(current_user):
     return jsonify({'message': 'Review submitted', 'review': review.to_dict()}), 201
 
 @reviews_bp.route('/<review_id>/like', methods=['POST'])
-def like_review(review_id):
+@token_required
+@rate_limit(config_key='reviews', key_prefix='like_review')
+def like_review(current_user, review_id):
     review = Review.query.get(review_id)
     if not review:
         return jsonify({'error': 'Review not found'}), 404
@@ -84,7 +86,9 @@ def like_review(review_id):
     return jsonify({'likes': review.likes}), 200
 
 @reviews_bp.route('/<review_id>/dislike', methods=['POST'])
-def dislike_review(review_id):
+@token_required
+@rate_limit(config_key='reviews', key_prefix='dislike_review')
+def dislike_review(current_user, review_id):
     review = Review.query.get(review_id)
     if not review:
         return jsonify({'error': 'Review not found'}), 404

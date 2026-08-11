@@ -1,4 +1,5 @@
 from functools import wraps
+import uuid
 from datetime import datetime, timedelta
 import jwt
 from flask import request, jsonify, current_app
@@ -8,8 +9,12 @@ def generate_token(user_id, role):
     payload = {
         'user_id': str(user_id),
         'role': role,
+        'iss': current_app.config.get('JWT_ISSUER', 'kabura-adventures-api'),
+        'aud': current_app.config.get('JWT_AUDIENCE', 'kabura-adventures-web'),
+        'jti': uuid.uuid4().hex,
         'exp': datetime.utcnow() + timedelta(seconds=current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES', 86400)),
-        'iat': datetime.utcnow()
+        'iat': datetime.utcnow(),
+        'nbf': datetime.utcnow()
     }
     return jwt.encode(payload, current_app.config['JWT_SECRET_KEY'], algorithm='HS256')
 
@@ -29,7 +34,9 @@ def token_required(f):
             data = jwt.decode(
                 token,
                 current_app.config['JWT_SECRET_KEY'],
-                algorithms=['HS256']
+                algorithms=['HS256'],
+                issuer=current_app.config.get('JWT_ISSUER', 'kabura-adventures-api'),
+                audience=current_app.config.get('JWT_AUDIENCE', 'kabura-adventures-web'),
             )
         except jwt.ExpiredSignatureError:
             return jsonify({'error': 'Token has expired'}), 401

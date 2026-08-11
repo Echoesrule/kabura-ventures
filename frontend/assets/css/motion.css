@@ -1,0 +1,340 @@
+/* ============================================================
+   KABURA MOTION — CSS interaction layer
+   Companion to assets/js/motion.js (GSAP entrance system).
+   Adds smooth hover/focus/underline transitions only.
+   It never changes layout or the existing design.
+   ============================================================ */
+
+/* ---------- Navbar: smooth scroll-state transition ---------- */
+.navbar {
+    transition: background 0.4s ease, backdrop-filter 0.4s ease,
+                -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease,
+                border-color 0.4s ease, position 0s, top 0.25s ease;
+}
+
+.navbar.scrolled {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- Nav links: underline indicator (width 0 → 100%, 300ms) ---------- */
+.nav-links > li > a,
+.nav-links > li > .nav-dropdown-trigger {
+    position: relative;
+}
+
+.nav-links > li > a::after,
+.nav-links > li > .nav-dropdown-trigger::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0.35rem;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent, #D4AF37);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+    pointer-events: none;
+}
+
+.nav-links > li:hover > a::after,
+.nav-links > li:hover > .nav-dropdown-trigger::after,
+.nav-links > li.active > a::after,
+.nav-links > li.active > .nav-dropdown-trigger::after {
+    width: 100%;
+}
+
+/* ---------- Navbar: smooth dropdown (fade + 10px slide) ---------- */
+.nav-dropdown-menu {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease,
+                visibility 0s linear 0.25s;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+    transition: opacity 0.25s ease, transform 0.25s ease,
+                visibility 0s linear 0s;
+}
+
+/* ---------- Buttons: color fill grows left → right on hover ---------- */
+.hp-section-btn,
+.hp-section-btn-arrow,
+.venture-btn,
+.venture-btn-arrow-circle,
+.tour-card-btn,
+.dest-explore-btn,
+.about-learn-more {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.hp-section-btn,
+.venture-btn,
+.tour-card-btn,
+.dest-explore-btn,
+.about-learn-more {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease,
+                background-color 0.3s ease, gap 0.3s ease, border-color 0.3s ease;
+}
+
+.hp-section-btn-arrow,
+.venture-btn-arrow-circle {
+    transition: transform 0.3s ease, box-shadow 0.3s ease,
+                background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.hp-section-btn::before,
+.hp-section-btn-arrow::before,
+.venture-btn::before,
+.venture-btn-arrow-circle::before,
+.tour-card-btn::before,
+.dest-explore-btn::before,
+.about-learn-more::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: var(--dark-text, #122218);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hp-section-btn--black::before,
+.hp-section-btn-arrow--black::before,
+.venture-btn::before,
+.venture-btn-arrow-circle::before,
+.tour-card-btn::before {
+    background: var(--primary-hover, #1d3d28);
+}
+
+.dest-explore-btn::before,
+.about-learn-more::before {
+    background: #fff;
+}
+
+.hp-section-btn:hover::before,
+.hp-section-btn-arrow:hover::before,
+.venture-btn:hover::before,
+.venture-btn-arrow-circle:hover::before,
+.tour-card-btn:hover::before,
+.dest-explore-btn:hover::before,
+.about-learn-more:hover::before {
+    transform: scaleX(1);
+}
+
+/* lift + shadow accompany the fill */
+.hp-section-btn:hover,
+.venture-btn:hover,
+.tour-card-btn:hover,
+.dest-explore-btn:hover,
+.hp-section-btn-arrow:hover,
+.venture-btn-arrow-circle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* keep the base background static so the fill animates over it */
+.hp-section-btn:hover,
+.hp-section-btn-arrow:hover {
+    background-color: #fff;
+    color: #fff;
+}
+
+.hp-section-btn--black:hover,
+.hp-section-btn-arrow--black:hover,
+.venture-btn:hover,
+.venture-btn-arrow-circle:hover,
+.tour-card-btn:hover {
+    background-color: var(--dark-text, #122218);
+    color: #fff;
+}
+
+.dest-card .dest-explore-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--dark-text, #122218);
+}
+
+.about-learn-more:hover {
+    color: var(--dark-text, #122218);
+}
+
+.about-learn-more:hover .about-learn-more-chevron {
+    background-color: var(--dark-text, #122218);
+    border-color: var(--dark-text, #122218);
+}
+
+.about-learn-more-chevron i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.about-learn-more:hover .about-learn-more-chevron i {
+    color: #fff;
+    transform: translateX(3px);
+}
+
+/* ---------- Buttons: arrow nudge (4-6px along travel direction) ---------- */
+.hp-section-btn-arrow-img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.hp-section-btn-arrow:hover .hp-section-btn-arrow-img,
+.hp-section-btn-arrow--black:hover .hp-section-btn-arrow-img {
+    transform: translate(3px, -3px) rotate(-45deg);
+}
+
+/* arrow flips to white as the dark fill arrives */
+.hp-section-btn-arrow:hover .hp-section-btn-arrow-img {
+    filter: brightness(0) invert(1);
+}
+
+.venture-btn-arrow {
+    transition: transform 0.3s ease;
+}
+
+.venture-btn-arrow-circle:hover .venture-btn-arrow {
+    transform: translateX(3px);
+}
+
+/* ---------- Forms: focus ring + validation feedback ---------- */
+.contact-form .form-input:focus,
+.contact-form .form-textarea:focus {
+    border-color: var(--accent, #D4AF37);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.form-input.motion-invalid,
+.form-textarea.motion-invalid,
+.form-select.motion-invalid {
+    border-color: #c0392b !important;
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12) !important;
+}
+
+.motion-shake {
+    animation: motion-shake 0.4s ease;
+}
+
+@keyframes motion-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+/* ---------- Footer: gentle icon/link lift ---------- */
+.footer-social a {
+    transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.footer-social a:hover {
+    transform: translateY(-3px);
+}
+
+.footer-col a {
+    transition: transform 0.3s ease, color 0.25s ease, padding-left 0.25s ease;
+}
+
+/* ---------- Gallery: subtle image zoom on hover ---------- */
+#tour-gallery-grid img,
+#hotel-gallery-grid img {
+    transition: transform 0.6s ease, box-shadow 0.3s ease;
+}
+
+#tour-gallery-grid .motion-zoom:hover img,
+#hotel-gallery-grid .motion-zoom:hover img {
+    transform: scale(1.04);
+}
+
+/* ---------- Image hover: scan sweep top → bottom ---------- */
+.dest-card .dest-img-wrap,
+.motion-zoom {
+    position: relative;
+    overflow: hidden;
+}
+
+.tour-card-img-wrap::after,
+.hotel-stay-image::after,
+.dest-card .dest-img-wrap::after,
+.category-tour-card::after,
+.offer-card::after,
+.motion-zoom::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+    transform: translateY(-115%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.category-tour-card::after {
+    height: 240px;
+}
+
+.tour-card-img-wrap:hover::after,
+.hotel-stay-image:hover::after,
+.dest-card:hover .dest-img-wrap::after,
+.category-tour-card:hover::after,
+.offer-card:hover::after,
+.motion-zoom:hover::after {
+    animation: motion-scan 1.1s ease forwards;
+}
+
+@keyframes motion-scan {
+    from { transform: translateY(-115%); }
+    to { transform: translateY(260%); }
+}
+
+/* ---------- Page-load fade-in (pure CSS, no JS dependency) ---------- */
+@keyframes motion-page-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+body.motion-page {
+    animation: motion-page-in 0.5s ease-out both;
+}
+
+/* Safety net: if GSAP fails to load, never hide content */
+html.motion-no-gsap .gs-reveal,
+html.motion-no-gsap .gs-reveal-left,
+html.motion-no-gsap .gs-reveal-right,
+html.motion-no-gsap .gs-reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* ============================================================
+   REDUCED MOTION — keep content visible, kill movement
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .gs-reveal, .gs-reveal-left, .gs-reveal-right, .gs-reveal-scale {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}

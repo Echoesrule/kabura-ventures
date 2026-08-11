@@ -453,14 +453,31 @@ function showEmailVerification(email) {
         pollCount++;
         try {
             const res = await api.get(`/auth/verification-status?email=${encodeURIComponent(email)}`);
-            if (res.verified && res.token) {
-                api.setToken(res.token);
+            if (res.verified) {
                 clearInterval(pollInterval);
+                // verification-status never returns a token. If a Supabase
+                // session exists (email magic link flow), exchange it; otherwise
+                // the user signs in normally.
+                let exchanged = false;
+                try {
+                    if (typeof exchangeSupabaseSession === 'function') {
+                        const data = await exchangeSupabaseSession();
+                        exchanged = !!(data && data.token);
+                    }
+                } catch (e) {
+                    console.error('[app] Supabase exchange after verification failed:', e);
+                }
                 const overlay = document.createElement('div');
                 overlay.className = 'verification-loading-overlay';
-                overlay.innerHTML = '<div class="spinner"></div><p>Verification successful! Logging in...</p>';
-                document.body.appendChild(overlay);
-                setTimeout(() => { window.location.href = '/'; }, 1200);
+                if (exchanged) {
+                    overlay.innerHTML = '<div class="spinner"></div><p>Verification successful! Logging in...</p>';
+                    document.body.appendChild(overlay);
+                    setTimeout(() => { window.location.href = '/'; }, 1200);
+                } else {
+                    overlay.innerHTML = '<div class="spinner"></div><p>Verification successful! Signing you in...</p>';
+                    document.body.appendChild(overlay);
+                    setTimeout(() => { window.location.href = '/login'; }, 1200);
+                }
             }
         } catch (e) {
             if (pollCount > 120) clearInterval(pollInterval);

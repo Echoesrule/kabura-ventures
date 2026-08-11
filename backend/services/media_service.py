@@ -3,7 +3,7 @@ import uuid
 from werkzeug.utils import secure_filename
 from models.media import HeroMedia, HeroImage, AuthSlide
 from models import db
-from services.storage import save_image, delete_image, test_supabase_bucket
+from services.storage import save_image, delete_image, test_supabase_bucket, process_upload
 from utils.helpers import allowed_file
 from services.base import ServiceError
 
@@ -26,12 +26,17 @@ def upload_hero_media(file, backend_url):
     if is_video:
         upload_path = os.path.join(os.path.dirname(__file__), '..', '..', 'frontend', 'assets', 'videos', filename)
         relative_url = f'/assets/videos/{filename}'
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        file.save(upload_path)
     else:
+        content = process_upload(file)
+        if content is None:
+            raise ServiceError('Invalid image type')
         upload_path = os.path.join(os.path.dirname(__file__), '..', '..', 'frontend', 'assets', 'images', filename)
         relative_url = f'/assets/images/{filename}'
-
-    os.makedirs(os.path.dirname(upload_path), exist_ok=True)
-    file.save(upload_path)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        with open(upload_path, 'wb') as fh:
+            fh.write(content)
 
     file_url = f"{backend_url}{relative_url}"
     count = HeroMedia.query.count()

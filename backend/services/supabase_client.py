@@ -9,6 +9,7 @@ import secrets
 import logging
 from datetime import datetime, timedelta
 from typing import Optional
+from models import db
 
 logger = logging.getLogger(__name__)
 
@@ -144,7 +145,12 @@ def store_otp_for_user(user: 'User') -> str:
 
 
 def verify_stored_otp(user: 'User', code: str) -> bool:
-    """Verify a code against the user's stored (hashed) OTP. Checks expiry and increments attempts."""
+    """Verify a code against the user's stored (hashed) OTP. Checks expiry and increments attempts.
+
+    The attempt count is committed immediately so that failed guesses persist and
+    the 5-attempt lockout actually takes effect (previously the increment was only
+    committed on success, allowing unlimited brute-force).
+    """
     if not user.otp_code_hash or not user.otp_expiry:
         return False
     if datetime.utcnow() > user.otp_expiry:
@@ -156,8 +162,16 @@ def verify_stored_otp(user: 'User', code: str) -> bool:
         user.otp_code_hash = None
         user.otp_expiry = None
         user.otp_attempts = 0
+        db.session.commit()
         return True
+    db.session.commit()
     return False
+
+
+def otp_attempts_remaining(user: 'User') -> int:
+    if user.otp_attempts is not None and user.otp_attempts >= 5:
+        return 0
+    return 5 - (user.otp_attempts or 0)
 
 
 def confirm_supabase_email(email: str) -> bool:
@@ -166,12 +180,20 @@ def confirm_supabase_email(email: str) -> bool:
     if not client:
         return False
     try:
-        response = client.auth.admin.list_users()
-        for u in (getattr(response, 'users', None) or []):
-            if getattr(u, 'email', '') == email:
-                client.auth.admin.update_user_by_id(u.id, {'email_confirm': True})
-                logger.info(f"Confirmed email in Supabase for {email}")
-                return True
+        # list_users() is paginated (default 50 per page); iterate every page via
+        # the returned cursor so accounts beyond the first page get confirmed.
+        page = None
+        while True:
+            response = client.auth.admin.list_users(page=page, per_page=1000)
+            for u in (getattr(response, 'users', None) or []):
+                if getattr(u, 'email', '') == email:
+                    client.auth.admin.update_user_by_id(u.id, {'email_confirm': True})
+                    logger.info(f"Confirmed email in Supabase for {email}")
+                    return True
+            next_page = getattr(response, 'next_page', None)
+            if not next_page:
+                break
+            page = next_page
         logger.warning(f"User {email} not found in Supabase Auth for email confirmation")
         return False
     except Exception as e:

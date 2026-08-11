@@ -1,6 +1,7 @@
 import os
 import logging
 import re
+from urllib.parse import urlparse
 from flask import Blueprint, request, jsonify, current_app
 from models.user import User
 from models.message import Notification
@@ -11,6 +12,7 @@ from utils.helpers import validate_email, validate_required_fields, sanitize_inp
 from services.supabase_client import (
     send_otp_email, verify_otp_code, create_supabase_user,
     store_otp_for_user, verify_stored_otp, confirm_supabase_email,
+    otp_attempts_remaining,
 )
 from services.email_service import send_otp_email_smtp, is_smtp_configured, send_email
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
@@ -18,6 +20,39 @@ from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
+
+
+def _trusted_frontend_url(requested_url):
+    """Return the requested URL only if its origin is on the trusted allow-list.
+
+    Prevents an attacker from crafting a password-reset email whose link points
+    to a phishing domain by passing an arbitrary `redirect_to` value.
+    """
+    if not requested_url:
+        return None
+    requested_url = requested_url.strip().rstrip('/')
+    parsed = urlparse(requested_url)
+    if parsed.scheme not in ('http', 'https') or not parsed.netloc:
+        return None
+    origin = f'{parsed.scheme}://{parsed.netloc}'
+
+    trusted_origins = set()
+    for origin_cfg in current_app.config.get('TRUSTED_ORIGINS') or []:
+        origin_cfg = origin_cfg.strip()
+        if origin_cfg:
+            trusted_origins.add(origin_cfg.rstrip('/'))
+    for env_key in ('FRONTEND_URL', 'VERCEL_APP_URL', 'SITE_URL'):
+        env_val = os.environ.get(env_key)
+        if env_val:
+            trusted_origins.add(env_val.rstrip('/'))
+    # Local development
+    for host in ('localhost:3000', 'localhost:5000', '127.0.0.1:5000', '127.0.0.1:3000'):
+        trusted_origins.add(f'http://{host}')
+        trusted_origins.add(f'https://{host}')
+
+    if origin in trusted_origins:
+        return requested_url
+    return None
 
 @auth_bp.route('/register', methods=['POST'])
 @rate_limit(config_key='register', key_prefix='register')
@@ -114,10 +149,10 @@ def send_otp():
 
     email = sanitize_input(data['email'], max_length=255).lower()
     user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    if user.is_verified:
-        return jsonify({'error': 'Email already verified'}), 400
+    if not user or user.is_verified:
+        # Return the same response whether the email exists or not to avoid
+        # leaking which accounts are registered.
+        return jsonify({'message': 'If this account exists and needs verification, a code has been sent.'}), 200
 
     otp_code = store_otp_for_user(user)
     logger.debug(f"OTP resent to {email}")
@@ -155,15 +190,24 @@ def verify_email():
 
     user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'Invalid or expired verification code'}), 400
     if user.is_verified:
         token = generate_token(user.id, user.role)
         return jsonify({'message': 'Email already verified', 'token': token, 'user': user.to_dict()}), 200
 
+    if otp_attempts_remaining(user) <= 0:
+        return jsonify({'error': 'Too many incorrect attempts. Please click "Resend Code" to get a new code.'}), 429
+
     if not verify_stored_otp(user, token):
-        valid, verify_error = verify_otp_code(email, token)
-        if not valid:
-            return jsonify({'error': verify_error or 'Invalid or expired verification code'}), 400
+        # Fall back to Supabase's own OTP check. Only try this while the local
+        # attempt budget is still available so a locked-out account cannot be
+        # brute-forced through the fallback path either.
+        if otp_attempts_remaining(user) > 0:
+            valid, verify_error = verify_otp_code(email, token)
+            if not valid:
+                return jsonify({'error': verify_error or 'Invalid or expired verification code'}), 400
+        else:
+            return jsonify({'error': 'Too many incorrect attempts. Please click "Resend Code" to get a new code.'}), 429
 
     user.is_verified = True
     db.session.commit()
@@ -232,7 +276,7 @@ def login():
         }), 200
     except Exception as e:
         logger.error(f"Login error: {e}\n{tb.format_exc()}")
-        return jsonify({'error': f'Login failed: {str(e)}', 'detail': tb.format_exc()}), 500
+        return jsonify({'error': 'Login failed. Please try again.'}), 500
 
 @auth_bp.route('/forgot-password', methods=['POST'])
 @rate_limit(config_key='forgot_password', key_prefix='forgot_password')
@@ -249,13 +293,17 @@ def forgot_password():
     serializer = URLSafeTimedSerializer(current_app.config['JWT_SECRET_KEY'])
     token = serializer.dumps(user.id, salt='password-reset')
 
+    # Only allow redirects to trusted origins so a reset link can never be
+    # weaponized into a phishing URL.
     frontend_url = (
-        data.get('redirect_to')
-        or os.environ.get('FRONTEND_URL')
-        or request.headers.get('Origin')
-        or request.url_root.rstrip('/')
+        _trusted_frontend_url(data.get('redirect_to'))
+        or _trusted_frontend_url(os.environ.get('FRONTEND_URL'))
+        or _trusted_frontend_url(request.headers.get('Origin'))
+        or _trusted_frontend_url(request.url_root)
     )
-    reset_link = f"{frontend_url.rstrip('/')}/login?reset={token}"
+    if not frontend_url:
+        return jsonify({'error': 'Invalid redirect target.'}), 400
+    reset_link = f"{frontend_url}/login?reset={token}"
 
     subject = "Reset Your Kabura Adventures Password"
     html_body = f"""<html><body style="font-family:Arial,sans-serif;padding:20px;">
@@ -339,13 +387,9 @@ def verification_status():
 
     user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'verified': False}), 200
 
-    if user.is_verified:
-        token = generate_token(user.id, user.role)
-        return jsonify({'verified': True, 'token': token, 'user': user.to_dict()}), 200
-
-    return jsonify({'verified': False}), 200
+    return jsonify({'verified': user.is_verified}), 200
 
 @auth_bp.route('/profile', methods=['GET'])
 @token_required

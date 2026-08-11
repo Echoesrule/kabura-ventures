@@ -98,4 +98,17 @@
             }
         });
     }
+
+    // Kabura Motion: inject the animation layer site-wide (additive, safe).
+    (function injectMotion() {
+        var css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = '/assets/css/motion.css';
+        document.head.appendChild(css);
+
+        var js = document.createElement('script');
+        js.src = '/assets/js/motion.js';
+        js.async = true;
+        document.body.appendChild(js);
+    })();
 })();

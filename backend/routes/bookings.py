@@ -1,11 +1,14 @@
 import traceback
+from datetime import datetime
 from flask import Blueprint, request, jsonify
 from models.booking import Booking
+from models.tour import Tour
+from models.hotel import Hotel
 from models.message import Notification
 from models import db
 from middleware.auth import token_required
 from middleware.rate_limit import rate_limit
-from utils.helpers import validate_required_fields, sanitize_input, validate_length, validate_number
+from utils.helpers import validate_required_fields, sanitize_input, validate_length, validate_number, validate_date_format
 
 bookings_bp = Blueprint('bookings', __name__, url_prefix='/api/bookings')
 
@@ -21,6 +24,26 @@ BOOKING_PAYMENT_METHOD_ALIASES = {
 def normalize_booking_payment_method(value):
     method = sanitize_input(value or 'mpesa', max_length=30).lower()
     return BOOKING_PAYMENT_METHOD_ALIASES.get(method)
+
+
+def compute_total_amount(booking_type, tour, hotel, people_count, travel_date, return_date):
+    """Compute the booking price server-side. Client-supplied amounts are never trusted."""
+    people_count = max(1, int(people_count))
+    if booking_type == 'tour' and tour and tour.price:
+        return float(tour.price) * people_count
+    if booking_type == 'hotel' and hotel and hotel.price_per_night:
+        nights = 1
+        if travel_date and return_date:
+            try:
+                start = datetime.strptime(travel_date, '%Y-%m-%d').date()
+                end = datetime.strptime(return_date, '%Y-%m-%d').date()
+                nights = max(1, (end - start).days)
+            except (TypeError, ValueError):
+                nights = 1
+        return float(hotel.price_per_night) * nights
+    if booking_type == 'package' and tour and tour.price:
+        return float(tour.price) * people_count
+    return 0
 
 @bookings_bp.route('', methods=['POST'])
 @token_required
@@ -44,6 +67,37 @@ def create_booking(current_user):
             valid_methods = ', '.join(BOOKING_PAYMENT_METHOD_ALIASES.keys())
             return jsonify({'error': f'Invalid payment method. Must be one of: {valid_methods}'}), 400
 
+        payment_type = sanitize_input(data.get('payment_type', 'full'), max_length=10).lower()
+        if payment_type == 'deposit':
+            payment_type = 'partial'
+        if payment_type not in ('full', 'partial'):
+            return jsonify({'error': 'Invalid payment type. Must be one of: full, deposit'}), 400
+
+        travel_date = sanitize_input(data.get('travel_date', ''), max_length=10)
+        return_date = sanitize_input(data.get('return_date') or '', max_length=10) or None
+        if not validate_date_format(travel_date):
+            return jsonify({'error': 'Invalid travel date. Use YYYY-MM-DD.'}), 400
+        if return_date and not validate_date_format(return_date):
+            return jsonify({'error': 'Invalid return date. Use YYYY-MM-DD.'}), 400
+
+        # Validate referenced tour/hotel exists and matches the booking type.
+        tour = None
+        hotel = None
+        if data['booking_type'] == 'tour':
+            if not data.get('tour_id'):
+                return jsonify({'error': 'tour_id is required for tour bookings'}), 400
+            tour = Tour.query.get(data['tour_id'])
+            if not tour:
+                return jsonify({'error': 'Tour not found'}), 404
+        elif data['booking_type'] == 'hotel':
+            if not data.get('hotel_id'):
+                return jsonify({'error': 'hotel_id is required for hotel bookings'}), 400
+            hotel = Hotel.query.get(data['hotel_id'])
+            if not hotel:
+                return jsonify({'error': 'Hotel not found'}), 404
+        elif data['booking_type'] == 'package' and data.get('tour_id'):
+            tour = Tour.query.get(data['tour_id'])
+
         errors = []
         people_err = validate_number(data['people_count'], min_val=1, max_val=100, field_name='People count')
         if people_err: errors.append(people_err)
@@ -53,24 +107,29 @@ def create_booking(current_user):
         if errors:
             return jsonify({'error': '. '.join(errors)}), 400
 
+        total_amount = compute_total_amount(
+            data['booking_type'], tour, hotel,
+            data['people_count'], travel_date, return_date
+        )
+
         booking = Booking(
             user_id=current_user['user_id'],
             tour_id=data.get('tour_id'),
             hotel_id=data.get('hotel_id'),
             booking_type=data['booking_type'],
-            travel_date=sanitize_input(data['travel_date']),
-            return_date=sanitize_input(data.get('return_date')) if data.get('return_date') else None,
+            travel_date=travel_date,
+            return_date=return_date,
             people_count=int(data['people_count']),
             special_requests=special,
             guest_name=sanitize_input(data.get('guest_name', ''), max_length=100),
             guest_email=sanitize_input(data.get('guest_email', ''), max_length=120),
             guest_phone=sanitize_input(data.get('guest_phone', ''), max_length=30),
-            room_type=data.get('room_type'),
+            room_type=sanitize_input(data.get('room_type') or '', max_length=30) or None,
             payment_method=payment_method,
-            payment_type=sanitize_input(data.get('payment_type', 'full'), max_length=10),
+            payment_type=payment_type,
             coupon_code=sanitize_input(data.get('coupon_code', ''), max_length=50),
             nationality=sanitize_input(data.get('nationality', ''), max_length=100),
-            total_amount=float(data.get('total_amount', 0)),
+            total_amount=total_amount,
             status='pending',
             payment_status='unpaid'
         )

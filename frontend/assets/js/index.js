@@ -21,33 +21,8 @@
         // ==========================================
         gsap.registerPlugin(ScrollTrigger);
 
-        document.querySelectorAll('.gs-reveal').forEach(el => {
-            gsap.fromTo(el, { opacity: 0, y: 60 }, {
-                opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-                scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
-            });
-        });
-
-        // Animated stat counters
-        document.querySelectorAll('.about-stat-number[data-target]').forEach(counter => {
-            const target = parseInt(counter.getAttribute('data-target'), 10);
-            ScrollTrigger.create({
-                trigger: counter,
-                start: 'top 85%',
-                once: true,
-                onEnter: () => {
-                    gsap.to(counter, {
-                        innerText: target,
-                        duration: 1.8,
-                        ease: 'power2.out',
-                        snap: { innerText: 1 },
-                        onUpdate: function () {
-                            counter.textContent = Math.round(parseFloat(counter.textContent));
-                        }
-                    });
-                }
-            });
-        });
+        // Section reveals (.gs-reveal) + stat counters are handled by
+        // assets/js/motion.js (KaburaMotion). Only hero parallax lives here.
 
         gsap.to('.hero-content', {
             y: -80, opacity: 0, ease: 'none',
@@ -361,15 +336,8 @@
                             + '</div></div></div>';
                     }).join('');
 
-                    track.querySelectorAll('.gs-reveal').forEach(function(el) {
-                        gsap.fromTo(el, { opacity: 0, y: 60 }, {
-                            opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-                            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
-                        });
-                    });
-
-                    var prevBtn = document.querySelector('.testimonials-prev');
-                    var nextBtn = document.querySelector('.testimonials-next');
+                    // Testimonial cards are revealed by motion.js (KaburaMotion)
+                    var prevBtn = document.querySelector('.testimonials-prev');                    var nextBtn = document.querySelector('.testimonials-next');
                     if (prevBtn && nextBtn) {
                         var card = track.querySelector('.testimonial-card');
                         if (card) {

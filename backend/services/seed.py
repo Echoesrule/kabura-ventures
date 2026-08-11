@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from models.user import User
 from models.tour import Tour, TourImage
@@ -287,16 +288,41 @@ HOTELS_EXTRA = [
 
 
 def seed_database():
-    admin = User.query.filter_by(email='admin@kaburaadventures.com').first()
-    if not admin:
-        admin = User(
-            name='Admin',
-            email='admin@kaburaadventures.com',
-            role='admin',
-            phone='+254700000000'
-        )
-        admin.set_password('admin123')
-        db.session.add(admin)
+    # Remove any legacy default-admin backdoor account that may exist from older
+    # deployments where an admin was created with the hardcoded password
+    # 'admin123'. If the operator has set ADMIN_EMAIL/ADMIN_PASSWORD, the account
+    # is repurposed with the new credentials; otherwise it is deleted.
+    LEGACY_ADMIN_EMAIL = 'admin@kaburaadventures.com'
+    legacy = User.query.filter_by(email=LEGACY_ADMIN_EMAIL).first()
+    if legacy and legacy.check_password('admin123'):
+        if admin_email == LEGACY_ADMIN_EMAIL and admin_password:
+            legacy.role = 'admin'
+            legacy.set_password(admin_password)
+        else:
+            db.session.delete(legacy)
+        db.session.flush()
+
+    # Admin account is only created when explicit credentials are provided via
+    # environment variables. There is intentionally NO hardcoded default admin
+    # password, so a forgotten deployment can never be taken over with a known
+    # credential. In production, set ADMIN_EMAIL + a strong ADMIN_PASSWORD.
+    admin_email = os.environ.get('ADMIN_EMAIL', '').strip().lower()
+    admin_password = os.environ.get('ADMIN_PASSWORD', '').strip()
+    if admin_email and admin_password:
+        if len(admin_password) < 12:
+            raise ValueError('ADMIN_PASSWORD must be at least 12 characters')
+        admin = User.query.filter_by(email=admin_email).first()
+        if not admin:
+            admin = User(
+                name='Admin',
+                email=admin_email,
+                role='admin',
+                phone=''
+            )
+            admin.set_password(admin_password)
+            db.session.add(admin)
+        elif admin.role != 'admin':
+            admin.role = 'admin'
 
     if Tour.query.count() == 0:
         tours_data = [
@@ -550,7 +576,7 @@ def seed_database():
             {'tour_title': 'Amboseli National Park', 'rating': 4, 'comment': 'The views of Kilimanjaro with elephants in the foreground are unforgettable.'},
             {'tour_title': 'Diani Sea Adventure', 'rating': 5, 'comment': 'Best beach holiday ever! The sea turtles and coral reefs were amazing.'},
         ]
-        customer = User.query.filter_by(email='admin@kaburaadventures.com').first()
+        customer = User.query.filter_by(email=admin_email).first() if admin_email else None
         for r in reviews_data:
             tour = Tour.query.filter_by(title=r['tour_title']).first()
             if tour and customer:

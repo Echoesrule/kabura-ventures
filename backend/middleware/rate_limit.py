@@ -6,12 +6,36 @@ from flask import request, jsonify, current_app
 _rate_limit_records = {}
 _rate_limit_lock = Lock()
 
+# Prune stale keys once the dict grows beyond this many entries.
+_MAX_RECORDS = 10000
+# Any key with no activity older than this is considered stale.
+_STALE_AFTER = 3600
+
 
 def get_client_ip():
-    forwarded_for = request.headers.get('X-Forwarded-For', '')
-    if forwarded_for:
-        return forwarded_for.split(',')[0].strip()
+    """Return the client IP, ignoring spoofable headers unless behind a trusted proxy.
+
+    X-Forwarded-For is only trusted when TRUST_PROXY_HEADERS is enabled. When it
+    is enabled we take the LAST hop, which is the value appended by the immediate
+    trusted proxy (the real client), rather than the first value the client can
+    freely set.
+    """
+    if current_app.config.get('TRUST_PROXY_HEADERS', False):
+        forwarded_for = request.headers.get('X-Forwarded-For', '')
+        if forwarded_for:
+            return forwarded_for.split(',')[-1].strip()
     return request.remote_addr or 'unknown'
+
+
+def _prune_records():
+    """Remove entries that have been inactive for _STALE_AFTER seconds."""
+    if len(_rate_limit_records) < _MAX_RECORDS:
+        return
+    now = time.time()
+    cutoff = now - _STALE_AFTER
+    expired = [k for k, v in _rate_limit_records.items() if not v or v[-1] < cutoff]
+    for k in expired:
+        _rate_limit_records.pop(k, None)
 
 
 def rate_limit(limit=10, window=60, key_prefix=None, config_key=None):
@@ -34,6 +58,7 @@ def rate_limit(limit=10, window=60, key_prefix=None, config_key=None):
             window_start = now - cfg_window
 
             with _rate_limit_lock:
+                _prune_records()
                 timestamps = _rate_limit_records.get(key, [])
                 timestamps = [t for t in timestamps if t > window_start]
                 if len(timestamps) >= cfg_limit:

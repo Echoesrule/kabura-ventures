@@ -354,8 +354,7 @@ async function submitBooking() {
             room_type: selectedType === 'hotel' ? (document.getElementById('booking-room-type')?.value || null) : null,
             payment_method: payMethod ? payMethod.dataset.value : 'mpesa',
             payment_type: payType ? payType.dataset.value : 'full',
-            coupon_code: couponCodeApplied,
-            total_amount: total
+            coupon_code: couponCodeApplied
         });
         loadingState.style.display = 'none';
         successState.style.display = 'block';

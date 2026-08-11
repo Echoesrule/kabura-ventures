@@ -5,8 +5,55 @@ from urllib.parse import urlparse
 from flask import current_app, request
 from supabase import create_client
 from werkzeug.utils import secure_filename
-from PIL import Image
+from PIL import Image, ImageOps
 from utils.helpers import allowed_file
+
+MAX_IMAGE_SIZE = 1920
+IMAGE_QUALITY = 80
+
+
+def _process_image(content: bytes, ext: str, max_size: int = MAX_IMAGE_SIZE, quality: int = IMAGE_QUALITY) -> bytes:
+    """Downscale + recompress an image. GIFs (animated) pass through untouched."""
+    ext = (ext or '').lower()
+    if ext == 'gif':
+        return content
+
+    img = Image.open(BytesIO(content))
+    try:
+        if img.format and img.format.upper() == 'GIF':
+            return content
+        has_alpha = img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info)
+        if has_alpha:
+            img = img.convert('RGBA')
+        else:
+            img = img.convert('RGB')
+        img = ImageOps.exif_transpose(img)
+        img.thumbnail((max_size, max_size), Image.LANCZOS)
+
+        out = BytesIO()
+        if ext == 'png':
+            img.save(out, 'PNG', optimize=True)
+        elif ext == 'webp':
+            img.save(out, 'WEBP', quality=quality, method=4)
+        else:
+            img.convert('RGB').save(out, 'JPEG', quality=quality, optimize=True, progressive=True)
+        return out.getvalue()
+    finally:
+        img.close()
+
+
+def process_upload(file, max_size: int = MAX_IMAGE_SIZE, quality: int = IMAGE_QUALITY):
+    """Read, verify and optimize an uploaded image file. Returns bytes."""
+    if not file or not hasattr(file, 'filename') or not allowed_file(file.filename):
+        return None
+    file.stream.seek(0)
+    content = file.read()
+    valid, err = _verify_image(content)
+    if not valid:
+        raise ValueError(err)
+    filename = secure_filename(file.filename)
+    ext = filename.rsplit('.', 1)[-1] if '.' in filename else ''
+    return _process_image(content, ext, max_size, quality)
 
 
 def _use_supabase_storage() -> bool:
@@ -52,11 +99,9 @@ def save_image(file, folder: str = 'images') -> str | None:
     if not file or not hasattr(file, 'filename') or not allowed_file(file.filename):
         return None
 
-    file.stream.seek(0)
-    content = file.read()
-    valid, err = _verify_image(content)
-    if not valid:
-        raise ValueError(err)
+    content = process_upload(file)
+    if content is None:
+        return None
     file.stream = BytesIO(content)
 
     filename = _normalize_filename(file)

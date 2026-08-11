@@ -56,11 +56,25 @@ def create_app():
     app = Flask(__name__, static_folder='../frontend', template_folder='../frontend', static_url_path='')
     app.config.from_object(Config)
 
-    trusted_origins = os.environ.get('TRUSTED_ORIGINS', '').split(',')
-    if trusted_origins and trusted_origins[0]:
-        CORS(app, origins=trusted_origins, supports_credentials=True)
-    else:
-        CORS(app, origins='*')
+    # CORS is restricted to a trusted allow-list. There is deliberately no
+    # wildcard fallback: `*` combined with credentials is rejected by browsers
+    # anyway and silently allowing it would let any site fire credentialed
+    # requests. In production set TRUSTED_ORIGINS (comma-separated); in local
+    # development a set of common localhost ports is used.
+    trusted_origins = app.config.get('TRUSTED_ORIGINS')
+    if not trusted_origins:
+        if app.debug:
+            trusted_origins = [
+                'http://localhost:3000', 'http://localhost:5000',
+                'http://127.0.0.1:3000', 'http://127.0.0.1:5000',
+            ]
+        else:
+            app.logger.warning(
+                'TRUSTED_ORIGINS is not set and the app is not in debug mode. '
+                'CORS will be restricted to localhost, which will break remote '
+                'frontends. Set TRUSTED_ORIGINS in production.')
+            trusted_origins = ['http://localhost:3000', 'http://localhost:5000']
+    CORS(app, origins=trusted_origins, supports_credentials=True)
     db.init_app(app)
     bcrypt.init_app(app)
 
@@ -71,7 +85,10 @@ def create_app():
         response.headers['X-XSS-Protection'] = '0'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
-        if request.is_secure or request.headers.get('X-Forwarded-Proto', '') == 'https':
+        if app.config.get('TRUST_PROXY_HEADERS', False):
+            if request.is_secure or request.headers.get('X-Forwarded-Proto', '') == 'https':
+                response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        elif request.is_secure:
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         return response
 
@@ -153,11 +170,15 @@ def create_app():
         auth_header = request.headers.get('Authorization')
         if auth_header and auth_header.startswith('Bearer '):
             token = auth_header.split(' ')[1]
-        if not token:
-            token = request.args.get('token')
         if token:
             try:
-                data = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+                data = jwt.decode(
+                    token,
+                    app.config['JWT_SECRET_KEY'],
+                    algorithms=['HS256'],
+                    issuer=app.config.get('JWT_ISSUER', 'kabura-adventures-api'),
+                    audience=app.config.get('JWT_AUDIENCE', 'kabura-adventures-web'),
+                )
                 if data.get('role') != 'admin':
                     return redirect('/login?error=unauthorized')
             except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
