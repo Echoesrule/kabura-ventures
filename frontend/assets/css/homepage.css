@@ -1,11 +1,4 @@
-/* ============================================================
-   KABURA ADVENTURES — Premium Homepage Styles
-   National Geographic meets Apple product pages
-   ============================================================ */
 
-/* ============================================================
-   1. DESIGN TOKENS & LOCAL OVERRIDES
-   ============================================================ */
 :root {
     --hp-section-pad: 8rem 2rem;
     --hp-section-pad-tablet: 5rem 1.5rem;
@@ -23,42 +16,40 @@
 }
 
 
-/* ============================================================
-   2. GLASS NAVBAR
-   ============================================================ */
 .navbar.scrolled {
     position: sticky;
-    background: rgba(13, 31, 18, 0.75);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
 .nav-links a {
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: #111827 !important;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: #fff !important;
+    color: #111827 !important;
 }
 
 .nav-user-btn {
-    color: rgba(255, 255, 255, 0.8);
+    color: #111827;
 }
 
 .nav-user-btn:hover {
-    color: #fff;
+    color: #111827;
 }
 
 .hamburger i {
-    color: #fff;
+    color: #111827;
 }
 
 #currency-trigger {
-    color: rgba(255, 255, 255, 0.8);
+    color: #111827;
     background: transparent;
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(17, 24, 39, 0.12);
 }
 
 /* ============================================================

@@ -1,10 +1,4 @@
-/* ============================================================
-   KABURA MOTION — GSAP + ScrollTrigger entrance system
-   Loaded site-wide via components.js. Safe, additive, guarded.
-   - Never modifies the hero (#premium-hero) or its buttons.
-   - Respects prefers-reduced-motion.
-   - Exposes window.KaburaMotion { init, refresh, reveal }.
-   ============================================================ */
+
 (function () {
     'use strict';
 

@@ -99,12 +99,17 @@
         });
     }
 
-    // Kabura Motion: inject the animation layer site-wide (additive, safe).
-    (function injectMotion() {
-        var css = document.createElement('link');
-        css.rel = 'stylesheet';
-        css.href = '/assets/css/motion.css';
-        document.head.appendChild(css);
+    // Kabura site styling: inject the shared navbar and motion layers site-wide.
+    (function injectSiteStyles() {
+        var navbarCss = document.createElement('link');
+        navbarCss.rel = 'stylesheet';
+        navbarCss.href = '/assets/css/navbar.css';
+        document.head.appendChild(navbarCss);
+
+        var motionCss = document.createElement('link');
+        motionCss.rel = 'stylesheet';
+        motionCss.href = '/assets/css/motion.css';
+        document.head.appendChild(motionCss);
 
         var js = document.createElement('script');
         js.src = '/assets/js/motion.js';
